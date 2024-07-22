@@ -240,7 +240,7 @@ extension Analytics {
         case shareWalletInfo, nftDetails, profileSelection
         case updateToWalletGreetings
         case homeExplore
-        case homeActivity
+        case homeActivity, homeActivityFilters
         
         case sendCryptoReceiverSelection, sendCryptoAssetSelection, sendCryptoTokenAmountInput, sendCryptoDomainTransferConfirmation, sendCryptoTokenConfirmation, sendCryptoScanQRCode
         case transferDomainSuccess, sendCryptoSuccess
@@ -445,6 +445,9 @@ extension Analytics {
         case useDifferentEmail, useRecovery, dontUseRecovery
         case contactSupport
         case reconnect
+        
+        case all, income, outcome
+        case filterOption, reset
     }
 }
 

@@ -21,7 +21,7 @@ extension MockEntitiesFabric {
         }
         
         static func createMockTxsResponses(canLoadMore: Bool = false,
-                                          amount: Int = 20) -> [WalletTransactionsPerChainResponse] {
+                                           amount: Int = 20) -> [WalletTransactionsPerChainResponse] {
             [createMockTxsResponse(chain: BlockchainType.Ethereum.shortCode,
                                    canLoadMore: canLoadMore,
                                    amount: amount),
@@ -43,10 +43,14 @@ extension MockEntitiesFabric {
         
         
         static func createMockEmptyTxs(range: ClosedRange<Int> = 1...3) -> [SerializedWalletTransaction] {
-            range.map { createMockEmptyTx(id: "\($0)", dateOffset: TimeInterval($0 * -14000)) }
+            range.map { createMockTxOf(type: TxType.allCases.randomElement()!,
+                                       userWallet: "0",
+                                       id: "\($0)",
+                                       dateOffset: TimeInterval($0 * -14000),
+                                       isDeposit: [true, false].randomElement()!) }
         }
         
-        enum TxType {
+        enum TxType: CaseIterable {
             case crypto
             case nft
             case domain
@@ -84,34 +88,34 @@ extension MockEntitiesFabric {
                 
             case .domain:
                 return SerializedWalletTransaction(hash: id,
-                                            block: "",
-                                            timestamp: Date().addingTimeInterval(dateOffset),
-                                            success: true,
-                                            value: 0,
-                                            gas: 0,
-                                            method: "oleg.x",
-                                            link: "",
-                                            imageUrl: ImageURLs.aiAvatar.rawValue,
-                                            symbol: "MATIC",
-                                            type: "nft",
-                                            from: from,
-                                            to: to)
-
+                                                   block: "",
+                                                   timestamp: Date().addingTimeInterval(dateOffset),
+                                                   success: true,
+                                                   value: 0,
+                                                   gas: 0,
+                                                   method: "oleg.x",
+                                                   link: "",
+                                                   imageUrl: ImageURLs.aiAvatar.rawValue,
+                                                   symbol: "MATIC",
+                                                   type: "nft",
+                                                   from: from,
+                                                   to: to)
+                
             case .nft:
                 return SerializedWalletTransaction(hash: id,
-                                            block: "",
-                                            timestamp: Date().addingTimeInterval(dateOffset),
-                                            success: true,
-                                            value: 0,
-                                            gas: 0,
-                                            method: "May the Grooves be with you",
-                                            link: "",
-                                            imageUrl: ImageURLs.aiAvatar.rawValue,
-                                            symbol: "MATIC",
-                                            type: "nft",
-                                            from: from,
-                                            to: to)
-
+                                                   block: "",
+                                                   timestamp: Date().addingTimeInterval(dateOffset),
+                                                   success: true,
+                                                   value: 0,
+                                                   gas: 0,
+                                                   method: "May the Grooves be with you",
+                                                   link: "",
+                                                   imageUrl: ImageURLs.aiAvatar.rawValue,
+                                                   symbol: "MATIC",
+                                                   type: "nft",
+                                                   from: from,
+                                                   to: to)
+                
             }
         }
         

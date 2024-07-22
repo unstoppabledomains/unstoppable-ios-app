@@ -29,7 +29,7 @@ final class WalletTransactionsServiceTests: XCTestCase, WalletDataValidator {
 extension WalletTransactionsServiceTests {
     func testCanLoadMoreIfEmptyResponse() async throws {
         networkService.expectedResponse = []
-        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
+        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: false)
         
         XCTAssertEqual(transactionsResponse.canLoadMore, false)
     }
@@ -40,7 +40,7 @@ extension WalletTransactionsServiceTests {
             WalletTransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
         ]
         networkService.expectedResponse = expectedResponse
-        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
+        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: false)
         
         XCTAssertEqual(transactionsResponse.canLoadMore, false)
     }
@@ -51,7 +51,7 @@ extension WalletTransactionsServiceTests {
             WalletTransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
         ]
         networkService.expectedResponse = expectedResponse
-        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
+        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: false)
         
         XCTAssertEqual(transactionsResponse.canLoadMore, true)
     }
@@ -60,21 +60,21 @@ extension WalletTransactionsServiceTests {
 // MARK: - Network requests
 extension WalletTransactionsServiceTests {
     func testNumberOfRequestsForFirstLoad() async throws {
-        _ = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
+        _ = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: false)
         
-        XCTAssertEqual(networkService.requests, [.init(wallet: wallet, cursor: nil, chain: nil)])
+        XCTAssertEqual(networkService.requests, [.init(wallet: wallet, cursor: nil, chains: nil)])
     }
     
     func testRequestsWhenNoCacheForceReload() async throws {
-        _ = try await service.getTransactionsFor(wallet: wallet, forceReload: true)
+        _ = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: true)
         
-        XCTAssertEqual(networkService.requests, [.init(wallet: wallet, cursor: nil, chain: nil)])
+        XCTAssertEqual(networkService.requests, [.init(wallet: wallet, cursor: nil, chains: nil)])
     }
     
     func testRequestsWhenNoCacheNotForceReload() async throws {
-        _ = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
+        _ = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: false)
         
-        XCTAssertEqual(networkService.requests, [.init(wallet: wallet, cursor: nil, chain: nil)])
+        XCTAssertEqual(networkService.requests, [.init(wallet: wallet, cursor: nil, chains: nil)])
     }
     
     func testRequestsWhenHasCachedNoCursorForceReload() async throws {
@@ -83,9 +83,9 @@ extension WalletTransactionsServiceTests {
             WalletTransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
         ]
         cache.cache[wallet] = expectedResponse
-        _ = try await service.getTransactionsFor(wallet: wallet, forceReload: true)
+        _ = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: true)
         
-        XCTAssertEqual(networkService.requests, [.init(wallet: wallet, cursor: nil, chain: nil)])
+        XCTAssertEqual(networkService.requests, [.init(wallet: wallet, cursor: nil, chains: nil)])
     }
     
     func testRequestsWhenHasCachedNoCursorNotForceReload() async throws {
@@ -94,7 +94,7 @@ extension WalletTransactionsServiceTests {
             WalletTransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
         ]
         cache.cache[wallet] = expectedResponse
-        _ = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
+        _ = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: false)
         
         XCTAssertEqual(networkService.requests, [])
     }
@@ -105,9 +105,9 @@ extension WalletTransactionsServiceTests {
             WalletTransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
         ]
         cache.cache[wallet] = expectedResponse
-        _ = try await service.getTransactionsFor(wallet: wallet, forceReload: true)
+        _ = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: true)
         
-        XCTAssertEqual(networkService.requests, [.init(wallet: wallet, cursor: nil, chain: nil)])
+        XCTAssertEqual(networkService.requests, [.init(wallet: wallet, cursor: nil, chains: nil)])
     }
     
     func testRequestsWhenHasCachedWithCursorNotForceReload() async throws {
@@ -116,9 +116,9 @@ extension WalletTransactionsServiceTests {
             WalletTransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
         ]
         cache.cache[wallet] = expectedResponse
-        _ = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
+        _ = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: false)
         
-        XCTAssertEqual(networkService.requests, [.init(wallet: wallet, cursor: "1", chain: "ETH")])
+        XCTAssertEqual(networkService.requests, [.init(wallet: wallet, cursor: "1", chains: [.Ethereum])])
     }
 }
 
@@ -130,7 +130,7 @@ extension WalletTransactionsServiceTests {
             WalletTransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: txs)
         ]
         networkService.expectedResponse = expectedResponse
-        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
+        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: false)
         isSameTxs(txs, transactionsResponse.txs)
     }
     
@@ -140,7 +140,7 @@ extension WalletTransactionsServiceTests {
             WalletTransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: txs)
         ]
         cache.cache[wallet] = expectedResponse
-        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
+        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: false)
         isSameTxs(txs, transactionsResponse.txs)
     }
     
@@ -156,7 +156,7 @@ extension WalletTransactionsServiceTests {
         ]
         networkService.expectedResponse = networkResponse
         
-        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
+        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: false)
         isSameTxs(txs + newTxs, transactionsResponse.txs)
     }
     
@@ -172,7 +172,7 @@ extension WalletTransactionsServiceTests {
         ]
         networkService.expectedResponse = networkResponse
         
-        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: true)
+        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: true)
         isSameTxs(newTxs, transactionsResponse.txs)
     }
     
@@ -188,7 +188,7 @@ extension WalletTransactionsServiceTests {
         ]
         networkService.expectedResponse = networkResponse
         
-        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
+        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: false)
         isSameTxsIds((1...4).map { String($0)}, transactionsResponse.txs.map { $0.id })
     }
     
@@ -206,7 +206,7 @@ extension WalletTransactionsServiceTests {
         ]
         networkService.expectedResponse = networkResponse
         
-        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
+        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, chains: nil, forceReload: false)
         isSameTxs(txs + newTxs + otherChaintxs, transactionsResponse.txs)
         let updatedCache = await cache.fetchTransactionsFromCache(wallet: wallet)!
         XCTAssertEqual(updatedCache.count, 2)
@@ -237,9 +237,9 @@ private final class MockNetworkService: WalletTransactionsNetworkServiceProtocol
     
     func getTransactionsFor(wallet: HexAddress, 
                             cursor: String?,
-                            chain: String?,
+                            chains: [BlockchainType]?,
                             forceRefresh: Bool) async throws -> [WalletTransactionsPerChainResponse] {
-        requests.append(.init(wallet: wallet, cursor: cursor, chain: chain))
+        requests.append(.init(wallet: wallet, cursor: cursor, chains: chains))
         try failIfNeeded()
         return expectedResponse
     }
@@ -247,7 +247,7 @@ private final class MockNetworkService: WalletTransactionsNetworkServiceProtocol
     struct Request: Hashable {
         let wallet: HexAddress
         let cursor: String?
-        let chain: String?
+        let chains: [BlockchainType]?
     }
 }
 

@@ -16,6 +16,8 @@ struct HomeActivityView: View, ViewAnalyticsLogger {
     var isOtherScreenPushed: Bool { !tabRouter.activityTabNavPath.isEmpty }
     var analyticsName: Analytics.ViewName { .homeActivity }
     
+    @State private var showingFiltersView = false
+
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             contentList()
@@ -23,7 +25,6 @@ struct HomeActivityView: View, ViewAnalyticsLogger {
             .background(Color.backgroundDefault)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .environmentObject(viewModel)
             .passViewAnalyticsDetails(logger: self)
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
@@ -49,16 +50,20 @@ struct HomeActivityView: View, ViewAnalyticsLogger {
             }
             .navigationDestination(for: HomeActivityNavigationDestination.self) { destination in
                 HomeActivityLinkNavigationDestination.viewFor(navigationDestination: destination,
-                                                             tabRouter: tabRouter)
+                                                              tabRouter: tabRouter)
                 .environmentObject(navigationState!)
                 .environmentObject(viewModel)
             }
             .toolbar(content: {
                 // To keep nav bar background visible when scrolling
-                ToolbarItem(placement: .topBarLeading) {
-                    Color.clear
+                ToolbarItem(placement: .topBarTrailing) {
+                    filterButtonView()
                 }
             })
+            .sheet(isPresented: $showingFiltersView, content: {
+                HomeActivityFilterView()
+            })
+            .environmentObject(viewModel)
         }, navigationStateProvider: { state in
             self.navigationState = state
         }, path: $tabRouter.activityTabNavPath)
@@ -91,8 +96,14 @@ private extension HomeActivityView {
     func contentList() -> some View {
         if viewModel.groupedTxs.isEmpty,
            !viewModel.isLoadingMore {
-            HomeActivityEmptyView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            GeometryReader { geometry in
+                /// ScrollView needed to keep PTR functionality
+                ScrollView {
+                    HomeActivityEmptyView()
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                }
+                .frame(width: geometry.size.width, height: geometry.size.height)
+            }
         } else {
             txsList()
         }
@@ -108,6 +119,28 @@ private extension HomeActivityView {
             .listStyle(.plain)
             .listRowSpacing(0)
     }
+    
+    @ViewBuilder
+    func filterButtonView() -> some View {
+        ZStack(alignment: .topTrailing) {
+            Button {
+                UDVibration.buttonTap.vibrate()
+                showingFiltersView = true
+            } label: {
+                Image.filter
+                    .resizable()
+                    .foregroundStyle(Color.foregroundDefault)
+                    .squareFrame(28)
+            }
+            
+            if viewModel.isFiltersApplied {
+                Circle()
+                    .squareFrame(16)
+                    .foregroundStyle(Color.foregroundAccent)
+                    .offset(x: 6, y: -2)
+            }
+        }
+    }
 }
 
 #Preview {
@@ -116,5 +149,4 @@ private extension HomeActivityView {
     
     return HomeActivityView(viewModel: viewModel)
         .environmentObject(router)
-
 }

@@ -68,7 +68,7 @@ extension Array where Element: DomainEntity {
         let indeces = self.enumerated()
             .filter({domainNames.contains($0.element.name)})
             .map({$0.offset})
-        self.remove(at: indeces)
+        self.remove(atIndexes: indeces)
     }
 }
 

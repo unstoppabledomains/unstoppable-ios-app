@@ -23,7 +23,7 @@ extension Array where Element == DomainWithDisplayInfo {
         let indeces = self.enumerated()
             .filter({domainNames.contains($0.element.name)})
             .map({$0.offset})
-        self.remove(at: indeces)
+        self.remove(atIndexes: indeces)
     }
     
     func sorted() -> [DomainWithDisplayInfo] {
