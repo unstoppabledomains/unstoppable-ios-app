@@ -274,6 +274,48 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         }
     }
     
+    func sendETHTransaction(data: String,
+                            value: String,
+                            chain: BlockchainType,
+                            destinationAddress: String,
+                            by walletMetadata: MPCWalletMetadata) async throws -> String {
+        let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+        let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
+                                                                        authTokenProvider: self)
+        let deviceId = connectedWalletDetails.deviceId
+        await waitForActionReadyToStart(deviceId: deviceId)
+        defer { Task { await actionsQueuer.removeActive(deviceId: deviceId) } }
+        let start = Date()
+        let account = connectedWalletDetails.firstAccount
+        let asset = try account.getAssetToSignWith(chain: chain)
+
+        return try await performAuthErrorCatchingBlock(connectedWalletDetails: connectedWalletDetails) { token in
+            let requestOperation = try await networkService.startSendETHTransaction(accessToken: token,
+                                                                                    accountId: account.id,
+                                                                                    assetId: asset.id,
+                                                                                    destinationAddress: destinationAddress,
+                                                                                    data: data,
+                                                                                    value: value)
+            let operationId = requestOperation.id
+            logMPC("It took \(Date().timeIntervalSince(start)) to get operationId")
+            let operationStatus = try await networkService.waitForOperationReadyAndGetTxId(accessToken: token,
+                                                                                           operationId: operationId)
+            switch operationStatus {
+            case .txReady(let txId):
+                logMPC("It took \(Date().timeIntervalSince(start)) to get tx id")
+                try await mpcConnector.signTransactionWith(txId: txId)
+                logMPC("It took \(Date().timeIntervalSince(start)) to sign by mpc connector")
+                let txHash = try await networkService.waitForTxCompletedAndGetHash(accessToken: token,
+                                                                                   operationId: operationId)
+                logMPC("It took \(Date().timeIntervalSince(start)) to send eth tx")
+                return txHash
+            case .signed:
+                logMPC("It took \(Date().timeIntervalSince(start)) to send eth tx")
+                throw MPCConnectionServiceError.incorrectOperationState
+            }
+        }
+    }
+    
     func fetchGasFeeFor(_ amount: Double,
                         symbol: String,
                         chain: String,

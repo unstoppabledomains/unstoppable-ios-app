@@ -100,6 +100,20 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
                                                    by: walletMetadata)
     }
     
+    func sendETHTransaction(data: String,
+                            value: String,
+                            chain: BlockchainType,
+                            destinationAddress: String,
+                            by walletMetadata: MPCWalletMetadata) async throws -> String {
+        let subService = try getSubServiceFor(provider: walletMetadata.provider)
+        
+        return try await subService.sendETHTransaction(data: data,
+                                                       value: value,
+                                                       chain: chain,
+                                                       destinationAddress: destinationAddress,
+                                                       by: walletMetadata)
+    }
+    
     func getTokens(for walletMetadata: MPCWalletMetadata) throws -> [BalanceTokenUIDescription] {
         let subService = try getSubServiceFor(provider: walletMetadata.provider)
 
