@@ -122,14 +122,23 @@ private extension HomeActivityView {
     
     @ViewBuilder
     func filterButtonView() -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
-            showingFiltersView = true
-        } label: {
-            Image.filter
-                .resizable()
-                .foregroundStyle(Color.foregroundDefault)
-                .squareFrame(28)
+        ZStack(alignment: .topTrailing) {
+            Button {
+                UDVibration.buttonTap.vibrate()
+                showingFiltersView = true
+            } label: {
+                Image.filter
+                    .resizable()
+                    .foregroundStyle(Color.foregroundDefault)
+                    .squareFrame(28)
+            }
+            
+            if viewModel.isFiltersApplied {
+                Circle()
+                    .squareFrame(16)
+                    .foregroundStyle(Color.foregroundAccent)
+                    .offset(x: 6, y: -2)
+            }
         }
     }
 }

@@ -49,6 +49,14 @@ extension HomeActivityViewModel {
         HomeActivity.GroupedTransactions.buildGroupsFrom(txs: txsDisplayInfo)
     }
     
+    var isFiltersApplied: Bool {
+        guard selectedDestinationFilter == .all else { return true }
+        guard selectedChainsFilter.isEmpty else { return true }
+        guard selectedSubjectsFilter.isEmpty else { return true }
+        
+        return false
+    }
+    
     private var txsDisplayInfo: [WalletTransactionDisplayInfo] {
         switch selectedProfile {
         case .wallet(let wallet):
