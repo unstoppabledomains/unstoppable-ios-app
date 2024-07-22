@@ -16,9 +16,9 @@ final class HomeActivityViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var searchKey: String = ""
     @Published var isKeyboardActive: Bool = false
     @Published var error: Error?
-    @Published var selectedChains: [BlockchainType] = []
-    @Published var selectedNature: [HomeActivity.TransactionSubject] = []
-    @Published var selectedDestination: HomeActivity.TransactionDestination = .all
+    @Published var selectedChainsFilter: [BlockchainType] = []
+    @Published var selectedSubjectsFilter: [HomeActivity.TransactionSubject] = []
+    @Published var selectedDestinationFilter: HomeActivity.TransactionDestination = .all
     
     @Published private var txsResponses: [WalletTransactionsResponse] = []
     @Published private(set) var isLoadingMore = false
@@ -56,7 +56,7 @@ extension HomeActivityViewModel {
                 WalletTransactionDisplayInfo(serializedTransaction: $0,
                                              userWallet: wallet.address)
             }
-            filterTxsForSelectedNature(&txs)
+            filterTxsForSelectedSubjects(&txs)
             filterTxsForSelectedDestination(&txs)
             
             return txs
@@ -82,6 +82,12 @@ extension HomeActivityViewModel {
     func didSelectTx(tx: WalletTransactionDisplayInfo) {
         router.pullUp = .custom(.transactionDetailsPullUp(tx: tx))
     }
+    
+    func resetFilters() {
+        selectedChainsFilter = []
+        selectedSubjectsFilter = []
+        selectedDestinationFilter = .all
+    }
 }
 
 // MARK: - Setup methods
@@ -94,7 +100,7 @@ private extension HomeActivityViewModel {
                 self?.didUpdateSelectedProfile()
             }
         }.store(in: &cancellables)
-        $selectedChains.sink { [weak self] _ in
+        $selectedChainsFilter.sink { [weak self] _ in
             self?.resetAndReloadTxs()
         }.store(in: &cancellables)
         
@@ -159,24 +165,24 @@ private extension HomeActivityViewModel {
     }
     
     func getChainsListToLoad() -> [BlockchainType]? {
-        if !selectedChains.isEmpty {
-            return selectedChains
+        if !selectedChainsFilter.isEmpty {
+            return selectedChainsFilter
         } 
         return nil
     }
     
-    func filterTxsForSelectedNature(_ txs: inout [WalletTransactionDisplayInfo]) {
-        guard !selectedNature.isEmpty else { return }
+    func filterTxsForSelectedSubjects(_ txs: inout [WalletTransactionDisplayInfo]) {
+        guard !selectedSubjectsFilter.isEmpty else { return }
         
         txs = txs.filter({ tx in
-            let txNature: HomeActivity.TransactionSubject = getNatureOfTx(tx)
-            let isTxNatureSelected: Bool = selectedNature.contains(txNature)
+            let txSubject: HomeActivity.TransactionSubject = getSubjectOfTx(tx)
+            let isTxSubjectSelected: Bool = selectedSubjectsFilter.contains(txSubject)
             
-            return isTxNatureSelected
+            return isTxSubjectSelected
         })
     }
     
-    func getNatureOfTx(_ tx: WalletTransactionDisplayInfo) -> HomeActivity.TransactionSubject {
+    func getSubjectOfTx(_ tx: WalletTransactionDisplayInfo) -> HomeActivity.TransactionSubject {
         if tx.type.isNFT {
             if tx.isDomainNFT {
                 return .domain
@@ -188,7 +194,7 @@ private extension HomeActivityViewModel {
     }
     
     func filterTxsForSelectedDestination(_ txs: inout [WalletTransactionDisplayInfo]) {
-        switch selectedDestination {
+        switch selectedDestinationFilter {
         case .all:
             return
         case .income:

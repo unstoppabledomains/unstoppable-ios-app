@@ -7,159 +7,78 @@
 
 import SwiftUI
 
-struct HomeActivityFilterView: View {
+struct HomeActivityFilterView: View, ViewAnalyticsLogger {
     
+    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: HomeActivityViewModel
+    let analyticsName: Analytics.ViewName = .homeActivityFilters
     
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack {
-                    UDSegmentedControlView(selection: $viewModel.selectedDestination,
+                VStack(spacing: 24) {
+                    UDSegmentedControlView(selection: $viewModel.selectedDestinationFilter,
                                            items: HomeActivity.TransactionDestination.allCases,
                                            height: 44,
                                            customSegmentLabel: nil)
                     
-                    IconTitleSelectionGridView(selection: .multiple($viewModel.selectedChains),
+                    HomeExploreSeparatorView()
+                    
+                    IconTitleSelectionGridView(title: String.Constants.chains.localized(),
+                                               selection: .multiple($viewModel.selectedChainsFilter),
                                                items: BlockchainType.allCases)
                     
-                    
-                    SelectionPopoverView(items: HomeActivity.TransactionSubject.allCases,
-                                         selectedItems: $viewModel.selectedNature,
-                                         isMultipleSelectionAllowed: true,
-                                         label: {
-                        if viewModel.selectedNature.isEmpty ||
-                            viewModel.selectedNature.count == HomeActivity.TransactionSubject.allCases.count {
-                            Text("All natures")
-                        } else {
-                            Text(viewModel.selectedNature.map { $0.rawValue }.joined(separator: ", "))
-                        }
-                    })
-                    .frame(minHeight: 40)
-                    
+                    HomeExploreSeparatorView()
+
+                    IconTitleSelectionGridView(title: String.Constants.activityWith.localized(),
+                                               selection: .multiple($viewModel.selectedSubjectsFilter),
+                                               items: HomeActivity.TransactionSubject.allCases)
                 }
+                .padding()
             }
-            .padding()
+            .trackAppearanceAnalytics(analyticsLogger: self)
+            .passViewAnalyticsDetails(logger: self)
             .background(Color.backgroundDefault)
-            .navigationTitle(String.Constants.delete.localized())
+            .navigationTitle(String.Constants.filter.localized())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                
-            }
-        }
-    }
-    
-}
-
-
-protocol IconTitleSelectableGridItem: Hashable {
-    var gridTitle: String { get }
-    var gridIcon: Image { get }
-}
-
-struct IconTitleSelectionGridView<Item : IconTitleSelectableGridItem>: View {
-    
-    let selection: SelectionStyle
-    let items: [Item]
-    private let cornerRadius: CGFloat = 12
-    
-    var body: some View {
-        VStack(spacing: 0) {
-            ListVGrid(data: items,
-                      numberOfColumns: 3,
-                      verticalSpacing: 16,
-                      horizontalSpacing: 16) { item in
-                Button {
-                    UDVibration.buttonTap.vibrate()
-//                    logButtonPressedAnalyticEvents(button: .domainTile,
-//                                                   parameters: [.domainName : domain.name])
-                    didSelectItem(item)
-                } label: {
-                    gridItemViewFor(item)
+                ToolbarItem(placement: .topBarLeading) {
+                    CloseButtonView(closeCallback: closeButtonPressed)
                 }
-                .buttonStyle(.plain)
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    resetButtonView()
+                }
             }
         }
-        .padding(.horizontal, 3)
     }
     
-    func didSelectItem(_ item: Item) {
-        switch selection {
-        case .single(let binding):
-            if item == binding.wrappedValue {
-                binding.wrappedValue = nil
-            } else {
-                binding.wrappedValue = item
-            }
-        case .multiple(let binding):
-            if let i = binding.wrappedValue.firstIndex(of: item) {
-                binding.wrappedValue.remove(at: i)
-            } else {
-                binding.wrappedValue.append(item)
-            }
-        }
+}
+
+// MARK: - Private methods
+private extension HomeActivityFilterView {
+    func closeButtonPressed() {
+        dismiss()
     }
     
     @ViewBuilder
-    func gridItemViewFor(_ item: Item) -> some View {
-        VStack(spacing: 12) {
-            item.gridIcon
-                .resizable()
-                .squareFrame(24)
-                .foregroundStyle(iconTintColorFor(item))
-            Text(item.gridTitle)
-                .foregroundStyle(Color.foregroundDefault)
-                .frame(height: 20)
-                .frame(maxWidth: .infinity)
+    func resetButtonView() -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .reset)
+            resetButtonPressed()
+        } label: {
+            Text(String.Constants.reset.localized())
+                .textAttributes(color: .foregroundAccent,
+                                fontSize: 16,
+                                fontWeight: .medium)
         }
-        .padding(12)
-        .aspectRatio(110/80, contentMode: .fit)
-        .background(backgroundColorFor(item))
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-        .overlay {
-            RoundedRectangle(cornerRadius: cornerRadius)
-                .stroke(borderColorFor(item), lineWidth: 1)
-            
-            if isItemSelected(item) {
-                RoundedRectangle(cornerRadius: cornerRadius)
-                    .inset(by: -1.5)
-                    .stroke(Color.foregroundAccent, lineWidth: 2)
-            }
-        }
+        .buttonStyle(.plain)
     }
     
-    func iconTintColorFor(_ item: Item) -> Color {
-        isItemSelected(item) ? Color.foregroundAccent :  Color.foregroundDefault
+    func resetButtonPressed() {
+        viewModel.resetFilters()
     }
-    
-    func backgroundColorFor(_ item: Item) -> Color {
-        isItemSelected(item) ? Color.backgroundAccentMuted :  Color.backgroundOverlay
-    }
-    
-    func borderColorFor(_ item: Item) -> Color {
-        isItemSelected(item) ? Color.backgroundDefault :  Color.white.opacity(0.08)
-    }
-    
-    func isItemSelected(_ item: Item) -> Bool {
-        switch selection {
-        case .single(let binding):
-            return item == binding.wrappedValue
-        case .multiple(let binding):
-            return binding.wrappedValue.contains(item)
-        }
-    }
-    
-    enum SelectionStyle {
-        case single(Binding<Item?>)
-        case multiple(Binding<[Item]>)
-    }
-    
-}
-
-extension BlockchainType: IconTitleSelectableGridItem {
-    var gridTitle: String { fullName }
-    
-    var gridIcon: Image { Image(uiImage: self.chainIcon) }
 }
 
 #Preview {

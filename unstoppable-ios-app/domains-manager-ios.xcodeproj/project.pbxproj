@@ -1995,6 +1995,8 @@
 		C6D20FC92BE4A9A6003617B7 /* SettingsProfileTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D20FC72BE4A9A6003617B7 /* SettingsProfileTileView.swift */; };
 		C6D20FCB2BE4A9DC003617B7 /* SettingsProfilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D20FCA2BE4A9DC003617B7 /* SettingsProfilesView.swift */; };
 		C6D20FCC2BE4A9DC003617B7 /* SettingsProfilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D20FCA2BE4A9DC003617B7 /* SettingsProfilesView.swift */; };
+		C6D2DF122C4E4CEB00F08A6F /* IconTitleSelectionGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D2DF112C4E4CEB00F08A6F /* IconTitleSelectionGridView.swift */; };
+		C6D2DF132C4E4CEB00F08A6F /* IconTitleSelectionGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D2DF112C4E4CEB00F08A6F /* IconTitleSelectionGridView.swift */; };
 		C6D2F13028729585005F4F2E /* DomainDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D2F12F28729585005F4F2E /* DomainDisplayInfo.swift */; };
 		C6D2F15328757C25005F4F2E /* UIImage+SVG.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D2F15228757C25005F4F2E /* UIImage+SVG.swift */; };
 		C6D3B9B52A6EB8DA0091B279 /* MessagingChannelsAPIServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9B42A6EB8DA0091B279 /* MessagingChannelsAPIServiceProtocol.swift */; };
@@ -3941,6 +3943,7 @@
 		C6D1E74B2BA17E2700738365 /* WalletsDataNetworkServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletsDataNetworkServiceProtocol.swift; sourceTree = "<group>"; };
 		C6D20FC72BE4A9A6003617B7 /* SettingsProfileTileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsProfileTileView.swift; sourceTree = "<group>"; };
 		C6D20FCA2BE4A9DC003617B7 /* SettingsProfilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsProfilesView.swift; sourceTree = "<group>"; };
+		C6D2DF112C4E4CEB00F08A6F /* IconTitleSelectionGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconTitleSelectionGridView.swift; sourceTree = "<group>"; };
 		C6D2F12F28729585005F4F2E /* DomainDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainDisplayInfo.swift; sourceTree = "<group>"; };
 		C6D2F15228757C25005F4F2E /* UIImage+SVG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+SVG.swift"; sourceTree = "<group>"; };
 		C6D3B9B42A6EB8DA0091B279 /* MessagingChannelsAPIServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChannelsAPIServiceProtocol.swift; sourceTree = "<group>"; };
@@ -7721,6 +7724,7 @@
 				C6B761D12BB3C19800773943 /* HomeActivityViewModel.swift */,
 				C6B761CB2BB3BEB700773943 /* HomeActivityView.swift */,
 				C640D6142C491B7B006B21C3 /* HomeActivityFilterView.swift */,
+				C6D2DF112C4E4CEB00F08A6F /* IconTitleSelectionGridView.swift */,
 				C6952A552BC6574200F4B475 /* HomeActivityEmptyView.swift */,
 				C6B762012BB4057400773943 /* HomeActivityTransactionsSectionView.swift */,
 				C6B762042BB4067600773943 /* WalletTransactionDisplayInfoListItemView.swift */,
@@ -9863,6 +9867,7 @@
 				3026FA1727E7678200FE058B /* CreateWalletViewController.swift in Sources */,
 				C609827628251FBA00546392 /* ImportNewWalletPresenter.swift in Sources */,
 				C630E4B62B7F58BC008F3269 /* MessageInputView.swift in Sources */,
+				C6D2DF122C4E4CEB00F08A6F /* IconTitleSelectionGridView.swift in Sources */,
 				C62C3F90283F35610094FC93 /* CodeVerificationView.swift in Sources */,
 				C6B761D92BB3CDDE00773943 /* WalletTransactionsServiceProtocol.swift in Sources */,
 				C6A231FC2BEB494D0037E093 /* WalletDetailsDomainItemView.swift in Sources */,
@@ -10623,6 +10628,7 @@
 				C6C8F99A2B218E2900A9834D /* GIFAnimationImageView.swift in Sources */,
 				C60319992C2C1F7400A77109 /* BlockchainType+Extension.swift in Sources */,
 				C6D645BF2B1DBD1E00D724AC /* ViewAnalyticsLogger.swift in Sources */,
+				C6D2DF132C4E4CEB00F08A6F /* IconTitleSelectionGridView.swift in Sources */,
 				C665566B2BF70C0000F0BD7A /* MPCOnboardingPurchaseUDAuthViewController.swift in Sources */,
 				C6D646FE2B1ED7BE00D724AC /* MessagingChatType.swift in Sources */,
 				C67213D72BAA8DB60075B9C7 /* SendCryptoAssetSelectReceiverFollowingRowView.swift in Sources */,

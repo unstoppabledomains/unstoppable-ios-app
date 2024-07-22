@@ -247,6 +247,10 @@ extension String {
         static let reconnect = "RECONNECT"
         static let income = "INCOME"
         static let outcome = "OUTCOME"
+        static let filter = "FILTER"
+        static let reset = "RESET"
+        static let chains = "CHAINS"
+        static let activityWith = "ACTIVITY_WITH"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
