@@ -14,6 +14,7 @@ struct UDSegmentedControlView<Selection: UDSegmentedControlItem>: View, ViewAnal
 
     @Binding var selection: Selection
     let items: [Selection]
+    var height: CGFloat = 36
     var customSegmentLabel: ((Selection) -> any View)? = nil
     
     var body: some View {
@@ -23,10 +24,11 @@ struct UDSegmentedControlView<Selection: UDSegmentedControlItem>: View, ViewAnal
                 selectedBackgroundView(width: proxy.size.width / CGFloat(items.count))
                 viewForItems(items)
             }
-            .frame(height: 36)
+            .frame(height: height)
             .animation(.easeInOut(duration: 0.25), value: selection)
             .frame(maxWidth: .infinity)
         }
+        .frame(height: height)
     }
 }
 
@@ -47,7 +49,7 @@ private extension UDSegmentedControlView {
     func selectedBackgroundView(width: CGFloat) -> some View {
         Color.white
             .clipShape(RoundedRectangle(cornerRadius: 8))
-            .frame(width: width, height: 28)
+            .frame(width: width, height: height - 8)
             .offset(x: selectedIndexXOffset + selectedIndexOffset(width: width),
                     y: 0)
     }

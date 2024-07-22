@@ -61,7 +61,7 @@ extension HomeActivity {
 // MARK: - Filter options
 extension HomeActivity {
     
-    enum TransactionNature: String, Hashable, CaseIterable, SelectionPopoverViewItem {
+    enum TransactionSubject: String, Hashable, CaseIterable, SelectionPopoverViewItem {
         case transfer
         case collectible
         case domain
@@ -69,10 +69,32 @@ extension HomeActivity {
         var selectionTitle: String { rawValue }
     }
     
-    enum TransactionDestination: String, CaseIterable {
+    enum TransactionDestination: String, CaseIterable, UDSegmentedControlItem {
         case all
         case income
         case outcome
+        
+        var title: String {
+            switch self {
+            case .all:
+                String.Constants.all.localized()
+            case .income:
+                String.Constants.income.localized()
+            case .outcome:
+                String.Constants.outcome.localized()
+            }
+        }
+        
+        var analyticButton: Analytics.Button {
+            switch self {
+            case .all:
+                    .all
+            case .income:
+                    .income
+            case .outcome:
+                    .outcome
+            }
+        }
     }
 
 }

@@ -245,6 +245,8 @@ extension String {
         static let setup = "SETUP"
         static let networkFee = "NETWORK_FEE"
         static let reconnect = "RECONNECT"
+        static let income = "INCOME"
+        static let outcome = "OUTCOME"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

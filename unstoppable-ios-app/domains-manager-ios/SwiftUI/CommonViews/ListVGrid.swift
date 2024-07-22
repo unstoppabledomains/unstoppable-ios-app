@@ -17,7 +17,7 @@ struct ListVGrid<Element, Row: View>: View {
     @ViewBuilder var content: (Element) -> Row
     private let sideOffsets: CGFloat = 32
     private var numberOfColumnsForData: Int {
-        (data.count / 2) + 1
+        (data.count / numberOfColumns) + 1
     }
     var body: some View {
         ForEach(0..<numberOfColumnsForData, id: \.self) { column in
@@ -41,7 +41,7 @@ struct ListVGrid<Element, Row: View>: View {
     }
     
     private func findElement(column: Int, row: Int) -> Element? {
-        let n = (column * 2) + row
+        let n = (column * numberOfColumns) + row
         if n <= data.count - 1 {
             return data[n]
         }

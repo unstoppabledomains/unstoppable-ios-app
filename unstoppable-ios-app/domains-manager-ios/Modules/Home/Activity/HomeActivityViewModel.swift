@@ -17,7 +17,7 @@ final class HomeActivityViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var isKeyboardActive: Bool = false
     @Published var error: Error?
     @Published var selectedChains: [BlockchainType] = []
-    @Published var selectedNature: [HomeActivity.TransactionNature] = []
+    @Published var selectedNature: [HomeActivity.TransactionSubject] = []
     @Published var selectedDestination: HomeActivity.TransactionDestination = .all
     
     @Published private var txsResponses: [WalletTransactionsResponse] = []
@@ -169,14 +169,14 @@ private extension HomeActivityViewModel {
         guard !selectedNature.isEmpty else { return }
         
         txs = txs.filter({ tx in
-            let txNature: HomeActivity.TransactionNature = getNatureOfTx(tx)
+            let txNature: HomeActivity.TransactionSubject = getNatureOfTx(tx)
             let isTxNatureSelected: Bool = selectedNature.contains(txNature)
             
             return isTxNatureSelected
         })
     }
     
-    func getNatureOfTx(_ tx: WalletTransactionDisplayInfo) -> HomeActivity.TransactionNature {
+    func getNatureOfTx(_ tx: WalletTransactionDisplayInfo) -> HomeActivity.TransactionSubject {
         if tx.type.isNFT {
             if tx.isDomainNFT {
                 return .domain

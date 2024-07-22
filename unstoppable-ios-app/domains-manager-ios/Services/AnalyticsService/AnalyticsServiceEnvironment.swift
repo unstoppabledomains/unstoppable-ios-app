@@ -445,6 +445,8 @@ extension Analytics {
         case useDifferentEmail, useRecovery, dontUseRecovery
         case contactSupport
         case reconnect
+        
+        case all, income, outcome
     }
 }
 
