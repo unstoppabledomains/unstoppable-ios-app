@@ -231,17 +231,16 @@ extension UDWallet {
         return sigs
     }
     
-    func sendEthTx(chainIdInt: Int,
-                   completedTx: EthereumTransaction) async throws -> String {
+    func sendEthTx(payload: EthereumSendTransactionPayload) async throws -> String {
         switch type {
         case .externalLinked:
             throw WalletConnectRequestError.methodUnsupported
         case .mpc:
             throw WalletConnectRequestError.methodUnsupported
         default:
-            let hash = try await JRPC_Client.instance.sendTx(transaction: completedTx,
+            let hash = try await JRPC_Client.instance.sendTx(transaction: payload.transaction,
                                                              udWallet: self,
-                                                             chainIdInt: chainIdInt)
+                                                             chainIdInt: payload.chainId)
             Debugger.printInfo(topic: .WalletConnectV2, "Successfully sent TX via internal wallet: \(address)")
             return hash
         }

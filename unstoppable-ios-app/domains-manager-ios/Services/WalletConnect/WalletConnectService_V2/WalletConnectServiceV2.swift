@@ -750,8 +750,9 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 let response = try await udWallet.sendTxViaWalletConnect(request: request, chainId: chainIdInt)
                 return response
             default:  // locally verified wallet
-                let hash = try await udWallet.sendEthTx(chainIdInt: chainIdInt,
-                                                        completedTx: completedTx)
+                let payload = EthereumSendTransactionPayload(chainId: chainIdInt,
+                                                             transaction: completedTx)
+                let hash = try await udWallet.sendEthTx(payload: payload)
                 
                 let hashCodable = WCAnyCodable(hash)
                 Debugger.printInfo(topic: .WalletConnectV2, "Successfully sent TX via internal wallet: \(udWallet.address)")
