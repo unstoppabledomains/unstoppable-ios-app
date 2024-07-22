@@ -41,6 +41,7 @@ extension Color {
     static let backgroundEmphasisOpacity = Color(uiColor: .backgroundEmphasisOpacity)
     static let backgroundEmphasisOpacity2 = Color(uiColor: .backgroundEmphasisOpacity2)
     static let backgroundAccent = Color(uiColor: .backgroundAccent)
+    static let backgroundAccentMuted = Color(uiColor: .backgroundAccentMuted)
     static let backgroundAccentEmphasis = Color(uiColor: .backgroundAccentEmphasis)
     static let backgroundAccentEmphasis2 = Color(uiColor: .backgroundAccentEmphasis2)
     static let backgroundSuccess = Color(uiColor: .backgroundSuccess)

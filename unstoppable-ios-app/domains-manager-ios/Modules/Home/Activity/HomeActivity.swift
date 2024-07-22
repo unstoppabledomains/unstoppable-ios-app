@@ -57,3 +57,66 @@ extension HomeActivity {
         
     }
 }
+
+import SwiftUI
+
+// MARK: - Filter options
+extension HomeActivity {
+    
+    enum TransactionSubject: String, Hashable, CaseIterable, IconTitleSelectableGridItem {
+        case transfer
+        case collectible
+        case domain
+        
+        var gridTitle: String { 
+            switch self {
+            case .transfer:
+                String.Constants.tokens.localized()
+            case .collectible:
+                String.Constants.collectibles.localized()
+            case .domain:
+                String.Constants.domains.localized()
+            }
+        }
+        var gridIcon: Image { 
+            switch self {
+            case .transfer:
+                    .twoCoinsIcon
+            case .collectible:
+                    .cryptoFaceIcon
+            case .domain:
+                    .layoutGridTwo
+            }
+        }
+        var gridAnalyticsValue: String { rawValue }
+    }
+    
+    enum TransactionDestination: String, CaseIterable, UDSegmentedControlItem {
+        case all
+        case income
+        case outcome
+        
+        var title: String {
+            switch self {
+            case .all:
+                String.Constants.all.localized()
+            case .income:
+                String.Constants.income.localized()
+            case .outcome:
+                String.Constants.outcome.localized()
+            }
+        }
+        
+        var analyticButton: Analytics.Button {
+            switch self {
+            case .all:
+                    .all
+            case .income:
+                    .income
+            case .outcome:
+                    .outcome
+            }
+        }
+    }
+
+}

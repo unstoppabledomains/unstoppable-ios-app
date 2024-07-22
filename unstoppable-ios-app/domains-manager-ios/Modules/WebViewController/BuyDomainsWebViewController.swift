@@ -90,7 +90,7 @@ private extension BuyDomainsWebViewController {
 // MARK: - Setup methods
 private extension BuyDomainsWebViewController {
     func setup() {
-        toolbarItems?.remove(at: [7,5])
+        toolbarItems?.remove(atIndexes: [7,5])
     }
 }
 

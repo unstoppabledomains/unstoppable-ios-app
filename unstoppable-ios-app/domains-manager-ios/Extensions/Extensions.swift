@@ -174,7 +174,7 @@ extension UIViewController {
 }
 
 extension Array {
-  mutating func remove(at indexes: [Int]) {
+  mutating func remove(atIndexes indexes: [Int]) {
     for index in indexes.sorted(by: >) {
       remove(at: index)
     }
