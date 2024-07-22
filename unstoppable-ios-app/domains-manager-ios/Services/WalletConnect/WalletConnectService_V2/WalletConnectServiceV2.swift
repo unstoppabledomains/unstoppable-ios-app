@@ -736,7 +736,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             guard let walletAddress = tx.from?.hex(eip55: true) else {
                 throw WalletConnectRequestError.failedToFindWalletToSign
             }
-            try throwUnsupportedMethodIfMPCWallet(walletAddress: walletAddress)
+            
             let udWallet = try detectWallet(by: walletAddress).udWallet
             let chainIdInt = try request.getChainId()
             let completedTx = try await completeTx(transaction: tx, chainId: chainIdInt)
@@ -749,12 +749,11 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             case .externalLinked:
                 let response = try await udWallet.sendTxViaWalletConnect(request: request, chainId: chainIdInt)
                 return response
-            case .mpc:
-                throw WalletConnectRequestError.methodUnsupported
             default:  // locally verified wallet
-                let hash = try await JRPC_Client.instance.sendTx(transaction: completedTx,
-                                                                 udWallet: udWallet,
-                                                                 chainIdInt: chainIdInt)
+                let payload = EthereumSendTransactionPayload(chainId: chainIdInt,
+                                                             transaction: completedTx)
+                let hash = try await udWallet.sendEthTx(payload: payload)
+                
                 let hashCodable = WCAnyCodable(hash)
                 Debugger.printInfo(topic: .WalletConnectV2, "Successfully sent TX via internal wallet: \(udWallet.address)")
                 return .response(hashCodable)

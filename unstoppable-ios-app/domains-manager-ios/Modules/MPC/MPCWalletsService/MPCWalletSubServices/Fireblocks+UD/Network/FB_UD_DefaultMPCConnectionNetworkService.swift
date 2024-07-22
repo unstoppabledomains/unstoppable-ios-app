@@ -278,6 +278,30 @@ extension FB_UD_MPC {
             return try await runStartOperationUsing(request: request)
         }
         
+        func startSendETHTransaction(accessToken: String,
+                                     accountId: String,
+                                     assetId: String,
+                                     destinationAddress: String,
+                                     data: String,
+                                     value: String) async throws -> OperationDetails {
+            struct RequestBody: Codable {
+                let destinationAddress: String
+                let data: String
+                let value: String
+            }
+            
+            let body = RequestBody(destinationAddress: destinationAddress,
+                                   data: data,
+                                   value: value)
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let url = MPCNetwork.URLSList.assetTransactionsURL(accountId: accountId, assetId: assetId)
+            let request = try APIRequest(urlString: url,
+                                         body: body,
+                                         method: .post,
+                                         headers: headers)
+            return try await runStartOperationUsing(request: request)
+        }
+        
         private func runStartOperationUsing(request: APIRequest) async throws -> OperationDetails {
             struct Response: Codable {
                 let operation: OperationDetails
@@ -348,6 +372,8 @@ extension FB_UD_MPC {
                                                            operationId: operationId)
                 if statuses.contains(operation.status) {
                     return operation
+                } else if operation.status == TransactionOperationStatus.failed.rawValue {
+                    throw MPCNetworkServiceError.operationFailed
                 } else {
                     await Task.sleep(seconds: 0.5)
                 }
@@ -434,6 +460,7 @@ extension FB_UD_MPC {
             case missingSignatureInSignTransactionOperation
             case missingTxIdInTransactionOperation
             case badRequestData
+            case operationFailed
             
             public var errorDescription: String? {
                 return rawValue
