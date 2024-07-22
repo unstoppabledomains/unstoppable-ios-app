@@ -230,6 +230,22 @@ extension UDWallet {
         guard messages.count == sigs.count else { throw UDWallet.Error.failedSignature }
         return sigs
     }
+    
+    func sendEthTx(chainIdInt: Int,
+                   completedTx: EthereumTransaction) async throws -> String {
+        switch type {
+        case .externalLinked:
+            throw WalletConnectRequestError.methodUnsupported
+        case .mpc:
+            throw WalletConnectRequestError.methodUnsupported
+        default:
+            let hash = try await JRPC_Client.instance.sendTx(transaction: completedTx,
+                                                             udWallet: self,
+                                                             chainIdInt: chainIdInt)
+            Debugger.printInfo(topic: .WalletConnectV2, "Successfully sent TX via internal wallet: \(address)")
+            return hash
+        }
+    }
 }
 
 //core methods
