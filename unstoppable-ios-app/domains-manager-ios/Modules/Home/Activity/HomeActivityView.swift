@@ -16,7 +16,7 @@ struct HomeActivityView: View, ViewAnalyticsLogger {
     var isOtherScreenPushed: Bool { !tabRouter.activityTabNavPath.isEmpty }
     var analyticsName: Analytics.ViewName { .homeActivity }
     
-    @State private var showingFiltersPopover = false
+    @State private var showingFiltersView = false
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -59,6 +59,9 @@ struct HomeActivityView: View, ViewAnalyticsLogger {
                 ToolbarItem(placement: .topBarTrailing) {
                     filterButtonView()
                 }
+            })
+            .sheet(isPresented: $showingFiltersView, content: {
+                HomeActivityFilterView()
             })
             .environmentObject(viewModel)
         }, navigationStateProvider: { state in
@@ -121,15 +124,12 @@ private extension HomeActivityView {
     func filterButtonView() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            showingFiltersPopover = true
+            showingFiltersView = true
         } label: {
             Image.filter
                 .resizable()
                 .foregroundStyle(Color.foregroundDefault)
                 .squareFrame(28)
-        }
-        .alwaysPopover(isPresented: $showingFiltersPopover) {
-            HomeActivityFilterView()
         }
     }
 }

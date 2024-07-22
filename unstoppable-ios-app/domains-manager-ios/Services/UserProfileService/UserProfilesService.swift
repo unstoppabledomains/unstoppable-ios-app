@@ -48,7 +48,7 @@ final class UserProfilesService {
     }
     
     func loadParkedDomainsAndCheckProfile() {
-        Task {
+        Task { @MainActor in
             let domains = (try? await firebaseParkedDomainsService.getParkedDomains()) ?? []
             if !domains.isEmpty {
                 updateProfilesList()
