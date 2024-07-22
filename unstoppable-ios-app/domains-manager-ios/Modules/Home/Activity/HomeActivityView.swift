@@ -123,8 +123,10 @@ private extension HomeActivityView {
             UDVibration.buttonTap.vibrate()
             showingFiltersPopover = true
         } label: {
-            Image(systemName: "line.3.horizontal.decrease.circle.fill")
+            Image.filter
+                .resizable()
                 .foregroundStyle(Color.foregroundDefault)
+                .squareFrame(28)
         }
         .alwaysPopover(isPresented: $showingFiltersPopover) {
             HomeActivityFilterView()
@@ -138,5 +140,4 @@ private extension HomeActivityView {
     
     return HomeActivityView(viewModel: viewModel)
         .environmentObject(router)
-
 }

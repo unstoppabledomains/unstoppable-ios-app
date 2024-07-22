@@ -176,12 +176,7 @@ final class SendCryptoAssetViewModel: ObservableObject {
     }
     
     func getWalletAddressDetailsFor(address: String) -> SendCryptoAsset.WalletAddressDetails? {
-        let availableNetworks: [BlockchainType]
-        if sourceWallet.displayInfo.source == .mpc {
-            availableNetworks = BlockchainType.allCases
-        } else {
-            availableNetworks = [.Ethereum]
-        }
+        let availableNetworks: [BlockchainType] = sourceWallet.getSupportedNetworks()
         
         if let network = availableNetworks.first(where: { $0.isStringMatchingRegex(address) }) {
             return .init(address: address, network: network)

@@ -26,7 +26,7 @@ struct HomeActivityFilterView: View, ViewAnalyticsLogger {
                     
                     IconTitleSelectionGridView(title: String.Constants.chains.localized(),
                                                selection: .multiple($viewModel.selectedChainsFilter),
-                                               items: BlockchainType.allCases)
+                                               items: viewModel.supportedNetworks)
                     
                     HomeExploreSeparatorView()
 

@@ -65,6 +65,13 @@ extension HomeActivityViewModel {
         }
     }
     
+    var supportedNetworks: [BlockchainType] {
+        if case .wallet(let wallet) = selectedProfile {
+            return wallet.getSupportedNetworks()
+        }
+        return []
+    }
+    
     func willDisplayTransaction(_ transaction: WalletTransactionDisplayInfo) {
         let txsDisplayInfo = self.txsDisplayInfo.sorted(by: { $0.time > $1.time })
         if txsResponses.first(where: { $0.canLoadMore }) != nil,
