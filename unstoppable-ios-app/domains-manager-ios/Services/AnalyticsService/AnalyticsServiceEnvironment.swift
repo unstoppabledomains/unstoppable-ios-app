@@ -259,6 +259,8 @@ extension Analytics {
         case inAppAddWallet
         case mpcActivateEnterCode, mpcActivateEnterPassword
         case reconnectMPCWalletPrompt
+        
+        case fullMaintenance
     }
 }
 

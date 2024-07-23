@@ -1177,3 +1177,7 @@ More tabs are coming in the next updates.";
 "BACKED_UP" = "Backed up";
 "BACK_UP" = "Back up";
 "SET_AS_PRIMARY_DOMAIN" = "Set as primary domain";
+
+// Maintenance
+"FULL_MAINTENANCE_MESSAGE_TITLE" = "Our services are in a maintenance mode";
+"FULL_MAINTENANCE_MESSAGE_SUBTITLE" = "Do not worry, we'll be back shortly.\nThank you for your patience!";

@@ -1283,6 +1283,10 @@ extension String {
         static let backedUp = "BACKED_UP"
         static let backUp = "BACK_UP"
         static let setAsPrimaryDomain = "SET_AS_PRIMARY_DOMAIN"
+        
+        // Maintenance
+        static let fullMaintenanceMessageTitle = "FULL_MAINTENANCE_MESSAGE_TITLE"
+        static let fullMaintenanceMessageSubtitle = "FULL_MAINTENANCE_MESSAGE_SUBTITLE"
     }
     
     enum SystemImage: String {

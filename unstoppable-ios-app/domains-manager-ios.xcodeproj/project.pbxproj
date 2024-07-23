@@ -850,6 +850,8 @@
 		C64F6C502C4E72A900D89FEF /* EthereumSendTransactionPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C4E2C4E72A900D89FEF /* EthereumSendTransactionPayload.swift */; };
 		C64F6C532C4FAF2200D89FEF /* FullMaintenanceModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C522C4FAF2200D89FEF /* FullMaintenanceModeView.swift */; };
 		C64F6C542C4FAF2200D89FEF /* FullMaintenanceModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C522C4FAF2200D89FEF /* FullMaintenanceModeView.swift */; };
+		C64F6C562C4FD48000D89FEF /* MaintenanceModeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C552C4FD48000D89FEF /* MaintenanceModeData.swift */; };
+		C64F6C572C4FD48000D89FEF /* MaintenanceModeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C552C4FD48000D89FEF /* MaintenanceModeData.swift */; };
 		C64F8DFE2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */; };
 		C64F8DFF2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */; };
 		C64F8E012B60F2590075D37F /* ViewPullUpConfigurationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */; };
@@ -3307,6 +3309,7 @@
 		C64BCB7A2A6FB5B700EF8B47 /* MessagingChatMessageImageDataTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageImageDataTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C64F6C4E2C4E72A900D89FEF /* EthereumSendTransactionPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthereumSendTransactionPayload.swift; sourceTree = "<group>"; };
 		C64F6C522C4FAF2200D89FEF /* FullMaintenanceModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullMaintenanceModeView.swift; sourceTree = "<group>"; };
+		C64F6C552C4FD48000D89FEF /* MaintenanceModeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceModeData.swift; sourceTree = "<group>"; };
 		C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpDefaultConfiguration.swift; sourceTree = "<group>"; };
 		C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpConfigurationType.swift; sourceTree = "<group>"; };
 		C64F8E032B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpCustomContentConfiguration.swift; sourceTree = "<group>"; };
@@ -7603,6 +7606,7 @@
 				C63414D92A7D335100C80B77 /* GlobalRR.swift */,
 				30BA2B35252914100097817E /* Helpers.swift */,
 				C653304D2BC3941000A705AE /* JWToken.swift */,
+				C64F6C552C4FD48000D89FEF /* MaintenanceModeData.swift */,
 				C6B65F962B566B37006D1812 /* NFTDisplayInfo.swift */,
 				C62900FF2BAAD3C3008B35A2 /* NumberPadInputInterpreter.swift */,
 				C6ED320C295E8EDE00BC6919 /* NonEmptyArray.swift */,
@@ -8097,7 +8101,6 @@
 				C6BF801B2BA2B53F00CC4CB3 /* MPC */,
 				C6B65F4D2B54DA6D006D1812 /* Home */,
 				C60982A7282A724400546392 /* AddWallet */,
-				C64F6C512C4FAF1000D89FEF /* FullMaintenanceMode */,
 				C6386835285C0EB3000F98C4 /* AppUpdatedRequired */,
 				C60982F8282A7F7000546392 /* BackupAndRecovery */,
 				C6C99565289D313D00367362 /* CNavigation */,
@@ -8105,6 +8108,7 @@
 				C60CA26228324E7C00AB1B36 /* DomainDetails */,
 				C63A350828F006FB0057D34B /* DomainProfile */,
 				C66804B7280D9EC7007E6390 /* EnterPasscode */,
+				C64F6C512C4FAF1000D89FEF /* FullMaintenanceMode */,
 				C6A89C622B31722E008AB043 /* HotFeatureSuggestion */,
 				C685A9782840BF4D00E54044 /* InfoScreen */,
 				C6637A6E28100D180000AE56 /* LaunchViewController */,
@@ -9255,6 +9259,7 @@
 				C6D8FF1B2B82E7A80094A21E /* MessageRowView.swift in Sources */,
 				C6D647682B1EDF3400D724AC /* EthereumTransaction.swift in Sources */,
 				C61B3E99283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */,
+				C64F6C562C4FD48000D89FEF /* MaintenanceModeData.swift in Sources */,
 				C6F3FD632AAA11E700208679 /* PullUpNamespace.swift in Sources */,
 				C6C99582289D313D00367362 /* CNavigationBarContentView.swift in Sources */,
 				C6D5DAE928374C7300379C38 /* WalletAddressFieldCollectionCell.swift in Sources */,
@@ -10872,6 +10877,7 @@
 				C63AD09B2B95657C00BF8C83 /* LineView.swift in Sources */,
 				C6D6463B2B1DC50600D724AC /* AppReviewActionEvent.swift in Sources */,
 				C6534A8E2BBFBA10008EEBB5 /* HomeExploreFollowerCellView.swift in Sources */,
+				C64F6C572C4FD48000D89FEF /* MaintenanceModeData.swift in Sources */,
 				C6C8F8B32B2182CF00A9834D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */,
 				C671CD192BC68083005DA2FB /* PurchaseDomainsCheckoutData.swift in Sources */,
 				C67684A72BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift in Sources */,

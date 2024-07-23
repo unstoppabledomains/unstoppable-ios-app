@@ -8,6 +8,10 @@
 import Foundation
 
 final class UDFeatureFlagsService: UDFeatureFlagsServiceProtocol {
+    func entityValueFor<T: Codable>(flag: UDFeatureFlag) -> T? {
+        nil
+    }
+    
     func valueFor(flag: UDFeatureFlag) -> Bool {
         true
     }

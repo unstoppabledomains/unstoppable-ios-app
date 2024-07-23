@@ -67,11 +67,6 @@ extension AppLaunchService: UDFeatureFlagsListener {
         }
     }
     
-    private struct MaintenanceModeData: Codable {
-        let isOn: Bool
-        let link: String
-    }
-    
     private func updateFullMaintenanceState() {
         let fullMaintenanceModeData: MaintenanceModeData? = udFeatureFlagsService.entityValueFor(flag: .isMaintenanceFullEnabled)
         if let fullMaintenanceModeData,
