@@ -25,6 +25,10 @@ extension MockUDFeatureFlagsService: UDFeatureFlagsServiceProtocol {
         return flag.defaultValue
     }
     
+    func entityValueFor<T: Codable>(flag: UDFeatureFlag) -> T? {
+        nil
+    }
+    
     func addListener(_ listener: UDFeatureFlagsListener) {
         if !listenerHolders.contains(where: { $0.listener === listener }) {
             listenerHolders.append(.init(listener: listener))

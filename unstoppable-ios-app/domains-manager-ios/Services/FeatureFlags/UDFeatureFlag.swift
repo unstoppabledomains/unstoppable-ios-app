@@ -19,9 +19,11 @@ enum UDFeatureFlag: String, CaseIterable {
     case isMPCSignatureEnabled = "mobile-mpc-signature-enabled"
     case isMPCPurchaseEnabled = "mobile-mpc-purchase-enabled"
     
+    case isMaintenanceFullEnabled = "mobile-maintenance-full"
+    
     var defaultValue: Bool {
         switch self {
-        case .communityMediaEnabled, .isBuyCryptoEnabled, .isMPCMessagingEnabled, .isMPCWCNativeEnabled:
+        case .communityMediaEnabled, .isBuyCryptoEnabled, .isMPCMessagingEnabled, .isMPCWCNativeEnabled, .isMaintenanceFullEnabled:
             return false
         case .isSendCryptoEnabled, .isMPCWalletEnabled, .isMPCSendCryptoEnabled, .isMPCSignatureEnabled, .isMPCPurchaseEnabled:
             return true

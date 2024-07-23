@@ -14,16 +14,21 @@ final class AppLaunchService {
     private let coreAppCoordinator: CoreAppCoordinatorProtocol
     private let udWalletsService: UDWalletsServiceProtocol
     private let userProfilesService: UserProfilesServiceProtocol
+    private let udFeatureFlagsService: UDFeatureFlagsServiceProtocol
     private var sceneDelegate: SceneDelegateProtocol?
     private var completion: EmptyAsyncCallback?
     private var listeners: [AppLaunchListenerHolder] = []
+    private var isInFullMaintenanceMode = false
 
     init(coreAppCoordinator: CoreAppCoordinatorProtocol,
          udWalletsService: UDWalletsServiceProtocol,
-         userProfilesService: UserProfilesServiceProtocol) {
+         userProfilesService: UserProfilesServiceProtocol,
+         udFeatureFlagsService: UDFeatureFlagsServiceProtocol) {
         self.coreAppCoordinator = coreAppCoordinator
         self.udWalletsService = udWalletsService
         self.userProfilesService = userProfilesService
+        self.udFeatureFlagsService = udFeatureFlagsService
+        udFeatureFlagsService.addListener(self)
     }
     
 }
@@ -54,11 +59,41 @@ extension AppLaunchService: AppLaunchServiceProtocol {
     }
 }
 
+// MARK: - UDFeatureFlagsListener
+extension AppLaunchService: UDFeatureFlagsListener {
+    func didUpdatedUDFeatureFlag(_ flag: UDFeatureFlag, withValue newValue: Bool) {
+        if case .isMaintenanceFullEnabled = flag {
+            updateFullMaintenanceState()
+        }
+    }
+    
+    private struct MaintenanceModeData: Codable {
+        let isOn: Bool
+        let link: String
+    }
+    
+    private func updateFullMaintenanceState() {
+        let fullMaintenanceModeData: MaintenanceModeData? = udFeatureFlagsService.entityValueFor(flag: .isMaintenanceFullEnabled)
+        if let fullMaintenanceModeData,
+           fullMaintenanceModeData.isOn != self.isInFullMaintenanceMode {
+            self.isInFullMaintenanceMode = fullMaintenanceModeData.isOn
+            resolveInitialViewController()
+        }
+    }
+}
+
 // MARK: - Private methods
 private extension AppLaunchService {
     func resolveInitialViewController() {
         let startTime = Date()
+        
         Task {
+            updateFullMaintenanceState()
+            guard !isInFullMaintenanceMode else {
+                await coreAppCoordinator.showFullMaintenanceModeOn()
+                return
+            }
+            
             do {
                 try await initialWalletsCheck()
                 
@@ -114,12 +149,8 @@ private extension AppLaunchService {
             
             switch state {
             case .dataLoadedLate, .dataLoadedInTime, .maxIntervalPassed:
-                if !self.isAppVersionSupported(info: appVersion) {
-                    await self.coreAppCoordinator.showAppUpdateRequired()
-                } else {
-                    self.listeners.forEach { holder in
-                        holder.listener?.appLaunchServiceDidUpdateAppVersion()
-                    }
+                self.listeners.forEach { holder in
+                    holder.listener?.appLaunchServiceDidUpdateAppVersion()
                 }
             case .loading:
                 return
@@ -158,7 +189,9 @@ private extension AppLaunchService {
         case .loading:
             return
         case .maxIntervalPassed, .dataLoadedInTime:
-            if let newAppVersionInfo = await stateMachine.appVersionInfo,
+            if isInFullMaintenanceMode {
+                coreAppCoordinator.showAppUpdateRequired()
+            } else if let newAppVersionInfo = await stateMachine.appVersionInfo,
                !isAppVersionSupported(info: newAppVersionInfo) {
                 coreAppCoordinator.showAppUpdateRequired()
             } else {
@@ -169,6 +202,7 @@ private extension AppLaunchService {
             return
         }
     }
+    
     
     func isAppVersionSupported(info: AppVersionInfo) -> Bool {
         guard let currentVersion = try? Version.getCurrent() else {

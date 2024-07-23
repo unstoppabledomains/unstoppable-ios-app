@@ -9,6 +9,7 @@ import Foundation
 
 protocol UDFeatureFlagsServiceProtocol {
     func valueFor(flag: UDFeatureFlag) -> Bool
+    func entityValueFor<T: Codable>(flag: UDFeatureFlag) -> T?
     func addListener(_ listener: UDFeatureFlagsListener)
     func removeListener(_ listener: UDFeatureFlagsListener)
 }

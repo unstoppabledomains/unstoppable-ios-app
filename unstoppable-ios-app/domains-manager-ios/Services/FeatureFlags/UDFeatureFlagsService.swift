@@ -32,6 +32,10 @@ extension UDFeatureFlagsService: UDFeatureFlagsServiceProtocol {
         return ldValue
     }
     
+    func entityValueFor<T: Codable>(flag: UDFeatureFlag) -> T? {
+        ldService.entityValueFor(key: flag.rawValue)
+    }
+    
     func addListener(_ listener: UDFeatureFlagsListener) {
         if !listenerHolders.contains(where: { $0.listener === listener }) {
             listenerHolders.append(.init(listener: listener))

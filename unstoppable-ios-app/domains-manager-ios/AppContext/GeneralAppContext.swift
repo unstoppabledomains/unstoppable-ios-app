@@ -50,7 +50,8 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var appLaunchService: AppLaunchServiceProtocol = {
         AppLaunchService(coreAppCoordinator: coreAppCoordinator,
                          udWalletsService: udWalletsService, 
-                         userProfilesService: userProfilesService)
+                         userProfilesService: userProfilesService,
+                         udFeatureFlagsService: udFeatureFlagsService)
     }()
     private(set) lazy var domainRecordsService: DomainRecordsServiceProtocol = DomainRecordsService()
     private(set) lazy var qrCodeService: QRCodeServiceProtocol = QRCodeService()

@@ -203,6 +203,8 @@ private final class MockCoreAppCoordinator: CoreAppCoordinatorProtocol {
         
     }
     
+    func showFullMaintenanceModeOn() { }
+    
     func setKeyWindow() {
         
     }

@@ -15,6 +15,7 @@ protocol CoreAppCoordinatorProtocol: WalletConnectClientUIHandler, ExternalEvent
     func showOnboarding(_ flow: OnboardingNavigationController.OnboardingFlow)
     func showHome(profile: UserProfile)
     func showAppUpdateRequired()
+    func showFullMaintenanceModeOn()
     func setKeyWindow()
     @discardableResult
     func goBackToPreviousApp() -> Bool
