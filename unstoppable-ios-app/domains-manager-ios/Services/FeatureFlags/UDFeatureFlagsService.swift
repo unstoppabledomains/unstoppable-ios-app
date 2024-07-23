@@ -61,7 +61,7 @@ private extension UDFeatureFlagsService {
         
         let defaultValue = getDefaultValueFor(featureFlag: flag)
         let value = valueFor(flag: flag)
-        if value != defaultValue {
+        if flag.isStructuredFlag || value != defaultValue {
             storeValue(value, forFeatureFlag: flag)
             notifyListenersUpdated(flag: flag, withValue: value)
         }

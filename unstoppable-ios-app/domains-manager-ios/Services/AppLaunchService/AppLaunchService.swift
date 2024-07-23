@@ -67,11 +67,15 @@ extension AppLaunchService: UDFeatureFlagsListener {
         }
     }
     
-    private func updateFullMaintenanceState() {
+    private func getFullMaintenanceModeData() -> MaintenanceModeData? {
         let fullMaintenanceModeData: MaintenanceModeData? = udFeatureFlagsService.entityValueFor(flag: .isMaintenanceFullEnabled)
-        if let fullMaintenanceModeData,
-           fullMaintenanceModeData.isOn != self.isInFullMaintenanceMode {
-            self.isInFullMaintenanceMode = fullMaintenanceModeData.isOn
+        return fullMaintenanceModeData
+    }
+    
+    private func updateFullMaintenanceState() {
+        if let fullMaintenanceModeData = getFullMaintenanceModeData(),
+           fullMaintenanceModeData.isCurrentlyEnabled != self.isInFullMaintenanceMode {
+            self.isInFullMaintenanceMode = fullMaintenanceModeData.isCurrentlyEnabled
             resolveInitialViewController()
         }
     }
@@ -85,7 +89,11 @@ private extension AppLaunchService {
         Task {
             updateFullMaintenanceState()
             guard !isInFullMaintenanceMode else {
-                await coreAppCoordinator.showFullMaintenanceModeOn()
+                let maintenanceData: MaintenanceModeData = getFullMaintenanceModeData() ?? .init(isOn: true)
+                await coreAppCoordinator.showFullMaintenanceModeOn(maintenanceData: maintenanceData)
+                maintenanceData.onMaintenanceOver { [weak self] in
+                    self?.updateFullMaintenanceState()
+                }
                 return
             }
             
@@ -132,46 +140,50 @@ private extension AppLaunchService {
      
     func resolveInitialMintingState(startTime: Date,
                                     profile: UserProfile) {
-        Task.detached(priority: .medium) { [weak self] in
-            guard let self else { return }
+        Task {
+            await stateMachine.reset()
             
-            let appVersion = await appContext.userDataService.getLatestAppVersion()
-            appContext.coinRecordsService.refreshCurrencies(version: appVersion.mobileUnsReleaseVersion ?? Constants.defaultUNSReleaseVersion)
-            await self.appVersionUpdated(appVersion)
-            await self.stateMachine.set(appVersionInfo: appVersion)
-            
-            let state = await self.stateMachine.state
-            
-            switch state {
-            case .dataLoadedLate, .dataLoadedInTime, .maxIntervalPassed:
-                self.listeners.forEach { holder in
-                    holder.listener?.appLaunchServiceDidUpdateAppVersion()
+            Task.detached(priority: .medium) { [weak self] in
+                guard let self else { return }
+                
+                let appVersion = await appContext.userDataService.getLatestAppVersion()
+                appContext.coinRecordsService.refreshCurrencies(version: appVersion.mobileUnsReleaseVersion ?? Constants.defaultUNSReleaseVersion)
+                await self.appVersionUpdated(appVersion)
+                await self.stateMachine.set(appVersionInfo: appVersion)
+                
+                let state = await self.stateMachine.state
+                
+                switch state {
+                case .dataLoadedLate, .dataLoadedInTime, .maxIntervalPassed:
+                    self.listeners.forEach { holder in
+                        holder.listener?.appLaunchServiceDidUpdateAppVersion()
+                    }
+                case .loading:
+                    return
                 }
-            case .loading:
-                return
             }
-        }
-        
-        Task.detached(priority: .background) { [weak self] in
-            await Task.sleep(seconds: 0.05)
-            guard let self else { return }
-            try? await self.sceneDelegate?.authorizeUserOnAppOpening()
-            await self.handleInitialState(await self.stateMachine.stateAfter(event: .didAuthorise),
-                                          profile: profile)
-        }
-
-        Task {
-            await handleInitialState(await stateMachine.stateAfter(event: .didLoadData),
-                                     profile: profile)
-        }
-        
-        Task {
-            let timePassed = Date().timeIntervalSince(startTime)
-            let timeLeft: TimeInterval = max(0, maximumWaitingTime - timePassed)
-            await Task.sleep(seconds: timeLeft)
-
-            await handleInitialState(await stateMachine.stateAfter(event: .didPassMaxWaitingTime),
-                                     profile: profile)
+            
+            Task.detached(priority: .background) { [weak self] in
+                await Task.sleep(seconds: 0.05)
+                guard let self else { return }
+                try? await self.sceneDelegate?.authorizeUserOnAppOpening()
+                await self.handleInitialState(await self.stateMachine.stateAfter(event: .didAuthorise),
+                                              profile: profile)
+            }
+            
+            Task {
+                await handleInitialState(await stateMachine.stateAfter(event: .didLoadData),
+                                         profile: profile)
+            }
+            
+            Task {
+                let timePassed = Date().timeIntervalSince(startTime)
+                let timeLeft: TimeInterval = max(0, maximumWaitingTime - timePassed)
+                await Task.sleep(seconds: timeLeft)
+                
+                await handleInitialState(await stateMachine.stateAfter(event: .didPassMaxWaitingTime),
+                                         profile: profile)
+            }
         }
     }
     
@@ -187,7 +199,7 @@ private extension AppLaunchService {
             if isInFullMaintenanceMode {
                 coreAppCoordinator.showAppUpdateRequired()
             } else if let newAppVersionInfo = await stateMachine.appVersionInfo,
-               !isAppVersionSupported(info: newAppVersionInfo) {
+                      !isAppVersionSupported(info: newAppVersionInfo) {
                 coreAppCoordinator.showAppUpdateRequired()
             } else {
                 coreAppCoordinator.showHome(profile: profile)
@@ -197,7 +209,6 @@ private extension AppLaunchService {
             return
         }
     }
-    
     
     func isAppVersionSupported(info: AppVersionInfo) -> Bool {
         guard let currentVersion = try? Version.getCurrent() else {
@@ -309,6 +320,14 @@ private extension AppLaunchService {
         
         func set(appVersionInfo: AppVersionInfo) {
             self.appVersionInfo = appVersionInfo
+        }
+        
+        func reset() {
+            didAuthorise = false
+            didLoadData = false
+            didPassMaxWaitingTime = false
+            state = .loading
+            appVersionInfo = nil
         }
     }
 }

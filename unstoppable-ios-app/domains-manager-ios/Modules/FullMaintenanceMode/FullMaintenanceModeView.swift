@@ -9,11 +9,13 @@ import SwiftUI
 
 struct FullMaintenanceModeView: View, ViewAnalyticsLogger {
     
-    @Environment(\.udFeatureFlagsService) var udFeatureFlagsService
     var analyticsName: Analytics.ViewName { .fullMaintenance }
+    let maintenanceData: MaintenanceModeData
     
-    static func instance() -> UIViewController {
-        UIHostingController(rootView: FullMaintenanceModeView())
+    static func instance(maintenanceData: MaintenanceModeData) -> UIViewController {
+        let view = FullMaintenanceModeView(maintenanceData: maintenanceData)
+        
+        return UIHostingController(rootView: view)
     }
     
     var body: some View {
@@ -24,25 +26,32 @@ struct FullMaintenanceModeView: View, ViewAnalyticsLogger {
                 .squareFrame(56)
                 .foregroundStyle(Color.foregroundSecondary)
             VStack(spacing: 16) {
-                Text(String.Constants.fullMaintenanceMessageTitle.localized())
+                Text(title)
                     .titleText()
-                Text(String.Constants.fullMaintenanceMessageSubtitle.localized())
+                Text(subtitle)
                     .subtitleText()
             }
             .multilineTextAlignment(.center)
             
             linkButton()
         }
+        .trackAppearanceAnalytics(analyticsLogger: self)
     }
 }
 
 // MARK: - Private methods
 private extension FullMaintenanceModeView {
+    var title: String {
+        maintenanceData.title ?? String.Constants.fullMaintenanceMessageTitle.localized()
+    }
+    
+    var subtitle: String {
+        maintenanceData.message ?? String.Constants.fullMaintenanceMessageSubtitle.localized()
+    }
+    
     @ViewBuilder
     func linkButton() -> some View {
-        let maintenanceData: MaintenanceModeData? = udFeatureFlagsService.entityValueFor(flag: .isMaintenanceFullEnabled)
-        if let maintenanceData,
-           let url = maintenanceData.linkURL {
+        if let url = maintenanceData.linkURL {
             UDButtonView(text: String.Constants.learnMore.localized(),
                          style: .medium(.ghostPrimary)) {
                 logButtonPressedAnalyticEvents(button: .learnMore)
@@ -53,5 +62,8 @@ private extension FullMaintenanceModeView {
 }
 
 #Preview {
-    FullMaintenanceModeView()
+    FullMaintenanceModeView(maintenanceData: MaintenanceModeData(isOn: true,
+                                                                 link: "https://google.com",
+                                                                 title: nil,
+                                                                 message: nil))
 }

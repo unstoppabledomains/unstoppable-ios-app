@@ -29,4 +29,14 @@ enum UDFeatureFlag: String, CaseIterable {
             return true
         }
     }
+    
+    /// This flag has JSON structure 
+    var isStructuredFlag: Bool {
+        switch self {
+        case .isMaintenanceFullEnabled:
+            return true
+        case .isSendCryptoEnabled, .isMPCWalletEnabled, .isMPCSendCryptoEnabled, .isMPCSignatureEnabled, .isMPCPurchaseEnabled, .communityMediaEnabled, .isBuyCryptoEnabled, .isMPCMessagingEnabled, .isMPCWCNativeEnabled:
+            return false
+        }
+    }
 }

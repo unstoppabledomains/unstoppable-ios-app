@@ -55,8 +55,8 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         currentRoot = .appUpdate
     }
     
-    func showFullMaintenanceModeOn() {
-        let appUpdateRequiredVC = FullMaintenanceModeView.instance()
+    func showFullMaintenanceModeOn(maintenanceData: MaintenanceModeData) {
+        let appUpdateRequiredVC = FullMaintenanceModeView.instance(maintenanceData: maintenanceData)
         setRootViewController(appUpdateRequiredVC)
         currentRoot = .fullMaintenance
     }
