@@ -212,9 +212,9 @@ private extension HomeActivityViewModel {
         switch selectedDestinationFilter {
         case .all:
             return
-        case .income:
+        case .received:
             txs = txs.filter({ $0.type.isDeposit })
-        case .outcome:
+        case .sent:
             txs = txs.filter({ !$0.type.isDeposit })
         }
     }

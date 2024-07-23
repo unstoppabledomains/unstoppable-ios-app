@@ -93,17 +93,17 @@ extension HomeActivity {
     
     enum TransactionDestination: String, CaseIterable, UDSegmentedControlItem {
         case all
-        case income
-        case outcome
+        case sent
+        case received
         
         var title: String {
             switch self {
             case .all:
                 String.Constants.all.localized()
-            case .income:
-                String.Constants.income.localized()
-            case .outcome:
-                String.Constants.outcome.localized()
+            case .sent:
+                String.Constants.sent.localized()
+            case .received:
+                String.Constants.received.localized()
             }
         }
         
@@ -111,10 +111,10 @@ extension HomeActivity {
             switch self {
             case .all:
                     .all
-            case .income:
-                    .income
-            case .outcome:
+            case .sent:
                     .outcome
+            case .received:
+                    .income
             }
         }
     }
