@@ -183,8 +183,7 @@
 "SETUP" = "Setup";
 "NETWORK_FEE" = "Network Fee";
 "RECONNECT" = "Reconnect";
-"INCOME" = "Income";
-"OUTCOME" = "Outcome";
+"SENT" = "Sent";
 "FILTER" = "Filter";
 "RESET" = "Reset";
 "CHAINS" = "Chains";

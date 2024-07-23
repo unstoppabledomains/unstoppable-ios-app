@@ -75,7 +75,7 @@ struct IconTitleSelectionGridView<Item : IconTitleSelectableGridItem>: View, Vie
                 .foregroundStyle(iconTintColorFor(item))
             Text(item.gridTitle)
                 .foregroundStyle(Color.foregroundDefault)
-                .frame(height: 20)
+                .textAttributes(color: .foregroundDefault, fontSize: 14, fontWeight: .medium)
                 .frame(maxWidth: .infinity)
         }
         .padding(12)
