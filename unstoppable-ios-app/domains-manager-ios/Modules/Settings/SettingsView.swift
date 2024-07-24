@@ -328,9 +328,13 @@ private extension SettingsView {
         otherItemsList()
     }
     
+    var isEcommMaintenanceEnabled: Bool {
+        ecommFlagTracker.maintenanceData?.isCurrentlyEnabled == true
+    }
+    
     var settingsItemsToShow: [SettingsItems] {
         var items = SettingsItems.allCases
-        if webUser != nil || ecommFlagTracker.maintenanceData?.isCurrentlyEnabled == true {
+        if webUser != nil || isEcommMaintenanceEnabled {
             items.removeAll(where: { $0 == .viewVaulted })
         }
         return items
@@ -483,7 +487,8 @@ private extension SettingsView {
                 switch action {
                 case .create:
                     if udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled),
-                       udFeatureFlagsService.valueFor(flag: .isMPCPurchaseEnabled) {
+                       udFeatureFlagsService.valueFor(flag: .isMPCPurchaseEnabled),
+                       !isEcommMaintenanceEnabled {
                         showAddWalletSelection()
                     } else {
                         createNewWallet()
