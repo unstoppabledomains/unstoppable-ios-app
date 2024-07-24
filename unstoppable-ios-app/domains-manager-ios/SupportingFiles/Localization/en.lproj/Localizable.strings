@@ -1193,3 +1193,5 @@ More tabs are coming in the next updates.";
 "VAULTED_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE" = "If you have imported vaults previously and do not see them now, don’t worry. We’re working to make them available soon.";
 "DOMAIN_PROFILE_MAINTENANCE_MESSAGE_TITLE" = "Domain profile is currently unavailable";
 "DOMAIN_PROFILE_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"SEND_CRYPTO_MAINTENANCE_MESSAGE_TITLE" = "Sending crypto is currently unavailable\nusing this wallet";
+"SEND_CRYPTO_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.\nMeantime try to switch to another wallet.";

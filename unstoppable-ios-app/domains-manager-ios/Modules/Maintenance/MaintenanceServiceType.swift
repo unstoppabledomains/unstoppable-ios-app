@@ -16,6 +16,7 @@ enum MaintenanceServiceType {
     case purchaseDomains
     case vaultedDomains
     case domainProfile
+    case sendCrypto
     
     var title: String {
         switch self {
@@ -33,6 +34,8 @@ enum MaintenanceServiceType {
             return String.Constants.vaultedDomainsMaintenanceMessageTitle.localized()
         case .domainProfile:
             return String.Constants.domainProfileMaintenanceMessageTitle.localized()
+        case .sendCrypto:
+            return String.Constants.sendCryptoMaintenanceMessageTitle.localized()
         }
     }
     
@@ -52,6 +55,8 @@ enum MaintenanceServiceType {
             return String.Constants.vaultedDomainsMaintenanceMessageSubtitle.localized()
         case .domainProfile:
             return String.Constants.domainProfileMaintenanceMessageSubtitle.localized()
+        case .sendCrypto:
+            return String.Constants.sendCryptoMaintenanceMessageSubtitle.localized()
         }
     }
     
@@ -63,6 +68,8 @@ enum MaintenanceServiceType {
             return .infoIcon
         case .purchaseDomains:
             return .exploreFilledIcon
+        case .sendCrypto:
+            return .paperPlaneTopRightSend
         }
     }
 }
