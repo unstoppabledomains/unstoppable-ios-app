@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import Combine
 
 final class UDFeatureFlagsService {
     
     private let ldService: LaunchDarklyService
     private var listenerHolders: [UDFeatureFlagListenerHolder] = []
-
+    private(set) var featureFlagPublisher = PassthroughSubject<UDFeatureFlag, Never>()
+    
     init() {
         #if DEBUG
         let ldMobileKey = LaunchDarkly.stagingMobileKey
@@ -69,6 +71,7 @@ private extension UDFeatureFlagsService {
     
     func notifyListenersUpdated(flag: UDFeatureFlag, withValue value: Bool) {
         listenerHolders.forEach { $0.listener?.didUpdatedUDFeatureFlag(flag, withValue: value) }
+        featureFlagPublisher.send(flag)
     }
 }
 

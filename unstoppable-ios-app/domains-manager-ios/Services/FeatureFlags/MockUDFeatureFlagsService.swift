@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import Combine
 
 final class MockUDFeatureFlagsService {
     private var listenerHolders: [UDFeatureFlagListenerHolder] = []
     private var isMocking = false
-    
+    private(set) var featureFlagPublisher = PassthroughSubject<UDFeatureFlag, Never>()
+
     init() {
         start()
     }

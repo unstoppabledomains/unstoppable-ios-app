@@ -9,8 +9,9 @@ import SwiftUI
 
 struct FullMaintenanceModeView: View, ViewAnalyticsLogger {
     
+    @Environment(\.udFeatureFlagsService) var udFeatureFlagsService
     var analyticsName: Analytics.ViewName { .fullMaintenance }
-    let maintenanceData: MaintenanceModeData
+    @State var maintenanceData: MaintenanceModeData
     
     static func instance(maintenanceData: MaintenanceModeData) -> UIViewController {
         let view = FullMaintenanceModeView(maintenanceData: maintenanceData)
@@ -35,7 +36,11 @@ struct FullMaintenanceModeView: View, ViewAnalyticsLogger {
             
             linkButton()
         }
+        .animation(.default, value: UUID())
         .trackAppearanceAnalytics(analyticsLogger: self)
+        .onReceive(udFeatureFlagsService.featureFlagPublisher.receive(on: DispatchQueue.main), perform: { flag in
+            didReceiveChangeFlagNotification(flag)
+        })
     }
 }
 
@@ -56,6 +61,15 @@ private extension FullMaintenanceModeView {
                          style: .medium(.ghostPrimary)) {
                 logButtonPressedAnalyticEvents(button: .learnMore)
                 openLinkExternally(.generic(url: url.absoluteString))
+            }
+        }
+    }
+    
+    func didReceiveChangeFlagNotification(_ flag: UDFeatureFlag) {
+        if case .isMaintenanceFullEnabled = flag {
+            let maintenanceData: MaintenanceModeData? = udFeatureFlagsService.entityValueFor(flag: .isMaintenanceFullEnabled)
+            if let maintenanceData {
+                self.maintenanceData = maintenanceData
             }
         }
     }
