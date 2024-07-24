@@ -259,6 +259,8 @@ extension Analytics {
         case inAppAddWallet
         case mpcActivateEnterCode, mpcActivateEnterPassword
         case reconnectMPCWalletPrompt
+        
+        case fullMaintenance
     }
 }
 
@@ -508,6 +510,7 @@ extension Analytics {
         case copyMultiChainAddresses
         case removeMPCWalletConfirmation
         case transactionDetails
+        case domainProfileMaintenance, signMessagesMaintenance
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

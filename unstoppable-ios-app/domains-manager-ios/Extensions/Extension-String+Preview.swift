@@ -1282,6 +1282,26 @@ extension String {
         static let backedUp = "BACKED_UP"
         static let backUp = "BACK_UP"
         static let setAsPrimaryDomain = "SET_AS_PRIMARY_DOMAIN"
+        
+        // Maintenance
+        static let fullMaintenanceMessageTitle = "FULL_MAINTENANCE_MESSAGE_TITLE"
+        static let fullMaintenanceMessageSubtitle = "FULL_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let activityMaintenanceMessageTitle = "ACTIVITY_MAINTENANCE_MESSAGE_TITLE"
+        static let activityMaintenanceMessageSubtitle = "ACTIVITY_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let exploreMaintenanceMessageTitle = "EXPLORE_MAINTENANCE_MESSAGE_TITLE"
+        static let exploreMaintenanceMessageSubtitle = "EXPLORE_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let homeMaintenanceMessageTitle = "HOME_MAINTENANCE_MESSAGE_TITLE"
+        static let homeMaintenanceMessageSubtitle = "HOME_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let purchaseDomainsMaintenanceMessageTitle = "PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_TITLE"
+        static let purchaseDomainsMaintenanceMessageSubtitle = "PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let vaultedDomainsMaintenanceMessageTitle = "VAULTED_DOMAINS_MAINTENANCE_MESSAGE_TITLE"
+        static let vaultedDomainsMaintenanceMessageSubtitle = "VAULTED_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let domainProfileMaintenanceMessageTitle = "DOMAIN_PROFILE_MAINTENANCE_MESSAGE_TITLE"
+        static let domainProfileMaintenanceMessageSubtitle = "DOMAIN_PROFILE_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let sendCryptoMaintenanceMessageTitle = "SEND_CRYPTO_MAINTENANCE_MESSAGE_TITLE"
+        static let sendCryptoMaintenanceMessageSubtitle = "SEND_CRYPTO_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let signMessagesMaintenanceMessageTitle = "SIGN_MESSAGES_MAINTENANCE_MESSAGE_TITLE"
+        static let signMessagesMaintenanceMessageSubtitle = "SIGN_MESSAGES_MAINTENANCE_MESSAGE_SUBTITLE"
     }
     
     enum SystemImage: String {

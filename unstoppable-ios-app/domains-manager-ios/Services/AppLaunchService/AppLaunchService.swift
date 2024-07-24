@@ -14,16 +14,21 @@ final class AppLaunchService {
     private let coreAppCoordinator: CoreAppCoordinatorProtocol
     private let udWalletsService: UDWalletsServiceProtocol
     private let userProfilesService: UserProfilesServiceProtocol
+    private let udFeatureFlagsService: UDFeatureFlagsServiceProtocol
     private var sceneDelegate: SceneDelegateProtocol?
     private var completion: EmptyAsyncCallback?
     private var listeners: [AppLaunchListenerHolder] = []
+    private var isInFullMaintenanceMode = false
 
     init(coreAppCoordinator: CoreAppCoordinatorProtocol,
          udWalletsService: UDWalletsServiceProtocol,
-         userProfilesService: UserProfilesServiceProtocol) {
+         userProfilesService: UserProfilesServiceProtocol,
+         udFeatureFlagsService: UDFeatureFlagsServiceProtocol) {
         self.coreAppCoordinator = coreAppCoordinator
         self.udWalletsService = udWalletsService
         self.userProfilesService = userProfilesService
+        self.udFeatureFlagsService = udFeatureFlagsService
+        udFeatureFlagsService.addListener(self)
     }
     
 }
@@ -54,11 +59,45 @@ extension AppLaunchService: AppLaunchServiceProtocol {
     }
 }
 
+// MARK: - UDFeatureFlagsListener
+extension AppLaunchService: UDFeatureFlagsListener {
+    func didUpdatedUDFeatureFlag(_ flag: UDFeatureFlag, withValue newValue: Bool) {
+        if case .isMaintenanceFullEnabled = flag {
+            updateFullMaintenanceState()
+        }
+    }
+    
+    private func getFullMaintenanceModeData() -> MaintenanceModeData? {
+        let fullMaintenanceModeData: MaintenanceModeData? = udFeatureFlagsService.entityValueFor(flag: .isMaintenanceFullEnabled)
+        return fullMaintenanceModeData
+    }
+    
+    private func updateFullMaintenanceState() {
+        let fullMaintenanceModeData = getFullMaintenanceModeData()
+        if let fullMaintenanceModeData,
+           fullMaintenanceModeData.isCurrentlyEnabled != self.isInFullMaintenanceMode {
+            self.isInFullMaintenanceMode = fullMaintenanceModeData.isCurrentlyEnabled
+            resolveInitialViewController()
+        }
+        fullMaintenanceModeData?.onMaintenanceStatusUpdate { [weak self] in
+            self?.updateFullMaintenanceState()
+        }
+    }
+}
+
 // MARK: - Private methods
 private extension AppLaunchService {
     func resolveInitialViewController() {
         let startTime = Date()
+        
         Task {
+            updateFullMaintenanceState()
+            guard !isInFullMaintenanceMode else {
+                let maintenanceData: MaintenanceModeData = getFullMaintenanceModeData() ?? .init(isOn: true)
+                await coreAppCoordinator.showFullMaintenanceModeOn(maintenanceData: maintenanceData)
+                return
+            }
+            
             do {
                 try await initialWalletsCheck()
                 
@@ -102,50 +141,50 @@ private extension AppLaunchService {
      
     func resolveInitialMintingState(startTime: Date,
                                     profile: UserProfile) {
-        Task.detached(priority: .medium) { [weak self] in
-            guard let self else { return }
+        Task {
+            await stateMachine.reset()
             
-            let appVersion = await appContext.userDataService.getLatestAppVersion()
-            appContext.coinRecordsService.refreshCurrencies(version: appVersion.mobileUnsReleaseVersion ?? Constants.defaultUNSReleaseVersion)
-            await self.appVersionUpdated(appVersion)
-            await self.stateMachine.set(appVersionInfo: appVersion)
-            
-            let state = await self.stateMachine.state
-            
-            switch state {
-            case .dataLoadedLate, .dataLoadedInTime, .maxIntervalPassed:
-                if !self.isAppVersionSupported(info: appVersion) {
-                    await self.coreAppCoordinator.showAppUpdateRequired()
-                } else {
+            Task.detached(priority: .medium) { [weak self] in
+                guard let self else { return }
+                
+                let appVersion = await appContext.userDataService.getLatestAppVersion()
+                appContext.coinRecordsService.refreshCurrencies(version: appVersion.mobileUnsReleaseVersion ?? Constants.defaultUNSReleaseVersion)
+                await self.appVersionUpdated(appVersion)
+                await self.stateMachine.set(appVersionInfo: appVersion)
+                
+                let state = await self.stateMachine.state
+                
+                switch state {
+                case .dataLoadedLate, .dataLoadedInTime, .maxIntervalPassed:
                     self.listeners.forEach { holder in
                         holder.listener?.appLaunchServiceDidUpdateAppVersion()
                     }
+                case .loading:
+                    return
                 }
-            case .loading:
-                return
             }
-        }
-        
-        Task.detached(priority: .background) { [weak self] in
-            await Task.sleep(seconds: 0.05)
-            guard let self else { return }
-            try? await self.sceneDelegate?.authorizeUserOnAppOpening()
-            await self.handleInitialState(await self.stateMachine.stateAfter(event: .didAuthorise),
-                                          profile: profile)
-        }
-
-        Task {
-            await handleInitialState(await stateMachine.stateAfter(event: .didLoadData),
-                                     profile: profile)
-        }
-        
-        Task {
-            let timePassed = Date().timeIntervalSince(startTime)
-            let timeLeft: TimeInterval = max(0, maximumWaitingTime - timePassed)
-            await Task.sleep(seconds: timeLeft)
-
-            await handleInitialState(await stateMachine.stateAfter(event: .didPassMaxWaitingTime),
-                                     profile: profile)
+            
+            Task.detached(priority: .background) { [weak self] in
+                await Task.sleep(seconds: 0.05)
+                guard let self else { return }
+                try? await self.sceneDelegate?.authorizeUserOnAppOpening()
+                await self.handleInitialState(await self.stateMachine.stateAfter(event: .didAuthorise),
+                                              profile: profile)
+            }
+            
+            Task {
+                await handleInitialState(await stateMachine.stateAfter(event: .didLoadData),
+                                         profile: profile)
+            }
+            
+            Task {
+                let timePassed = Date().timeIntervalSince(startTime)
+                let timeLeft: TimeInterval = max(0, maximumWaitingTime - timePassed)
+                await Task.sleep(seconds: timeLeft)
+                
+                await handleInitialState(await stateMachine.stateAfter(event: .didPassMaxWaitingTime),
+                                         profile: profile)
+            }
         }
     }
     
@@ -158,8 +197,10 @@ private extension AppLaunchService {
         case .loading:
             return
         case .maxIntervalPassed, .dataLoadedInTime:
-            if let newAppVersionInfo = await stateMachine.appVersionInfo,
-               !isAppVersionSupported(info: newAppVersionInfo) {
+            if isInFullMaintenanceMode {
+                coreAppCoordinator.showAppUpdateRequired()
+            } else if let newAppVersionInfo = await stateMachine.appVersionInfo,
+                      !isAppVersionSupported(info: newAppVersionInfo) {
                 coreAppCoordinator.showAppUpdateRequired()
             } else {
                 coreAppCoordinator.showHome(profile: profile)
@@ -280,6 +321,14 @@ private extension AppLaunchService {
         
         func set(appVersionInfo: AppVersionInfo) {
             self.appVersionInfo = appVersionInfo
+        }
+        
+        func reset() {
+            didAuthorise = false
+            didLoadData = false
+            didPassMaxWaitingTime = false
+            state = .loading
+            appVersionInfo = nil
         }
     }
 }

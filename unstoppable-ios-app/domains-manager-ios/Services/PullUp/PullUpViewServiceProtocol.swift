@@ -47,6 +47,8 @@ protocol PullUpViewServiceProtocol {
                                                     maxNumberOfWallets: Int)
     func showCopyMultichainWalletAddressesPullUp(in viewController: UIViewController,
                                                  tokens: [BalanceTokenUIDescription])
+    func showDomainProfileInMaintenancePullUp(in viewController: UIViewController)
+    func showMessageSigningInMaintenancePullUp(in viewController: UIViewController)
     
     // MARK: - External wallet
     func showConnectedWalletInfoPullUp(in viewController: UIViewController)

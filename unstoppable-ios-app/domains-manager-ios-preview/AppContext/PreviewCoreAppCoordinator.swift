@@ -35,6 +35,8 @@ final class CoreAppCoordinator: CoreAppCoordinatorProtocol {
         
     }
     
+    func showFullMaintenanceModeOn(maintenanceData: MaintenanceModeData) { }
+    
     func setKeyWindow() {
         
     }
