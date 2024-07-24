@@ -10,11 +10,17 @@ import SwiftUI
 
 enum MaintenanceServiceType {
     case activity
+    case explore
+    case home
     
     var title: String {
         switch self {
         case .activity:
             return String.Constants.activityMaintenanceMessageTitle.localized()
+        case .explore:
+            return String.Constants.exploreMaintenanceMessageTitle.localized()
+        case .home:
+            return String.Constants.homeMaintenanceMessageTitle.localized()
         }
     }
     
@@ -22,12 +28,16 @@ enum MaintenanceServiceType {
         switch self {
         case .activity:
             return String.Constants.activityMaintenanceMessageSubtitle.localized()
+        case .explore:
+            return String.Constants.exploreMaintenanceMessageSubtitle.localized()
+        case .home:
+            return String.Constants.homeMaintenanceMessageSubtitle.localized()
         }
     }
     
     var icon: Image {
         switch self {
-        case .activity:
+        case .activity, .explore, .home:
             return .infoIcon
         }
     }

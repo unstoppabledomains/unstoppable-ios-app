@@ -11,7 +11,8 @@ struct HomeActivityView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var tabRouter: HomeTabRouter
     @State private var navigationState: NavigationStateManager?
-    @StateObject private var flagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceOKLinkEnabled)
+    @StateObject private var okLinkFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceOKLinkEnabled)
+    @StateObject private var profilesAPIFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceProfilesAPIEnabled)
     @StateObject var viewModel: HomeActivityViewModel
 
     var isOtherScreenPushed: Bool { !tabRouter.activityTabNavPath.isEmpty }
@@ -95,9 +96,13 @@ private extension HomeActivityView {
 private extension HomeActivityView {
     @ViewBuilder
     func contentList() -> some View {
-        if flagTracker.maintenanceData?.isCurrentlyEnabled == true {
+        if okLinkFlagTracker.maintenanceData?.isCurrentlyEnabled == true {
             MaintenanceDetailsEmbeddedView(serviceType: .activity,
-                                           maintenanceData: flagTracker.maintenanceData)
+                                           maintenanceData: okLinkFlagTracker.maintenanceData)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else if profilesAPIFlagTracker.maintenanceData?.isCurrentlyEnabled == true {
+            MaintenanceDetailsEmbeddedView(serviceType: .activity,
+                                           maintenanceData: profilesAPIFlagTracker.maintenanceData)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else if viewModel.groupedTxs.isEmpty,
            !viewModel.isLoadingMore {

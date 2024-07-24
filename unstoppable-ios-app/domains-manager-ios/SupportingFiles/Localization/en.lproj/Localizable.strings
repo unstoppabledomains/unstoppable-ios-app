@@ -1183,3 +1183,7 @@ More tabs are coming in the next updates.";
 "FULL_MAINTENANCE_MESSAGE_SUBTITLE" = "Do not worry, we'll be back shortly.\nThank you for your patience!";
 "ACTIVITY_MAINTENANCE_MESSAGE_TITLE" = "Activity is currently unavailable";
 "ACTIVITY_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"EXPLORE_MAINTENANCE_MESSAGE_TITLE" = "Profiles search is currently unavailable";
+"EXPLORE_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"HOME_MAINTENANCE_MESSAGE_TITLE" = "Displaying your tokens, collectibles and domains in the app is currently unavailable";
+"HOME_MAINTENANCE_MESSAGE_SUBTITLE" = "All your assets are safe. It is only the problem with API that display your assets in the app. We're working to make it available soon.";
