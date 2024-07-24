@@ -28,6 +28,9 @@ final class UDMaintenanceModeFeatureFlagTracker: ObservableObject {
         let maintenanceData: MaintenanceModeData? = appContext.udFeatureFlagsService.entityValueFor(flag: featureFlag)
         if let maintenanceData {
             self.maintenanceData = maintenanceData
+            maintenanceData.onMaintenanceStatusUpdate { [weak self] in
+                self?.updateMaintenanceData()
+            }
         }
     }
     

@@ -79,7 +79,7 @@ extension AppLaunchService: UDFeatureFlagsListener {
             self.isInFullMaintenanceMode = fullMaintenanceModeData.isCurrentlyEnabled
             resolveInitialViewController()
         }
-        fullMaintenanceModeData?.onMaintenanceUpdate { [weak self] in
+        fullMaintenanceModeData?.onMaintenanceStatusUpdate { [weak self] in
             self?.updateFullMaintenanceState()
         }
     }

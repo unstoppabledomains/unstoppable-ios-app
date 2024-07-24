@@ -50,7 +50,7 @@ struct MaintenanceModeData: Codable {
     
     var linkURL: URL? { URL(string: link ?? "") }
     
-    func onMaintenanceUpdate(callback: @escaping EmptyCallback) {
+    func onMaintenanceStatusUpdate(callback: @escaping EmptyCallback) {
         let now = Date()
         
         func scheduleUpdatedAfter(date: Date) {
