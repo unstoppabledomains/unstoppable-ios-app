@@ -852,6 +852,8 @@
 		C64F6C542C4FAF2200D89FEF /* FullMaintenanceModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C522C4FAF2200D89FEF /* FullMaintenanceModeView.swift */; };
 		C64F6C562C4FD48000D89FEF /* MaintenanceModeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C552C4FD48000D89FEF /* MaintenanceModeData.swift */; };
 		C64F6C572C4FD48000D89FEF /* MaintenanceModeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C552C4FD48000D89FEF /* MaintenanceModeData.swift */; };
+		C64F6C592C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C582C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift */; };
+		C64F6C5A2C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C582C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift */; };
 		C64F8DFE2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */; };
 		C64F8DFF2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */; };
 		C64F8E012B60F2590075D37F /* ViewPullUpConfigurationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */; };
@@ -3310,6 +3312,7 @@
 		C64F6C4E2C4E72A900D89FEF /* EthereumSendTransactionPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthereumSendTransactionPayload.swift; sourceTree = "<group>"; };
 		C64F6C522C4FAF2200D89FEF /* FullMaintenanceModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullMaintenanceModeView.swift; sourceTree = "<group>"; };
 		C64F6C552C4FD48000D89FEF /* MaintenanceModeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceModeData.swift; sourceTree = "<group>"; };
+		C64F6C582C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDMaintenanceModeFeatureFlagTracker.swift; sourceTree = "<group>"; };
 		C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpDefaultConfiguration.swift; sourceTree = "<group>"; };
 		C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpConfigurationType.swift; sourceTree = "<group>"; };
 		C64F8E032B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpCustomContentConfiguration.swift; sourceTree = "<group>"; };
@@ -6989,6 +6992,7 @@
 				C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */,
 				C689C17B2ADE6D3400AA0186 /* UDFeatureFlag.swift */,
 				C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */,
+				C64F6C582C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift */,
 			);
 			path = FeatureFlags;
 			sourceTree = "<group>";
@@ -10132,6 +10136,7 @@
 				C6FECF46282D0694008DAA49 /* ResizableRoundedImageView.swift in Sources */,
 				C61ECD792A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */,
 				C6EECE972833A3E400978ED5 /* CoinRecord.swift in Sources */,
+				C64F6C592C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift in Sources */,
 				29DE3B1328913DF500655675 /* Env.swift in Sources */,
 				C664B6492914BE3D00A76154 /* DomainProfileMetadataSection.swift in Sources */,
 				C62396952A288AD100363F60 /* MessagingChatType.swift in Sources */,
@@ -11213,6 +11218,7 @@
 				C6D6473A2B1ED9EF00D724AC /* BaseSignTransactionView.swift in Sources */,
 				C6B761F42BB3FD7500773943 /* WalletTransactionDisplayInfo.swift in Sources */,
 				C6BF6BDE2B8F3602006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift in Sources */,
+				C64F6C5A2C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift in Sources */,
 				C6C8F85C2B217FED00A9834D /* BackedUpWallet.swift in Sources */,
 				C6170EC52B7A0075008E9C93 /* ShowingWalletSelectionModifier.swift in Sources */,
 				C6C8F82F2B217E7F00A9834D /* AppUpdatedRequired.swift in Sources */,

@@ -11,10 +11,10 @@ struct FullMaintenanceModeView: View, ViewAnalyticsLogger {
     
     @Environment(\.udFeatureFlagsService) var udFeatureFlagsService
     var analyticsName: Analytics.ViewName { .fullMaintenance }
-    @State var maintenanceData: MaintenanceModeData
+    @StateObject var flagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceFullEnabled)
     
     static func instance(maintenanceData: MaintenanceModeData) -> UIViewController {
-        let view = FullMaintenanceModeView(maintenanceData: maintenanceData)
+        let view = FullMaintenanceModeView()
         
         return UIHostingController(rootView: view)
     }
@@ -38,25 +38,24 @@ struct FullMaintenanceModeView: View, ViewAnalyticsLogger {
         }
         .animation(.default, value: UUID())
         .trackAppearanceAnalytics(analyticsLogger: self)
-        .onReceive(udFeatureFlagsService.featureFlagPublisher.receive(on: DispatchQueue.main), perform: { flag in
-            didReceiveChangeFlagNotification(flag)
-        })
     }
 }
 
 // MARK: - Private methods
 private extension FullMaintenanceModeView {
+    var maintenanceData: MaintenanceModeData? { flagTracker.maintenanceData }
+    
     var title: String {
-        maintenanceData.title ?? String.Constants.fullMaintenanceMessageTitle.localized()
+        maintenanceData?.title ?? String.Constants.fullMaintenanceMessageTitle.localized()
     }
     
     var subtitle: String {
-        maintenanceData.message ?? String.Constants.fullMaintenanceMessageSubtitle.localized()
+        maintenanceData?.message ?? String.Constants.fullMaintenanceMessageSubtitle.localized()
     }
     
     @ViewBuilder
     func linkButton() -> some View {
-        if let url = maintenanceData.linkURL {
+        if let url = maintenanceData?.linkURL {
             UDButtonView(text: String.Constants.learnMore.localized(),
                          style: .medium(.ghostPrimary)) {
                 logButtonPressedAnalyticEvents(button: .learnMore)
@@ -64,20 +63,8 @@ private extension FullMaintenanceModeView {
             }
         }
     }
-    
-    func didReceiveChangeFlagNotification(_ flag: UDFeatureFlag) {
-        if case .isMaintenanceFullEnabled = flag {
-            let maintenanceData: MaintenanceModeData? = udFeatureFlagsService.entityValueFor(flag: .isMaintenanceFullEnabled)
-            if let maintenanceData {
-                self.maintenanceData = maintenanceData
-            }
-        }
-    }
 }
 
 #Preview {
-    FullMaintenanceModeView(maintenanceData: MaintenanceModeData(isOn: true,
-                                                                 link: "https://google.com",
-                                                                 title: nil,
-                                                                 message: nil))
+    FullMaintenanceModeView()
 }
