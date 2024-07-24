@@ -199,7 +199,11 @@ private final class CameraSessionService {
     
     func setupCaptureSession() -> Bool {
         let captureSession = AVCaptureSession()
+        captureSession.beginConfiguration()
         captureSession.sessionPreset = .hd1920x1080
+        defer { 
+            captureSession.commitConfiguration()
+        }
         guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else { return false }
         self.videoCaptureDevice = videoCaptureDevice
         
