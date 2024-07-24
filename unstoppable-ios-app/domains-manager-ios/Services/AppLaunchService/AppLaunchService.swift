@@ -73,10 +73,14 @@ extension AppLaunchService: UDFeatureFlagsListener {
     }
     
     private func updateFullMaintenanceState() {
-        if let fullMaintenanceModeData = getFullMaintenanceModeData(),
+        let fullMaintenanceModeData = getFullMaintenanceModeData()
+        if let fullMaintenanceModeData,
            fullMaintenanceModeData.isCurrentlyEnabled != self.isInFullMaintenanceMode {
             self.isInFullMaintenanceMode = fullMaintenanceModeData.isCurrentlyEnabled
             resolveInitialViewController()
+        }
+        fullMaintenanceModeData?.onMaintenanceUpdate { [weak self] in
+            self?.updateFullMaintenanceState()
         }
     }
 }
@@ -91,9 +95,6 @@ private extension AppLaunchService {
             guard !isInFullMaintenanceMode else {
                 let maintenanceData: MaintenanceModeData = getFullMaintenanceModeData() ?? .init(isOn: true)
                 await coreAppCoordinator.showFullMaintenanceModeOn(maintenanceData: maintenanceData)
-                maintenanceData.onMaintenanceUpdate { [weak self] in
-                    self?.updateFullMaintenanceState()
-                }
                 return
             }
             
