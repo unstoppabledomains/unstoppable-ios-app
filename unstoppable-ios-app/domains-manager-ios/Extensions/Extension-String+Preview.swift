@@ -1297,6 +1297,8 @@ extension String {
         static let purchaseDomainsMaintenanceMessageSubtitle = "PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE"
         static let vaultedDomainsMaintenanceMessageTitle = "VAULTED_DOMAINS_MAINTENANCE_MESSAGE_TITLE"
         static let vaultedDomainsMaintenanceMessageSubtitle = "VAULTED_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let domainProfileMaintenanceMessageTitle = "DOMAIN_PROFILE_MAINTENANCE_MESSAGE_TITLE"
+        static let domainProfileMaintenanceMessageSubtitle = "DOMAIN_PROFILE_MAINTENANCE_MESSAGE_SUBTITLE"
     }
     
     enum SystemImage: String {

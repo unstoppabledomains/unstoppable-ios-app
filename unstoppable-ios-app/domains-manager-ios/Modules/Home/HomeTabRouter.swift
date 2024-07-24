@@ -163,6 +163,10 @@ extension HomeTabRouter {
             guard !domain.isTransferring else {
                 showDomainTransferringInProgress(domain)
                 return }
+            let flagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceProfilesAPIEnabled)
+            guard flagTracker.maintenanceData?.isCurrentlyEnabled != true else {
+                appContext.pullUpViewService.showDomainProfileInMaintenancePullUp(in: topVC)
+                return }
             
             presentedDomain = .init(domain: domain,
                                     wallet: wallet,
@@ -416,7 +420,6 @@ extension HomeTabRouter: PublicProfileViewDelegate {
         
         UDRouter().showTransferInProgressScreen(domain: domain, in: topVC)
     }
-    
 }
 
 // MARK: - Private methods

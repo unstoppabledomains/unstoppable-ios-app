@@ -15,6 +15,7 @@ enum MaintenanceServiceType {
     case home
     case purchaseDomains
     case vaultedDomains
+    case domainProfile
     
     var title: String {
         switch self {
@@ -30,6 +31,8 @@ enum MaintenanceServiceType {
             return String.Constants.purchaseDomainsMaintenanceMessageTitle.localized()
         case .vaultedDomains:
             return String.Constants.vaultedDomainsMaintenanceMessageTitle.localized()
+        case .domainProfile:
+            return String.Constants.domainProfileMaintenanceMessageTitle.localized()
         }
     }
     
@@ -47,6 +50,8 @@ enum MaintenanceServiceType {
             return String.Constants.purchaseDomainsMaintenanceMessageSubtitle.localized()
         case .vaultedDomains:
             return String.Constants.vaultedDomainsMaintenanceMessageSubtitle.localized()
+        case .domainProfile:
+            return String.Constants.domainProfileMaintenanceMessageSubtitle.localized()
         }
     }
     
@@ -54,7 +59,7 @@ enum MaintenanceServiceType {
         switch self {
         case .full:
             return .udCartLogoRaster
-        case .activity, .explore, .home, .vaultedDomains:
+        case .activity, .explore, .home, .vaultedDomains, .domainProfile:
             return .infoIcon
         case .purchaseDomains:
             return .exploreFilledIcon

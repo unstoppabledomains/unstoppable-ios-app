@@ -534,6 +534,28 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         
         presentPullUpView(in: viewController, pullUp: .walletsMaxNumberLimitReachedAlready, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
+    
+    func showDomainProfileInMaintenancePullUp(in viewController: UIViewController) {
+        showMaintenanceInProgressPullUp(in: viewController, 
+                                        pullUp: .domainProfileMaintenance,
+                                        serviceType: .domainProfile,
+                                        featureFlag: .isMaintenanceProfilesAPIEnabled)
+    }
+    
+    private func showMaintenanceInProgressPullUp(in viewController: UIViewController,
+                                                 pullUp: Analytics.PullUp,
+                                                 serviceType: MaintenanceServiceType,
+                                                 featureFlag: UDFeatureFlag) {
+        let view = MaintenanceDetailsPullUpView(serviceType: serviceType, featureFlag: featureFlag)
+            .frame(height: 380)
+        let vc = UIHostingController(rootView: view)
+        
+        showIfNotPresent(in: viewController,
+                         pullUp: pullUp,
+                         contentView: vc.view,
+                         isDismissAble: true,
+                         height: 380)
+    }
 }
 
 import SwiftUI

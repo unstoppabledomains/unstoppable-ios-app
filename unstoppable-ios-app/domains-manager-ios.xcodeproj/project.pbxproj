@@ -862,6 +862,8 @@
 		C64F6C642C50FE0400D89FEF /* MaintenanceLinkButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C622C50FE0400D89FEF /* MaintenanceLinkButtonView.swift */; };
 		C64F6C662C51086400D89FEF /* MaintenanceDetailsFullView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C652C51086400D89FEF /* MaintenanceDetailsFullView.swift */; };
 		C64F6C672C51086400D89FEF /* MaintenanceDetailsFullView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C652C51086400D89FEF /* MaintenanceDetailsFullView.swift */; };
+		C64F6C692C51192600D89FEF /* MaintenanceDetailsPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C682C51192600D89FEF /* MaintenanceDetailsPullUpView.swift */; };
+		C64F6C6A2C51192600D89FEF /* MaintenanceDetailsPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C682C51192600D89FEF /* MaintenanceDetailsPullUpView.swift */; };
 		C64F8DFE2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */; };
 		C64F8DFF2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */; };
 		C64F8E012B60F2590075D37F /* ViewPullUpConfigurationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */; };
@@ -3325,6 +3327,7 @@
 		C64F6C5F2C50FCB100D89FEF /* MaintenanceServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceServiceType.swift; sourceTree = "<group>"; };
 		C64F6C622C50FE0400D89FEF /* MaintenanceLinkButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceLinkButtonView.swift; sourceTree = "<group>"; };
 		C64F6C652C51086400D89FEF /* MaintenanceDetailsFullView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceDetailsFullView.swift; sourceTree = "<group>"; };
+		C64F6C682C51192600D89FEF /* MaintenanceDetailsPullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceDetailsPullUpView.swift; sourceTree = "<group>"; };
 		C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpDefaultConfiguration.swift; sourceTree = "<group>"; };
 		C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpConfigurationType.swift; sourceTree = "<group>"; };
 		C64F8E032B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpCustomContentConfiguration.swift; sourceTree = "<group>"; };
@@ -5852,20 +5855,13 @@
 			path = ReverseResolution;
 			sourceTree = "<group>";
 		};
-		C64F6C512C4FAF1000D89FEF /* FullMaintenanceMode */ = {
-			isa = PBXGroup;
-			children = (
-				C64F6C522C4FAF2200D89FEF /* FullMaintenanceModeView.swift */,
-			);
-			path = FullMaintenanceMode;
-			sourceTree = "<group>";
-		};
 		C64F6C5B2C50FC5B00D89FEF /* Maintenance */ = {
 			isa = PBXGroup;
 			children = (
-				C64F6C512C4FAF1000D89FEF /* FullMaintenanceMode */,
+				C64F6C522C4FAF2200D89FEF /* FullMaintenanceModeView.swift */,
 				C64F6C5C2C50FCA200D89FEF /* MaintenanceDetailsEmbeddedView.swift */,
 				C64F6C652C51086400D89FEF /* MaintenanceDetailsFullView.swift */,
+				C64F6C682C51192600D89FEF /* MaintenanceDetailsPullUpView.swift */,
 				C64F6C622C50FE0400D89FEF /* MaintenanceLinkButtonView.swift */,
 				C64F6C5F2C50FCB100D89FEF /* MaintenanceServiceType.swift */,
 			);
@@ -9724,6 +9720,7 @@
 				C696989C2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift in Sources */,
 				C6C1E9342B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift in Sources */,
 				C665FC1F29B06896009699D2 /* NotificationsServiceProtocol.swift in Sources */,
+				C64F6C692C51192600D89FEF /* MaintenanceDetailsPullUpView.swift in Sources */,
 				C64528D32AA0CDFC00298121 /* PublicProfileViewDelegate.swift in Sources */,
 				C6D6E52C28193611008C66BB /* BasePresenterProtocol.swift in Sources */,
 				C6D6E4D42817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */,
@@ -11075,6 +11072,7 @@
 				C6F433522BB27AEF000C5E46 /* SendCryptoAssetSuccessView.swift in Sources */,
 				C6C8F8462B217E9600A9834D /* EnterBackupCreateLocalWalletPresenter.swift in Sources */,
 				C6D646FD2B1ED7B900D724AC /* MessagingChatDisplayInfo.swift in Sources */,
+				C64F6C6A2C51192600D89FEF /* MaintenanceDetailsPullUpView.swift in Sources */,
 				C6D646A32B1ED15A00D724AC /* PublicProfileFollowersView.swift in Sources */,
 				C61807EF2B19A70F0032E543 /* PreviewPaymentConfirmationDelegate.swift in Sources */,
 				C67684AA2BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift in Sources */,
