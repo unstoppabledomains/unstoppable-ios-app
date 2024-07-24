@@ -32,14 +32,17 @@ struct MaintenanceModeData: Codable {
     var isCurrentlyEnabled: Bool {
         if isOn {
             /// If there's a startDate set, we check if it is already started,. Otherwise return true
-            if let startDate,
-               startDate < Date() {
-                /// If there's  end date, we check if it is already ended. Otherwise return true
-                if let endDate {
+            if let startDate {
+                if startDate > Date() {
+                    return false
+                } else if let endDate { /// If there's  end date, we check if it is already ended. Otherwise return true
                     return endDate >= Date()
                 }
                 return true
+            } else if let endDate {
+                return endDate >= Date()
             }
+            
             return true
         }
         return false
@@ -47,14 +50,22 @@ struct MaintenanceModeData: Codable {
     
     var linkURL: URL? { URL(string: link ?? "") }
     
-    func onMaintenanceOver(callback: @escaping EmptyCallback) {
+    func onMaintenanceUpdate(callback: @escaping EmptyCallback) {
         let now = Date()
-        if let endDate,
-           endDate > now {
-            let timeInterval = endDate.timeIntervalSince(now) + 1
+        
+        func scheduleUpdatedAfter(date: Date) {
+            let timeInterval = date.timeIntervalSince(now) + 1
             DispatchQueue.main.asyncAfter(deadline: .now() + timeInterval) {
                 callback()
             }
+        }
+        
+        if let startDate,
+           startDate > now {
+            scheduleUpdatedAfter(date: startDate)
+        } else if let endDate,
+           endDate > now {
+            scheduleUpdatedAfter(date: endDate)
         }
     }
 }

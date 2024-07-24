@@ -91,7 +91,7 @@ private extension AppLaunchService {
             guard !isInFullMaintenanceMode else {
                 let maintenanceData: MaintenanceModeData = getFullMaintenanceModeData() ?? .init(isOn: true)
                 await coreAppCoordinator.showFullMaintenanceModeOn(maintenanceData: maintenanceData)
-                maintenanceData.onMaintenanceOver { [weak self] in
+                maintenanceData.onMaintenanceUpdate { [weak self] in
                     self?.updateFullMaintenanceState()
                 }
                 return

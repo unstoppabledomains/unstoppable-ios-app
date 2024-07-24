@@ -864,6 +864,7 @@
 		C64F6C672C51086400D89FEF /* MaintenanceDetailsFullView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C652C51086400D89FEF /* MaintenanceDetailsFullView.swift */; };
 		C64F6C692C51192600D89FEF /* MaintenanceDetailsPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C682C51192600D89FEF /* MaintenanceDetailsPullUpView.swift */; };
 		C64F6C6A2C51192600D89FEF /* MaintenanceDetailsPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C682C51192600D89FEF /* MaintenanceDetailsPullUpView.swift */; };
+		C64F6C6C2C5139B900D89FEF /* MaintenanceModeDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C6B2C5139B900D89FEF /* MaintenanceModeDataTests.swift */; };
 		C64F8DFE2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */; };
 		C64F8DFF2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */; };
 		C64F8E012B60F2590075D37F /* ViewPullUpConfigurationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */; };
@@ -3328,6 +3329,7 @@
 		C64F6C622C50FE0400D89FEF /* MaintenanceLinkButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceLinkButtonView.swift; sourceTree = "<group>"; };
 		C64F6C652C51086400D89FEF /* MaintenanceDetailsFullView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceDetailsFullView.swift; sourceTree = "<group>"; };
 		C64F6C682C51192600D89FEF /* MaintenanceDetailsPullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceDetailsPullUpView.swift; sourceTree = "<group>"; };
+		C64F6C6B2C5139B900D89FEF /* MaintenanceModeDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceModeDataTests.swift; sourceTree = "<group>"; };
 		C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpDefaultConfiguration.swift; sourceTree = "<group>"; };
 		C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpConfigurationType.swift; sourceTree = "<group>"; };
 		C64F8E032B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpCustomContentConfiguration.swift; sourceTree = "<group>"; };
@@ -4417,6 +4419,7 @@
 				C640F3572C06FCB6009EB0F9 /* MPCWalletPasswordValidatorTests.swift */,
 				C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */,
 				30C0F94927D8CB250060D283 /* PrivateKeyStorageTests.swift */,
+				C64F6C6B2C5139B900D89FEF /* MaintenanceModeDataTests.swift */,
 				C62900FD2BAAD126008B35A2 /* NumberPadInputInterpreterTests.swift */,
 				29EDB622290A94E700A0BD08 /* ProfilesTests.swift */,
 				C6BEC9502C004B0700F21FB6 /* RequestsLimitControllerTests.swift */,
@@ -10220,6 +10223,7 @@
 				C6DF9876290F83020098733A /* ArrayExtensionsTests.swift in Sources */,
 				C617CFA02B9ED9A400663516 /* TestableUDDomainsService.swift in Sources */,
 				C6DF9873290F83020098733A /* UDWalletsServiceTests.swift in Sources */,
+				C64F6C6C2C5139B900D89FEF /* MaintenanceModeDataTests.swift in Sources */,
 				C6DF9872290F83020098733A /* TransactionsStorageTests.swift in Sources */,
 				C66FFD052B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift in Sources */,
 				C617CFA82B9EDA2F00663516 /* TestableWalletNFTsService.swift in Sources */,
