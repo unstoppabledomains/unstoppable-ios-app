@@ -11,7 +11,7 @@ struct FullMaintenanceModeView: View, ViewAnalyticsLogger {
     
     @Environment(\.udFeatureFlagsService) var udFeatureFlagsService
     var analyticsName: Analytics.ViewName { .fullMaintenance }
-    @StateObject var flagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceFullEnabled)
+    @StateObject private var flagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceFullEnabled)
     
     static func instance(maintenanceData: MaintenanceModeData) -> UIViewController {
         let view = FullMaintenanceModeView()
@@ -34,7 +34,7 @@ struct FullMaintenanceModeView: View, ViewAnalyticsLogger {
             }
             .multilineTextAlignment(.center)
             
-            linkButton()
+            MaintenanceLinkButtonView(maintenanceData: maintenanceData)
         }
         .animation(.default, value: UUID())
         .trackAppearanceAnalytics(analyticsLogger: self)

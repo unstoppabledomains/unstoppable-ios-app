@@ -854,6 +854,12 @@
 		C64F6C572C4FD48000D89FEF /* MaintenanceModeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C552C4FD48000D89FEF /* MaintenanceModeData.swift */; };
 		C64F6C592C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C582C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift */; };
 		C64F6C5A2C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C582C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift */; };
+		C64F6C5D2C50FCA200D89FEF /* MaintenanceDetailsEmbeddedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C5C2C50FCA200D89FEF /* MaintenanceDetailsEmbeddedView.swift */; };
+		C64F6C5E2C50FCA200D89FEF /* MaintenanceDetailsEmbeddedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C5C2C50FCA200D89FEF /* MaintenanceDetailsEmbeddedView.swift */; };
+		C64F6C602C50FCB100D89FEF /* MaintenanceServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C5F2C50FCB100D89FEF /* MaintenanceServiceType.swift */; };
+		C64F6C612C50FCB100D89FEF /* MaintenanceServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C5F2C50FCB100D89FEF /* MaintenanceServiceType.swift */; };
+		C64F6C632C50FE0400D89FEF /* MaintenanceLinkButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C622C50FE0400D89FEF /* MaintenanceLinkButtonView.swift */; };
+		C64F6C642C50FE0400D89FEF /* MaintenanceLinkButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C622C50FE0400D89FEF /* MaintenanceLinkButtonView.swift */; };
 		C64F8DFE2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */; };
 		C64F8DFF2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */; };
 		C64F8E012B60F2590075D37F /* ViewPullUpConfigurationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */; };
@@ -3313,6 +3319,9 @@
 		C64F6C522C4FAF2200D89FEF /* FullMaintenanceModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullMaintenanceModeView.swift; sourceTree = "<group>"; };
 		C64F6C552C4FD48000D89FEF /* MaintenanceModeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceModeData.swift; sourceTree = "<group>"; };
 		C64F6C582C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDMaintenanceModeFeatureFlagTracker.swift; sourceTree = "<group>"; };
+		C64F6C5C2C50FCA200D89FEF /* MaintenanceDetailsEmbeddedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceDetailsEmbeddedView.swift; sourceTree = "<group>"; };
+		C64F6C5F2C50FCB100D89FEF /* MaintenanceServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceServiceType.swift; sourceTree = "<group>"; };
+		C64F6C622C50FE0400D89FEF /* MaintenanceLinkButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceLinkButtonView.swift; sourceTree = "<group>"; };
 		C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpDefaultConfiguration.swift; sourceTree = "<group>"; };
 		C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpConfigurationType.swift; sourceTree = "<group>"; };
 		C64F8E032B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpCustomContentConfiguration.swift; sourceTree = "<group>"; };
@@ -5848,6 +5857,17 @@
 			path = FullMaintenanceMode;
 			sourceTree = "<group>";
 		};
+		C64F6C5B2C50FC5B00D89FEF /* Maintenance */ = {
+			isa = PBXGroup;
+			children = (
+				C64F6C512C4FAF1000D89FEF /* FullMaintenanceMode */,
+				C64F6C5C2C50FCA200D89FEF /* MaintenanceDetailsEmbeddedView.swift */,
+				C64F6C622C50FE0400D89FEF /* MaintenanceLinkButtonView.swift */,
+				C64F6C5F2C50FCB100D89FEF /* MaintenanceServiceType.swift */,
+			);
+			path = Maintenance;
+			sourceTree = "<group>";
+		};
 		C64F8DFC2B60F2010075D37F /* ViewPullUp */ = {
 			isa = PBXGroup;
 			children = (
@@ -8112,11 +8132,11 @@
 				C60CA26228324E7C00AB1B36 /* DomainDetails */,
 				C63A350828F006FB0057D34B /* DomainProfile */,
 				C66804B7280D9EC7007E6390 /* EnterPasscode */,
-				C64F6C512C4FAF1000D89FEF /* FullMaintenanceMode */,
 				C6A89C622B31722E008AB043 /* HotFeatureSuggestion */,
 				C685A9782840BF4D00E54044 /* InfoScreen */,
 				C6637A6E28100D180000AE56 /* LaunchViewController */,
 				C63DD35D29C89FCB002D45B2 /* LoginViewController */,
+				C64F6C5B2C50FC5B00D89FEF /* Maintenance */,
 				C65271DD2A148D74001A084C /* Messaging */,
 				C61B3E68283E249800500B6D /* MintDomains */,
 				30BFA4CE27DE001B00644CD5 /* Onboarding */,
@@ -9075,6 +9095,7 @@
 				29BECD0E2979BD7B00662FC1 /* CloudStorage.swift in Sources */,
 				C6D0F438283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */,
 				C6B65F722B550F6B006D1812 /* DomainNFTsStorage.swift in Sources */,
+				C64F6C632C50FE0400D89FEF /* MaintenanceLinkButtonView.swift in Sources */,
 				307B1D392603C0C4007B14C3 /* UDWalletEthereum.swift in Sources */,
 				C60EE80F2ACD203000D699C7 /* NetworkService+MessagingApi.swift in Sources */,
 				C6D9E28928533783002CDAC2 /* UDDomainSharingCardView.swift in Sources */,
@@ -9464,6 +9485,7 @@
 				C62BDA412B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */,
 				C62900DF2BAAB1A8008B35A2 /* UDTabsPickerView.swift in Sources */,
 				C61B3E72283E43D000500B6D /* EnterEmailViewPresenter.swift in Sources */,
+				C64F6C602C50FCB100D89FEF /* MaintenanceServiceType.swift in Sources */,
 				C64F6C4F2C4E72A900D89FEF /* EthereumSendTransactionPayload.swift in Sources */,
 				C6ED320D295E8EDE00BC6919 /* NonEmptyArray.swift in Sources */,
 				C63DBCCB2BE49376008F3D2C /* NetworkService+Common.swift in Sources */,
@@ -10124,6 +10146,7 @@
 				C68BEC142A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift in Sources */,
 				C6C9958A289D313D00367362 /* CNavigationBarBackButton.swift in Sources */,
 				C6E6A001288AEAC6000A8346 /* ExternalEventsStorage.swift in Sources */,
+				C64F6C5D2C50FCA200D89FEF /* MaintenanceDetailsEmbeddedView.swift in Sources */,
 				C6A3592A2BB5586700B1209A /* NavigationTrackerViewModifier.swift in Sources */,
 				C666E0A129CB3FEA0003DECB /* ParkedDomainCell.swift in Sources */,
 				29AEA04B292F7D60003BB5B4 /* SecurePersistedStorage.swift in Sources */,
@@ -10817,6 +10840,7 @@
 				C6C8F8272B217D3500A9834D /* WCCompatibleWallet.swift in Sources */,
 				C65CEB8C2B674FC700A13B34 /* UDWalletsServiceEnvironmentKey.swift in Sources */,
 				C6C8F83D2B217E9600A9834D /* OnboardingBackupWalletPresenter.swift in Sources */,
+				C64F6C5E2C50FCA200D89FEF /* MaintenanceDetailsEmbeddedView.swift in Sources */,
 				C6D645C82B1DBD3900D724AC /* CNavigationBar.swift in Sources */,
 				C618085B2B19BBFE0032E543 /* UDTextFieldView.swift in Sources */,
 				C68F15682BD645CE0049BFA2 /* MPCActivateWalletView.swift in Sources */,
@@ -10848,6 +10872,7 @@
 				C6FAED842B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift in Sources */,
 				C61807BF2B19A2CC0032E543 /* AppContextProtocol.swift in Sources */,
 				C61807D62B19A4580032E543 /* ExternalEventsServiceProtocol.swift in Sources */,
+				C64F6C612C50FCB100D89FEF /* MaintenanceServiceType.swift in Sources */,
 				C650E2942B9E97F2002C120A /* UDButtonStyle+Large.swift in Sources */,
 				C618084E2B19B9FD0032E543 /* PreviewFirebasePurchaseDomainsService.swift in Sources */,
 				C6B65F952B5665F0006D1812 /* HomeTabView.swift in Sources */,
@@ -10874,6 +10899,7 @@
 				C6C8F94D2B21853900A9834D /* AppReviewServiceProtocol.swift in Sources */,
 				C661DC2B2C06DB6A00844AF5 /* MPCOnboardingPurchaseAlreadyHaveWalletViewController.swift in Sources */,
 				C6960C3B2B1997DC00B79E28 /* UnsConfigManager.swift in Sources */,
+				C64F6C642C50FE0400D89FEF /* MaintenanceLinkButtonView.swift in Sources */,
 				C62900EC2BAAC135008B35A2 /* NavigationTopSafeAreaOffset.swift in Sources */,
 				C6C8F8792B21827700A9834D /* LoginInAppViewPresenter.swift in Sources */,
 				C6C8F8342B217E9600A9834D /* CreateLocalWalletRecoveryPhrasePresenter.swift in Sources */,

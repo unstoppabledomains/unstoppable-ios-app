@@ -1181,3 +1181,5 @@ More tabs are coming in the next updates.";
 // Maintenance
 "FULL_MAINTENANCE_MESSAGE_TITLE" = "Our services are in a maintenance mode";
 "FULL_MAINTENANCE_MESSAGE_SUBTITLE" = "Do not worry, we'll be back shortly.\nThank you for your patience!";
+"ACTIVITY_MAINTENANCE_MESSAGE_TITLE" = "Activity is currently unavailable";
+"ACTIVITY_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";

@@ -1287,6 +1287,8 @@ extension String {
         // Maintenance
         static let fullMaintenanceMessageTitle = "FULL_MAINTENANCE_MESSAGE_TITLE"
         static let fullMaintenanceMessageSubtitle = "FULL_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let activityMaintenanceMessageTitle = "ACTIVITY_MAINTENANCE_MESSAGE_TITLE"
+        static let activityMaintenanceMessageSubtitle = "ACTIVITY_MAINTENANCE_MESSAGE_SUBTITLE"
     }
     
     enum SystemImage: String {

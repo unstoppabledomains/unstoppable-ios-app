@@ -8,12 +8,26 @@
 import Foundation
 
 struct MaintenanceModeData: Codable {
-    let isOn: Bool
+    private let isOn: Bool
     var link: String?
     var title: String?
     var message: String?
     var startDate: Date?
     var endDate: Date?
+    
+    init(isOn: Bool, 
+         link: String? = nil,
+         title: String? = nil,
+         message: String? = nil,
+         startDate: Date? = nil,
+         endDate: Date? = nil) {
+        self.isOn = isOn
+        self.link = link
+        self.title = title
+        self.message = message
+        self.startDate = startDate
+        self.endDate = endDate
+    }
     
     var isCurrentlyEnabled: Bool {
         if isOn {
