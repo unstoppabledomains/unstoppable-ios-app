@@ -1187,3 +1187,7 @@ More tabs are coming in the next updates.";
 "EXPLORE_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
 "HOME_MAINTENANCE_MESSAGE_TITLE" = "Displaying your tokens, collectibles and domains in the app is currently unavailable";
 "HOME_MAINTENANCE_MESSAGE_SUBTITLE" = "All your assets are safe. It is only the problem with API that display your assets in the app. We're working to make it available soon.";
+"PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_TITLE" = "Searching for and purchasing domains is currently unavailable";
+"PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"VAULTED_DOMAINS_MAINTENANCE_MESSAGE_TITLE" = "Displaying imported vaults is currently unavailable.";
+"VAULTED_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE" = "If you have imported vaults previously and do not see them now, don't worry. We're working to make them available soon.";

@@ -22,10 +22,11 @@ enum UDFeatureFlag: String, CaseIterable {
     case isMaintenanceFullEnabled = "mobile-maintenance-full"
     case isMaintenanceOKLinkEnabled = "mobile-maintenance-oklink"
     case isMaintenanceProfilesAPIEnabled = "mobile-maintenance-profiles-api"
+    case isMaintenanceEcommEnabled = "mobile-maintenance-ecomm"
     
     var defaultValue: Bool {
         switch self {
-        case .communityMediaEnabled, .isBuyCryptoEnabled, .isMPCMessagingEnabled, .isMPCWCNativeEnabled, .isMaintenanceFullEnabled, .isMaintenanceOKLinkEnabled, .isMaintenanceProfilesAPIEnabled:
+        case .communityMediaEnabled, .isBuyCryptoEnabled, .isMPCMessagingEnabled, .isMPCWCNativeEnabled, .isMaintenanceFullEnabled, .isMaintenanceOKLinkEnabled, .isMaintenanceProfilesAPIEnabled, .isMaintenanceEcommEnabled:
             return false
         case .isSendCryptoEnabled, .isMPCWalletEnabled, .isMPCSendCryptoEnabled, .isMPCSignatureEnabled, .isMPCPurchaseEnabled:
             return true
@@ -35,7 +36,7 @@ enum UDFeatureFlag: String, CaseIterable {
     /// This flag has JSON structure 
     var isStructuredFlag: Bool {
         switch self {
-        case .isMaintenanceFullEnabled, .isMaintenanceOKLinkEnabled, .isMaintenanceProfilesAPIEnabled:
+        case .isMaintenanceFullEnabled, .isMaintenanceOKLinkEnabled, .isMaintenanceProfilesAPIEnabled, .isMaintenanceEcommEnabled:
             return true
         case .isSendCryptoEnabled, .isMPCWalletEnabled, .isMPCSendCryptoEnabled, .isMPCSignatureEnabled, .isMPCPurchaseEnabled, .communityMediaEnabled, .isBuyCryptoEnabled, .isMPCMessagingEnabled, .isMPCWCNativeEnabled:
             return false

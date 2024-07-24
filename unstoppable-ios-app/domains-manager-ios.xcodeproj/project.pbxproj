@@ -860,6 +860,8 @@
 		C64F6C612C50FCB100D89FEF /* MaintenanceServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C5F2C50FCB100D89FEF /* MaintenanceServiceType.swift */; };
 		C64F6C632C50FE0400D89FEF /* MaintenanceLinkButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C622C50FE0400D89FEF /* MaintenanceLinkButtonView.swift */; };
 		C64F6C642C50FE0400D89FEF /* MaintenanceLinkButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C622C50FE0400D89FEF /* MaintenanceLinkButtonView.swift */; };
+		C64F6C662C51086400D89FEF /* MaintenanceDetailsFullView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C652C51086400D89FEF /* MaintenanceDetailsFullView.swift */; };
+		C64F6C672C51086400D89FEF /* MaintenanceDetailsFullView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C652C51086400D89FEF /* MaintenanceDetailsFullView.swift */; };
 		C64F8DFE2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */; };
 		C64F8DFF2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */; };
 		C64F8E012B60F2590075D37F /* ViewPullUpConfigurationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */; };
@@ -3322,6 +3324,7 @@
 		C64F6C5C2C50FCA200D89FEF /* MaintenanceDetailsEmbeddedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceDetailsEmbeddedView.swift; sourceTree = "<group>"; };
 		C64F6C5F2C50FCB100D89FEF /* MaintenanceServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceServiceType.swift; sourceTree = "<group>"; };
 		C64F6C622C50FE0400D89FEF /* MaintenanceLinkButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceLinkButtonView.swift; sourceTree = "<group>"; };
+		C64F6C652C51086400D89FEF /* MaintenanceDetailsFullView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceDetailsFullView.swift; sourceTree = "<group>"; };
 		C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpDefaultConfiguration.swift; sourceTree = "<group>"; };
 		C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpConfigurationType.swift; sourceTree = "<group>"; };
 		C64F8E032B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpCustomContentConfiguration.swift; sourceTree = "<group>"; };
@@ -5862,6 +5865,7 @@
 			children = (
 				C64F6C512C4FAF1000D89FEF /* FullMaintenanceMode */,
 				C64F6C5C2C50FCA200D89FEF /* MaintenanceDetailsEmbeddedView.swift */,
+				C64F6C652C51086400D89FEF /* MaintenanceDetailsFullView.swift */,
 				C64F6C622C50FE0400D89FEF /* MaintenanceLinkButtonView.swift */,
 				C64F6C5F2C50FCB100D89FEF /* MaintenanceServiceType.swift */,
 			);
@@ -9676,6 +9680,7 @@
 				C67213D62BAA8DB60075B9C7 /* SendCryptoAssetSelectReceiverFollowingRowView.swift in Sources */,
 				C669C3A52912AD4200837F21 /* DomainProfileBadgeCell.swift in Sources */,
 				C61ECD742A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */,
+				C64F6C662C51086400D89FEF /* MaintenanceDetailsFullView.swift in Sources */,
 				C673BA3B2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift in Sources */,
 				C66804DD280D9EC8007E6390 /* VerifyPasscodeViewController.swift in Sources */,
 				309FDFBC265E7C0C00AE53D3 /* StripePaymentHelper.swift in Sources */,
@@ -10879,6 +10884,7 @@
 				C62900EF2BAAC5C0008B35A2 /* BalanceTokenIconsView.swift in Sources */,
 				C67684A42BCEB9AC0062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift in Sources */,
 				C6D647212B1ED91F00D724AC /* PullUpViewService.swift in Sources */,
+				C64F6C672C51086400D89FEF /* MaintenanceDetailsFullView.swift in Sources */,
 				C665566E2BF70D6A00F0BD7A /* PurchaseMPCWalletUDAuthView.swift in Sources */,
 				C6D8FF1F2B82EB740094A21E /* TextMessageRowView.swift in Sources */,
 				C6D645DA2B1DBD4D00D724AC /* NavBarBackButtonTransitionPerformer.swift in Sources */,

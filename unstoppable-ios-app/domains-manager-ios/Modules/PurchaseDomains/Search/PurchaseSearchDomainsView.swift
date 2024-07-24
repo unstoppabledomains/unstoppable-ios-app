@@ -12,6 +12,7 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
     @StateObject private var debounceObject = DebounceObject()
+    @StateObject private var ecommFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceEcommEnabled)
     @State private var suggestions: [DomainToPurchaseSuggestion] = []
     @State private var searchResult: [DomainToPurchase] = []
     @State private var isLoading = false
@@ -28,6 +29,32 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { .purchaseDomainsSearch }
 
     var body: some View {
+        currentContentView()
+        .animation(.default, value: UUID())
+        .background(Color.backgroundDefault)
+        .onChange(of: scrollOffset) { newValue in
+            scrollOffsetCallback?(newValue)
+        }
+        .viewPullUp($pullUp)
+        .onAppear(perform: onAppear)
+    }
+}
+
+// MARK: - Views
+private extension PurchaseSearchDomainsView {
+    @ViewBuilder
+    func currentContentView() -> some View {
+        if ecommFlagTracker.maintenanceData?.isCurrentlyEnabled == true {
+            MaintenanceDetailsFullView(serviceType: .purchaseDomains,
+                                           maintenanceData: ecommFlagTracker.maintenanceData)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            contentView()
+        }
+    }
+    
+    @ViewBuilder
+    func contentView() -> some View {
         GeometryReader { geom in
             ZStack {
                 OffsetObservingScrollView(offset: $scrollOffset) {
@@ -41,18 +68,8 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
                     .offset(y: (geom.size.height / 2) - searchInspirationButtonOffsetToKeyboard)
             }
         }
-        .animation(.default, value: UUID())
-        .background(Color.backgroundDefault)
-        .onChange(of: scrollOffset) { newValue in
-            scrollOffsetCallback?(newValue)
-        }
-        .viewPullUp($pullUp)
-        .onAppear(perform: onAppear)
     }
-}
-
-// MARK: - Views
-private extension PurchaseSearchDomainsView {
+    
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {

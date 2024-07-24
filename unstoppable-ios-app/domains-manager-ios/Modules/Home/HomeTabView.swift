@@ -110,5 +110,6 @@ private extension HomeTabView {
 }
 
 #Preview {
-    HomeTabView(tabRouter: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!)))
+//    HomeTabView(tabRouter: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!)))
+    HomeTabView(tabRouter: HomeTabRouter(profile: MockEntitiesFabric.Profile.createWebAccountProfile()))
 }

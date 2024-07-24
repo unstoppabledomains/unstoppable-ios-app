@@ -12,7 +12,8 @@ struct SettingsView: View, ViewAnalyticsLogger {
     @Environment(\.udFeatureFlagsService) var udFeatureFlagsService
     @Environment(\.userProfilesService) var userProfilesService
     @EnvironmentObject private var tabRouter: HomeTabRouter
-    
+    @StateObject private var ecommFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceEcommEnabled)
+
     @State var initialAction: InitialAction
     
     @State private var profiles: [UserProfile] = []
@@ -329,7 +330,7 @@ private extension SettingsView {
     
     var settingsItemsToShow: [SettingsItems] {
         var items = SettingsItems.allCases
-        if webUser != nil {
+        if webUser != nil || ecommFlagTracker.maintenanceData?.isCurrentlyEnabled == true {
             items.removeAll(where: { $0 == .viewVaulted })
         }
         return items

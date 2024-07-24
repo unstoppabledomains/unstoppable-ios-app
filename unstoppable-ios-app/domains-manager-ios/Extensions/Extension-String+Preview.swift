@@ -1293,6 +1293,10 @@ extension String {
         static let exploreMaintenanceMessageSubtitle = "EXPLORE_MAINTENANCE_MESSAGE_SUBTITLE"
         static let homeMaintenanceMessageTitle = "HOME_MAINTENANCE_MESSAGE_TITLE"
         static let homeMaintenanceMessageSubtitle = "HOME_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let purchaseDomainsMaintenanceMessageTitle = "PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_TITLE"
+        static let purchaseDomainsMaintenanceMessageSubtitle = "PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let vaultedDomainsMaintenanceMessageTitle = "VAULTED_DOMAINS_MAINTENANCE_MESSAGE_TITLE"
+        static let vaultedDomainsMaintenanceMessageSubtitle = "VAULTED_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE"
     }
     
     enum SystemImage: String {

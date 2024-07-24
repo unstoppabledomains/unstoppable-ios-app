@@ -20,48 +20,8 @@ struct FullMaintenanceModeView: View, ViewAnalyticsLogger {
     }
     
     var body: some View {
-        VStack(spacing: 24) {
-            Image.udCartLogoRaster
-                .resizable()
-                .renderingMode(.template)
-                .squareFrame(56)
-                .foregroundStyle(Color.foregroundSecondary)
-            VStack(spacing: 16) {
-                Text(title)
-                    .titleText()
-                Text(subtitle)
-                    .subtitleText()
-            }
-            .multilineTextAlignment(.center)
-            
-            MaintenanceLinkButtonView(maintenanceData: maintenanceData)
-        }
-        .animation(.default, value: UUID())
+        MaintenanceDetailsFullView(serviceType: .full, maintenanceData: flagTracker.maintenanceData)
         .trackAppearanceAnalytics(analyticsLogger: self)
-    }
-}
-
-// MARK: - Private methods
-private extension FullMaintenanceModeView {
-    var maintenanceData: MaintenanceModeData? { flagTracker.maintenanceData }
-    
-    var title: String {
-        maintenanceData?.title ?? String.Constants.fullMaintenanceMessageTitle.localized()
-    }
-    
-    var subtitle: String {
-        maintenanceData?.message ?? String.Constants.fullMaintenanceMessageSubtitle.localized()
-    }
-    
-    @ViewBuilder
-    func linkButton() -> some View {
-        if let url = maintenanceData?.linkURL {
-            UDButtonView(text: String.Constants.learnMore.localized(),
-                         style: .medium(.ghostPrimary)) {
-                logButtonPressedAnalyticEvents(button: .learnMore)
-                openLinkExternally(.generic(url: url.absoluteString))
-            }
-        }
     }
 }
 
