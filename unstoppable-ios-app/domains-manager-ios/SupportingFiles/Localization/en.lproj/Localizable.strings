@@ -1195,3 +1195,5 @@ More tabs are coming in the next updates.";
 "DOMAIN_PROFILE_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
 "SEND_CRYPTO_MAINTENANCE_MESSAGE_TITLE" = "Sending crypto is currently unavailable\nusing this wallet";
 "SEND_CRYPTO_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.\nMeantime try to switch to another wallet.";
+"SIGN_MESSAGES_MAINTENANCE_MESSAGE_TITLE" = "Signing messages is currently unavailable";
+"SIGN_MESSAGES_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";

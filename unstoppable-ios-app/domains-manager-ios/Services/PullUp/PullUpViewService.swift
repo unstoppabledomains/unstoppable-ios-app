@@ -542,6 +542,13 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                         featureFlag: .isMaintenanceProfilesAPIEnabled)
     }
     
+    func showMessageSigningInMaintenancePullUp(in viewController: UIViewController) {
+        showMaintenanceInProgressPullUp(in: viewController,
+                                        pullUp: .signMessagesMaintenance,
+                                        serviceType: .signMessages,
+                                        featureFlag: .isMaintenanceMPCEnabled)
+    }
+    
     private func showMaintenanceInProgressPullUp(in viewController: UIViewController,
                                                  pullUp: Analytics.PullUp,
                                                  serviceType: MaintenanceServiceType,

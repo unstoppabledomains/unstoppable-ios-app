@@ -1301,6 +1301,8 @@ extension String {
         static let domainProfileMaintenanceMessageSubtitle = "DOMAIN_PROFILE_MAINTENANCE_MESSAGE_SUBTITLE"
         static let sendCryptoMaintenanceMessageTitle = "SEND_CRYPTO_MAINTENANCE_MESSAGE_TITLE"
         static let sendCryptoMaintenanceMessageSubtitle = "SEND_CRYPTO_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let signMessagesMaintenanceMessageTitle = "SIGN_MESSAGES_MAINTENANCE_MESSAGE_TITLE"
+        static let signMessagesMaintenanceMessageSubtitle = "SIGN_MESSAGES_MAINTENANCE_MESSAGE_SUBTITLE"
     }
     
     enum SystemImage: String {

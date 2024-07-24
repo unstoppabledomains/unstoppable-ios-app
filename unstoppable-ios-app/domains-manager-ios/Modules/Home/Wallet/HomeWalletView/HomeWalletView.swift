@@ -15,6 +15,7 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
     @EnvironmentObject var tabRouter: HomeTabRouter
     @StateObject var viewModel: HomeWalletViewModel
     @StateObject private var profilesAPIFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceProfilesAPIEnabled)
+    @StateObject private var mpcFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceMPCEnabled)
     @State private var isOtherScreenPresented: Bool = false
     @Binding var navigationState: NavigationStateManager?
     @Binding var isTabBarVisible: Bool
@@ -279,14 +280,19 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func qrNavButtonView() -> some View {
-        NavigationLink(value: HomeWalletNavigationDestination.qrScanner(selectedWallet: viewModel.selectedWallet)) {
+        Button {
+            if case .mpc = viewModel.selectedWallet.udWallet.type,
+               mpcFlagTracker.maintenanceData?.isCurrentlyEnabled == true {
+                tabRouter.showSigningMessagesInMaintenancePullUp()
+            } else {
+                tabRouter.walletViewNavPath.append(.qrScanner(selectedWallet: viewModel.selectedWallet))
+                logButtonPressedAnalyticEvents(button: .qrCode)
+            }
+        } label: {
             Image.qrBarCodeIcon
                 .resizable()
                 .squareFrame(24)
                 .foregroundStyle(Color.foregroundDefault)
-        }
-        .onButtonTap {
-            logButtonPressedAnalyticEvents(button: .qrCode)
         }
     }
     

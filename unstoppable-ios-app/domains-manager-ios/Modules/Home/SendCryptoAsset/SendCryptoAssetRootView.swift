@@ -12,6 +12,7 @@ struct SendCryptoAssetRootView: View {
     @Environment(\.presentationMode) private var presentationMode
     @StateObject var viewModel: SendCryptoAssetViewModel
     @StateObject private var infuraFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceInfuraEnabled)
+    @StateObject private var mpcFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceMPCEnabled)
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -44,18 +45,18 @@ private extension SendCryptoAssetRootView {
 // MARK: - Private methods
 private extension SendCryptoAssetRootView {
     var isMaintenanceOnForSelectedWallet: Bool {
-        switch viewModel.sourceWallet.udWallet.type {
-        case .mpc:
-            return infuraFlagTracker.maintenanceData?.isCurrentlyEnabled == true
-        case .externalLinked:
-            return false
-        default:
-            return infuraFlagTracker.maintenanceData?.isCurrentlyEnabled == true
-        }
+        affectedServiceMaintenanceData?.isCurrentlyEnabled == true
     }
     
     var affectedServiceMaintenanceData: MaintenanceModeData? {
-        infuraFlagTracker.maintenanceData
+        switch viewModel.sourceWallet.udWallet.type {
+        case .mpc:
+            return mpcFlagTracker.maintenanceData
+        case .externalLinked:
+            return nil
+        default:
+            return infuraFlagTracker.maintenanceData
+        }
     }
     
     @ViewBuilder

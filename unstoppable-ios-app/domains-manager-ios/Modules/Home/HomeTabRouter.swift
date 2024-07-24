@@ -341,6 +341,12 @@ extension HomeTabRouter {
             }
         }
     }
+    
+    func showSigningMessagesInMaintenancePullUp() {
+        guard let topVC else { return }
+        
+        appContext.pullUpViewService.showMessageSigningInMaintenancePullUp(in: topVC)
+    }
 }
 
 // MARK: - Pull up related
