@@ -67,7 +67,7 @@ class BaseSignTransactionView: UIView, SelfNameable, NibInstantiateable {
         
         let walletInfoStack = UIStackView(arrangedSubviews: [walletImageView, walletNameButton])
         walletInfoStack.axis = .horizontal
-        walletInfoStack.spacing = -2
+        walletInfoStack.spacing = 8
         walletInfoStack.alignment = .center
 
         let walletLabel = UILabel()
@@ -149,7 +149,7 @@ extension BaseSignTransactionView {
                 walletImageView.isHidden = wallet.rrDomain == nil
             }
         }
-        walletNameButton?.setTitle(wallet.domainOrDisplayName, image: isSelectable ? .chevronDown : nil)
+        walletNameButton?.setTitle(wallet.domainOrDisplayName, image: nil)
         walletNameButton?.setSelectorEnabled(isSelectable)
     }
     

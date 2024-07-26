@@ -39,12 +39,13 @@ final class KeyboardService {
     
     static let shared = KeyboardService()
     
-    @Published
-    private(set) var keyboardFrame: CGRect = .zero
+    @Published private(set) var keyboardFrame: CGRect = .zero
     var keyboardFramePublisher: Published<CGRect>.Publisher { $keyboardFrame }
+    
+    @Published private(set) var isKeyboardOpened = false
+    var keyboardOpenedPublisher: Published<Bool>.Publisher { $isKeyboardOpened }
+    
     private(set) var keyboardAnimationDuration: TimeInterval = 0.25
-    private(set) var keyboardAppeared = false
-    private(set) var isKeyboardOpened = false
     private var cancellables: Set<AnyCancellable> = []
     private var listeners: [KeyboardServiceListenerHolder] = []
     

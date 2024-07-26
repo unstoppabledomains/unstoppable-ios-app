@@ -222,6 +222,7 @@ extension String {
         static let viewInBrowser = "VIEW_IN_BROWSER"
         static let tokens = "TOKENS"
         static let collectibles = "COLLECTIBLES"
+        static let collectible = "COLLECTIBLE"
         static let receive = "RECEIVE"
         static let profile = "PROFILE"
         static let more = "MORE"
@@ -242,6 +243,13 @@ extension String {
         static let new = "NEW"
         static let confirmEmail = "CONFIRM_EMAIL"
         static let setup = "SETUP"
+        static let networkFee = "NETWORK_FEE"
+        static let reconnect = "RECONNECT"
+        static let sent = "SENT"
+        static let filter = "FILTER"
+        static let reset = "RESET"
+        static let chains = "CHAINS"
+        static let activityWith = "ACTIVITY_WITH"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -457,7 +465,8 @@ extension String {
         static let settingsAppearanceChooseTheme = "SETTINGS_APPEARANCE_CHOOSE_THEME"
         static let youAreUnstoppable = "YOU_ARE_UNSTOPPABLE"
         static let feedbackEmailSubject = "FEEDBACK_EMAIL_SUBJECT"
-
+        static let viewOrMoveVaultedDomains = "VIEW_OR_MOVE_VAULTED_DOMAINS"
+        
         // Wallets list
         static let manageICloudBackups = "MANAGE_ICLOUD_BACKUPS"
         static let restoreFromICloudBackup = "RESTORE_FROM_ICLOUD_BACKUP"
@@ -1194,6 +1203,8 @@ extension String {
         static let noRecordsToSendAnyCryptoTitle = "NO_RECORDS_TO_SEND_ANY_CRYPTO_TITLE"
         static let noRecordsToSendCryptoPullUpTitle = "NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE"
         static let noRecordsToSendCryptoMessage = "NO_RECORDS_TO_SEND_CRYPTO_MESSAGE"
+        static let sentSuccessfully = "SENT_SUCCESSFULLY"
+        static let receivedSuccessfully = "RECEIVED_SUCCESSFULLY"
         
         // Import MPC
         static let importMPCWalletTitle = "IMPORT_MPC_WALLET_TITLE"
@@ -1259,6 +1270,7 @@ extension String {
         static let mpcTakeoverInProgressSubtitle = "MPC_TAKEOVER_IN_PROGRESS_SUBTITLE"
         static let contactSupport = "CONTACT_SUPPORT"
         static let mpcWalletDefaultName = "MPC_WALLET_DEFAULT_NAME"
+        static let sendCrypto = "SEND_CRYPTO"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"
@@ -1266,10 +1278,30 @@ extension String {
         static let reviewTxAgain = "REVIEW_TX_AGAIN"
         static let confirmAndSend = "CONFIRM_AND_SEND"
         
-        static let parkedDomains = "PARKED_DOMAINS"
+        static let domainVault = "DOMAIN_VAULT"
         static let backedUp = "BACKED_UP"
         static let backUp = "BACK_UP"
         static let setAsPrimaryDomain = "SET_AS_PRIMARY_DOMAIN"
+        
+        // Maintenance
+        static let fullMaintenanceMessageTitle = "FULL_MAINTENANCE_MESSAGE_TITLE"
+        static let fullMaintenanceMessageSubtitle = "FULL_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let activityMaintenanceMessageTitle = "ACTIVITY_MAINTENANCE_MESSAGE_TITLE"
+        static let activityMaintenanceMessageSubtitle = "ACTIVITY_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let exploreMaintenanceMessageTitle = "EXPLORE_MAINTENANCE_MESSAGE_TITLE"
+        static let exploreMaintenanceMessageSubtitle = "EXPLORE_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let homeMaintenanceMessageTitle = "HOME_MAINTENANCE_MESSAGE_TITLE"
+        static let homeMaintenanceMessageSubtitle = "HOME_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let purchaseDomainsMaintenanceMessageTitle = "PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_TITLE"
+        static let purchaseDomainsMaintenanceMessageSubtitle = "PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let vaultedDomainsMaintenanceMessageTitle = "VAULTED_DOMAINS_MAINTENANCE_MESSAGE_TITLE"
+        static let vaultedDomainsMaintenanceMessageSubtitle = "VAULTED_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let domainProfileMaintenanceMessageTitle = "DOMAIN_PROFILE_MAINTENANCE_MESSAGE_TITLE"
+        static let domainProfileMaintenanceMessageSubtitle = "DOMAIN_PROFILE_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let sendCryptoMaintenanceMessageTitle = "SEND_CRYPTO_MAINTENANCE_MESSAGE_TITLE"
+        static let sendCryptoMaintenanceMessageSubtitle = "SEND_CRYPTO_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let signMessagesMaintenanceMessageTitle = "SIGN_MESSAGES_MAINTENANCE_MESSAGE_TITLE"
+        static let signMessagesMaintenanceMessageSubtitle = "SIGN_MESSAGES_MAINTENANCE_MESSAGE_SUBTITLE"
     }
     
     enum SystemImage: String {
@@ -1281,8 +1313,8 @@ extension String {
     
     enum BlockChainIcons: String {
         case ethereum = "smallEthereum"
-        case zilliqa = "smallZilliqa"
         case matic = "smallMatic"
+        case base = "BASE"
     }
     
     func isMatchingRegexPattern(_ regexPattern: String) -> Bool {

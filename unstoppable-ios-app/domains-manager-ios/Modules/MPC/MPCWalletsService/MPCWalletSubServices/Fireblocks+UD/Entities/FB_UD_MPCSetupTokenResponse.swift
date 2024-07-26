@@ -28,6 +28,7 @@ extension FB_UD_MPC {
         case processing = "PROCESSING"
         case completed = "COMPLETED"
         case unknown = "UNKNOWN"
+        case failed = "FAILED"
     }
 }
 

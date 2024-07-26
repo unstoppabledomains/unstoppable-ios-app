@@ -11,8 +11,9 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var tabRouter: HomeTabRouter
     @State private var navigationState: NavigationStateManager?
+    @StateObject private var profilesAPIFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceProfilesAPIEnabled)
     @StateObject var viewModel: HomeExploreViewModel
-    
+
     var isOtherScreenPushed: Bool { !tabRouter.exploreTabNavPath.isEmpty }
     var analyticsName: Analytics.ViewName { .homeExplore }
 
@@ -22,7 +23,7 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
                 if viewModel.isSearchActive {
                     domainSearchTypeSelector()
                 }
-                contentList()
+                contentView()
             }
             .animation(.default, value: UUID())
             .background(Color.backgroundDefault)
@@ -33,7 +34,7 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
             .passViewAnalyticsDetails(logger: self)
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
-            .onReceive(keyboardPublisher) { value in
+            .onReceive(KeyboardService.shared.keyboardOpenedPublisher.receive(on: DispatchQueue.main)) { value in
                 viewModel.isKeyboardActive = value
                 if !value {
                     UDVibration.buttonTap.vibrate()
@@ -120,6 +121,17 @@ private extension HomeExploreView {
     func domainSearchTypeSelector() -> some View {
         HomeExploreDomainSearchTypePickerView()
             .background(.regularMaterial)
+    }
+    
+    @ViewBuilder
+    func contentView() -> some View {
+        if profilesAPIFlagTracker.maintenanceData?.isCurrentlyEnabled == true {
+            MaintenanceDetailsEmbeddedView(serviceType: .explore,
+                                           maintenanceData: profilesAPIFlagTracker.maintenanceData)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            contentList()
+        }
     }
     
     @ViewBuilder

@@ -147,7 +147,11 @@ extension DomainProfileSectionHeader {
         
         nonisolated
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.title == rhs.title && lhs.icon == rhs.icon && lhs.isEnabled == rhs.isEnabled
+            guard lhs.title == rhs.title else { return false }
+            guard lhs.icon == rhs.icon else { return false }
+            guard lhs.isEnabled == rhs.isEnabled else { return false }
+            
+            return true
         }
         
         nonisolated

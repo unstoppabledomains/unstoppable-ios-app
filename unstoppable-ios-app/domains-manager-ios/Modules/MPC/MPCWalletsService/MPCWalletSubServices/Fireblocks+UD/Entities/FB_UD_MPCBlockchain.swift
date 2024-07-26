@@ -27,6 +27,7 @@ extension FB_UD_MPC {
     struct Blockchain: Codable {
         let id: String
         let name: String
+        var networkId: Int?
     }
 
     struct SupportedBlockchainAssetsResponse: Codable {

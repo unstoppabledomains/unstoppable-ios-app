@@ -43,19 +43,18 @@ struct ChatListView: View, ViewAnalyticsLogger {
             .trackAppearanceAnalytics(analyticsLogger: self)
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
-            .onReceive(keyboardPublisher) { value in
+            .onReceive(KeyboardService.shared.keyboardOpenedPublisher.receive(on: DispatchQueue.main)) { value in
                 viewModel.isSearchActive = value
                 if !value {
                     UDVibration.buttonTap.vibrate()
                 }
             }
+            .onChange(of: viewModel.searchText) { _ in
+                setTitleVisibility()
+            }
             .onChange(of: viewModel.isSearchActive) { keyboardFocused in
                 setSearchFieldActive(keyboardFocused)
-                if !isOtherScreenPushed {
-                    withAnimation {
-                        navigationState?.isTitleVisible = !keyboardFocused
-                    }
-                }
+                setTitleVisibility()
             }
             .onChange(of: tabRouter.chatTabNavPath) { path in
                 tabRouter.isTabBarVisible = !isOtherScreenPushed
@@ -103,6 +102,14 @@ private extension ChatListView {
         navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(profile: viewModel.selectedProfile) },
                                         id: UUID().uuidString)
         navigationState?.isTitleVisible = true
+    }
+    
+    func setTitleVisibility() {
+        if !isOtherScreenPushed {
+            withAnimation {
+                navigationState?.isTitleVisible = !viewModel.isSearchActive && viewModel.searchText.isEmpty
+            }
+        }
     }
     
     func setSearchFieldActive(_ active: Bool) {
@@ -363,8 +370,9 @@ private extension ChatListView {
                                subtitle: String.Constants.messagingCommunitiesListEnableSubtitle.localized(),
                                icon: .chatRequestsIcon,
                                actionButtonConfiguration: .init(buttonTitle: String.Constants.enable.localized(),
-                                                                buttonIcon: Image(uiImage: appContext.authentificationService.biometricIcon ?? .init()),
+                                                                buttonIcon: viewModel.isCreatingProfile ? nil : Image(uiImage: appContext.authentificationService.biometricIcon ?? .init()),
                                                                 buttonStyle: .medium(.raisedPrimary),
+                                                                isLoading: viewModel.isCreatingProfile,
                                                                 buttonCallback: {
             logButtonPressedAnalyticEvents(button: .createCommunityProfile)
             viewModel.createCommunitiesProfileButtonPressed()

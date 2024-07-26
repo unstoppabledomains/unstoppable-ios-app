@@ -17,6 +17,7 @@ extension UIImage {
     static let warningIcon = UIImage(named: "warningIcon")!
     static let ethereumIcon = UIImage(named: "ethereumIcon")!
     static let polygonIcon = UIImage(named: "polygonIcon")!
+    static let baseIcon = UIImage(named: "baseIcon")!
     static let externalWalletIndicator = UIImage(named: "externalWalletIndicator")!
     static let cloudIcon = UIImage(named: "cloudIcon")!
     static let checkCircleWhite = UIImage(named: "checkCircleWhite")!
@@ -48,6 +49,8 @@ extension UIImage {
     static let searchIcon = UIImage(named: "searchIcon")!
     static let ethBGLarge = UIImage(named: "ethBGLarge")!
     static let maticBGLarge = UIImage(named: "maticBGLarge")!
+    static let baseBGLarge = UIImage(named: "BASE")!
+    static let baseBGSmall = UIImage(named: "BASE")!
     static let ethBGSmall = UIImage(named: "ethBGSmall")!
     static let maticBGSmall = UIImage(named: "maticBGSmall")!
     static let checkBadge = UIImage(named: "checkBadge")!
@@ -156,6 +159,7 @@ extension UIImage {
     static let personIcon = UIImage(named: "personIcon")!
     static let arrowBottom = UIImage(named: "arrowBottom")!
     static let solanaIcon = UIImage(named: "solanaIcon")!
+    static let bitcoinIcon = UIImage(named: "bitcoinIcon")!
     static let cardanoIcon = UIImage(named: "cardanoIcon")!
     static let hederaIcon = UIImage(named: "hederaIcon")!
     static let filterIcon = UIImage(named: "filterIcon")!
@@ -173,7 +177,8 @@ extension UIImage {
     static let shieldKeyhole = UIImage(named: "shieldKeyhole")!
     static let backupICloud = UIImage(named: "backupICloud")!
     static let paperPlaneTopRightSend = UIImage(named: "paperPlaneTopRightSend")!
-    
+    static let gas = UIImage(named: "gas")!
+
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!
     static let telegramIcon24 = UIImage(named: "telegramIcon24")!
@@ -241,6 +246,12 @@ extension UIImage {
             return .ethBGLarge
         case .Matic:
             return .maticBGLarge
+        case .Base:
+            return .baseBGLarge
+        case .Bitcoin:
+            return .bitcoinIcon
+        case .Solana:
+            return .solanaIcon
         }
     }
     
@@ -250,6 +261,12 @@ extension UIImage {
             return .ethBGSmall
         case .Matic:
             return .maticBGSmall
+        case .Base:
+            return .baseBGSmall
+        case .Bitcoin:
+            return .bitcoinIcon
+        case .Solana:
+            return .solanaIcon
         }
     }
     

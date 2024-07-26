@@ -38,6 +38,7 @@ public struct Debugger {
         case Messaging = "MS"
         case Debug = "DEBUG"
         case NFT = "NFT"
+        case mpc = "MPC"
     }
     
     enum DebugTopicsSet {

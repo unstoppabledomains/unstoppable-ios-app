@@ -7,6 +7,7 @@
 
 import UIKit
 import LaunchDarkly
+import OSLog
 
 final class LaunchDarklyService {
     
@@ -28,7 +29,7 @@ final class LaunchDarklyService {
         
         var config = LDConfig(mobileKey: mobileKey, autoEnvAttributes: .enabled)
         config.applicationInfo = applicationInfo
-
+        config.logger = .disabled 
         
         LDClient.start(config: config, context: context)
     }
@@ -49,8 +50,25 @@ extension LaunchDarklyService {
 
     func valueFor(key: String,
                   defaultValue: Bool) -> Bool {
+        if let jsonValue = ldClient?.jsonVariation(forKey: key, defaultValue: ""),
+           case .object(let dictionary) = jsonValue,
+           let ldValue = dictionary["isOn"],
+           case .bool(let bool) = ldValue {
+            return bool
+        }
         let ldValue = ldClient?.boolVariation(forKey: key, defaultValue: defaultValue)
         return ldValue ?? defaultValue
+    }
+
+    func entityValueFor<T: Codable>(key: String) -> T? {
+        if let jsonLDValue = ldClient?.jsonVariation(forKey: key, defaultValue: ""),
+           case .object(let objectData) = jsonLDValue,
+           let jsonData = objectData.jsonData() {
+          
+            return T.objectFromData(jsonData)
+        }
+        
+        return nil
     }
 }
 

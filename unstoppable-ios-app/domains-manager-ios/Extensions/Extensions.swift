@@ -74,10 +74,6 @@ extension HexAddress {
         self.trimmingCharacters(in: CharacterSet(charactersIn: "0123456789.abcdefghijklmnopqrstuvwxyz-").inverted)
     }
     
-    var trimmedSpaces: String {
-        self.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-    
     var bytesArray: [UInt8]? {
         let cleanNumber = self.droppedHexPrefix
         var raw = [UInt8]()
@@ -178,7 +174,7 @@ extension UIViewController {
 }
 
 extension Array {
-  mutating func remove(at indexes: [Int]) {
+  mutating func remove(atIndexes indexes: [Int]) {
     for index in indexes.sorted(by: >) {
       remove(at: index)
     }

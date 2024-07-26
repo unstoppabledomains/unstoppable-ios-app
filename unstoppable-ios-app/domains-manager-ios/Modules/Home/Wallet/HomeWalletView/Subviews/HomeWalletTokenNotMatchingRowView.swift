@@ -80,8 +80,8 @@ private extension HomeWalletTokenNotMatchingRowView {
 }
 
 #Preview {
-    HomeWalletTokenNotMatchingRowView(description: .init(chain: "ETH",
-                                                         fullName: "Ethereum",
+    HomeWalletTokenNotMatchingRowView(description: .init(chain: BlockchainType.Ethereum.shortCode,
+                                                         fullName: BlockchainType.Ethereum.fullName,
                                                          numberOfRecordsNotSetToChain: 1,
                                                          ownerWallet: "123"))
     .frame(width: 390, height: 64)

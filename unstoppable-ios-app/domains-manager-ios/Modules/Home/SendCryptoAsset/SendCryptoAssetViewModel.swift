@@ -44,8 +44,9 @@ final class SendCryptoAssetViewModel: ObservableObject {
                         try await SendCryptoAsset.AssetReceiver(globalProfile: profile)
                     }
                     navPath.append(.selectAssetToSend(receiver))
-                case .globalWalletAddressSelected(let address):
-                    navPath.append(.selectAssetToSend(.init(walletAddress: address)))
+                case .globalWalletAddressSelected(let addressDetails):
+                    navPath.append(.selectAssetToSend(.init(walletAddress: addressDetails.address,
+                                                            network: addressDetails.network)))
                     
                     // Send crypto
                 case .userTokenToSendSelected(let data):
@@ -174,4 +175,12 @@ final class SendCryptoAssetViewModel: ObservableObject {
         }
     }
     
+    func getWalletAddressDetailsFor(address: String) -> SendCryptoAsset.WalletAddressDetails? {
+        let availableNetworks: [BlockchainType] = sourceWallet.getSupportedNetworks()
+        
+        if let network = availableNetworks.first(where: { $0.isStringMatchingRegex(address) }) {
+            return .init(address: address, network: network)
+        }
+        return nil
+    }
 }

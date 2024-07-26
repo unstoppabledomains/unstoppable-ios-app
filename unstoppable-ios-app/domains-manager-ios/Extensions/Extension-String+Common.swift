@@ -25,6 +25,14 @@ extension String {
         return self.hasHexPrefix ? String(self.dropFirst(String.hexPrefix.count)) : self
     }
     
+    var hexRepresentation: String {
+        var hex = self.utf8.map { String(format: "%02X", $0) }.joined()
+        if !hex.hasHexPrefix {
+            hex = String.hexPrefix + hex
+        }
+        return hex
+    }
+    
     var hasDecimalDigit: Bool {
         self.rangeOfCharacter(from: .decimalDigits) != nil
     }
@@ -59,6 +67,9 @@ extension String {
         return self.split(separator: " ").count == Seed.seedWordsCount && self.isAlphanumeric()
     }
     
+    var trimmedSpaces: String {
+        self.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 }
 
 typealias DomainName = String

@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import Combine
 
 final class UDFeatureFlagsService {
     
     private let ldService: LaunchDarklyService
     private var listenerHolders: [UDFeatureFlagListenerHolder] = []
-
+    private(set) var featureFlagPublisher = PassthroughSubject<UDFeatureFlag, Never>()
+    
     init() {
         #if DEBUG
         let ldMobileKey = LaunchDarkly.stagingMobileKey
@@ -30,6 +32,10 @@ extension UDFeatureFlagsService: UDFeatureFlagsServiceProtocol {
         let defaultValue = getDefaultValueFor(featureFlag: flag)
         let ldValue = ldService.valueFor(key: flag.rawValue, defaultValue: defaultValue)
         return ldValue
+    }
+    
+    func entityValueFor<T: Codable>(flag: UDFeatureFlag) -> T? {
+        ldService.entityValueFor(key: flag.rawValue)
     }
     
     func addListener(_ listener: UDFeatureFlagsListener) {
@@ -57,7 +63,7 @@ private extension UDFeatureFlagsService {
         
         let defaultValue = getDefaultValueFor(featureFlag: flag)
         let value = valueFor(flag: flag)
-        if value != defaultValue {
+        if flag.isStructuredFlag || value != defaultValue {
             storeValue(value, forFeatureFlag: flag)
             notifyListenersUpdated(flag: flag, withValue: value)
         }
@@ -65,6 +71,7 @@ private extension UDFeatureFlagsService {
     
     func notifyListenersUpdated(flag: UDFeatureFlag, withValue value: Bool) {
         listenerHolders.forEach { $0.listener?.didUpdatedUDFeatureFlag(flag, withValue: value) }
+        featureFlagPublisher.send(flag)
     }
 }
 

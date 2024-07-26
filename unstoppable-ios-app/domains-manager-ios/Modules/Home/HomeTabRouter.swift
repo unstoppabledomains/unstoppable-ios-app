@@ -22,6 +22,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var exploreTabNavPath: [HomeExploreNavigationDestination] = []
     @Published var activityTabNavPath: [HomeActivityNavigationDestination] = []
     @Published var presentedNFT: NFTDisplayInfo?
+    
     @Published var presentedDomain: DomainPresentationDetails?
     @Published var presentedPublicDomain: PublicProfileViewConfiguration?
     @Published var presentedUBTSearch: UBTSearchPresentationDetails?
@@ -162,6 +163,10 @@ extension HomeTabRouter {
             guard !domain.isTransferring else {
                 showDomainTransferringInProgress(domain)
                 return }
+            let flagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceProfilesAPIEnabled)
+            guard flagTracker.maintenanceData?.isCurrentlyEnabled != true else {
+                appContext.pullUpViewService.showDomainProfileInMaintenancePullUp(in: topVC)
+                return }
             
             presentedDomain = .init(domain: domain,
                                     wallet: wallet,
@@ -213,8 +218,8 @@ extension HomeTabRouter {
                 let mintedDomains = domains.interactableItems()
                 
                 walletViewNavPath.append(HomeWalletNavigationDestination.minting(mode: mode,
-                                                                                      mintedDomains: mintedDomains,
-                                                                                      domainsMintedCallback: { result in
+                                                                                 mintedDomains: mintedDomains,
+                                                                                 domainsMintedCallback: { result in
                 }, mintingNavProvider: { [weak self] mintingNav in
                     self?.mintingNav = mintingNav
                 }))
@@ -267,7 +272,6 @@ extension HomeTabRouter {
                     completion(Void())
                 }))
             }
-            //await view.dismissPullUpMenu()
             await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
         }
     }
@@ -336,6 +340,12 @@ extension HomeTabRouter {
                 await showChatWith(options: .newChat(description: .init(userInfo: messagingUserDisplayInfo, messagingService: Constants.defaultMessagingServiceIdentifier)), profile: messagingProfile)
             }
         }
+    }
+    
+    func showSigningMessagesInMaintenancePullUp() {
+        guard let topVC else { return }
+        
+        appContext.pullUpViewService.showMessageSigningInMaintenancePullUp(in: topVC)
     }
 }
 
@@ -416,7 +426,6 @@ extension HomeTabRouter: PublicProfileViewDelegate {
         
         UDRouter().showTransferInProgressScreen(domain: domain, in: topVC)
     }
-    
 }
 
 // MARK: - Private methods
@@ -501,7 +510,6 @@ private extension HomeTabRouter {
                         }
                     }))
                 }
-                //                await view.dismissPullUpMenu()
                 await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
             } catch {
                 PurchasedDomainsStorage.setPendingNonEmptyProfiles(pendingProfilesLeft)

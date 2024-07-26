@@ -43,8 +43,8 @@ struct WCWalletsProvider {
     }
 
     struct MobileInfo: Codable, Hashable {
-        var native: String
-        var universal: String
+        var native: String?
+        var universal: String?
     }
 
     static let registryFilename = "wallets-registry" // https://explorer-api.walletconnect.com/v3/wallets?projectId=983234f8fb06d29cf4dd9d8ab60e9c3f
@@ -66,11 +66,10 @@ struct WCWalletsProvider {
                       let storeLinks = appLinks as? [String: String?],
                       let appStoreLink = storeLinks["ios"],
                       let mobiles = wallet["mobile"],
-                      let links = mobiles as? [String: String],
+                      let links = mobiles as? [String: String?],
                       let native = links["native"],
                       let universal = links["universal"],
-                      let sdks = wallet["sdks"] as? [String],
-                      !native.isEmpty else {
+                      let sdks = wallet["sdks"] as? [String] else {
                     continue
                 }
                 let fixedName = fixMathWalletName(name)
@@ -110,7 +109,7 @@ struct WCWalletsProvider {
                 return false
             }
             guard let url = URL(string: nativeLink) else {
-                Debugger.printFailure("Can't create URL from native link: \(nativeLink)", critical: true)
+                Debugger.printFailure("Can't create URL from native link: \(nativeLink) in wallet: \($0.name)", critical: false)
                 return false }
             let discoverable = UIApplication.shared.canOpenURL(url)
             return discoverable
@@ -227,9 +226,9 @@ extension WCWalletsProvider {
             switch self {
             case .supported:
                 #if DEBUG
-                return [.MetaMask, .TrustWallet, .OKX, .Rainbow, .ledgerLive, .CryptoComDeFiWallet, .Zerion, .AlphaWallet, .Zelus, .Spot, .MathWallet, .Omni, .ONTO, .KleverWallet, .Coinomi, .Coin98, .Argent, .Guarda, .Blockchain, .imToken, .Exodus, .Mew]
+                return [.MetaMask, .TrustWallet, .OKX, .Rainbow, .ledgerLive, .CryptoComDeFiWallet, .Zerion, .AlphaWallet, .Zelus, .MathWallet, .Omni, .ONTO, .KleverWallet, .Coinomi, .Coin98, .Argent, .Guarda, .Blockchain, .imToken, .Exodus, .Mew]
                 #else
-                return [.MetaMask, .TrustWallet, .OKX, .Rainbow, .ledgerLive, .CryptoComDeFiWallet, .Zerion, .AlphaWallet, .Zelus, .Spot, .MathWallet, .Omni, .Mew]
+                return [.MetaMask, .TrustWallet, .OKX, .Rainbow, .ledgerLive, .CryptoComDeFiWallet, .Zerion, .AlphaWallet, .Zelus, .MathWallet, .Omni, .Mew]
                 #endif
             }
         }

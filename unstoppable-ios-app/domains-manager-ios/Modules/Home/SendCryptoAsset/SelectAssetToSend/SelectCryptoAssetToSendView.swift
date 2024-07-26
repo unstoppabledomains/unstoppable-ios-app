@@ -56,15 +56,16 @@ private extension SelectCryptoAssetToSendView {
         Task {
             let currencies = await appContext.coinRecordsService.getCurrencies()
             
-            let tokens = viewModel.sourceWallet.balance
+            let balanceTokensDescriptions: [BalanceTokenUIDescription] = viewModel.sourceWallet.balance
                 .map { BalanceTokenUIDescription.extractFrom(walletBalance: $0) }
                 .flatMap({ $0 })
+            let filteredBalanceTokensDescriptions = balanceTokensDescriptions
                 .filter { viewModel.canSendToken($0) }
                 .filter { $0.balanceUsd > 0 }
                 .sorted(by: { lhs, rhs in
                     lhs.balanceUsd > rhs.balanceUsd
                 })
-                .compactMap { createTokenToSendFrom(token: $0, in: currencies) }
+            let tokens: [BalanceTokenToSend] = filteredBalanceTokensDescriptions.compactMap { createTokenToSendFrom(token: $0, in: currencies) }
             
             self.notAddedTokens = tokens.filter { $0.address == nil }
             self.tokens = tokens.filter { $0.address != nil }
@@ -82,16 +83,13 @@ private extension SelectCryptoAssetToSendView {
             return BalanceTokenToSend(token: token, address: address)
         }
         
-        switch token.blockchainType {
-        case .Ethereum, .Matic:
-            return BalanceTokenToSend(token: token, address: receiver.walletAddress)
-        case .none:
-            /// As we don't currently support Base chain but MPC does
-            if token.chain == Constants.baseChainSymbol {
-                return BalanceTokenToSend(token: token, address: receiver.walletAddress)
-            }
+        // raw address
+        guard let blockchainType = token.blockchainType,
+              blockchainType.regexPattern == receiver.network.regexPattern else {
             return nil
         }
+        
+        return BalanceTokenToSend(token: token, address: receiver.walletAddress)
     }
     
     struct BalanceTokenToSend: Identifiable {
@@ -117,10 +115,12 @@ private extension SelectCryptoAssetToSendView {
     
     @ViewBuilder
     func assetTypePickerView() -> some View {
-        VStack(alignment: .leading, spacing: 20) {
-            UDTabsPickerView(selectedTab: $selectedType,
-                             tabs: SendCryptoAsset.AssetType.allCases)
-            HomeExploreSeparatorView()
+        if receiver.network.isEVMNetwork {
+            VStack(alignment: .leading, spacing: 20) {
+                UDTabsPickerView(selectedTab: $selectedType,
+                                 tabs: SendCryptoAsset.AssetType.allCases)
+                HomeExploreSeparatorView()
+            }
         }
     }
     

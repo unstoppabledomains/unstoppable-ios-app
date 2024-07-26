@@ -69,7 +69,7 @@ extension PaymentTransactionGasOnlyCostView: PaymentTransactionDisplayCostView {
         currencyNumberFormatter.maximumFractionDigits = 6
         let gasFee = Double(cost.gasFee).ethValue
         let gasFeeString = currencyNumberFormatter.string(from: gasFee as NSNumber) ?? "N/A"
-                feePriceLabel.setAttributedTextWith(text: "\(gasFeeString) \(blockchainType.rawValue)",
+                feePriceLabel.setAttributedTextWith(text: "\(gasFeeString) \(blockchainType.shortCode)",
                                                           font: .currentFont(withSize: 16, weight: .medium),
                                                           textColor: .foregroundSecondary,
                                                           alignment: .center)

@@ -92,14 +92,24 @@ extension CopyMultichainWalletAddressesPullUpView {
         let token: BalanceTokenUIDescription
         let selectionType: SelectionType
         @State private var icon: UIImage?
+        @State private var parentIcon: UIImage?
         
         var body: some View {
-            UDListItemView(title: token.name,
-                           subtitle: token.address.walletAddressTruncated,
-                           subtitleStyle: .default,
-                           imageType: .uiImage(icon ?? .init()),
-                           imageStyle: .full,
-                           rightViewStyle: rightViewStyle())
+            ZStack(alignment: .bottomLeading) {
+                UDListItemView(title: token.name,
+                               subtitle: token.address.walletAddressTruncated,
+                               subtitleStyle: .default,
+                               imageType: .uiImage(icon ?? .init()),
+                               imageStyle: .full,
+                               rightViewStyle: rightViewStyle())
+                if let parentIcon {
+                    Image(uiImage: parentIcon)
+                        .resizable()
+                        .squareFrame(20)
+                        .clipShape(Circle())
+                        .offset(x: 24, y: -2)
+                }
+            }
             .onAppear(perform: onAppear)
         }
         
@@ -139,6 +149,9 @@ extension CopyMultichainWalletAddressesPullUpView {
         private func loadTokenIcon() {
             token.loadTokenIcon { image in
                 self.icon = image
+            }
+            token.loadParentIcon { image in
+                self.parentIcon = image
             }
         }
     }
@@ -181,6 +194,7 @@ extension CopyMultichainWalletAddressesPullUpView {
 
 #Preview {
     CopyMultichainWalletAddressesPullUpView(tokens: [MockEntitiesFabric.Tokens.mockEthToken(),
-                                                     MockEntitiesFabric.Tokens.mockMaticToken()],
+                                                     MockEntitiesFabric.Tokens.mockMaticToken(),
+                                                     MockEntitiesFabric.Tokens.mockUSDTToken()],
                                             selectionType: .copyOnly)
 }

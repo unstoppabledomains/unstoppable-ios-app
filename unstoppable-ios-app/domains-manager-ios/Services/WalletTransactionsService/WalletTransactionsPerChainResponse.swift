@@ -11,4 +11,8 @@ struct WalletTransactionsPerChainResponse: Codable {
     let chain: String
     let cursor: String?
     let txs: [SerializedWalletTransaction]
+    
+    func resolveBlockchainType() -> BlockchainType? {
+        try? BlockchainType.resolve(shortCode: chain)
+    }
 }

@@ -27,15 +27,16 @@ final class MessagingService: MessagingServiceProtocol {
     }
     
     func createUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo {
-        .init(id: "1", wallet: wallet.address, serviceIdentifier: .xmtp)
+        await Task.sleep(seconds: 3)
+        return .init(id: "1", wallet: wallet.address, serviceIdentifier: .xmtp)
     }
     
     func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool {
-        true
+        false
     }
     
     func createCommunityProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws {
-        
+        await Task.sleep(seconds: 3)
     }
     
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) {
@@ -160,6 +161,7 @@ final class MessagingService: MessagingServiceProtocol {
     
     func getUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo {
         .init(id: "1", wallet: wallet.address, serviceIdentifier: .xmtp)
+//        throw NSError(domain: "3123", code: 2)
     }
     
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {

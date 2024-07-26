@@ -34,6 +34,7 @@ final class SelectorButton: BaseButton {
     override func additionalSetup() {
         titleLeftPadding = 0
         titleRightPadding = 0
+        customImageEdgePadding = 0
     }
     
 }

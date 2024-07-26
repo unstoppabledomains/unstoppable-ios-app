@@ -55,6 +55,12 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         currentRoot = .appUpdate
     }
     
+    func showFullMaintenanceModeOn(maintenanceData: MaintenanceModeData) {
+        let appUpdateRequiredVC = FullMaintenanceModeView.instance(maintenanceData: maintenanceData)
+        setRootViewController(appUpdateRequiredVC)
+        currentRoot = .fullMaintenance
+    }
+    
     func setKeyWindow() {
         window?.makeKeyAndVisible()
         topInfoWindow?.makeKeyAndVisible()
@@ -395,7 +401,7 @@ extension CoreAppCoordinator {
 // MARK: - CurrentRoot
 private extension CoreAppCoordinator {
     enum CurrentRoot {
-        case none, onboarding, appUpdate
+        case none, onboarding, appUpdate, fullMaintenance
         case home(router: HomeTabRouter)
     }
 }

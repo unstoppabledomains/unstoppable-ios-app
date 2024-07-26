@@ -14,6 +14,8 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var tabRouter: HomeTabRouter
     @StateObject var viewModel: HomeWalletViewModel
+    @StateObject private var profilesAPIFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceProfilesAPIEnabled)
+    @StateObject private var mpcFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceMPCEnabled)
     @State private var isOtherScreenPresented: Bool = false
     @Binding var navigationState: NavigationStateManager?
     @Binding var isTabBarVisible: Bool
@@ -39,22 +41,8 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 .listRowSeparator(.hidden)
                 .unstoppableListRowInset()
                 
-                contentTypeSelector()
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                    .padding(.vertical)
-                    .unstoppableListRowInset()
+                userDataContentViewsIfAvailable()
                 
-                sortingOptionsForSelectedType()
-                    .environment(\.analyticsAdditionalProperties, [.homeContentType : viewModel.selectedContentType.rawValue])
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 0, trailing: 16))
-                
-                contentForSelectedType()
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(.init(horizontal: 16))
             }.environment(\.defaultMinListRowHeight, 28)
             .onChange(of: tabRouter.walletViewNavPath) { _ in
                 updateNavTitleVisibility()
@@ -90,12 +78,16 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
 
 // MARK: - Private methods
 private extension HomeWalletView {
+    var isProfileButtonEnabled: Bool {
+        viewModel.isProfileButtonEnabled && !isHomeInMaintenance
+    }
+    
     func walletActions() -> [WalletAction] {
         var actions: [WalletAction] = [.buy]
         if viewModel.isSendCryptoEnabled {
             actions.append(.send)
         }
-        actions.append(contentsOf: [.receive, .profile(enabled: viewModel.isProfileButtonEnabled)])
+        actions.append(contentsOf: [.receive, .profile(enabled: isProfileButtonEnabled)])
         return actions
     }
     
@@ -117,6 +109,44 @@ private extension HomeWalletView {
         withAnimation {
             navigationState?.isTitleVisible = !isOtherScreenPushed && tabRouter.tabViewSelection == .wallets
         }
+    }
+    
+    var isHomeInMaintenance: Bool {
+        profilesAPIFlagTracker.maintenanceData?.isCurrentlyEnabled == true
+    }
+    
+    @ViewBuilder
+    func userDataContentViewsIfAvailable() -> some View {
+        if isHomeInMaintenance {
+            MaintenanceDetailsEmbeddedView(serviceType: .home,
+                                           maintenanceData: profilesAPIFlagTracker.maintenanceData)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .padding(.top, 16)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            userDataContentViews()
+        }
+    }
+    
+    @ViewBuilder
+    func userDataContentViews() -> some View {
+        contentTypeSelector()
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .padding(.vertical)
+            .unstoppableListRowInset()
+        
+        sortingOptionsForSelectedType()
+            .environment(\.analyticsAdditionalProperties, [.homeContentType : viewModel.selectedContentType.rawValue])
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 0, trailing: 16))
+        
+        contentForSelectedType()
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .listRowInsets(.init(horizontal: 16))
     }
 
     @ViewBuilder
@@ -250,14 +280,19 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func qrNavButtonView() -> some View {
-        NavigationLink(value: HomeWalletNavigationDestination.qrScanner(selectedWallet: viewModel.selectedWallet)) {
+        Button {
+            if case .mpc = viewModel.selectedWallet.udWallet.type,
+               mpcFlagTracker.maintenanceData?.isCurrentlyEnabled == true {
+                tabRouter.showSigningMessagesInMaintenancePullUp()
+            } else {
+                tabRouter.walletViewNavPath.append(.qrScanner(selectedWallet: viewModel.selectedWallet))
+                logButtonPressedAnalyticEvents(button: .qrCode)
+            }
+        } label: {
             Image.qrBarCodeIcon
                 .resizable()
                 .squareFrame(24)
                 .foregroundStyle(Color.foregroundDefault)
-        }
-        .onButtonTap {
-            logButtonPressedAnalyticEvents(button: .qrCode)
         }
     }
     

@@ -18,7 +18,6 @@ protocol QRScannerViewPresenterProtocol: BasePresenterProtocol {
     func didSelectBlockchainType(_ blockchainType: BlockchainType)
 }
 
-@MainActor
 final class QRScannerViewPresenter: ViewAnalyticsLogger {
     
     internal weak var view: QRScannerViewProtocol?
@@ -164,15 +163,18 @@ extension QRScannerViewPresenter: WalletConnectServiceConnectionListener {
 // MARK: - Private functions
 private extension QRScannerViewPresenter {
     func setBlockchainTypePicker() {
-        view?.setBlockchainTypeSelectionWith(availableTypes: BlockchainType.supportedCases, selectedType: blockchainType)
+        Task { @MainActor in
+            view?.setBlockchainTypeSelectionWith(availableTypes: WalletConnectServiceV2.supportedNetworks, selectedType: blockchainType)
+        }
     }
     
     func setSelected(wallet: WalletEntity) {
         let wallets = walletsDataService.wallets
         self.selectedWallet = wallet
-        
-        view?.setWith(wallet: wallet,
-                      isSelectable: wallets.count > 1)
+        Task { @MainActor in
+            view?.setWith(wallet: wallet,
+                          isSelectable: wallets.count > 1)
+        }
     }
     
     func setSelectedWalletInfo() {
@@ -183,7 +185,9 @@ private extension QRScannerViewPresenter {
 
     func showNumberOfAppsConnected() {
         let appsConnected = walletConnectServiceV2.getConnectedApps()
-        view?.setWith(appsConnected: appsConnected.count)
+        Task { @MainActor in
+            view?.setWith(appsConnected: appsConnected.count)
+        }
     }
     
     func getWCConnectionRequest(for code: QRCode) async throws -> WCRequest {

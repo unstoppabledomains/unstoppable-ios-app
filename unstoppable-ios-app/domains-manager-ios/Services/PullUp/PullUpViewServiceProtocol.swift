@@ -40,12 +40,6 @@ protocol PullUpViewServiceProtocol {
     func showChooseCoinVersionPullUp(for coin: CoinRecord,
                                      in viewController: UIViewController) async throws -> CoinVersionSelectionResult
     func showLogoutConfirmationPullUp(in viewController: UIViewController) async throws
-    func showParkedDomainInfoPullUp(in viewController: UIViewController)
-    func showParkedDomainTrialExpiresPullUp(in viewController: UIViewController,
-                                            expiresDate: Date)
-    func showParkedDomainExpiresSoonPullUp(in viewController: UIViewController,
-                                           expiresDate: Date)
-    func showParkedDomainExpiredPullUp(in viewController: UIViewController)
     func showApplePayRequiredPullUp(in viewController: UIViewController)
     func showWalletsNumberLimitReachedPullUp(in viewController: UIViewController,
                                              maxNumberOfWallets: Int) async
@@ -53,6 +47,8 @@ protocol PullUpViewServiceProtocol {
                                                     maxNumberOfWallets: Int)
     func showCopyMultichainWalletAddressesPullUp(in viewController: UIViewController,
                                                  tokens: [BalanceTokenUIDescription])
+    func showDomainProfileInMaintenancePullUp(in viewController: UIViewController)
+    func showMessageSigningInMaintenancePullUp(in viewController: UIViewController)
     
     // MARK: - External wallet
     func showConnectedWalletInfoPullUp(in viewController: UIViewController)

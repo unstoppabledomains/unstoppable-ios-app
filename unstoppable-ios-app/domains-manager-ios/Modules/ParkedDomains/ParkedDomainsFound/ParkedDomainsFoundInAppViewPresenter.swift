@@ -14,7 +14,7 @@ final class ParkedDomainsFoundInAppViewPresenter: ParkedDomainsFoundViewPresente
     override var title: String {
         String.Constants.pluralWeFoundNDomains.localized(domains.count, domains.count)
     }
-    override var progress: Double? { 1 }
+    override var progress: Double? { nil }
     
     init(view: ParkedDomainsFoundViewProtocol,
          domains: [FirebaseDomainDisplayInfo],

@@ -46,41 +46,7 @@ struct PublicProfileFollowersView: View, ViewAnalyticsLogger {
                 
                 if let currentFollowersList = viewModel.currentFollowersList,
                    !currentFollowersList.isEmpty {
-                    ScrollViewReader { proxy in
-                        List(getCurrentPublishedFollowersList() ?? [], id: \.domain) { follower in
-                            Button {
-                                followerSelected(follower)
-                            } label: {
-                                rowForFollower(follower)
-                            }
-                                .listRowSeparator(.hidden)
-                                .unstoppableListRowInset()
-                                .onAppear {
-                                    viewModel.loadMoreContentIfNeeded(currentFollower: follower)
-                                }
-                            
-                            if viewModel.isLoadingPage,
-                               follower == currentFollowersList.last {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                                .listRowSeparator(.hidden)
-                                .listRowBackground(Color.clear)
-                            }
-                        }
-                        .onChange(of: viewModel.selectedType) { selectedType in
-                            proxy.scrollTo(currentFollowersList.first, anchor: .top)
-                            logButtonPressedAnalyticEvents(button: .followerType, parameters: [.value: selectedType.rawValue])
-                        }
-                    }
-                    
-                    .offset(y: -8)
-                    .background(.clear)
-                    .clearListBackground()
-                    .ignoresSafeArea()
-                    
+                    currentFollowersListView(currentFollowersList)
                 } else {
                     Spacer()
                 }
@@ -148,6 +114,43 @@ private extension PublicProfileFollowersView {
 
 // MARK: - Private methods
 private extension PublicProfileFollowersView {
+    @ViewBuilder
+    func currentFollowersListView(_ currentFollowersList: [DomainProfileFollowerDisplayInfo]) -> some View {
+        ScrollViewReader { proxy in
+            List(getCurrentPublishedFollowersList() ?? [], id: \.domain) { follower in
+                Button {
+                    followerSelected(follower)
+                } label: {
+                    rowForFollower(follower)
+                }
+                .listRowSeparator(.hidden)
+                .unstoppableListRowInset()
+                .onAppear {
+                    viewModel.loadMoreContentIfNeeded(currentFollower: follower)
+                }
+                
+                if viewModel.isLoadingPage,
+                   follower == currentFollowersList.last {
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                }
+            }
+            .onChange(of: viewModel.selectedType) { selectedType in
+                proxy.scrollTo(currentFollowersList.first, anchor: .top)
+                logButtonPressedAnalyticEvents(button: .followerType, parameters: [.value: selectedType.rawValue])
+            }
+        }
+        .offset(y: -8)
+        .background(.clear)
+        .clearListBackground()
+        .ignoresSafeArea()
+    }
+    
     @ViewBuilder
     func rowForFollower(_ follower: DomainProfileFollowerDisplayInfo) -> some View {
         HStack(spacing: 16) {

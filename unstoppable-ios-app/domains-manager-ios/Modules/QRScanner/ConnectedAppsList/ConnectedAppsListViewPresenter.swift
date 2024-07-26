@@ -86,7 +86,7 @@ private extension ConnectedAppsListViewPresenter {
                 }
                 
                 let blockchainTypes = NonEmptyArray(items: blockchainTypesArray)! // safe after the previous lines
-                let supportedNetworks = BlockchainType.supportedCases.map({ $0.fullName })
+                let supportedNetworks = WalletConnectServiceV2.supportedNetworks.map({ $0.fullName })
 
                 let actions: [ConnectedAppsListViewController.ItemAction] = [.networksInfo(networks: supportedNetworks),
                                                                              .disconnect]

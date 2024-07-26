@@ -317,7 +317,7 @@
 	<key>SDICT:N_PARKED_DOMAINS_IMPORTED</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>%d %#@domain@ from Unstoppable Vault imported</string>
+		<string>%d %#@domain@ found in your Domain Vault</string>
 		<key>domain</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>

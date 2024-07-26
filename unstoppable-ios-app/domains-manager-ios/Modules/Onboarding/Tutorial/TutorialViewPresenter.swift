@@ -31,11 +31,18 @@ extension TutorialViewPresenter: TutorialViewPresenterProtocol {
         
     }
     
+    private var isEcommMaintenanceEnabled: Bool {
+        let maintenanceData: MaintenanceModeData? = appContext.udFeatureFlagsService.entityValueFor(flag: .isMaintenanceEcommEnabled)
+        
+        return maintenanceData?.isCurrentlyEnabled == true
+    }
+    
     func didPressCreateNewWalletButton() {
         let udFeatureFlagsService = appContext.udFeatureFlagsService
         
         if udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled),
-           udFeatureFlagsService.valueFor(flag: .isMPCPurchaseEnabled) {
+           udFeatureFlagsService.valueFor(flag: .isMPCPurchaseEnabled),
+           !isEcommMaintenanceEnabled {
             onboardingFlowManager?.moveToStep(.createNewSelection)
         } else {
             onboardingFlowManager?.moveToStep(.createWallet)

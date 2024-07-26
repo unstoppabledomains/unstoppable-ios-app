@@ -13,9 +13,12 @@ protocol MPCWalletProviderSubServiceProtocol {
     func sendBootstrapCodeTo(email: String) async throws
     func setupMPCWalletWith(code: String,
                             credentials: MPCActivateCredentials) -> AsyncThrowingStream<SetupMPCWalletStep, Error>
-    func signMessage(_ messageString: String,
-                     chain: BlockchainType,
-                     by walletMetadata: MPCWalletMetadata) async throws -> String
+    func signPersonalMessage(_ messageString: String,
+                             chain: BlockchainType,
+                             by walletMetadata: MPCWalletMetadata) async throws -> String
+    func signTypedDataMessage(_ message: String,
+                              chain: BlockchainType,
+                              by walletMetadata: MPCWalletMetadata) async throws -> String
     func getBalancesFor(walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio]
     
     func canTransferAssets(symbol: String,
@@ -26,6 +29,11 @@ protocol MPCWalletProviderSubServiceProtocol {
                         chain: String,
                         destinationAddress: String,
                         by walletMetadata: MPCWalletMetadata) async throws -> String
+    func sendETHTransaction(data: String,
+                            value: String,
+                            chain: BlockchainType,
+                            destinationAddress: String,
+                            by walletMetadata: MPCWalletMetadata) async throws -> String
     func getTokens(for walletMetadata: MPCWalletMetadata) throws -> [BalanceTokenUIDescription]
     func fetchGasFeeFor(_ amount: Double,
                         symbol: String,

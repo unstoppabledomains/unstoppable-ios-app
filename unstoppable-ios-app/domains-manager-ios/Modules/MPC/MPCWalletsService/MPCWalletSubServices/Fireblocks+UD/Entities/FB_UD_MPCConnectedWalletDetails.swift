@@ -36,7 +36,7 @@ extension FB_UD_MPC {
         }
         
         func getETHWalletAddress() -> String? {
-            firstAccount.assets.first(where: { $0.blockchainAsset.symbol == BlockchainType.Ethereum.rawValue })?.address
+            firstAccount.assets.first(where: { $0.blockchainAsset.symbol == BlockchainType.Ethereum.shortCode })?.address
         }
         
         func createWalletAccountsDetails() -> ConnectedWalletAccountsDetails {

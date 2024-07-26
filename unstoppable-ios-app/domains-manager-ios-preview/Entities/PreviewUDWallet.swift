@@ -49,14 +49,16 @@ struct UDWallet: Codable, Hashable {
     }
     
     static func createMPC(address: String,
+                          aliasName: String,
                           mpcMetadata: MPCWalletMetadata) -> UDWallet {
-        .init(address: address,
+        .init(aliasName: aliasName,
+              address: address,
               type: .mpc,
               mpcMetadata: mpcMetadata)
     }
     
     static func == (lhs: UDWallet, rhs: UDWallet) -> Bool {
-        let resultEth = (lhs.address == rhs.address) && lhs.address != nil
+        let resultEth = (lhs.address == rhs.address)
         return resultEth
     }
     

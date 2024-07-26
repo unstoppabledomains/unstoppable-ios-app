@@ -375,7 +375,12 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         case .Matic:
             description = String.Constants.mintedOnPolygonDescription.localized()
             selectionViewHeight = 304
+        case .Base, .Bitcoin, .Solana:
+            Debugger.printFailure("Minting can be only on Ethereum and Polygon", critical: true)
+            description = "\(chain.fullName) should not be used for minting"
+            selectionViewHeight = 304
         }
+        
         let selectionView = PullUpSelectionView(configuration: .init(title: .text(chain.fullName),
                                                                      contentAlignment: .center,
                                                                      icon: .init(icon: icon,
@@ -384,7 +389,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                      cancelButton: .gotItButton()),
                                                 items: PullUpSelectionViewEmptyItem.allCases)
         
-        showOrUpdate(in: viewController, pullUp: .domainMintedOnChainDescription, additionalAnalyticParameters: [.chainNetwork: chain.rawValue], contentView: selectionView, height: selectionViewHeight)
+        showOrUpdate(in: viewController, pullUp: .domainMintedOnChainDescription, additionalAnalyticParameters: [.chainNetwork: chain.shortCode], contentView: selectionView, height: selectionViewHeight)
     }
 
     func showRecentActivitiesInfoPullUp(in viewController: UIViewController, isGetNewDomain: Bool) async throws {
@@ -472,68 +477,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             showOrUpdate(in: viewController, pullUp: .logOutConfirmation, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
         }
     }
-  
-    func showParkedDomainInfoPullUp(in viewController: UIViewController) {
-        let selectionViewHeight: CGFloat = 304
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.parkedDomainInfoPullUpTitle.localized()),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .parkingIcon24,
-                                                                                 size: .small),
-                                                                     subtitle: .label(.text(String.Constants.parkedDomainInfoPullUpSubtitle.localized())),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        presentPullUpView(in: viewController, pullUp: .parkedDomainInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
-    }
-    
-    func showParkedDomainTrialExpiresPullUp(in viewController: UIViewController,
-                                            expiresDate: Date) {
-        let expiresDateString = DateFormattingService.shared.formatParkingExpiresDate(expiresDate)
-        
-        let selectionViewHeight: CGFloat = 380
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.parkedDomainTrialExpiresInfoPullUpTitle.localized(expiresDateString)),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .warningIcon,
-                                                                                 size: .small,
-                                                                                 tintColor: .foregroundWarning),
-                                                                     subtitle: .label(.text(String.Constants.parkedDomainTrialExpiresInfoPullUpSubtitle.localized())),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        presentPullUpView(in: viewController, pullUp: .parkedDomainTrialExpiresInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
-    }
-    
-    func showParkedDomainExpiresSoonPullUp(in viewController: UIViewController,
-                                            expiresDate: Date) {
-        let expiresDateString = DateFormattingService.shared.formatParkingExpiresDate(expiresDate)
-        
-        let selectionViewHeight: CGFloat = 328
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.parkedDomainExpiresSoonPullUpTitle.localized(expiresDateString)),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .warningIcon,
-                                                                                 size: .small,
-                                                                                 tintColor: .foregroundWarning),
-                                                                     subtitle: .label(.text(String.Constants.parkedDomainExpiresSoonPullUpSubtitle.localized())),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        presentPullUpView(in: viewController, pullUp: .parkedDomainExpiresSoonInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
-    }
-    
-    func showParkedDomainExpiredPullUp(in viewController: UIViewController) {
-        let selectionViewHeight: CGFloat = 328
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.parkedDomainExpiredInfoPullUpTitle.localized()),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .warningIcon,
-                                                                                 size: .small,
-                                                                                 tintColor: .foregroundWarning),
-                                                                     subtitle: .label(.text(String.Constants.parkedDomainExpiredInfoPullUpSubtitle.localized())),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        presentPullUpView(in: viewController, pullUp: .parkedDomainExpiredInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
-    }
-
+   
     func showApplePayRequiredPullUp(in viewController: UIViewController) {
         let selectionViewHeight: CGFloat = 304
         let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.applePayRequiredPullUpTitle.localized()),
@@ -589,6 +533,35 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             .view!
         
         presentPullUpView(in: viewController, pullUp: .walletsMaxNumberLimitReachedAlready, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+    }
+    
+    func showDomainProfileInMaintenancePullUp(in viewController: UIViewController) {
+        showMaintenanceInProgressPullUp(in: viewController, 
+                                        pullUp: .domainProfileMaintenance,
+                                        serviceType: .domainProfile,
+                                        featureFlag: .isMaintenanceProfilesAPIEnabled)
+    }
+    
+    func showMessageSigningInMaintenancePullUp(in viewController: UIViewController) {
+        showMaintenanceInProgressPullUp(in: viewController,
+                                        pullUp: .signMessagesMaintenance,
+                                        serviceType: .signMessages,
+                                        featureFlag: .isMaintenanceMPCEnabled)
+    }
+    
+    private func showMaintenanceInProgressPullUp(in viewController: UIViewController,
+                                                 pullUp: Analytics.PullUp,
+                                                 serviceType: MaintenanceServiceType,
+                                                 featureFlag: UDFeatureFlag) {
+        let view = MaintenanceDetailsPullUpView(serviceType: serviceType, featureFlag: featureFlag)
+            .frame(height: 380)
+        let vc = UIHostingController(rootView: view)
+        
+        showIfNotPresent(in: viewController,
+                         pullUp: pullUp,
+                         contentView: vc.view,
+                         isDismissAble: true,
+                         height: 380)
     }
 }
 

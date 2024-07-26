@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import Combine
 
 final class MockUDFeatureFlagsService {
     private var listenerHolders: [UDFeatureFlagListenerHolder] = []
     private var isMocking = false
-    
+    private(set) var featureFlagPublisher = PassthroughSubject<UDFeatureFlag, Never>()
+
     init() {
         start()
     }
@@ -23,6 +25,10 @@ extension MockUDFeatureFlagsService: UDFeatureFlagsServiceProtocol {
             return true
         }
         return flag.defaultValue
+    }
+    
+    func entityValueFor<T: Codable>(flag: UDFeatureFlag) -> T? {
+        nil
     }
     
     func addListener(_ listener: UDFeatureFlagsListener) {

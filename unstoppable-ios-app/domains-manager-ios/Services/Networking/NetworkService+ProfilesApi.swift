@@ -228,6 +228,26 @@ extension NetworkService: DomainProfileNetworkServiceProtocol {
         }
     }
     
+    enum ProfilesSupportedNameServices: String {
+        case ud, ens, lens
+    }
+    
+    /// This function will return UD/ENS/Lens/Null name and corresponding PFP if available OR throw 404
+    public func fetchProfilesReverseResolution(for identifier: HexAddress,
+                                               supportedNameServices: [ProfilesSupportedNameServices]? = nil) async throws -> GlobalRR? {
+        do {
+            let endpoint = try Endpoint.getProfileReverseResolution(for: identifier,
+                                                                    supportedNameServices: supportedNameServices)
+            let data = try await fetchDataHandlingThrottleFor(endpoint: endpoint, method: .get)
+            let response = try JSONDecoder().decode(GlobalRR.self, from: data)
+            return response
+        } catch NetworkLayerError.badResponseOrStatusCode(let code, _, _) where code == 404 { // 404 means no RR domain or ENS domain
+            return nil
+        } catch {
+            throw error
+        }
+    }
+    
     //MARK: private methods
     private func getGeneratedMessageToRetrieve(for domain: DomainItem) async throws -> GeneratedMessage {
         guard let url = Endpoint.getGeneratedMessageToRetrieve(for: domain).url else {
@@ -457,11 +477,11 @@ extension NetworkService: WalletTransactionsNetworkServiceProtocol {
     
     func getTransactionsFor(wallet: HexAddress, 
                             cursor: String?,
-                            chain: String?,
+                            chains: [BlockchainType]?,
                             forceRefresh: Bool) async throws -> [WalletTransactionsPerChainResponse] {
         let endpoint = Endpoint.getProfileWalletTransactions(for: wallet, 
                                                              cursor: cursor,
-                                                             chain: chain,
+                                                             chains: chains,
                                                              forceRefresh: forceRefresh)
         let data = try await fetchDataFor(endpoint: endpoint,
                                           method: .get)

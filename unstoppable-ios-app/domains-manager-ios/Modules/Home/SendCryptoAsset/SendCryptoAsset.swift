@@ -42,7 +42,7 @@ extension SendCryptoAsset {
         case userWalletSelected(WalletEntity)
         case followingDomainSelected(DomainProfileDisplayInfo)
         case globalProfileSelected(SearchDomainProfile)
-        case globalWalletAddressSelected(HexAddress)
+        case globalWalletAddressSelected(SendCryptoAsset.WalletAddressDetails)
         
         case userTokenToSendSelected(SelectTokenAmountToSendData)
         case userTokenValueSelected(SendTokenAssetData)
@@ -56,6 +56,7 @@ extension SendCryptoAsset {
 extension SendCryptoAsset {
     struct AssetReceiver: Hashable {
         let walletAddress: String
+        let network: BlockchainType
         let domainName: DomainName?
         private(set) var pfpURL: URL?
         private var records: [String: String] = [:]
@@ -77,7 +78,7 @@ extension SendCryptoAsset {
         
         private func resolveCoinRecordChainIdentifier(_ chain: String) -> String {
             switch chain {
-            case BlockchainType.Ethereum.rawValue:
+            case BlockchainType.Ethereum.shortCode:
                 return "ERC20"
             default:
                 return chain
@@ -88,6 +89,7 @@ extension SendCryptoAsset {
             self.walletAddress = wallet.address
             self.domainName = wallet.rrDomain?.name
             self.pfpURL = wallet.rrDomain?.pfpSource.value.asURL
+            self.network = .Ethereum
             try await loadRecords()
         }
         
@@ -95,6 +97,7 @@ extension SendCryptoAsset {
             self.walletAddress = profile.ownerWallet
             self.domainName = profile.domainName
             self.pfpURL = profile.pfpURL
+            self.network = .Ethereum
             try await loadRecords()
         }
         
@@ -106,13 +109,16 @@ extension SendCryptoAsset {
             self.walletAddress = walletAddress
             self.domainName = globalProfile.name
             self.pfpURL = globalProfile.imagePath?.asURL
+            self.network = .Ethereum
             try await loadRecords()
         }
         
-        init(walletAddress: HexAddress) {
+        init(walletAddress: HexAddress,
+             network: BlockchainType) {
             self.walletAddress = walletAddress
             self.domainName = nil
             self.pfpURL = nil
+            self.network = network
         }
         
         mutating private func loadRecords() async throws {
@@ -191,6 +197,13 @@ extension SendCryptoAsset {
     
     struct TransferDomainConfirmationData {
         let shouldClearRecords: Bool
+    }
+}
+
+extension SendCryptoAsset {
+    struct WalletAddressDetails {
+        let address: String
+        let network: BlockchainType
     }
 }
 

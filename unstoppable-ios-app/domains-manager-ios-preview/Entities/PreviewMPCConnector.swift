@@ -48,6 +48,10 @@ extension FB_UD_MPC {
             .init(id: "1", status: "", type: "")
         }
         
+        func startSendETHTransaction(accessToken: String, accountId: String, assetId: String, destinationAddress: String, data: String, value: String) async throws -> FB_UD_MPC.OperationDetails {
+            .init(id: "1", status: "", type: "")
+        }
+        
         func waitForOperationCompleted(accessToken: String, operationId: String) async throws {
             
         }
@@ -56,7 +60,6 @@ extension FB_UD_MPC {
             ""
         }
         
-      
         func fetchCryptoPortfolioForMPC(wallet: String, accessToken: String) async throws -> [WalletTokenPortfolio] {
             MockEntitiesFabric.Wallet.mockEntities()[0].balance
         }
@@ -66,7 +69,7 @@ extension FB_UD_MPC {
             return .init(accessToken: "", deviceId: "")
         }
         
-        func startMessageSigning(accessToken: String, accountId: String, assetId: String, message: String, encoding: FB_UD_MPC.SignMessageEncoding) async throws -> FB_UD_MPC.OperationDetails {
+        func startMessageSigning(accessToken: String, accountId: String, assetId: String, message: String, signingType: FB_UD_MPC.MessageSigningType) async throws -> FB_UD_MPC.OperationDetails {
             await Task.sleep(seconds: 0.5)
             return .init(id: "", status: "", type: "")
         }

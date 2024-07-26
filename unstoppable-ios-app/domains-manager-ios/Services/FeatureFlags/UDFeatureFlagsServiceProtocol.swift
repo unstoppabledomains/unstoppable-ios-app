@@ -6,9 +6,13 @@
 //
 
 import Foundation
+import Combine
 
 protocol UDFeatureFlagsServiceProtocol {
+    var featureFlagPublisher: PassthroughSubject<UDFeatureFlag, Never> { get }
+
     func valueFor(flag: UDFeatureFlag) -> Bool
+    func entityValueFor<T: Codable>(flag: UDFeatureFlag) -> T?
     func addListener(_ listener: UDFeatureFlagsListener)
     func removeListener(_ listener: UDFeatureFlagsListener)
 }

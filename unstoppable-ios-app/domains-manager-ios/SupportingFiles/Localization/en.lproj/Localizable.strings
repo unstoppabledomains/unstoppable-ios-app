@@ -160,6 +160,7 @@
 "VIEW_IN_BROWSER" = "View in browser";
 "TOKENS" = "Tokens";
 "COLLECTIBLES" = "Collectibles";
+"COLLECTIBLE" = "Collectible";
 "RECEIVE" = "Receive";
 "PROFILE" = "Profile";
 "MORE" = "More";
@@ -180,6 +181,13 @@
 "NEW" = "New";
 "CONFIRM_EMAIL" = "Confirm email";
 "SETUP" = "Setup";
+"NETWORK_FEE" = "Network Fee";
+"RECONNECT" = "Reconnect";
+"SENT" = "Sent";
+"FILTER" = "Filter";
+"RESET" = "Reset";
+"CHAINS" = "Chains";
+"ACTIVITY_WITH" = "Activity with";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -347,6 +355,7 @@
 "SETTINGS_APPEARANCE_CHOOSE_THEME" = "Choose theme";
 "YOU_ARE_UNSTOPPABLE" = "You are Unstoppable!";
 "FEEDBACK_EMAIL_SUBJECT" = "Unstoppable Domains App Feedback - iOS (%@)";
+"VIEW_OR_MOVE_VAULTED_DOMAINS" = "View or move vaulted domains";
 
 // Wallets list
 "MANAGE_ICLOUD_BACKUPS" = "Manage iCloud backups";
@@ -1089,6 +1098,8 @@ More tabs are coming in the next updates.";
 "NO_RECORDS_TO_SEND_ANY_CRYPTO_TITLE" = "%@ hasn’t added addresses for these cryptocurrencies";
 "NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE" = "%@ hasn't added an address for the crypto you wish to send";
 "NO_RECORDS_TO_SEND_CRYPTO_MESSAGE" = "To prevent loss of funds we restrict sending of crypto if an address hasn't been added to the domain by it's owner. Kindly inform the domain owner so you can send them funds.";
+"SENT_SUCCESSFULLY" = "Sent successfully";
+"RECEIVED_SUCCESSFULLY" = "Received successfully";
 
 // Import MPC
 "IMPORT_MPC_WALLET_TITLE" = "Import %@";
@@ -1153,6 +1164,7 @@ More tabs are coming in the next updates.";
 "MPC_TAKEOVER_IN_PROGRESS_SUBTITLE" = "~ 01:00";
 "CONTACT_SUPPORT" = "Contact Support";
 "MPC_WALLET_DEFAULT_NAME" = "Lite Wallet";
+"SEND_CRYPTO" = "Send Crypto";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";
@@ -1160,7 +1172,27 @@ More tabs are coming in the next updates.";
 "REVIEW_TX_AGAIN" = "Review Transaction Again";
 "CONFIRM_AND_SEND" = "Confirm & Send";
 
-"PARKED_DOMAINS" = "Parked domains";
+"DOMAIN_VAULT" = "Domain Vault";
 "BACKED_UP" = "Backed up";
 "BACK_UP" = "Back up";
 "SET_AS_PRIMARY_DOMAIN" = "Set as primary domain";
+
+// Maintenance
+"FULL_MAINTENANCE_MESSAGE_TITLE" = "Our services are in a maintenance mode";
+"FULL_MAINTENANCE_MESSAGE_SUBTITLE" = "Do not worry, we'll be back shortly.\nThank you for your patience!";
+"ACTIVITY_MAINTENANCE_MESSAGE_TITLE" = "Activity is currently unavailable";
+"ACTIVITY_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"EXPLORE_MAINTENANCE_MESSAGE_TITLE" = "Profiles search is currently unavailable";
+"EXPLORE_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"HOME_MAINTENANCE_MESSAGE_TITLE" = "Displaying your tokens, collectibles and domains in the app is currently unavailable";
+"HOME_MAINTENANCE_MESSAGE_SUBTITLE" = "All your assets are safe. It is only the problem with API that display your assets in the app. We're working to make it available soon.";
+"PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_TITLE" = "Searching for and purchasing domains is currently unavailable";
+"PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"VAULTED_DOMAINS_MAINTENANCE_MESSAGE_TITLE" = "Displaying domains in imported vaults is currently unavailable";
+"VAULTED_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE" = "If you have imported vaults previously and do not see them now, don’t worry. We’re working to make them available soon.";
+"DOMAIN_PROFILE_MAINTENANCE_MESSAGE_TITLE" = "Domain profile is currently unavailable";
+"DOMAIN_PROFILE_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"SEND_CRYPTO_MAINTENANCE_MESSAGE_TITLE" = "Sending crypto is currently unavailable\nusing this wallet";
+"SEND_CRYPTO_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.\nMeantime try to switch to another wallet.";
+"SIGN_MESSAGES_MAINTENANCE_MESSAGE_TITLE" = "Signing messages is currently unavailable";
+"SIGN_MESSAGES_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";

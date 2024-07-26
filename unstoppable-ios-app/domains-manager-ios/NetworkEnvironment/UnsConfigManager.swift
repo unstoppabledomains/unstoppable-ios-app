@@ -107,14 +107,14 @@ struct UnsConfigManager {
     }
     
     static func getBlockchainNameForClient(by id: Int) -> String {
-        BlockchainNetwork(rawValue: id)?.nameForClient ?? "not defined by chainId:\(id)"
+        BlockchainType.Chain(rawValue: id)?.fullName ?? "not defined by chainId:\(id)"
     }
     
     enum BlockchainEnvironment {
         case mainnet
         case testnet
         
-        var l1Network: BlockchainNetwork {
+        var l1Network: BlockchainType.Chain {
             switch self {
             case .mainnet:
                 return .ethMainnet
@@ -123,7 +123,7 @@ struct UnsConfigManager {
             }
         }
         
-        var l2Network: BlockchainNetwork {
+        var l2Network: BlockchainType.Chain {
             switch self {
             case .mainnet:
                 return .polygonMainnet
@@ -161,14 +161,14 @@ struct UnsConfigManager {
     }
     
     struct BlockchainConfigData: Equatable {
-        let l1: BlockchainNetwork
-        let l2: BlockchainNetwork
+        let l1: BlockchainType.Chain
+        let l2: BlockchainType.Chain
         
         init(environment: BlockchainEnvironment) {
             self.init(l1: environment.l1Network, l2: environment.l2Network)
         }
         
-        init(l1: BlockchainNetwork, l2: BlockchainNetwork) {
+        init(l1: BlockchainType.Chain, l2: BlockchainType.Chain) {
             self.l1 = l1
             self.l2 = l2
         }

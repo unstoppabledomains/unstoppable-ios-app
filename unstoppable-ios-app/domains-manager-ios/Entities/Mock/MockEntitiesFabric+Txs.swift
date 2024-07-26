@@ -21,14 +21,14 @@ extension MockEntitiesFabric {
         }
         
         static func createMockTxsResponses(canLoadMore: Bool = false,
-                                          amount: Int = 20) -> [WalletTransactionsPerChainResponse] {
-            [createMockTxsResponse(chain: "ETH",
+                                           amount: Int = 20) -> [WalletTransactionsPerChainResponse] {
+            [createMockTxsResponse(chain: BlockchainType.Ethereum.shortCode,
                                    canLoadMore: canLoadMore,
                                    amount: amount),
-             createMockTxsResponse(chain: "MATIC",
+             createMockTxsResponse(chain: BlockchainType.Matic.shortCode,
                                    canLoadMore: canLoadMore,
                                    amount: amount),
-             createMockTxsResponse(chain: "BASE",
+             createMockTxsResponse(chain: BlockchainType.Base.shortCode,
                                    canLoadMore: canLoadMore,
                                    amount: amount)]
         }
@@ -43,10 +43,14 @@ extension MockEntitiesFabric {
         
         
         static func createMockEmptyTxs(range: ClosedRange<Int> = 1...3) -> [SerializedWalletTransaction] {
-            range.map { createMockEmptyTx(id: "\($0)", dateOffset: TimeInterval($0 * -14000)) }
+            range.map { createMockTxOf(type: TxType.allCases.randomElement()!,
+                                       userWallet: "0",
+                                       id: "\($0)",
+                                       dateOffset: TimeInterval($0 * -14000),
+                                       isDeposit: [true, false].randomElement()!) }
         }
         
-        enum TxType {
+        enum TxType: CaseIterable {
             case crypto
             case nft
             case domain
@@ -57,60 +61,61 @@ extension MockEntitiesFabric {
                                    id: String = "1",
                                    dateOffset: TimeInterval = 0,
                                    isDeposit: Bool = true) -> SerializedWalletTransaction {
-            let fromAddress = isDeposit ? "0" : userWallet
+            let otherWallet = "0xc4a748796805dfa42cafe0901ec182936584cc6e"
+            let fromAddress = isDeposit ? otherWallet : userWallet
             let from: SerializedWalletTransaction.Participant = .init(address: fromAddress,
                                                                       label: "ksdjhfskdjfhsdkfjhsdkjfhsdkjfhsdkjfhsdkjfh.x",
                                                                       link: "")
-            let toAddress = !isDeposit ? "0" : userWallet
+            let toAddress = !isDeposit ? otherWallet : userWallet
             let to: SerializedWalletTransaction.Participant = .init(address: toAddress,
                                                                     label: nil,
                                                                     link: "")
             switch type {
             case .crypto:
                 return SerializedWalletTransaction(hash: id,
-                                            block: "",
-                                            timestamp: Date().addingTimeInterval(dateOffset),
-                                            success: true,
-                                            value: 1,
-                                            gas: 1,
-                                            method: "Unknown",
-                                            link: "",
-                                            imageUrl: ImageURLs.sunset.rawValue,
-                                            symbol: "MATIC",
-                                            type: "native",
-                                            from: from,
-                                            to: to)
+                                                   block: "",
+                                                   timestamp: Date().addingTimeInterval(dateOffset),
+                                                   success: true,
+                                                   value: 1,
+                                                   gas: 1,
+                                                   method: "Unknown",
+                                                   link: URLs.generic.absoluteString,
+                                                   imageUrl: ImageURLs.sunset.rawValue,
+                                                   symbol: "MATIC",
+                                                   type: "native",
+                                                   from: from,
+                                                   to: to)
                 
             case .domain:
                 return SerializedWalletTransaction(hash: id,
-                                            block: "",
-                                            timestamp: Date().addingTimeInterval(dateOffset),
-                                            success: true,
-                                            value: 0,
-                                            gas: 0,
-                                            method: "oleg.x",
-                                            link: "",
-                                            imageUrl: ImageURLs.aiAvatar.rawValue,
-                                            symbol: "MATIC",
-                                            type: "nft",
-                                            from: from,
-                                            to: to)
-
+                                                   block: "",
+                                                   timestamp: Date().addingTimeInterval(dateOffset),
+                                                   success: true,
+                                                   value: 0,
+                                                   gas: 0,
+                                                   method: "oleg.x",
+                                                   link: "",
+                                                   imageUrl: ImageURLs.aiAvatar.rawValue,
+                                                   symbol: "MATIC",
+                                                   type: "nft",
+                                                   from: from,
+                                                   to: to)
+                
             case .nft:
                 return SerializedWalletTransaction(hash: id,
-                                            block: "",
-                                            timestamp: Date().addingTimeInterval(dateOffset),
-                                            success: true,
-                                            value: 0,
-                                            gas: 0,
-                                            method: "May the Grooves be with you",
-                                            link: "",
-                                            imageUrl: ImageURLs.aiAvatar.rawValue,
-                                            symbol: "MATIC",
-                                            type: "nft",
-                                            from: from,
-                                            to: to)
-
+                                                   block: "",
+                                                   timestamp: Date().addingTimeInterval(dateOffset),
+                                                   success: true,
+                                                   value: 0,
+                                                   gas: 0,
+                                                   method: "May the Grooves be with you",
+                                                   link: "",
+                                                   imageUrl: ImageURLs.aiAvatar.rawValue,
+                                                   symbol: "MATIC",
+                                                   type: "nft",
+                                                   from: from,
+                                                   to: to)
+                
             }
         }
         

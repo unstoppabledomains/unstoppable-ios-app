@@ -33,12 +33,18 @@ extension FB_UD_MPC {
                                  accountId: String,
                                  assetId: String,
                                  message: String,
-                                 encoding: SignMessageEncoding) async throws -> OperationDetails
+                                 signingType: MessageSigningType) async throws -> OperationDetails
         func startAssetTransfer(accessToken: String,
                                 accountId: String,
                                 assetId: String,
                                 destinationAddress: String,
                                 amount: String) async throws -> OperationDetails
+        func startSendETHTransaction(accessToken: String,
+                                     accountId: String,
+                                     assetId: String,
+                                     destinationAddress: String,
+                                     data: String,
+                                     value: String) async throws -> OperationDetails
         func waitForOperationReadyAndGetTxId(accessToken: String,
                                              operationId: String) async throws -> OperationReadyResponse
         func waitForOperationSignedAndGetTxSignature(accessToken: String,

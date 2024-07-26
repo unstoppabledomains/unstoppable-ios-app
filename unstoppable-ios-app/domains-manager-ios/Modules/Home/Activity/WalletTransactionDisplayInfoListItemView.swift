@@ -77,7 +77,7 @@ private extension WalletTransactionDisplayInfoListItemView {
     
     @ViewBuilder
     func currentIcon() -> some View {
-        Image(uiImage: icon ?? .appleIcon)
+        Image(uiImage: icon ?? .init())
             .resizable()
             .squareFrame(40)
     }
@@ -111,10 +111,7 @@ private extension WalletTransactionDisplayInfoListItemView {
     var sourceText: String {
         switch transaction.type {
         case .tokenWithdrawal, .tokenDeposit:
-            if let chainType = BlockchainType(rawValue: transaction.symbol) {
-                return chainType.fullName
-            }
-            return transaction.symbol
+            return transaction.chainFullName
         case .nftDeposit, .nftWithdrawal:
             return transaction.nftName
         }
@@ -158,11 +155,10 @@ private extension WalletTransactionDisplayInfoListItemView {
     
     @ViewBuilder
     func nftTxValueView() -> some View {
-        if transaction.nftName.isValidDomainName() {
+        if transaction.isDomainNFT {
             nftTxValueViewWith(name: String.Constants.domain.localized())
         } else {
-            nftTxValueViewWith(name: "NFT")
-            
+            nftTxValueViewWith(name: String.Constants.collectible.localized())
         }
     }
     

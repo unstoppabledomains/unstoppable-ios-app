@@ -66,8 +66,8 @@ extension UDWallet {
             
         case .mpc:
             let mpcWalletMetadata = try extractMPCMetadata()
-            return try await appContext.mpcWalletsService.signMessage(messageString,
-                                                                      by: mpcWalletMetadata)
+            return try await appContext.mpcWalletsService.signPersonalMessage(messageString,
+                                                                              by: mpcWalletMetadata)
         default:
             let messageToSend = shouldTryToConverToReadable ? messageString.convertedIntoReadableMessage : messageString
             
@@ -127,15 +127,18 @@ extension UDWallet {
         return messageToSend
     }
     
-    func getSignTypedData(dataString: String) async throws -> String {
+    func getSignTypedData(dataString: String,
+                          blockchainType: BlockchainType = .Ethereum) async throws -> String {
         switch self.type {
         case .externalLinked:
             let signature = try await signViaWalletConnectTypedData(dataString: dataString)
             return signature
             
-        case .mpc: print("sign with mpc")
-                return ""// TODO: mpc
-            
+        case .mpc:
+            let mpcWalletMetadata = try extractMPCMetadata()
+            return try await appContext.mpcWalletsService.signTypedDataMessage(dataString, 
+                                                                               chain: blockchainType,
+                                                                               by: mpcWalletMetadata)
         default:  // locally verified wallet
             let data = dataString.data(using: .utf8)!
             let typedData = try! JSONDecoder().decode(EIP712TypedData.self, from: data)
@@ -226,6 +229,36 @@ extension UDWallet {
         }
         guard messages.count == sigs.count else { throw UDWallet.Error.failedSignature }
         return sigs
+    }
+    
+    func sendEthTx(payload: EthereumSendTransactionPayload) async throws -> String {
+        switch type {
+        case .externalLinked:
+            throw WalletConnectRequestError.methodUnsupported
+        case .mpc:
+            guard let chain = BlockchainType.Chain(rawValue: payload.chainId)?.identifyBlockchainType(),
+                  let destinationAddress = payload.transaction.to?.hex(eip55: false) else {
+                throw WalletConnectRequestError.methodUnsupported
+            }
+            
+            let mpcWalletMetadata = try extractMPCMetadata()
+            let data = payload.transaction.data.hex()
+            let value = payload.transaction.value?.ethereumValue().int ?? 0
+            
+            let hash = try await appContext.mpcWalletsService.sendETHTransaction(data: data,
+                                                                                 value: String(value),
+                                                                                 chain: chain,
+                                                                                 destinationAddress: destinationAddress,
+                                                                                 by: mpcWalletMetadata)
+            
+            return hash
+        default:
+            let hash = try await JRPC_Client.instance.sendTx(transaction: payload.transaction,
+                                                             udWallet: self,
+                                                             chainIdInt: payload.chainId)
+            Debugger.printInfo(topic: .WalletConnectV2, "Successfully sent TX via internal wallet: \(address)")
+            return hash
+        }
     }
 }
 

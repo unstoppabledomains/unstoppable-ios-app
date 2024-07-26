@@ -269,9 +269,9 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
     func ensureRRDomainRecordsMatchOwnerWallet() {
         Task {
             let walletAddress = selectedWallet.address
-            guard lastVerifiedRecordsWalletAddress != selectedWallet.address else { return }
+            guard lastVerifiedRecordsWalletAddress != walletAddress else { return }
             guard let rrDomain = selectedWallet.rrDomain else {
-                lastVerifiedRecordsWalletAddress = selectedWallet.address
+                lastVerifiedRecordsWalletAddress = walletAddress
                 chainsNotMatch = []
                 return
             }
@@ -296,7 +296,7 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
                 let chainsToVerify: [ChainToVerifyDesc]
                 switch selectedWallet.getAssetsType() {
                 case .singleChain(let balanceTokenUIDescription):
-                    chainsToVerify = BlockchainType.allCases.map { ChainToVerifyDesc(chain: $0.rawValue,
+                    chainsToVerify = BlockchainType.allCases.map { ChainToVerifyDesc(chain: $0.shortCode,
                                                                                      fullName: $0.fullName,
                                                                                      address: balanceTokenUIDescription.address,
                                                                                      isCaseSensitive: false) }
@@ -308,7 +308,7 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
                         .map { ChainToVerifyDesc(chain: $0.symbol,
                                                  fullName: $0.name,
                                                  address: $0.address,
-                                                 isCaseSensitive: BlockchainType(rawValue: $0.symbol) == nil) }
+                                                 isCaseSensitive: BlockchainType(chainShortCode: $0.symbol) == nil) }
                 }
                 
                 
@@ -327,7 +327,7 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
                     }
                 }
                 
-                lastVerifiedRecordsWalletAddress = selectedWallet.address
+                lastVerifiedRecordsWalletAddress = walletAddress
             } catch {
                 chainsNotMatch = []
             }

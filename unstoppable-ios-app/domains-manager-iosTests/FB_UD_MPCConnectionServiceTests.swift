@@ -267,13 +267,23 @@ private final class MockNetworkService: FB_UD_MPC.MPCConnectionNetworkService, F
         throw TestableGenericError.generic
     }
     
-    func startMessageSigning(accessToken: String, accountId: String, assetId: String, message: String, encoding: FB_UD_MPC.SignMessageEncoding) async throws -> FB_UD_MPC.OperationDetails {
+    func startMessageSigning(accessToken: String, accountId: String, assetId: String, message: String, signingType: FB_UD_MPC.MessageSigningType) async throws -> FB_UD_MPC.OperationDetails {
         try failIfNeeded()
         throw TestableGenericError.generic
     }
     
+    
     func startAssetTransfer(accessToken: String, accountId: String, assetId: String, destinationAddress: String, amount: String) async throws -> FB_UD_MPC.OperationDetails {
         try failIfNeeded()
+        throw TestableGenericError.generic
+    }
+    
+    func startSendETHTransaction(accessToken: String,
+                                 accountId: String,
+                                 assetId: String,
+                                 destinationAddress: String,
+                                 data: String,
+                                 value: String) async throws -> FB_UD_MPC.OperationDetails {
         throw TestableGenericError.generic
     }
     

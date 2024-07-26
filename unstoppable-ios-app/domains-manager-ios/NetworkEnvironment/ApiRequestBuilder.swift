@@ -49,7 +49,7 @@ struct APIRequest {
         
         var bodyString: String = ""
         if let body {
-            guard let bodyStringEncoded = body.jsonString() else { throw NetworkLayerError.responseFailedToParse }
+            let bodyStringEncoded = try body.jsonStringThrowing()
             bodyString = bodyStringEncoded
         }
         
@@ -811,6 +811,20 @@ extension Endpoint {
         )
     }
     
+    static func getProfileReverseResolution(for identifier: HexAddress,
+                                            supportedNameServices: [NetworkService.ProfilesSupportedNameServices]?) throws -> Endpoint {
+        var queryItems: [URLQueryItem] = []
+        if let supportedNameServices {
+            let services = supportedNameServices.map { $0.rawValue }.joined(separator: ",")
+            queryItems.append(URLQueryItem(name: "resolutionOrder", value: services))
+        }
+        return Endpoint(
+            host: NetworkConfig.baseAPIHost,
+            path: "/profile/resolve/\(identifier)",
+            queryItems: queryItems,
+            body: ""
+        )
+    }
 
     static func joinBadgeCommunity(body: String) -> Endpoint {
         return Endpoint(
@@ -900,14 +914,16 @@ extension Endpoint {
     
     static func getProfileWalletTransactions(for wallet: String,
                                              cursor: String?,
-                                             chain: String?,
+                                             chains: [BlockchainType]?,
                                              forceRefresh: Bool) -> Endpoint {
         var queryItems: [URLQueryItem] = []
         if let cursor {
             queryItems.append(URLQueryItem(name: "cursor", value: cursor))
         }
-        if let chain {
-            queryItems.append(URLQueryItem(name: "symbols", value: chain))
+        if let chains,
+           !chains.isEmpty {
+            let symbolsList: String = chains.map { $0.shortCode }.joined(separator: ",")
+            queryItems.append(URLQueryItem(name: "symbols", value: symbolsList))
         }
         if forceRefresh {
             queryItems.append(URLQueryItem(name: "forceRefresh", value: String(Int(Date().timeIntervalSince1970))))

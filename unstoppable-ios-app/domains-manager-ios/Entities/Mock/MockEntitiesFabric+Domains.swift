@@ -39,7 +39,7 @@ extension MockEntitiesFabric {
                     domains.append(domain)
                 }
             }
-                        
+            
             return domains
         }
         
@@ -105,6 +105,10 @@ extension MockEntitiesFabric {
                       ownerAddress: "123")
             ]
         }
+        
+        static func mockFirebaseDomainsDisplayInfo() -> [FirebaseDomainDisplayInfo] {
+            mockFirebaseDomains().map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
+        }
     }
 }
 
@@ -138,7 +142,7 @@ extension MockEntitiesFabric {
         }
         
         static func createPublicDomainMetadata(domain: String, walletAddress: String) -> PublicDomainProfileMetaData {
-            PublicDomainProfileMetaData(domain: domain, blockchain: "MATIC", networkId: BlockchainType.Matic.supportedChainId(env: .testnet), owner: walletAddress)
+            PublicDomainProfileMetaData(domain: domain, blockchain: "MATIC", networkId: BlockchainType.Matic.resolveChainId(env: .testnet), owner: walletAddress)
         }
         
         static func createPublicProfileAttributes(displayName: String = "Oleg Kuplin",

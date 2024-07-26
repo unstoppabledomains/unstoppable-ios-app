@@ -24,7 +24,6 @@ struct Constants {
         
     static let distanceFromButtonToKeyboard: CGFloat = 16
     static let scrollableContentBottomOffset: CGFloat = 32
-    static let ETHRegexPattern = "^0x[a-fA-F0-9]{40}$"
     static let UnstoppableSupportMail = "support@unstoppabledomains.com"
     static let UnstoppableTwitterName = "unstoppableweb"
     static let UnstoppableGroupIdentifier = "group.unstoppabledomains.manager.extensions"
@@ -60,7 +59,6 @@ struct Constants {
     static let udMeHosts: Set<String> = ["ud.me", "staging.ud.me"]
     static let popularCoinsTickers: [String] = ["BTC", "ETH", "ZIL", "LTC", "XRP"] // This is not required order to be on the UI
     static let additionalSupportedTokens = ["crypto.SOL.address", "crypto.BTC.address"]
-    static let baseChainSymbol: String = "BASE"
     static let ldApplicationIdentifier: String = "ud-ios-app" // Launch darkly id
     
     // Shake to find
@@ -182,41 +180,6 @@ struct Env {
         #endif
         // Intentionally let builds fail that are not explicitly described here
     }()
-}
-
-enum BlockchainNetwork: Int, CaseIterable {
-    case ethMainnet = 1
-    case ethSepolia = 11155111
-    case polygonMainnet = 137
-    case polygonAmoy = 80002
-    
-    var id: Int { rawValue }
-    
-    var name: String {
-        switch self {
-        case .ethMainnet:
-            return "mainnet"
-        case .ethSepolia:
-            return "sepolia"
-        case .polygonMainnet:
-            return "polygon-mainnet"
-        case .polygonAmoy:
-            return "polygon-amoy"
-        }
-    }
-    
-    var nameForClient: String {
-        switch self {
-        case .ethMainnet:
-            return "Ethereum"
-        case .ethSepolia:
-            return "Ethereum: Sepolia"
-        case .polygonMainnet:
-            return "Polygon"
-        case .polygonAmoy:
-            return "Polygon: Amoy"
-        }
-    }
 }
 
 struct Utilities {

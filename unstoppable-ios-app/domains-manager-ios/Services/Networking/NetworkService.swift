@@ -62,19 +62,6 @@ struct NetworkService {
         }
     }
     
-    static var authAPIKey: String {
-        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
-        if isTestnetUsed {
-            return NetworkService.testnetMetadataAPIKey
-        } else {
-            return NetworkService.mainnetMetadataAPIKey
-        }
-    }
-    
-    static var authHeader: [String : String] {
-        return ["Authorization" : "Bearer \(authAPIKey)"]
-    }
-    
     static var currentProfilesAPIKey: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
@@ -292,7 +279,7 @@ extension NetworkService {
     }
     
     func getJRPCProviderUrl(chainId: Int) -> URL? {
-        guard let netName = BlockchainNetwork(rawValue: chainId)?.name else {
+        guard let netName = BlockchainType.Chain(rawValue: chainId)?.name else {
             return nil
         }
         return URL(string: "https://\(netName).infura.io/v3/\(NetworkService.chooseInfuraProjectId())")!
@@ -383,13 +370,14 @@ extension NetworkService {
         let data = try await NetworkService().fetchData(for: url, method: .get)
         
         guard let jsonPrices = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-              let eth = jsonPrices["ETH"] as? [String: Any],
+              let eth = jsonPrices[BlockchainType.Ethereum.shortCode] as? [String: Any],
               let ethPrices = eth["averageGasPrices"] as? [String: Int],
-              let matic = jsonPrices["MATIC"] as? [String: Any],
+              let matic = jsonPrices[BlockchainType.Matic.shortCode] as? [String: Any],
               let maticPrices = matic["averageGasPrices"] as? [String: Int] else {
                  throw JRPCError.failedGetStatus
              }
-        return ["ETH": ethPrices, "MATIC": maticPrices]
+        return [BlockchainType.Ethereum.shortCode: ethPrices,
+                BlockchainType.Matic.shortCode: maticPrices]
     }
     
     enum InfuraSpeedCase: String, CaseIterable {
@@ -441,9 +429,9 @@ extension NetworkService {
 
     private func getStatusGasPrices(chainId: Int) async throws -> [String: Int] {
         switch chainId {
-        case BlockchainNetwork.ethMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)["ETH"]!
-        case BlockchainNetwork.polygonMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)["MATIC"]!
-        case BlockchainNetwork.ethSepolia.rawValue: return try await getStatusGasPrices(env: .testnet)["ETH"]!
+        case BlockchainType.Chain.ethMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)[BlockchainType.Ethereum.shortCode]!
+        case BlockchainType.Chain.polygonMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)[BlockchainType.Matic.shortCode]!
+        case BlockchainType.Chain.ethSepolia.rawValue: return try await getStatusGasPrices(env: .testnet)[BlockchainType.Ethereum.shortCode]!
         default: throw JRPCError.unknownChain
         }
     }
@@ -464,28 +452,11 @@ extension NetworkService {
     }
     
     func fetchReverseResolution(for address: HexAddress) async throws -> DomainName? {
-        let url = URL(string: "\(NetworkConfig.baseResolveUrl)/reverse/\(address)")!
-        let data = try await NetworkService().fetchData(for: url,
-                                                        method: .get,
-                                                        extraHeaders: NetworkService.authHeader)
-        let response = try JSONDecoder().decode(ResolveDomainsApiResponse.self, from: data)
-        return response.meta.domain
+        try await fetchProfilesReverseResolution(for: address, supportedNameServices: [.ud])?.name
     }
     
-    /// This function will return UD/ENS/Null name and corresponding PFP if available OR throw 404
     func fetchGlobalReverseResolution(for identifier: HexAddress) async throws -> GlobalRR? {
-        do {
-            guard let url = URL(string: "\(NetworkConfig.baseAPIUrl)/profile/resolve/\(identifier)") else { return nil } // User's input contains not allowed characters
-            
-            let data = try await NetworkService().fetchData(for: url,
-                                                            method: .get)
-            let response = try JSONDecoder().decode(GlobalRR.self, from: data)
-            return response
-        } catch NetworkLayerError.badResponseOrStatusCode(let code, _, _) where code == 404 { // 404 means no RR domain or ENS domain
-            return nil
-        } catch {
-            throw error
-        }
+        try await fetchProfilesReverseResolution(for: identifier)
     }
     
     private func getRegex(for expandedTicker: String, coins: [CoinRecord]) -> String? {
