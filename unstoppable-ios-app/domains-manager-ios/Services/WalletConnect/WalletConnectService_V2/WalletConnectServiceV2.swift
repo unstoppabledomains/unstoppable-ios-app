@@ -163,10 +163,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         self.udWalletsService = udWalletsService
         
         configure()
-//
-//        try? Sign.instance.cleanup()
-//        try? Pair.instance.cleanup()
-//        clientConnectionsV2.removeAll()
+        
         let settledSessions = Sign.instance.getSessions()
         #if DEBUG
         Debugger.printInfo(topic: .WalletConnectV2, "Connected sessions:\n\(settledSessions)")
@@ -194,7 +191,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         
         // trim the list of connected dApps
         let validWallets = appContext.walletsDataService.wallets
-        let validAddresses = validWallets.map { $0.address }
+        let validAddresses = validWallets.map { $0.address.normalized }
         let validConnectedApps = unifiedApps.filter({ validAddresses.contains($0.walletAddress.normalized) })
 
         // disconnect those connected to gone domains
@@ -207,7 +204,15 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     }
     
     func clearCache() {
-        // TODO: - Clear WC Cache
+        try? Sign.instance.cleanup()
+        try? Pair.instance.cleanup()
+        let dapps = self.appsStorageV2.retrieveAll()
+        
+        dapps.forEach({ dapp in
+            Task {
+                try await disconnect(app: UnifiedConnectAppInfo(from: dapp))
+            }
+        })
     }
         
     func disconnectAppsForAbsentWallets(from validWallets: [WalletEntity]) {
