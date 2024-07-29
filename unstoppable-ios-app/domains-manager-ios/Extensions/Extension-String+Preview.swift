@@ -652,6 +652,7 @@ extension String {
         static let networkGasFeeInfoDescription = "NETWORK_GAS_FEE_INFO_DESCRIPTION"
         static let signTransactionFailedAlertTitle = "SIGN_TRANSACTION_FAILED_ALERT_TITLE"
         static let signTransactionFailedAlertDescription = "SIGN_TRANSACTION_FAILED_ALERT_DESCRIPTION"
+        static let clearWalletConnectCache = "CLEAR_WALLET_CONNECT_CACHE"
         static let walletConnectInvalidQRCodeAlertTitle = "WALLET_CONNECT_INVALID_QR_CODE_ALERT_TITLE"
         static let walletConnectInvalidQRCodeAlertDescription = "WALLET_CONNECT_INVALID_QR_CODE_ALERT_DESCRIPTION"
         static let walletConnectLowBalanceAlertDescription = "WALLET_CONNECT_LOW_BALANCE_ALERT_DESCRIPTION"

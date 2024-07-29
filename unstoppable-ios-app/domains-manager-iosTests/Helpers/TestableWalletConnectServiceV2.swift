@@ -43,6 +43,10 @@ final class TestableWalletConnectServiceV2: WalletConnectServiceV2Protocol {
         []
     }
     
+    func clearCache() {
+        
+    }
+    
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType {
         throw TestableGenericError.generic
 

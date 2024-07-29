@@ -39,6 +39,10 @@ final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         []
     }
     
+    func clearCache() {
+        
+    }
+    
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> Wc2ConnectionType {
         throw NSError()
     }

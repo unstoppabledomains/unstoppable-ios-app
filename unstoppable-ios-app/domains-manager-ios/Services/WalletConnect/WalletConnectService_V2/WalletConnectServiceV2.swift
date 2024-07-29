@@ -205,6 +205,10 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     public func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
         walletStorageV2.findSessions(by: walletAddress)
     }
+    
+    func clearCache() {
+        // TODO: - Clear WC Cache
+    }
         
     func disconnectAppsForAbsentWallets(from validWallets: [WalletEntity]) {
         Task {
