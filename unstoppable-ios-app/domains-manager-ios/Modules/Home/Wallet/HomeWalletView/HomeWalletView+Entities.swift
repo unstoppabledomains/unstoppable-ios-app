@@ -61,8 +61,8 @@ extension HomeWalletView {
             switch self {
             case .send:
                 return "send"
-            case .buy:
-                return "buy"
+            case .buy(let enabled):
+                return "buy_\(enabled)"
             case .receive:
                 return "receive"
             case .profile(let enabled):
@@ -73,7 +73,7 @@ extension HomeWalletView {
         }
         
         case send
-        case buy
+        case buy(enabled: Bool)
         case receive
         case profile(enabled: Bool)
         case more
@@ -134,9 +134,9 @@ extension HomeWalletView {
         
         var isDimmed: Bool {
             switch self {
-            case .send, .buy, .receive, .more:
+            case .send, .receive, .more:
                 return false
-            case .profile(let enabled):
+            case .buy(let enabled), .profile(let enabled):
                 return !enabled
             }
         }

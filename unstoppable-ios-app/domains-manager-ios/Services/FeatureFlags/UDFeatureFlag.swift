@@ -11,6 +11,7 @@ enum UDFeatureFlag: String, CaseIterable {
     case communityMediaEnabled = "ecommerce-service-users-enable-chat-community-media"
     case isBuyCryptoEnabled = "mobile-buy-crypto-enabled"
     case isSendCryptoEnabled = "mobile-send-crypto-enabled"
+    case isBuyDomainEnabled = "mobile-buy-domain-enabled"
     
     case isMPCWalletEnabled = "mobile-mpc-wallet-enabled"
     case isMPCSendCryptoEnabled = "mobile-mpc-send-crypto-enabled"
@@ -30,7 +31,7 @@ enum UDFeatureFlag: String, CaseIterable {
         switch self {
         case .communityMediaEnabled, .isBuyCryptoEnabled, .isMPCMessagingEnabled, .isMPCWCNativeEnabled, .isMaintenanceFullEnabled, .isMaintenanceOKLinkEnabled, .isMaintenanceProfilesAPIEnabled, .isMaintenanceEcommEnabled, .isMaintenanceInfuraEnabled, .isMaintenanceMPCEnabled:
             return false
-        case .isSendCryptoEnabled, .isMPCWalletEnabled, .isMPCSendCryptoEnabled, .isMPCSignatureEnabled, .isMPCPurchaseEnabled:
+        case .isSendCryptoEnabled, .isMPCWalletEnabled, .isMPCSendCryptoEnabled, .isMPCSignatureEnabled, .isMPCPurchaseEnabled, .isBuyDomainEnabled:
             return true
         }
     }
@@ -40,7 +41,7 @@ enum UDFeatureFlag: String, CaseIterable {
         switch self {
         case .isMaintenanceFullEnabled, .isMaintenanceOKLinkEnabled, .isMaintenanceProfilesAPIEnabled, .isMaintenanceEcommEnabled, .isMaintenanceInfuraEnabled, .isMaintenanceMPCEnabled:
             return true
-        case .isSendCryptoEnabled, .isMPCWalletEnabled, .isMPCSendCryptoEnabled, .isMPCSignatureEnabled, .isMPCPurchaseEnabled, .communityMediaEnabled, .isBuyCryptoEnabled, .isMPCMessagingEnabled, .isMPCWCNativeEnabled:
+        case .isSendCryptoEnabled, .isMPCWalletEnabled, .isMPCSendCryptoEnabled, .isMPCSignatureEnabled, .isMPCPurchaseEnabled, .communityMediaEnabled, .isBuyCryptoEnabled, .isMPCMessagingEnabled, .isMPCWCNativeEnabled, .isBuyDomainEnabled:
             return false
         }
     }
