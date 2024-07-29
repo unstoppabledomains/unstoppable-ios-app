@@ -30,14 +30,12 @@ final class WCWebSocket: WebSocket, WebSocketConnecting {
             case .connected:
                 self?.isConnected = true
                 self?.onConnect?()
-            case .error:
-                return
+            case .error(let error):
+                self?.setDisconnectedWith(error: error)
             case .cancelled:
-                self?.isConnected = false
-                self?.onDisconnect?(nil)
+                self?.setDisconnectedWith(error: nil)
             case .disconnected:
-                self?.isConnected = false
-                self?.onDisconnect?(nil)
+                self?.setDisconnectedWith(error: nil)
             case .text(let msg):
                 self?.onText?(msg)
             case .binary:
@@ -46,6 +44,11 @@ final class WCWebSocket: WebSocket, WebSocketConnecting {
                 break
             }
         }
+    }
+    
+    private func setDisconnectedWith(error: Error?) {
+        isConnected = false
+        onDisconnect?(error)
     }
 }
 
