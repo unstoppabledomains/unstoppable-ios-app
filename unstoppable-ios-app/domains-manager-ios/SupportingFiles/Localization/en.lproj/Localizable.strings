@@ -548,6 +548,7 @@
 "SIGN_TRANSACTION_FAILED_ALERT_TITLE" = "Connection failed";
 "SIGN_TRANSACTION_FAILED_ALERT_DESCRIPTION" = "Something went wrong. Please retry and If the issue persists, restart the app and clear browser site data.";
 "CLEAR_WALLET_CONNECT_CACHE" = "Clear WalletConnect cache";
+"CLEAR_WALLET_CONNECT_CACHE_DESCRIPTION" = "Tap this button if the above instructions don't resolve the issue. You will need to reconnect your dApps";
 
 "WALLET_CONNECT_INVALID_QR_CODE_ALERT_TITLE" = "Unrecognized QR Code";
 "WALLET_CONNECT_INVALID_QR_CODE_ALERT_DESCRIPTION" = "Sorry, this QR code could not be recognized.";

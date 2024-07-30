@@ -168,7 +168,7 @@ extension PullUpViewService {
     
     func showWCConnectionFailedPullUp(in viewController: UIViewController) async {
         await withSafeCheckedMainActorContinuation(critical: false) { completion in
-            let selectionViewHeight: CGFloat = 376
+            let selectionViewHeight: CGFloat = 426
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.signTransactionFailedAlertTitle.localized()),
                                                                          contentAlignment: .center,
                                                                          icon: .init(icon: .grimaseIcon,
@@ -177,6 +177,7 @@ extension PullUpViewService {
                                                                          actionButton: .main(content: .init(title: String.Constants.clearWalletConnectCache.localized(), 
                                                                                                             icon: nil,
                                                                                                             analyticsName: .clear,
+                                                                                                            subtitle: String.Constants.clearWalletConnectCacheDescription.localized(),
                                                                                                             action: { [weak viewController] in
                 viewController?.presentedViewController?.dismiss(animated: true)
                 appContext.walletConnectServiceV2.clearCache()
