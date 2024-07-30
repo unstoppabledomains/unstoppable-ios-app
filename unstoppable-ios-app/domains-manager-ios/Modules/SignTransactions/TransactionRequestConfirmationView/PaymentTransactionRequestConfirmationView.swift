@@ -84,11 +84,11 @@ private extension PaymentTransactionRequestConfirmationView {
 
         let cost = configuration.cost
         let quantity = cost.quantity
-        let gasFee = cost.gasPrice
+        let gasFee = cost.gasFee
         let price = Double(quantity + gasFee).ethValue
         let isEnoughMoney = tokenDescription.balance >= price
         
-        balanceValueLabel?.setAttributedTextWith(text: String(tokenDescription.balanceUsd),
+        balanceValueLabel?.setAttributedTextWith(text: tokenDescription.formattedBalanceUSD,
                                                  font: .currentFont(withSize: 16, weight: .medium),
                                                  textColor: isEnoughMoney ? .foregroundDefault : .foregroundWarning,
                                                  alignment: .right)
