@@ -18,6 +18,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func disconnectAppsForAbsentWallets(from: [WalletEntity])
     
     func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy]
+    func clearCache() 
     
     // Client V2 part
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType
