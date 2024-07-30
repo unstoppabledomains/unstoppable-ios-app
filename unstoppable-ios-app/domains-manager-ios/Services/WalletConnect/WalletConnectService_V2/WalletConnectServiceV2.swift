@@ -207,8 +207,10 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     }
     
     func clearCache() {
+#if DEBUG
         try? Sign.instance.cleanup()
         try? Pair.instance.cleanup()
+#endif
         let dapps = self.appsStorageV2.retrieveAll()
         
         dapps.forEach({ dapp in
