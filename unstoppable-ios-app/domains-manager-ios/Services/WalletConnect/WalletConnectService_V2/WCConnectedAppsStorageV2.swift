@@ -60,11 +60,13 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
     struct ConnectedApp: Codable, Equatable, Hashable, CustomStringConvertible {
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.sessionProxy == rhs.sessionProxy
+            return lhs.walletAddress.normalized == rhs.walletAddress.normalized
+            && lhs.appName == rhs.appName
         }
         
         func hash(into hasher: inout Hasher) {
-            hasher.combine(sessionProxy.peer.url)
+            hasher.combine(walletAddress)
+            hasher.combine(appName)
         }
                 
         let topic: String
