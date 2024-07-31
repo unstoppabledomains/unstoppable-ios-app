@@ -10,9 +10,11 @@ import UIKit
 final class GIFAnimationsService {
        
     static let shared = GIFAnimationsService()
+    private let serialQueue = DispatchQueue(label: "come.serial.gif.animation")
     
     private let stateHolder = StateHolder()
-
+    private let dataGifsStateHolder = DataGifsStateHolder()
+    
     private init() { }
     
 }
@@ -61,21 +63,35 @@ extension GIFAnimationsService {
     }
     
     func createGIFImageWithData(_ data: Data,
+                                id: String,
+                                maxImageSize: CGFloat,
                                 maskingType: GIFMaskingType? = nil) async -> UIImage? {
         guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
             Debugger.printInfo(topic: .Images, "image doesn't exist")
             return nil
         }
         
-        do {
-            let image = try await animatedImageWithSource(source, maskingType: maskingType)
-            return image
-        } catch GIFPreparationError.oneOrLessFrames {
-            return nil /// Don't log this error
-        } catch {
-            Debugger.printFailure("Failed to create GIF image: \(error.localizedDescription)", critical: false)
-            return nil
+        if let imageTask = await dataGifsStateHolder.currentAsyncProcess[id] {
+            return await imageTask.value
         }
+        
+        let task: Task<UIImage?, Never> = Task.detached(priority: .high) {
+            do {
+                let image = try self.animatedImageWithSource(source, maxImageSize: maxImageSize, maskingType: maskingType)
+                return image
+            } catch GIFPreparationError.oneOrLessFrames {
+                return nil /// Don't log this error
+            } catch {
+                Debugger.printFailure("Failed to create GIF image: \(error.localizedDescription)", critical: false)
+                return nil
+            }
+        }
+        
+        await dataGifsStateHolder.set(process: task, for: id)
+        let image = await task.value
+        await dataGifsStateHolder.set(process: nil, for: id)
+        
+        return image
     }
 }
 
@@ -92,7 +108,8 @@ private extension GIFAnimationsService {
             return nil
         }
         
-        return await createGIFImageWithData(imageData, maskingType: maskingType)
+        return await createGIFImageWithData(imageData, id: gifUrl,
+                                            maxImageSize: Constants.downloadedImageMaxSize, maskingType: maskingType)
     }
     
     func createGIFImageWithName(_ name: String,
@@ -107,53 +124,66 @@ private extension GIFAnimationsService {
             return nil
         }
         
-        return await createGIFImageWithData(imageData, maskingType: maskingType)
+        return await createGIFImageWithData(imageData, id: name, 
+                                            maxImageSize: Constants.downloadedImageMaxSize, maskingType: maskingType)
     }
     
     func animatedImageWithSource(_ source: CGImageSource,
-                                 maskingType: GIFMaskingType?) async throws -> UIImage {
-        let start = Date()
-        let count = CGImageSourceGetCount(source)
-        let (images, delays) = try await extractImagesWithDelays(from: source, maskingType: maskingType)
-        Debugger.printTimeSensitiveInfo(topic: .Images,
-                                        "to prepare animation",
-                                        startDate: start,
-                                        timeout: 2)
-        
-        let duration: Int = {
-            var sum = 0
-            
-            for val: Int in delays {
-                sum += val
-            }
-            
-            return sum
-        }()
-        
-        let gcd = try gcdForArray(delays)
-        var frames = [UIImage]()
-        
-        var frame: UIImage
-        var frameCount: Int
-        for i in 0..<count {
-            frame = UIImage(cgImage: images[Int(i)])
-            frameCount = Int(delays[Int(i)] / gcd)
-            
-            for _ in 0..<frameCount {
-                frames.append(frame)
+                                 maxImageSize: CGFloat,
+                                 maskingType: GIFMaskingType?) throws -> UIImage {
+        return try serialQueue.sync {
+            do {
+                print("LOGO: - Will create gif")
+                let start = Date()
+                let count = CGImageSourceGetCount(source)
+                let (images, delays) = try extractImagesWithDelays(from: source, maxImageSize: maxImageSize, maskingType: maskingType)
+                Debugger.printTimeSensitiveInfo(topic: .Images,
+                                                "to prepare animation",
+                                                startDate: start,
+                                                timeout: 2)
+                
+                let duration: Int = {
+                    var sum = 0
+                    
+                    for val: Int in delays {
+                        sum += val
+                    }
+                    
+                    return sum
+                }()
+                
+                let gcd = try gcdForArray(delays)
+                var frames = [UIImage]()
+                
+                var frame: UIImage
+                var frameCount: Int
+                for i in 0..<count {
+                    frame = UIImage(cgImage: images[Int(i)])
+                    frameCount = Int(delays[Int(i)] / gcd)
+                    
+                    for _ in 0..<frameCount {
+                        frames.append(frame)
+                    }
+                }
+                
+                guard let animation = UIImage.animatedImage(with: frames,
+                                                            duration: Double(duration) / 1000.0) else {
+                    throw GIFPreparationError.failedToCreateAnimatedImage
+                }
+                
+                print("LOGO: - Did create gif")
+                
+                return animation
+            } catch {
+                print("LOGO: - Did fail to create gif")
+                throw error
             }
         }
-        
-        guard let animation = UIImage.animatedImage(with: frames,
-                                                    duration: Double(duration) / 1000.0) else {
-            throw GIFPreparationError.failedToCreateAnimatedImage
-        }
-        
-        return animation
     }
     
     func extractImagesWithDelays(from source: CGImageSource,
-                                 maskingType: GIFMaskingType?) async throws -> ImagesWithDelays {
+                                 maxImageSize: CGFloat,
+                                 maskingType: GIFMaskingType?) throws -> ImagesWithDelays {
         guard let cgContext = CGContext(data: nil, width: 10, height: 10, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceGray(), bitmapInfo: 0) else {
             throw GIFPreparationError.failedToCreateCGContext
         }
@@ -167,45 +197,30 @@ private extension GIFAnimationsService {
         }
         var images = [CGImage](repeating: cgImage, count: count)
         var delays = [Int](repeating: 0, count: count)
-        try await withThrowingTaskGroup(of: ImageToIndex.self, body: { group in
-            let downsampleOptions = [
-                kCGImageSourceCreateThumbnailFromImageAlways: true,
-                kCGImageSourceShouldCacheImmediately: true,
-                kCGImageSourceCreateThumbnailWithTransform: true
-            ] as CFDictionary
-            let sharedContext = CIContext(options: [.useSoftwareRenderer : false,
-                                                    .highQualityDownsample: true])
-            
-            
-            /// 1. Fill group with tasks
-            for i in 0..<count {
-                group.addTask {
-                    guard let image = CGImageSourceCreateImageAtIndex(source, i, downsampleOptions),
-                          let maskedImage = self.createCGImage(image, withMaskingType: maskingType),
-                          let resizedImage = self.resizedImage(maskedImage,
-                                                               scale: self.scaleForImage(image),
-                                                               in: sharedContext) else {
-                        throw GIFPreparationError.failedToGetImageFromSource
-                    }
-                    
-                    let delaySeconds = try self.delayForImageAtIndex(Int(i),
-                                                                     source: source)
-                    
-                    /// Note: This block capturing self.
-                    return ImageToIndex(image: resizedImage,
-                                        delay: delaySeconds,
-                                        i: i)
-                }
+        let downsampleOptions = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceShouldCacheImmediately: true,
+            kCGImageSourceCreateThumbnailWithTransform: true
+        ] as CFDictionary
+        let sharedContext = CIContext(options: [.useSoftwareRenderer : false,
+                                                .highQualityDownsample: true])
+        
+        for i in 0..<count {
+            guard let image = CGImageSourceCreateImageAtIndex(source, i, downsampleOptions),
+                  let maskedImage = self.createCGImage(image, withMaskingType: maskingType),
+                  let resizedImage = self.resizedImage(maskedImage,
+                                                       scale: self.scaleForImage(image, 
+                                                                                 maxImageSize: maxImageSize),
+                                                       in: sharedContext) else {
+                throw GIFPreparationError.failedToGetImageFromSource
             }
             
-            /// 2. Take values from group
-            for try await imageToIndex in group {
-                let i = imageToIndex.i
-                
-                images.replaceSubrange(i...i, with: [imageToIndex.image])
-                delays.replaceSubrange(i...i, with: [Int(imageToIndex.delay * 1000.0)]) // Seconds to ms
-            }
-        })
+            let delaySeconds = try self.delayForImageAtIndex(Int(i),
+                                                             source: source)
+            
+            images.replaceSubrange(i...i, with: [resizedImage])
+            delays.replaceSubrange(i...i, with: [Int(delaySeconds * 1000.0)]) // Seconds to ms
+        }
         
         return (images, delays)
     }
@@ -216,9 +231,9 @@ private extension GIFAnimationsService {
         return image.copy(maskingColorComponents: maskingType.maskingColorComponents)
     }
     
-    func scaleForImage(_ image: CGImage) -> CGFloat {
+    func scaleForImage(_ image: CGImage, maxImageSize: CGFloat) -> CGFloat {
         let maxSize = max(image.height, image.width)
-        let scale = min(1, Constants.downloadedImageMaxSize / CGFloat(maxSize))
+        let scale = min(1, maxImageSize / CGFloat(maxSize))
         return scale
     }
     
@@ -361,6 +376,23 @@ private extension GIFAnimationsService {
             cachedGifs[gif] = nil
             currentAsyncProcess[gif]?.cancel()
             currentAsyncProcess[gif] = nil
+        }
+    }
+    
+    actor DataGifsStateHolder {
+        var currentAsyncProcess = [String : Task<UIImage?, Never>]()
+        
+        func set(process: Task<UIImage?, Never>?, for id: String) {
+            if let process {
+                currentAsyncProcess[id] = process
+            } else {
+                currentAsyncProcess[id] = nil
+            }
+        }
+        
+        func removeGIF(_ id: String) {
+            currentAsyncProcess[id]?.cancel()
+            currentAsyncProcess[id] = nil
         }
     }
 }

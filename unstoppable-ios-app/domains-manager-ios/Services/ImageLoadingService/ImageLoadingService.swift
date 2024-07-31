@@ -109,7 +109,9 @@ fileprivate extension ImageLoadingService {
             do {
                 let imageData = try await loadImage(from: url)
                 
-                if let gif = await GIFAnimationsService.shared.createGIFImageWithData(imageData) {
+                if let gif = await GIFAnimationsService.shared.createGIFImageWithData(imageData, 
+                                                                                      id: source.key,
+                                                                                      maxImageSize: maxImageSize ?? Constants.downloadedImageMaxSize) {
                     scaleIfNeededAndSaveGif(gif, data: imageData, forKey: source.key)
                     
                     return gif
@@ -294,7 +296,9 @@ fileprivate extension ImageLoadingService {
         guard let imageData = storage.getStoredImage(for: key) else { return nil }
         
         var image: UIImage?
-        if let gif = await GIFAnimationsService.shared.createGIFImageWithData(imageData) {
+        if let gif = await GIFAnimationsService.shared.createGIFImageWithData(imageData,
+                                                                              id: key,
+                                                                              maxImageSize: Constants.downloadedImageMaxSize) {
             image = gif
         } else if let justImage = UIImage(data: imageData) {
             image = justImage
