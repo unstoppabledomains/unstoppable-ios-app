@@ -178,6 +178,29 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         #if DEBUG
         Debugger.printInfo(topic: .WalletConnectV2, "Settled pairings:\n\(pairings)")
         #endif
+        
+        DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+            self.checkAndRemoveConnectedAppsDuplicates()
+        }
+    }
+    
+    private func checkAndRemoveConnectedAppsDuplicates() {
+        let apps = getConnectedApps()
+        
+        let groupedApps = [Int : [UnifiedConnectAppInfo]].init(grouping: apps) { app in
+            app.hashValue
+        }
+        
+        for (_, apps) in groupedApps where apps.count > 1 {
+            let sortedByConnectionStartApps = apps.sorted(by: {
+                $0.connectionStartDate ?? Date() < $1.connectionStartDate ?? Date()
+            })
+            let appsToDrop = sortedByConnectionStartApps.prefix(apps.count - 1)
+            Debugger.printWarning("Disconnecting \(appsToDrop.count) dApps because they're duplicates")
+            appsToDrop.forEach { app in
+                Task { try? await disconnect(app: app) }
+            }
+        }
     }
     
     func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler) {
