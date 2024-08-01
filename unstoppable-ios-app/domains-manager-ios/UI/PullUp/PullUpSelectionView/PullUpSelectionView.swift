@@ -345,7 +345,7 @@ private extension PullUpSelectionView {
         
         let button = buildButtonView(cancelButton)
         button.accessibilityIdentifier = "Pull Up Cancel Button"
-        button.addTarget(self, action: #selector(cancelButtonPressed), for: .touchUpInside)
+        (button as? UIButton ?? button.firstSubviewOfType(UIButton.self))?.addTarget(self, action: #selector(cancelButtonPressed), for: .touchUpInside)
         addSubview(button)
         let space: CGFloat = self.configuration.actionButton == nil ? 24 : 16
         alignToTitleView(button, andUpdateCurrentMin: space)
@@ -398,7 +398,7 @@ private extension PullUpSelectionView {
         return subtitleLabel
     }
     
-    func buildButtonView(_ buttonType: PullUpSelectionViewConfiguration.ButtonType) -> UIButton {
+    func buildButtonView(_ buttonType: PullUpSelectionViewConfiguration.ButtonType) -> UIView {
         let button: BaseButton
         let buttonContent: PullUpSelectionViewConfiguration.ButtonContent
         
@@ -444,6 +444,24 @@ private extension PullUpSelectionView {
         
         if buttonContent.isLoading {
             button.showLoadingIndicator()
+        }
+        
+        if let subtitle = buttonContent.subtitle {
+            let label = UILabel()
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.numberOfLines = 0
+            label.setAttributedTextWith(text: subtitle,
+                                        font: .currentFont(withSize: 11),
+                                        textColor: .foregroundSecondary,
+                                        alignment: .center)
+         
+            let stack = UIStackView(arrangedSubviews: [button, label])
+            stack.translatesAutoresizingMaskIntoConstraints = false
+            stack.axis = .vertical
+            stack.spacing = 4
+            stack.distribution = .fill
+            stack.alignment = .fill
+            return stack
         }
         
         return button
@@ -580,6 +598,7 @@ struct PullUpSelectionViewConfiguration {
         var isSuccessState: Bool = false
         var isLoading: Bool = false
         var isUserInteractionEnabled: Bool = true
+        var subtitle: String? = nil
         let action: EmptyCallback?
         
         static func == (lhs: PullUpSelectionViewConfiguration.ButtonContent, rhs: PullUpSelectionViewConfiguration.ButtonContent) -> Bool {

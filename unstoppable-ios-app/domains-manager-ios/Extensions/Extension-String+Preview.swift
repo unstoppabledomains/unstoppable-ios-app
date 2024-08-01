@@ -245,6 +245,11 @@ extension String {
         static let setup = "SETUP"
         static let networkFee = "NETWORK_FEE"
         static let reconnect = "RECONNECT"
+        static let sent = "SENT"
+        static let filter = "FILTER"
+        static let reset = "RESET"
+        static let chains = "CHAINS"
+        static let activityWith = "ACTIVITY_WITH"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -647,6 +652,8 @@ extension String {
         static let networkGasFeeInfoDescription = "NETWORK_GAS_FEE_INFO_DESCRIPTION"
         static let signTransactionFailedAlertTitle = "SIGN_TRANSACTION_FAILED_ALERT_TITLE"
         static let signTransactionFailedAlertDescription = "SIGN_TRANSACTION_FAILED_ALERT_DESCRIPTION"
+        static let clearWalletConnectCache = "CLEAR_WALLET_CONNECT_CACHE"
+        static let clearWalletConnectCacheDescription = "CLEAR_WALLET_CONNECT_CACHE_DESCRIPTION"
         static let walletConnectInvalidQRCodeAlertTitle = "WALLET_CONNECT_INVALID_QR_CODE_ALERT_TITLE"
         static let walletConnectInvalidQRCodeAlertDescription = "WALLET_CONNECT_INVALID_QR_CODE_ALERT_DESCRIPTION"
         static let walletConnectLowBalanceAlertDescription = "WALLET_CONNECT_LOW_BALANCE_ALERT_DESCRIPTION"
@@ -1277,6 +1284,26 @@ extension String {
         static let backedUp = "BACKED_UP"
         static let backUp = "BACK_UP"
         static let setAsPrimaryDomain = "SET_AS_PRIMARY_DOMAIN"
+        
+        // Maintenance
+        static let fullMaintenanceMessageTitle = "FULL_MAINTENANCE_MESSAGE_TITLE"
+        static let fullMaintenanceMessageSubtitle = "FULL_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let activityMaintenanceMessageTitle = "ACTIVITY_MAINTENANCE_MESSAGE_TITLE"
+        static let activityMaintenanceMessageSubtitle = "ACTIVITY_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let exploreMaintenanceMessageTitle = "EXPLORE_MAINTENANCE_MESSAGE_TITLE"
+        static let exploreMaintenanceMessageSubtitle = "EXPLORE_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let homeMaintenanceMessageTitle = "HOME_MAINTENANCE_MESSAGE_TITLE"
+        static let homeMaintenanceMessageSubtitle = "HOME_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let purchaseDomainsMaintenanceMessageTitle = "PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_TITLE"
+        static let purchaseDomainsMaintenanceMessageSubtitle = "PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let vaultedDomainsMaintenanceMessageTitle = "VAULTED_DOMAINS_MAINTENANCE_MESSAGE_TITLE"
+        static let vaultedDomainsMaintenanceMessageSubtitle = "VAULTED_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let domainProfileMaintenanceMessageTitle = "DOMAIN_PROFILE_MAINTENANCE_MESSAGE_TITLE"
+        static let domainProfileMaintenanceMessageSubtitle = "DOMAIN_PROFILE_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let sendCryptoMaintenanceMessageTitle = "SEND_CRYPTO_MAINTENANCE_MESSAGE_TITLE"
+        static let sendCryptoMaintenanceMessageSubtitle = "SEND_CRYPTO_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let signMessagesMaintenanceMessageTitle = "SIGN_MESSAGES_MAINTENANCE_MESSAGE_TITLE"
+        static let signMessagesMaintenanceMessageSubtitle = "SIGN_MESSAGES_MAINTENANCE_MESSAGE_SUBTITLE"
     }
     
     enum SystemImage: String {

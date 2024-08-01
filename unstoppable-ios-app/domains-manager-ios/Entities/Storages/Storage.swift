@@ -174,7 +174,7 @@ extension TxsStorage {
                 Debugger.printFailure("Indeces found: \(indecesToRemove) is out of range: \(txs.count)")
                 return txs
             }
-            txs.remove(at: indecesToRemove)
+            txs.remove(atIndexes: indecesToRemove)
         }
         return txs
     }

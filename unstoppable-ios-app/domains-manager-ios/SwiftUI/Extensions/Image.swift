@@ -131,6 +131,9 @@ extension Image {
     static let lensIcon = Image("lensIcon")
     static let farcasterIcon = Image("farcasterIcon")
     static let walletAddressesIcon = Image("walletAddressesIcon")
+    static let layoutGridTwo = Image("layoutGridTwo")
+    static let twoCoinsIcon = Image("twoCoinsIcon")
+    static let filter = Image("filter")
     
     static let systemDocOnDoc = Image(systemName: "doc.on.doc")
     static let systemAppBadgeCheckmark = Image(systemName: "app.badge.checkmark")

@@ -480,11 +480,11 @@ extension NetworkService: WalletTransactionsNetworkServiceProtocol {
     
     func getTransactionsFor(wallet: HexAddress, 
                             cursor: String?,
-                            chain: String?,
+                            chains: [BlockchainType]?,
                             forceRefresh: Bool) async throws -> [WalletTransactionsPerChainResponse] {
         let endpoint = Endpoint.getProfileWalletTransactions(for: wallet, 
                                                              cursor: cursor,
-                                                             chain: chain,
+                                                             chains: chains,
                                                              forceRefresh: forceRefresh)
         let data = try await fetchDataFor(endpoint: endpoint,
                                           method: .get)

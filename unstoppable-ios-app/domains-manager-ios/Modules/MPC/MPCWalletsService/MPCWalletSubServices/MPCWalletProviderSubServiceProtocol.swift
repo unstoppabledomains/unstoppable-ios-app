@@ -29,6 +29,11 @@ protocol MPCWalletProviderSubServiceProtocol {
                         chain: String,
                         destinationAddress: String,
                         by walletMetadata: MPCWalletMetadata) async throws -> String
+    func sendETHTransaction(data: String,
+                            value: String,
+                            chain: BlockchainType,
+                            destinationAddress: String,
+                            by walletMetadata: MPCWalletMetadata) async throws -> String
     func getTokens(for walletMetadata: MPCWalletMetadata) throws -> [BalanceTokenUIDescription]
     func fetchGasFeeFor(_ amount: Double,
                         symbol: String,

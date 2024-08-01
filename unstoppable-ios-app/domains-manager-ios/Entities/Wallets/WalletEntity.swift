@@ -178,6 +178,15 @@ extension WalletEntity {
                                                       marketUsd: nil,
                                                       marketPctChange24Hr: nil))
     }
+    
+    func getSupportedNetworks() -> [BlockchainType] {
+        switch udWallet.type {
+        case .mpc:
+            return [.Ethereum, .Matic, .Base, .Solana, .Bitcoin]
+        default:
+            return [.Ethereum, .Matic, .Base]
+        }
+    }
 }
 
 extension Array where Element == WalletEntity {

@@ -240,7 +240,7 @@ extension Analytics {
         case shareWalletInfo, nftDetails, profileSelection
         case updateToWalletGreetings
         case homeExplore
-        case homeActivity
+        case homeActivity, homeActivityFilters
         
         case sendCryptoReceiverSelection, sendCryptoAssetSelection, sendCryptoTokenAmountInput, sendCryptoDomainTransferConfirmation, sendCryptoTokenConfirmation, sendCryptoScanQRCode
         case transferDomainSuccess, sendCryptoSuccess
@@ -259,6 +259,8 @@ extension Analytics {
         case inAppAddWallet
         case mpcActivateEnterCode, mpcActivateEnterPassword
         case reconnectMPCWalletPrompt
+        
+        case fullMaintenance
     }
 }
 
@@ -445,6 +447,9 @@ extension Analytics {
         case useDifferentEmail, useRecovery, dontUseRecovery
         case contactSupport
         case reconnect
+        
+        case all, income, outcome
+        case filterOption, reset
     }
 }
 
@@ -505,6 +510,7 @@ extension Analytics {
         case copyMultiChainAddresses
         case removeMPCWalletConfirmation
         case transactionDetails
+        case domainProfileMaintenance, signMessagesMaintenance
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

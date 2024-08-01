@@ -278,6 +278,15 @@ private final class MockNetworkService: FB_UD_MPC.MPCConnectionNetworkService, F
         throw TestableGenericError.generic
     }
     
+    func startSendETHTransaction(accessToken: String,
+                                 accountId: String,
+                                 assetId: String,
+                                 destinationAddress: String,
+                                 data: String,
+                                 value: String) async throws -> FB_UD_MPC.OperationDetails {
+        throw TestableGenericError.generic
+    }
+    
     func waitForOperationReadyAndGetTxId(accessToken: String, operationId: String) async throws -> FB_UD_MPC.OperationReadyResponse {
         try failIfNeeded()
         throw TestableGenericError.generic

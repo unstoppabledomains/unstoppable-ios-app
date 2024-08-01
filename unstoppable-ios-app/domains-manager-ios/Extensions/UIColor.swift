@@ -41,6 +41,7 @@ extension UIColor {
     static let backgroundEmphasisOpacity = UIColor(named: "backgroundEmphasisOpacity") ?? .black
     static let backgroundEmphasisOpacity2 = UIColor(named: "backgroundEmphasisOpacity2") ?? .black
     static let backgroundAccent = UIColor(named: "backgroundAccent") ?? .black
+    static let backgroundAccentMuted = UIColor(named: "backgroundAccentMuted") ?? .black
     static let backgroundAccentEmphasis = UIColor(named: "backgroundAccentEmphasis") ?? .black
     static let backgroundAccentEmphasis2 = UIColor(named: "backgroundAccentEmphasis2") ?? .black
     static let backgroundSuccess = UIColor(named: "backgroundSuccess") ?? .black

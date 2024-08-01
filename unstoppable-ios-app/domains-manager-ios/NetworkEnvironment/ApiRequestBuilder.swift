@@ -669,14 +669,16 @@ extension Endpoint {
     
     static func getProfileWalletTransactions(for wallet: String,
                                              cursor: String?,
-                                             chain: String?,
+                                             chains: [BlockchainType]?,
                                              forceRefresh: Bool) -> Endpoint {
         var queryItems: [URLQueryItem] = []
         if let cursor {
             queryItems.append(URLQueryItem(name: "cursor", value: cursor))
         }
-        if let chain {
-            queryItems.append(URLQueryItem(name: "symbols", value: chain))
+        if let chains,
+           !chains.isEmpty {
+            let symbolsList: String = chains.map { $0.shortCode }.joined(separator: ",")
+            queryItems.append(URLQueryItem(name: "symbols", value: symbolsList))
         }
         if forceRefresh {
             queryItems.append(URLQueryItem(name: "forceRefresh", value: String(Int(Date().timeIntervalSince1970))))

@@ -10,6 +10,6 @@ import Foundation
 protocol WalletTransactionsNetworkServiceProtocol {
     func getTransactionsFor(wallet: HexAddress, 
                             cursor: String?, 
-                            chain: String?,
+                            chains: [BlockchainType]?,
                             forceRefresh: Bool) async throws -> [WalletTransactionsPerChainResponse]
 }

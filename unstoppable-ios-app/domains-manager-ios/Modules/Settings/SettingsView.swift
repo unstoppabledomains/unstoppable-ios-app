@@ -12,7 +12,8 @@ struct SettingsView: View, ViewAnalyticsLogger {
     @Environment(\.udFeatureFlagsService) var udFeatureFlagsService
     @Environment(\.userProfilesService) var userProfilesService
     @EnvironmentObject private var tabRouter: HomeTabRouter
-    
+    @StateObject private var ecommFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceEcommEnabled)
+
     @State var initialAction: InitialAction
     
     @State private var profiles: [UserProfile] = []
@@ -327,9 +328,13 @@ private extension SettingsView {
         otherItemsList()
     }
     
+    var isEcommMaintenanceEnabled: Bool {
+        ecommFlagTracker.maintenanceData?.isCurrentlyEnabled == true
+    }
+    
     var settingsItemsToShow: [SettingsItems] {
         var items = SettingsItems.allCases
-        if webUser != nil {
+        if webUser != nil || isEcommMaintenanceEnabled {
             items.removeAll(where: { $0 == .viewVaulted })
         }
         return items
@@ -482,7 +487,8 @@ private extension SettingsView {
                 switch action {
                 case .create:
                     if udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled),
-                       udFeatureFlagsService.valueFor(flag: .isMPCPurchaseEnabled) {
+                       udFeatureFlagsService.valueFor(flag: .isMPCPurchaseEnabled),
+                       !isEcommMaintenanceEnabled {
                         showAddWalletSelection()
                     } else {
                         createNewWallet()

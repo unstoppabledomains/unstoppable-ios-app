@@ -22,6 +22,14 @@ final class TestableMPCWalletsService: MPCWalletsServiceProtocol {
         ""
     }
     
+    func sendETHTransaction(data: String,
+                            value: String,
+                            chain: BlockchainType,
+                            destinationAddress: String,
+                            by walletMetadata: MPCWalletMetadata) async throws -> String {
+        ""
+    }
+    
     func getTokens(for walletMetadata: MPCWalletMetadata) throws -> [BalanceTokenUIDescription] {
         []
     }

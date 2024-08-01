@@ -183,6 +183,11 @@
 "SETUP" = "Setup";
 "NETWORK_FEE" = "Network Fee";
 "RECONNECT" = "Reconnect";
+"SENT" = "Sent";
+"FILTER" = "Filter";
+"RESET" = "Reset";
+"CHAINS" = "Chains";
+"ACTIVITY_WITH" = "Activity with";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -541,7 +546,9 @@
 "NETWORK_GAS_FEE_INFO_DESCRIPTION" = "A gas fee is required to conduct a transaction on the %@ network.";
 
 "SIGN_TRANSACTION_FAILED_ALERT_TITLE" = "Connection failed";
-"SIGN_TRANSACTION_FAILED_ALERT_DESCRIPTION" = "Something went wrong! Please try again later.";
+"SIGN_TRANSACTION_FAILED_ALERT_DESCRIPTION" = "Something went wrong. Please retry and If the issue persists, restart the app and clear browser site data.";
+"CLEAR_WALLET_CONNECT_CACHE" = "Clear WalletConnect cache";
+"CLEAR_WALLET_CONNECT_CACHE_DESCRIPTION" = "Tap this button if the above instructions don't resolve the issue. You will need to reconnect your dApps";
 
 "WALLET_CONNECT_INVALID_QR_CODE_ALERT_TITLE" = "Unrecognized QR Code";
 "WALLET_CONNECT_INVALID_QR_CODE_ALERT_DESCRIPTION" = "Sorry, this QR code could not be recognized.";
@@ -1171,3 +1178,23 @@ More tabs are coming in the next updates.";
 "BACKED_UP" = "Backed up";
 "BACK_UP" = "Back up";
 "SET_AS_PRIMARY_DOMAIN" = "Set as primary domain";
+
+// Maintenance
+"FULL_MAINTENANCE_MESSAGE_TITLE" = "Our services are in a maintenance mode";
+"FULL_MAINTENANCE_MESSAGE_SUBTITLE" = "Do not worry, we'll be back shortly.\nThank you for your patience!";
+"ACTIVITY_MAINTENANCE_MESSAGE_TITLE" = "Activity is currently unavailable";
+"ACTIVITY_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"EXPLORE_MAINTENANCE_MESSAGE_TITLE" = "Profiles search is currently unavailable";
+"EXPLORE_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"HOME_MAINTENANCE_MESSAGE_TITLE" = "Displaying your tokens, collectibles and domains in the app is currently unavailable";
+"HOME_MAINTENANCE_MESSAGE_SUBTITLE" = "All your assets are safe. It is only the problem with API that display your assets in the app. We're working to make it available soon.";
+"PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_TITLE" = "Searching for and purchasing domains is currently unavailable";
+"PURCHASE_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"VAULTED_DOMAINS_MAINTENANCE_MESSAGE_TITLE" = "Displaying domains in imported vaults is currently unavailable";
+"VAULTED_DOMAINS_MAINTENANCE_MESSAGE_SUBTITLE" = "If you have imported vaults previously and do not see them now, don’t worry. We’re working to make them available soon.";
+"DOMAIN_PROFILE_MAINTENANCE_MESSAGE_TITLE" = "Domain profile is currently unavailable";
+"DOMAIN_PROFILE_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"SEND_CRYPTO_MAINTENANCE_MESSAGE_TITLE" = "Sending crypto is currently unavailable\nusing this wallet";
+"SEND_CRYPTO_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.\nMeantime try to switch to another wallet.";
+"SIGN_MESSAGES_MAINTENANCE_MESSAGE_TITLE" = "Signing messages is currently unavailable";
+"SIGN_MESSAGES_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";

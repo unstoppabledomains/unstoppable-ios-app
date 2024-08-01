@@ -6,8 +6,15 @@
 //
 
 import Foundation
+import Combine
 
 final class UDFeatureFlagsService: UDFeatureFlagsServiceProtocol {
+    private(set) var featureFlagPublisher = PassthroughSubject<UDFeatureFlag, Never>()
+
+    func entityValueFor<T: Codable>(flag: UDFeatureFlag) -> T? {
+        nil
+    }
+    
     func valueFor(flag: UDFeatureFlag) -> Bool {
         true
     }

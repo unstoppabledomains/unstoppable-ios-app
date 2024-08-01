@@ -96,6 +96,7 @@ private extension HomeWalletActionsView {
         }
         .buttonStyle(.plain)
         .withoutAnimation()
+        .allowsHitTesting(!isDimmed)
     }
     
 }

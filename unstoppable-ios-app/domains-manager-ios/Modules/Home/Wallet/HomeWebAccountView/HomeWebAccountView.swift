@@ -15,6 +15,8 @@ struct HomeWebAccountView: View, ViewAnalyticsLogger {
     
     let user: FirebaseUser
     @EnvironmentObject var tabRouter: HomeTabRouter
+    @StateObject private var ecommFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceEcommEnabled)
+
     @Binding var navigationState: NavigationStateManager?
     @Binding var isTabBarVisible: Bool
     
@@ -37,7 +39,7 @@ struct HomeWebAccountView: View, ViewAnalyticsLogger {
                 .listRowSeparator(.hidden)
                 .unstoppableListRowInset()
             
-            HomeWalletActionsView(actions: WebAction.allCases,
+            HomeWalletActionsView(actions: walletActions(),
                                   actionCallback: { action in
                 handleAction(action)
             }, subActionCallback: { subAction in
@@ -47,10 +49,7 @@ struct HomeWebAccountView: View, ViewAnalyticsLogger {
             .listRowSeparator(.hidden)
             .listRowInsets(EdgeInsets(top: 24, leading: 16, bottom: 16, trailing: 16))
             
-            domainsListView()
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-                .unstoppableListRowInset()
+           userDataContentViewsIfAvailable()
         }
         .onChange(of: tabRouter.walletViewNavPath) { _ in
             updateNavTitleVisibility()
@@ -107,10 +106,42 @@ private extension HomeWebAccountView {
             navigationState?.isTitleVisible = !isOtherScreenPushed && tabRouter.tabViewSelection == .wallets
         }
     }
+    
+    func walletActions() -> [WebAction] {
+        [.addWallet,
+         .claim(isEnabled: !isVaultedDomainsInMaintenance),
+         .more]
+    }
+    
+    var isVaultedDomainsInMaintenance: Bool {
+        ecommFlagTracker.maintenanceData?.isCurrentlyEnabled == true
+    }
 }
 
 // MARK: - Private methods
 private extension HomeWebAccountView {
+    @ViewBuilder
+    func userDataContentViewsIfAvailable() -> some View {
+        if isVaultedDomainsInMaintenance {
+            MaintenanceDetailsEmbeddedView(serviceType: .vaultedDomains,
+                                           maintenanceData: ecommFlagTracker.maintenanceData)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .padding(.top, 16)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            userDataContentViews()
+        }
+    }
+    
+    @ViewBuilder
+    func userDataContentViews() -> some View {
+        domainsListView()
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .unstoppableListRowInset()
+    }
+    
     @ViewBuilder
     func headerIconView(size: CGFloat) -> some View {
         ZStack {
@@ -222,10 +253,19 @@ private extension HomeWebAccountView {
 
 // MARK: - Actions
 private extension HomeWebAccountView {
-    enum WebAction: String, CaseIterable, HomeWalletActionItem  {
-        var id: String { rawValue }
+    enum WebAction: HomeWalletActionItem  {
+        var id: String {
+            switch self {
+            case .addWallet:
+                "addWallet"
+            case .claim(let isEnabled):
+                "claim_\(isEnabled)"
+            case .more:
+                "more"
+            }
+        }
         
-        case addWallet, claim, more
+        case addWallet, claim(isEnabled: Bool), more
         
         var title: String {
             switch self {
@@ -268,7 +308,14 @@ private extension HomeWebAccountView {
                 return .more
             }
         }
-        var isDimmed: Bool { false }
+        var isDimmed: Bool {
+            switch self {
+            case .addWallet, .more:
+                return false
+            case .claim(let isEnabled):
+                return !isEnabled
+            }
+        }
     }
     
     enum WebSubAction: String, CaseIterable, HomeWalletSubActionItem  {
