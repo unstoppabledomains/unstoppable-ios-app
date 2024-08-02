@@ -31,9 +31,9 @@ private extension PurchaseSearchDomainsViewController {
         cNavigationController?.underlyingScrollViewDidScrollTo(offset: offset)
     }
     
-    func didSelectDomain(_ domain: DomainToPurchase) {
+    func didSelectDomains(_ domains: [DomainToPurchase]) {
         Task {
-            try? await purchaseDomainsFlowManager?.handle(action: .didSelectDomain(domain))
+            try? await purchaseDomainsFlowManager?.handle(action: .didSelectDomains(domains))
         }
     }
 }
@@ -49,8 +49,8 @@ private extension PurchaseSearchDomainsViewController {
     }
     
     func addChildView() {
-        let vc = UIHostingController(rootView: PurchaseSearchDomainsView(domainSelectedCallback: { [weak self] domain in
-            self?.didSelectDomain(domain)
+        let vc = UIHostingController(rootView: PurchaseSearchDomainsView(domainSelectedCallback: { [weak self] domains in
+            self?.didSelectDomains(domains)
         }, scrollOffsetCallback: { [weak self] offset in
             self?.didScrollTo(offset: offset)
         }))

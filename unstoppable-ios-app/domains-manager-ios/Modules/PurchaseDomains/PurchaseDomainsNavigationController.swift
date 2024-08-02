@@ -52,10 +52,15 @@ final class PurchaseDomainsNavigationController: CNavigationController {
 extension PurchaseDomainsNavigationController: PurchaseDomainsFlowManager {
     func handle(action: Action) async throws {
         switch action {
-        case .didSelectDomain(let domain):
-            moveToStep(.fillProfile(domain: domain))
+        case .didSelectDomains(let domains):
+            if domains.count == 1 {
+                moveToStep(.fillProfile(domain: domains[1]))
+            } else {
+                moveToCheckoutWith(domains: domains,
+                                   profileChanges: nil)
+            }
         case .didFillProfileForDomain(let domain, let profileChanges):
-            moveToCheckoutWith(domain: domain,
+            moveToCheckoutWith(domains: [domain],
                                profileChanges: profileChanges)
         case .didPurchaseDomains:
             Task {
@@ -85,7 +90,8 @@ private extension PurchaseDomainsNavigationController {
     }
     
     func didFinishPurchase() {
-        dismiss(result: .purchased(domainName: purchaseData.domain?.name ?? ""))
+        let purchaseDomainNames: [String] = (purchaseData.domains ?? []).map { $0.name }
+        dismiss(result: .purchased(domainNames: purchaseDomainNames))
     }
     
     func isLastViewController(_ viewController: UIViewController) -> Bool {
@@ -124,8 +130,8 @@ private extension PurchaseDomainsNavigationController {
         return map
     }
     
-    func moveToCheckoutWith(domain: DomainToPurchase,
-                            profileChanges: DomainProfilePendingChanges) {
+    func moveToCheckoutWith(domains: [DomainToPurchase],
+                            profileChanges: DomainProfilePendingChanges?) {
         
         let wallets = appContext.walletsDataService.wallets
         let selectedWallet: WalletEntity
@@ -135,20 +141,20 @@ private extension PurchaseDomainsNavigationController {
             selectedWallet = wallet
             appContext.userProfilesService.setActiveProfile(.wallet(wallet))
         } else {
-            askUserToAddWalletToPurchase(domain: domain,
+            askUserToAddWalletToPurchase(domains: domains,
                                          profileChanges: profileChanges)
             return
         }
         
-        purchaseData.domain = domain
-        moveToStep(.checkout(domain: domain,
+        purchaseData.domains = domains
+        moveToStep(.checkout(domains: domains,
                              profileChanges: profileChanges,
                              selectedWallet: selectedWallet,
                              wallets: wallets))
     }
     
-    func askUserToAddWalletToPurchase(domain: DomainToPurchase,
-                                      profileChanges: DomainProfilePendingChanges) {
+    func askUserToAddWalletToPurchase(domains: [DomainToPurchase],
+                                      profileChanges: DomainProfilePendingChanges?) {
         Task {
             do {
                 let action = try await appContext.pullUpViewService.showAddWalletSelectionPullUp(in: self,
@@ -161,7 +167,7 @@ private extension PurchaseDomainsNavigationController {
                                                         addedCallback: { [weak self] result in
                     switch result {
                     case .created, .createdAndBackedUp:
-                        self?.moveToCheckoutWith(domain: domain,
+                        self?.moveToCheckoutWith(domains: domains,
                                                  profileChanges: profileChanges)
                     case .cancelled, .failedToAdd:
                         return
@@ -205,8 +211,8 @@ private extension PurchaseDomainsNavigationController {
             presenter.purchaseDomainsFlowManager = self
             vc.presenter = presenter
             return vc
-        case .checkout(let domain, let profileChanges, let selectedWallet, let wallets):
-            let vc = PurchaseDomainsCheckoutViewController.instantiate(domain: domain,
+        case .checkout(let domains, let profileChanges, let selectedWallet, let wallets):
+            let vc = PurchaseDomainsCheckoutViewController.instantiate(domains: domains,
                                                                        profileChanges: profileChanges,
                                                                        selectedWallet: selectedWallet,
                                                                        wallets: wallets)
@@ -225,7 +231,7 @@ private extension PurchaseDomainsNavigationController {
 // MARK: - Private methods
 private extension PurchaseDomainsNavigationController {
     struct PurchaseData {
-        var domain: DomainToPurchase?
+        var domains: [DomainToPurchase]?
         var wallet: UDWallet? = nil
     }
 }
@@ -238,12 +244,12 @@ extension PurchaseDomainsNavigationController {
     enum Step {
         case searchDomain
         case fillProfile(domain: DomainToPurchase)
-        case checkout(domain: DomainToPurchase, profileChanges: DomainProfilePendingChanges, selectedWallet: WalletEntity, wallets: [WalletEntity])
+        case checkout(domains: [DomainToPurchase], profileChanges: DomainProfilePendingChanges?, selectedWallet: WalletEntity, wallets: [WalletEntity])
         case purchased
     }
     
     enum Action {
-        case didSelectDomain(_ domain: DomainToPurchase)
+        case didSelectDomains(_ domains: [DomainToPurchase])
         case didFillProfileForDomain(_ domain: DomainToPurchase, profileChanges: DomainProfilePendingChanges)
         case didPurchaseDomains
         case goToDomains
@@ -251,7 +257,7 @@ extension PurchaseDomainsNavigationController {
     
     enum Result {
         case cancel
-        case purchased(domainName: String)
+        case purchased(domainNames: [String])
     }
 }
 

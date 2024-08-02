@@ -25,13 +25,13 @@ final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithD
     override var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName : domain.name,
                                                                                   .price: String(domain.price)] }
     
-    static func instantiate(domain: DomainToPurchase,
-                            profileChanges: DomainProfilePendingChanges,
+    static func instantiate(domains: [DomainToPurchase],
+                            profileChanges: DomainProfilePendingChanges?,
                             selectedWallet: WalletEntity,
                             wallets: [WalletEntity]) -> PurchaseDomainsCheckoutViewController {
         let vc = PurchaseDomainsCheckoutViewController()
-        vc.domain = domain
-        vc.profileChanges = profileChanges
+        vc.domain = domains[0]
+        vc.profileChanges = profileChanges ?? .init(domainName: domains[0].name)
         vc.selectedWallet = selectedWallet
         vc.wallets = wallets
         return vc

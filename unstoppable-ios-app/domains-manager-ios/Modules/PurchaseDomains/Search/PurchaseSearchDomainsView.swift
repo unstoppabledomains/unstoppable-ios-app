@@ -20,11 +20,12 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     @State private var loadingError: Error?
     @State private var searchingText = ""
     @State private var searchResultType: SearchResultType = .userInput
+    @State private var localCart = LocalCart()
     @State private var scrollOffset: CGPoint = .zero
     @State private var skeletonItemsWidth: [CGFloat] = []
     @State private var pullUp: ViewPullUpConfigurationType?
 
-    var domainSelectedCallback: ((DomainToPurchase)->())
+    var domainSelectedCallback: (([DomainToPurchase])->())
     var scrollOffsetCallback: ((CGPoint)->())? = nil
     var analyticsName: Analytics.ViewName { .purchaseDomainsSearch }
 
@@ -50,7 +51,22 @@ private extension PurchaseSearchDomainsView {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             contentView()
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        doneButtonView()
+                    }
+                }
         }
+    }
+    
+    @ViewBuilder
+    func doneButtonView() -> some View {
+        Button {
+            domainSelectedCallback(localCart.domains)
+        } label: {
+            Text("Done")
+        }
+        .disabled(localCart.domains.isEmpty)
     }
     
     @ViewBuilder
@@ -378,7 +394,7 @@ private extension PurchaseSearchDomainsView {
     
     func didSelectDomain(_ domain: DomainToPurchase) {
         if domain.isAbleToPurchase {
-            domainSelectedCallback(domain)
+            didSelectDomainToPurchase(domain)
         } else {
             logAnalytic(event: .didSelectNotSupportedDomainForPurchaseInSearch, parameters: [.domainName: domain.name,
                                                                                              .price : String(domain.price),
@@ -399,6 +415,14 @@ private extension PurchaseSearchDomainsView {
                            analyticName: .searchPurchaseDomainNotSupported))
         }
     }
+    
+    func didSelectDomainToPurchase(_ domain: DomainToPurchase) {
+        if localCart.isDomainInCart(domain) {
+            localCart.removeDomain(domain)
+        } else {
+            localCart.addDomain(domain)
+        }
+    }
 }
 
 // MARK: - Views
@@ -407,8 +431,7 @@ private extension PurchaseSearchDomainsView {
     func domainSearchResultRow(_ domain: DomainToPurchase) -> some View {
         HStack(spacing: 8) {
             HStack(spacing: 16) {
-                Image.check
-                    .resizable()
+                domainIconView(domain)
                     .squareFrame(20)
                     .foregroundStyle(Color.foregroundSuccess)
                     .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
@@ -428,6 +451,17 @@ private extension PurchaseSearchDomainsView {
                 .foregroundStyle(Color.foregroundMuted)
         }
         .frame(minHeight: UDListItemView.height)
+    }
+    
+    @ViewBuilder
+    func domainIconView(_ domain: DomainToPurchase) -> some View {
+        if localCart.isDomainInCart(domain) {
+            Image.check
+                .resizable()
+        } else {
+            Image(systemName: "cart.fill.badge.plus")
+                .resizable()
+        }
     }
     
     @ViewBuilder
@@ -488,9 +522,31 @@ private extension PurchaseSearchDomainsView {
         case suggestion
         case aiSearch
     }
+    
+    struct LocalCart {
+        private(set) var domains: [DomainToPurchase] = []
+        
+        func isDomainInCart(_ domain: DomainToPurchase) -> Bool {
+            domains.firstIndex(where: { $0.name == domain.name }) != nil
+        }
+        
+        mutating func addDomain(_ domain: DomainToPurchase) {
+            guard !isDomainInCart(domain) else { return }
+            
+            domains.append(domain)
+        }
+        
+        mutating func removeDomain(_ domain: DomainToPurchase) {
+            if let i = domains.firstIndex(where: { $0.name == domain.name }) {
+                domains.remove(at: i)
+            }
+        }
+    }
 }
 
 #Preview {
-    PurchaseSearchDomainsView(domainSelectedCallback: { _ in })
-        .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
+    NavigationStack {
+        PurchaseSearchDomainsView(domainSelectedCallback: { _ in })
+            .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
+    }
 }
