@@ -378,9 +378,7 @@ extension UIImage {
     }
     
     static func createWith(anyData data: Data) async -> UIImage? {
-        if let gif = await GIFAnimationsService.shared.createGIFImageWithData(data, 
-                                                                              id: UUID().uuidString,
-                                                                              maxImageSize: Constants.downloadedImageMaxSize) {
+        if let gif = await GIFAnimationsService.shared.createGIFImageWithData(data) {
             return gif
         } else if let image = UIImage(data: data) {
             return image
