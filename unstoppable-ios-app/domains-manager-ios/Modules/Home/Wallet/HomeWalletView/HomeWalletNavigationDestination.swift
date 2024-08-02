@@ -68,6 +68,7 @@ enum HomeWalletNavigationDestination: Hashable {
 
 struct HomeWalletLinkNavigationDestination {
     
+    @MainActor
     @ViewBuilder
     static func viewFor(navigationDestination: HomeWalletNavigationDestination) -> some View {
         switch navigationDestination {
@@ -86,9 +87,10 @@ struct HomeWalletLinkNavigationDestination {
             .toolbar(.hidden, for: .navigationBar)
             .ignoresSafeArea()
         case .purchaseDomains(let callback):
-            PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
-                .toolbar(.hidden, for: .navigationBar)
-                .ignoresSafeArea()
+            PurchaseDomainsRootView(viewModel: PurchaseDomainsViewModel())
+//            PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
+//                .toolbar(.hidden, for: .navigationBar)
+//                .ignoresSafeArea()
         case .login(let mode, let callback):
             LoginFlowNavigationControllerWrapper(mode: mode,
                                                  callback: callback)

@@ -261,17 +261,17 @@ extension PurchaseDomainsNavigationController {
     }
 }
 
-import SwiftUI
-struct PurchaseDomainsNavigationControllerWrapper: UIViewControllerRepresentable {
-    
-    let domainsPurchasedCallback:  PurchaseDomainsNavigationController.DomainsPurchasedCallback
-    
-    func makeUIViewController(context: Context) -> UIViewController {
-        let purchaseDomainsNavigationController = PurchaseDomainsNavigationController()
-        purchaseDomainsNavigationController.domainsPurchasedCallback = domainsPurchasedCallback
-        return purchaseDomainsNavigationController
-    }
-    
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
-    
-}
+//import SwiftUI
+//struct PurchaseDomainsNavigationControllerWrapper: UIViewControllerRepresentable {
+//    
+//    let domainsPurchasedCallback:  PurchaseDomainsNavigationController.DomainsPurchasedCallback
+//    
+//    func makeUIViewController(context: Context) -> UIViewController {
+//        let purchaseDomainsNavigationController = PurchaseDomainsNavigationController()
+//        purchaseDomainsNavigationController.domainsPurchasedCallback = domainsPurchasedCallback
+//        return purchaseDomainsNavigationController
+//    }
+//    
+//    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+//    
+//}

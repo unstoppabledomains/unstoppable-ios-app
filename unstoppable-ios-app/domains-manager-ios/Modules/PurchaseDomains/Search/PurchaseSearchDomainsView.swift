@@ -11,6 +11,7 @@ import Combine
 struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
+    @EnvironmentObject var viewModel: PurchaseDomainsViewModel
     @StateObject private var debounceObject = DebounceObject()
     @StateObject private var ecommFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceEcommEnabled)
     @State private var suggestions: [DomainToPurchaseSuggestion] = []
@@ -25,7 +26,7 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     @State private var skeletonItemsWidth: [CGFloat] = []
     @State private var pullUp: ViewPullUpConfigurationType?
 
-    var domainSelectedCallback: (([DomainToPurchase])->())
+    var domainSelectedCallback: (([DomainToPurchase])->())? = nil
     var scrollOffsetCallback: ((CGPoint)->())? = nil
     var analyticsName: Analytics.ViewName { .purchaseDomainsSearch }
 
@@ -62,7 +63,7 @@ private extension PurchaseSearchDomainsView {
     @ViewBuilder
     func doneButtonView() -> some View {
         Button {
-            domainSelectedCallback(localCart.domains)
+            viewModel.handleAction(.didSelectDomains(localCart.domains))
         } label: {
             Text("Done")
         }
@@ -93,7 +94,6 @@ private extension PurchaseSearchDomainsView {
                 .titleText()
                 .multilineTextAlignment(.center)
         }
-        .padding(EdgeInsets(top: 56, leading: 0, bottom: 0, trailing: 0))
     }
     
     @ViewBuilder
