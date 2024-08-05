@@ -72,8 +72,7 @@ extension HomeTabRouter {
             let currentTab = tabViewSelection
             await showHomeScreenList()
             await waitBeforeNextNavigationIfTabNot(currentTab)
-            
-            walletViewNavPath.append(HomeWalletNavigationDestination.purchaseDomains(router: self))
+            walletViewNavPath.append(.purchaseDomains(.root(self)))
         }
     }
     

@@ -10,11 +10,17 @@ import Foundation
 @MainActor
 final class PurchaseDomainsViewModel: ObservableObject {
     
-    @Published var navigationState: NavigationStateManager?
     @Published var isLoading = false
     @Published var error: Error?
     private var purchaseData: PurchaseData = PurchaseData()
     private let router: HomeTabRouter
+    
+    var progress: Double {
+        if case .purchaseDomains(let navigationDestination) = router.walletViewNavPath.last {
+            return navigationDestination.progress
+        }
+        return 0
+    }
 
     init(router: HomeTabRouter) {
         self.router = router
@@ -47,7 +53,7 @@ final class PurchaseDomainsViewModel: ObservableObject {
     }
     
     private func pushTo(_ destination: PurchaseDomains.NavigationDestination) {
-        router.walletViewNavPath.append(.purchaseDomain(destination))
+        router.walletViewNavPath.append(.purchaseDomains(destination))
     }
     
     private  func moveToCheckoutWith(domains: [DomainToPurchase],

@@ -14,12 +14,11 @@ enum HomeWalletNavigationDestination: Hashable {
                  mintedDomains: [DomainDisplayInfo],
                  domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback,
                  mintingNavProvider: (MintDomainsNavigationController)->())
-    case purchaseDomains(router: HomeTabRouter)
+    case purchaseDomains(PurchaseDomains.NavigationDestination)
     case login(mode: LoginFlowNavigationController.Mode, callback: LoginFlowNavigationController.LoggedInCallback)
     case walletDetails(WalletEntity)
     case securitySettings
     case setupPasscode(SetupPasscodeViewController.Mode)
-    case purchaseDomain(PurchaseDomains.NavigationDestination)
 
     static func == (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
@@ -38,8 +37,6 @@ enum HomeWalletNavigationDestination: Hashable {
         case (.securitySettings, .securitySettings):
             return true
         case (.setupPasscode, .setupPasscode):
-            return true
-        case (.purchaseDomain, .purchaseDomain):
             return true
         default:
             return false
@@ -64,8 +61,6 @@ enum HomeWalletNavigationDestination: Hashable {
             hasher.combine("securitySettings")
         case .setupPasscode:
             hasher.combine("setupPasscode")
-        case .purchaseDomain:
-            hasher.combine("purchaseDomain")
         }
     }
     
@@ -91,8 +86,8 @@ struct HomeWalletLinkNavigationDestination {
                                                    mintingNavProvider: mintingNavProvider)
             .toolbar(.hidden, for: .navigationBar)
             .ignoresSafeArea()
-        case .purchaseDomains(let router):
-            PurchaseDomainsRootView(viewModel: PurchaseDomainsViewModel(router: router))
+        case .purchaseDomains(let destination):
+            PurchaseDomains.LinkNavigationDestination.viewFor(navigationDestination: destination)
         case .login(let mode, let callback):
             LoginFlowNavigationControllerWrapper(mode: mode,
                                                  callback: callback)
@@ -105,8 +100,6 @@ struct HomeWalletLinkNavigationDestination {
         case .setupPasscode(let mode):
             SetupPasscodeViewControllerWrapper(mode: mode)
                 .ignoresSafeArea()
-        case .purchaseDomain(let destination):
-            PurchaseDomains.LinkNavigationDestination.viewFor(navigationDestination: destination)
         }
     }
     
