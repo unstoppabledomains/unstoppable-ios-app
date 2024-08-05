@@ -17,12 +17,22 @@ struct NavigationTrackerViewModifier: ViewModifier {
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     if let topVC = appContext.coreAppCoordinator.topVC,
-                       let nav = topVC.children.first as? UINavigationController {
+                       let nav = getNavigationController(from: topVC) {
                         navigationTracker.handler = self
                         navigationTracker.trackNavigationController(nav)
                     }
                 }
             }
+    }
+    
+    private func getNavigationController(from topVC: UIViewController) -> UINavigationController? {
+        if let nav = topVC.children.first as? UINavigationController {
+            return nav
+        } else if let tabBarVC = topVC.children.first as? UITabBarController,
+                  let selectedVC = tabBarVC.selectedViewController {
+            return getNavigationController(from: selectedVC)
+        }
+        return nil
     }
     
 }

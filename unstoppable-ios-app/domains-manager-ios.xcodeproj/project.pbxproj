@@ -122,6 +122,8 @@
 		C6011AB628F4022300342666 /* DomainProfileCryptoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6011AB528F4022300342666 /* DomainProfileCryptoSection.swift */; };
 		C6011ABD28F4045000342666 /* DomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6011ABB28F4045000342666 /* DomainProfileTopInfoCell.swift */; };
 		C6011AC128F4045000342666 /* DomainProfileTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6011ABC28F4045000342666 /* DomainProfileTopInfoCell.xib */; };
+		C60204182C61071B000B5553 /* DashedProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60204172C61071B000B5553 /* DashedProgressView.swift */; };
+		C60204192C61071B000B5553 /* DashedProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60204172C61071B000B5553 /* DashedProgressView.swift */; };
 		C60319952C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */; };
 		C60319962C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */; };
 		C60319982C2C1F7400A77109 /* BlockchainType+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319972C2C1F7400A77109 /* BlockchainType+Extension.swift */; };
@@ -2826,6 +2828,7 @@
 		C6011AB528F4022300342666 /* DomainProfileCryptoSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileCryptoSection.swift; sourceTree = "<group>"; };
 		C6011ABB28F4045000342666 /* DomainProfileTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTopInfoCell.swift; sourceTree = "<group>"; };
 		C6011ABC28F4045000342666 /* DomainProfileTopInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTopInfoCell.xib; sourceTree = "<group>"; };
+		C60204172C61071B000B5553 /* DashedProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashedProgressView.swift; sourceTree = "<group>"; };
 		C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPC_MessageSigningType.swift; sourceTree = "<group>"; };
 		C60319972C2C1F7400A77109 /* BlockchainType+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlockchainType+Extension.swift"; sourceTree = "<group>"; };
 		C603A53528522C0D003962E3 /* IgnoreFailureArrayElement+PropertyWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IgnoreFailureArrayElement+PropertyWrapper.swift"; sourceTree = "<group>"; };
@@ -7209,6 +7212,7 @@
 				C607A5D32B32A02A0088ECF3 /* CloseButtonView.swift */,
 				C639F39B2C32D133008CC1CB /* ConnectCurveLine */,
 				C639F3952C32B9C3008CC1CB /* ConnectTransactionSign.swift */,
+				C60204172C61071B000B5553 /* DashedProgressView.swift */,
 				C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */,
 				C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */,
 				C63AD0992B95657C00BF8C83 /* LineView.swift */,
@@ -9640,6 +9644,7 @@
 				C6124CEB29252E8F005E6537 /* DomainProfileSignExternalWalletViewPresenter.swift in Sources */,
 				C692C351282EA63100C31393 /* AppearanceSettingsViewPresenter.swift in Sources */,
 				C65A869C2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift in Sources */,
+				C60204182C61071B000B5553 /* DashedProgressView.swift in Sources */,
 				C6670A0F28D46D6B00415EBB /* String+SHA3.swift in Sources */,
 				C609822A2823EB1E00546392 /* BaseCreateWalletPresenter.swift in Sources */,
 				C6534A952BBFBA10008EEBB5 /* HomeExploreSuggestedProfileRowView.swift in Sources */,
@@ -11294,6 +11299,7 @@
 				C6B65F9F2B57876F006D1812 /* HomeWalletNFTCellView.swift in Sources */,
 				C618085A2B19BBEB0032E543 /* PurchaseSearchDomainsView.swift in Sources */,
 				C6FEA9182BEB700E004FD740 /* SettingsCollectionViewCell.swift in Sources */,
+				C60204192C61071B000B5553 /* DashedProgressView.swift in Sources */,
 				C6450CD32BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift in Sources */,
 				C6D645CB2B1DBD3C00D724AC /* CNavigationControllerChildTransitioning.swift in Sources */,
 				C61808092B19A9EE0032E543 /* AppLaunchServiceProtocol.swift in Sources */,

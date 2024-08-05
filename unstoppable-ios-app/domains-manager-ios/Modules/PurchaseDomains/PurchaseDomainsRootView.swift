@@ -20,14 +20,11 @@ struct PurchaseDomainsRootView: View {
             PurchaseSearchDomainsView()
                 .environmentObject(viewModel)
                 .navigationBarTitleDisplayMode(.inline)
-//                .navigationDestination(for: PurchaseDomains.NavigationDestination.self) { destination in
-//                    PurchaseDomains.LinkNavigationDestination.viewFor(navigationDestination: destination)
-//                        .ignoresSafeArea()
-//                }
                 .onChange(of: tabRouter.walletViewNavPath) { _ in
-                    updateTitleView()
+                    DispatchQueue.main.async {
+                        updateTitleView()
+                    }
                 }
-                .trackNavigationControllerEvents(onDidNotFinishNavigationBack: updateTitleView)
             if viewModel.isLoading {
                 ProgressView()
             }
@@ -39,6 +36,7 @@ struct PurchaseDomainsRootView: View {
                 stateManagerWrapper.navigationState?.isTitleVisible = true
             }
         }
+        .trackNavigationControllerEvents(onDidNotFinishNavigationBack: updateTitleView)
         .displayError($viewModel.error)
         .allowsHitTesting(!viewModel.isLoading)
         .environmentObject(viewModel)
@@ -54,13 +52,14 @@ private extension PurchaseDomainsRootView {
     
     func setupTitleView() {
         stateManagerWrapper.navigationState?.setCustomTitle(customTitle: { 
-            DashedProgressView(progress: viewModel.progress)
+            DashedProgressView(configuration: .init(numberOfDashes: 3), progress: viewModel.progress)
         },
                                                             id: id)
-        stateManagerWrapper.navigationState?.isTitleVisible = true
+        updateTitleView()
     }
     
     func updateTitleView() {
+        stateManagerWrapper.navigationState?.isTitleVisible = true
 //        viewModel.navigationState?.yOffset = -2
 //        withAnimation {
 //            viewModel.navigationState?.isTitleVisible = viewModel.navPath.last?.isWithCustomTitle == true
@@ -70,15 +69,4 @@ private extension PurchaseDomainsRootView {
 
 #Preview {
     PurchaseDomainsRootView(viewModel: PurchaseDomainsViewModel(router: MockEntitiesFabric.Home.createHomeTabRouter()))
-}
-
-
-struct DashedProgressView: View {
-    
-    let progress: Double
-    
-    var body: some View {
-        Text("Progress \(progress)")
-    }
-    
 }
