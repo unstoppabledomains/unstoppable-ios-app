@@ -11,32 +11,31 @@ struct PurchaseDomainsRootView: View {
         
     @Environment(\.presentationMode) private var presentationMode
     @StateObject var viewModel: PurchaseDomainsViewModel
+    @EnvironmentObject var stateManagerWrapper: NavigationStateManagerWrapper
 
     var body: some View {
-//        NavigationViewWithCustomTitle(content: {
-            ZStack {
-                PurchaseSearchDomainsView()
-                    .environmentObject(viewModel)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationDestination(for: PurchaseDomains.NavigationDestination.self) { destination in
-                        PurchaseDomains.LinkNavigationDestination.viewFor(navigationDestination: destination)
-                            .ignoresSafeArea()
-                            .environmentObject(viewModel)
-                    }
-                    .onChange(of: viewModel.navPath) { _ in
-                        updateTitleView()
-                    }
-                    .trackNavigationControllerEvents(onDidNotFinishNavigationBack: updateTitleView)
-                if viewModel.isLoading {
-                    ProgressView()
-                }
+        ZStack {
+            PurchaseSearchDomainsView()
+                .environmentObject(viewModel)
+                .navigationBarTitleDisplayMode(.inline)
+//                .navigationDestination(for: PurchaseDomains.NavigationDestination.self) { destination in
+//                    PurchaseDomains.LinkNavigationDestination.viewFor(navigationDestination: destination)
+//                        .ignoresSafeArea()
+//                }
+//                    .onChange(of: viewModel.navPath) { _ in
+//                        updateTitleView()
+//                    }
+                .trackNavigationControllerEvents(onDidNotFinishNavigationBack: updateTitleView)
+            if viewModel.isLoading {
+                ProgressView()
             }
-//        }, navigationStateProvider: { navigationState in
-//            self.viewModel.navigationState = navigationState
-//        }, path: $viewModel.navPath)
-        .interactiveDismissDisabled(!viewModel.navPath.isEmpty)
+        }
         .displayError($viewModel.error)
         .allowsHitTesting(!viewModel.isLoading)
+        .environmentObject(viewModel)
+//        .onAppear {
+//            stateManagerWrapper.navigationState?.navigationBackDisabled = true
+//        }
     }
 }
 
@@ -44,12 +43,12 @@ struct PurchaseDomainsRootView: View {
 private extension PurchaseDomainsRootView {
     func updateTitleView() {
         viewModel.navigationState?.yOffset = -2
-        withAnimation {
-            viewModel.navigationState?.isTitleVisible = viewModel.navPath.last?.isWithCustomTitle == true
-        }
+//        withAnimation {
+//            viewModel.navigationState?.isTitleVisible = viewModel.navPath.last?.isWithCustomTitle == true
+//        }
     }
 }
 
 #Preview {
-    PurchaseDomainsRootView(viewModel: PurchaseDomainsViewModel())
+    PurchaseDomainsRootView(viewModel: PurchaseDomainsViewModel(router: MockEntitiesFabric.Home.createHomeTabRouter()))
 }

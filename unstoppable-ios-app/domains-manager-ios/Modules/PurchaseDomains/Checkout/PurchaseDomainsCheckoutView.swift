@@ -18,7 +18,8 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
     @Environment(\.purchaseDomainsPreferencesStorage) private var purchaseDomainsPreferencesStorage
     @Environment(\.walletsDataService) private var walletsDataService
-    
+    @EnvironmentObject var stateManagerWrapper: NavigationStateManagerWrapper
+
     @State var domain: DomainToPurchase
     @State var selectedWallet: WalletEntity
     @State var wallets: [WalletEntity]
@@ -62,6 +63,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
             }
         }
         .allowsHitTesting(!isLoading)
+        .navigationBarBackButtonHidden(isLoading)
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
         .onReceive(purchaseDomainsService.cartStatusPublisher.receive(on: DispatchQueue.main)) { cartStatus in
@@ -541,6 +543,7 @@ private extension PurchaseDomainsCheckoutView {
     
     func setLoading(_ isLoading: Bool) {
         self.isLoading = isLoading
+        stateManagerWrapper.navigationState?.navigationBackDisabled = isLoading
         delegate?.purchaseViewDidUpdateLoadingState(isLoading)
     }
     

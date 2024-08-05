@@ -11,10 +11,14 @@ import Foundation
 final class PurchaseDomainsViewModel: ObservableObject {
     
     @Published var navigationState: NavigationStateManager?
-    @Published var navPath: [PurchaseDomains.NavigationDestination] = []
     @Published var isLoading = false
     @Published var error: Error?
     private var purchaseData: PurchaseData = PurchaseData()
+    private let router: HomeTabRouter
+
+    init(router: HomeTabRouter) {
+        self.router = router
+    }
     
     func handleAction(_ action: PurchaseDomains.FlowAction) {
         Task {
@@ -22,7 +26,7 @@ final class PurchaseDomainsViewModel: ObservableObject {
                 switch action {
                 case .didSelectDomains(let domains):
                     if domains.count == 1 {
-                        navPath.append(.fillProfileForDomain(domains[1]))
+                        pushTo(.fillProfileForDomain(domains[0]))
                     } else {
                         moveToCheckoutWith(domains: domains,
                                            profileChanges: nil)
@@ -31,15 +35,19 @@ final class PurchaseDomainsViewModel: ObservableObject {
                     moveToCheckoutWith(domains: [domain],
                                        profileChanges: profileChanges)
                 case .didPurchaseDomains:
-                    navPath.append(.purchased(self))
+                    pushTo(.purchased(self))
                 case .goToDomains:
-                    navPath.removeAll()
+                    router.didPurchaseDomains()
                 }
             } catch {
                 isLoading = false
                 self.error = error
             }
         }
+    }
+    
+    private func pushTo(_ destination: PurchaseDomains.NavigationDestination) {
+        router.walletViewNavPath.append(.purchaseDomain(destination))
     }
     
     private  func moveToCheckoutWith(domains: [DomainToPurchase],
@@ -59,10 +67,10 @@ final class PurchaseDomainsViewModel: ObservableObject {
         }
         
         purchaseData.domains = domains
-        navPath.append(.checkout(.init(domains: domains,
-                                       profileChanges: profileChanges,
-                                       selectedWallet: selectedWallet,
-                                       wallets: wallets)))
+        pushTo(.checkout(.init(domains: domains,
+                               profileChanges: profileChanges,
+                               selectedWallet: selectedWallet,
+                               wallets: wallets)))
     }
     
     

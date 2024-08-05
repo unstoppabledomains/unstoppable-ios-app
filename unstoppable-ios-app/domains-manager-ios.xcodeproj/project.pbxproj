@@ -110,6 +110,8 @@
 		30D89F5B26A9EB5500251C2D /* Bugsnag in Frameworks */ = {isa = PBXBuildFile; productRef = 30D89F5A26A9EB5500251C2D /* Bugsnag */; };
 		30E549C32886DA27009833FB /* DefaultsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E549C22886DA27009833FB /* DefaultsStorage.swift */; };
 		30EFBBDC27F4754E00B8D667 /* MainButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFBBDB27F4754E00B8D667 /* MainButton.swift */; };
+		C6008B2B2C60F77700F218B9 /* NavigationPopGestureDisabler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6008B2A2C60F77700F218B9 /* NavigationPopGestureDisabler.swift */; };
+		C6008B2C2C60F77700F218B9 /* NavigationPopGestureDisabler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6008B2A2C60F77700F218B9 /* NavigationPopGestureDisabler.swift */; };
 		C600AB8329F807F60089107B /* DomainTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8229F807F60089107B /* DomainTransferService.swift */; };
 		C600AB8829F807FF0089107B /* DomainTransferServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8729F807FF0089107B /* DomainTransferServiceProtocol.swift */; };
 		C600AB8D29F8085D0089107B /* MockDomainTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8C29F8085D0089107B /* MockDomainTransferService.swift */; };
@@ -2813,6 +2815,7 @@
 		30EFBBDB27F4754E00B8D667 /* MainButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainButton.swift; sourceTree = "<group>"; };
 		30F526452785BB22004C7AB6 /* ResolutionInitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResolutionInitTests.swift; sourceTree = "<group>"; };
 		30F6A88F277BB5310086D70B /* UnsConfigManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsConfigManagerTests.swift; sourceTree = "<group>"; };
+		C6008B2A2C60F77700F218B9 /* NavigationPopGestureDisabler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationPopGestureDisabler.swift; sourceTree = "<group>"; };
 		C600AB8229F807F60089107B /* DomainTransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTransferService.swift; sourceTree = "<group>"; };
 		C600AB8729F807FF0089107B /* DomainTransferServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTransferServiceProtocol.swift; sourceTree = "<group>"; };
 		C600AB8C29F8085D0089107B /* MockDomainTransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDomainTransferService.swift; sourceTree = "<group>"; };
@@ -7267,6 +7270,7 @@
 				C67681332BEC9ECD0093AFA0 /* UDListItemInCollectionButtonPaddingModifier.swift */,
 				C62900EA2BAAC135008B35A2 /* NavigationTopSafeAreaOffset.swift */,
 				C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */,
+				C6008B2A2C60F77700F218B9 /* NavigationPopGestureDisabler.swift */,
 				C6C837A02B5FF307000A6AF5 /* TabBarVisibleModifier.swift */,
 				C663A4D82B7F2FAC0099BCE8 /* PresentationStyleCheckerModifier.swift */,
 				C6BF6BD92B8EE724006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift */,
@@ -10108,6 +10112,7 @@
 				C6B761CC2BB3BEB700773943 /* HomeActivityView.swift in Sources */,
 				C6D647442B1EDA5900D724AC /* SignPaymentTransactionUIConfiguration.swift in Sources */,
 				C6A231FF2BEB52CB0037E093 /* WalletSourceImageView.swift in Sources */,
+				C6008B2B2C60F77700F218B9 /* NavigationPopGestureDisabler.swift in Sources */,
 				C6124CE12924C236005E6537 /* CachedDomainProfileInfo.swift in Sources */,
 				C69F992C2A9F1264004B1958 /* Color.swift in Sources */,
 				C63095EE2B0DA66400205054 /* FirebaseAuthService.swift in Sources */,
@@ -11147,6 +11152,7 @@
 				C6FAED872B8C684700CC1844 /* MessageMentionString.swift in Sources */,
 				C6D646722B1ED11B00D724AC /* DomainProfileUpdatingRecordsData.swift in Sources */,
 				C6D646FB2B1ED74E00D724AC /* GhostTertiaryWhiteButton.swift in Sources */,
+				C6008B2C2C60F77700F218B9 /* NavigationPopGestureDisabler.swift in Sources */,
 				C61808702B19BC100032E543 /* ForEach+Skeleton.swift in Sources */,
 				C6534AA02BBFBA10008EEBB5 /* HomeExploreUserWalletDomainsView.swift in Sources */,
 				C65CEB8F2B67537900A13B34 /* SwiftUIViewPaymentHandler.swift in Sources */,

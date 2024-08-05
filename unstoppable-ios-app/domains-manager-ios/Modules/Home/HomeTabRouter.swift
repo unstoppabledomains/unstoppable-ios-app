@@ -73,15 +73,13 @@ extension HomeTabRouter {
             await showHomeScreenList()
             await waitBeforeNextNavigationIfTabNot(currentTab)
             
-            walletViewNavPath.append(HomeWalletNavigationDestination.purchaseDomains(domainsPurchasedCallback: { [weak self] result in
-                switch result {
-                case .cancel:
-                    return
-                case .purchased:
-                    self?.homeWalletViewCoordinator?.domainPurchased()
-                }
-            }))
+            walletViewNavPath.append(HomeWalletNavigationDestination.purchaseDomains(router: self))
         }
+    }
+    
+    func didPurchaseDomains() {
+        walletViewNavPath.removeAll()
+        homeWalletViewCoordinator?.domainPurchased()
     }
     
     func runBuyCryptoFlowTo(wallet: WalletEntity) {
