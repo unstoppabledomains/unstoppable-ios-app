@@ -12,6 +12,7 @@ final class PurchaseDomainsViewModel: ObservableObject {
     
     @Published var isLoading = false
     @Published var error: Error?
+    let id = UUID().uuidString
     private var purchaseData: PurchaseData = PurchaseData()
     private let router: HomeTabRouter
     
@@ -76,9 +77,9 @@ final class PurchaseDomainsViewModel: ObservableObject {
         pushTo(.checkout(.init(domains: domains,
                                profileChanges: profileChanges,
                                selectedWallet: selectedWallet,
-                               wallets: wallets)))
+                               wallets: wallets),
+               viewModel: self))
     }
-    
     
     func askUserToAddWalletToPurchase(domains: [DomainToPurchase],
                                       profileChanges: DomainProfilePendingChanges?) {

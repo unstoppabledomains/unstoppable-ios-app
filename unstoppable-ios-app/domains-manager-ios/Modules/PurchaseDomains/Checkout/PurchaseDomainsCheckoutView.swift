@@ -97,6 +97,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
                 Color.clear
             }
         }
+        .purchaseDomainsTitleViewModifier()
         .pullUpError($error)
         .modifier(ShowingSelectDiscounts(isSelectDiscountsPresented: $isSelectDiscountsPresented))
         .viewPullUp($pullUp)

@@ -11,7 +11,7 @@ extension PurchaseDomains {
     enum NavigationDestination: Hashable {
         case root(HomeTabRouter)
         case fillProfileForDomain(_ domain: DomainToPurchase, viewModel: PurchaseDomainsViewModel)
-        case checkout(CheckoutData)
+        case checkout(_ chekoutData: CheckoutData, viewModel: PurchaseDomainsViewModel)
         case purchased(PurchaseDomainsViewModel)
         
         var isWithCustomTitle: Bool {
@@ -73,11 +73,12 @@ extension PurchaseDomains {
                 PurchaseDomainsRootView(viewModel: PurchaseDomainsViewModel(router: router))
             case .fillProfileForDomain(let domain, let viewModel):
                 PurchaseDomainProfileViewControllerWrapper(domain: domain, viewModel: viewModel)
-            case .checkout(let checkoutData):
+            case .checkout(let checkoutData, let viewModel):
                 PurchaseDomainsCheckoutView(domain: checkoutData.domains[0],
                                             selectedWallet: checkoutData.selectedWallet,
                                             wallets: checkoutData.wallets,
                                             profileChanges: checkoutData.profileChanges ?? .init(domainName: checkoutData.domains[0].name))
+                .environmentObject(viewModel)
             case .purchased(let viewModel):
                 PurchaseDomainsHappyEndViewControllerWrapper(viewModel: viewModel)
             }

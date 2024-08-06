@@ -38,6 +38,7 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
             scrollOffsetCallback?(newValue)
         }
         .viewPullUp($pullUp)
+        .purchaseDomainsTitleViewModifier()
         .onAppear(perform: onAppear)
     }
 }
