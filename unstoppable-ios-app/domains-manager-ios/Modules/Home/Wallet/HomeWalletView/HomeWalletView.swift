@@ -101,6 +101,8 @@ private extension HomeWalletView {
         navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(shouldHideAvatar: true) },
                                         id: id)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            guard id == navigationState?.customViewID else { return }
+            
             updateNavTitleVisibility()
         }
     }

@@ -36,7 +36,7 @@ struct PurchaseDomainsRootView: View {
                 stateManagerWrapper.navigationState?.isTitleVisible = true
             }
         }
-        .trackNavigationControllerEvents(onDidNotFinishNavigationBack: updateTitleView)
+        .trackNavigationControllerEvents(onDidNotFinishNavigationBack: setupTitleView)
         .displayError($viewModel.error)
         .allowsHitTesting(!viewModel.isLoading)
         .environmentObject(viewModel)
@@ -51,19 +51,18 @@ private extension PurchaseDomainsRootView {
     }
     
     func setupTitleView() {
-        stateManagerWrapper.navigationState?.setCustomTitle(customTitle: { 
-            DashedProgressView(configuration: .init(numberOfDashes: 3), progress: viewModel.progress)
-        },
-                                                            id: id)
-        updateTitleView()
+        withAnimation {
+            stateManagerWrapper.navigationState?.setCustomTitle(customTitle: {
+                DashedProgressView(configuration: .init(numberOfDashes: 3), progress: viewModel.progress)
+            },
+                                                                id: id)
+            updateTitleView()
+        }
     }
     
     func updateTitleView() {
         stateManagerWrapper.navigationState?.isTitleVisible = true
-//        viewModel.navigationState?.yOffset = -2
-//        withAnimation {
-//            viewModel.navigationState?.isTitleVisible = viewModel.navPath.last?.isWithCustomTitle == true
-//        }
+        stateManagerWrapper.navigationState?.yOffset = 2
     }
 }
 
