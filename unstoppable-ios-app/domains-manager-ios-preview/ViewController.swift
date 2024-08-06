@@ -20,9 +20,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func runPurchaseButtonPressed() {
-        UDRouter().showSearchDomainToPurchase(in: self) { result in
-            
-        }
+       
     }
     
     func showPurchaseDomainsSearch() {

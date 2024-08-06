@@ -10,7 +10,7 @@ import SwiftUI
 extension PurchaseDomains {
     enum NavigationDestination: Hashable {
         case root(HomeTabRouter)
-        case fillProfileForDomain(_ domain: DomainToPurchase)
+        case fillProfileForDomain(_ domain: DomainToPurchase, viewModel: PurchaseDomainsViewModel)
         case checkout(CheckoutData)
         case purchased(PurchaseDomainsViewModel)
         
@@ -71,8 +71,8 @@ extension PurchaseDomains {
             switch navigationDestination {
             case .root(let router):
                 PurchaseDomainsRootView(viewModel: PurchaseDomainsViewModel(router: router))
-            case .fillProfileForDomain(let domain):
-                SendCryptoQRWalletAddressScannerView()
+            case .fillProfileForDomain(let domain, let viewModel):
+                PurchaseDomainProfileViewControllerWrapper(domain: domain, viewModel: viewModel)
             case .checkout(let checkoutData):
                 PurchaseDomainsCheckoutView(domain: checkoutData.domains[0],
                                             selectedWallet: checkoutData.selectedWallet,

@@ -760,6 +760,31 @@ struct DomainProfileViewControllerWrapper: UIViewControllerRepresentable {
     
 }
 
+struct PurchaseDomainProfileViewControllerWrapper: UIViewControllerRepresentable {
+    
+    let domain: DomainToPurchase
+    weak var viewModel: PurchaseDomainsViewModel?
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+     
+        let vc = DomainProfileViewController.nibInstance()
+        let presenter = PurchaseDomainDomainProfileViewPresenter(view: vc,
+                                                                 domain: domain)
+        presenter.viewModel = viewModel
+        vc.presenter = presenter
+        return vc
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    
+    final class ProfileNavController: UINavigationController {
+        override var traitCollection: UITraitCollection {
+            UITraitCollection(traitsFrom: [super.traitCollection, UITraitCollection(userInterfaceStyle: .dark)])
+        }
+    }
+    
+}
+
 #Preview {
     
     struct PreviewContainer: View {
@@ -792,3 +817,4 @@ struct DomainProfileViewControllerWrapper: UIViewControllerRepresentable {
                             domain: domain)
     
 }
+

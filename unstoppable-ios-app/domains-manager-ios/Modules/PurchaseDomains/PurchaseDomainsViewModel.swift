@@ -32,7 +32,7 @@ final class PurchaseDomainsViewModel: ObservableObject {
                 switch action {
                 case .didSelectDomains(let domains):
                     if domains.count == 1 {
-                        pushTo(.fillProfileForDomain(domains[0]))
+                        pushTo(.fillProfileForDomain(domains[0], viewModel: self))
                     } else {
                         moveToCheckoutWith(domains: domains,
                                            profileChanges: nil)

@@ -20,7 +20,7 @@ final class PurchaseDomainDomainProfileViewPresenter: ViewAnalyticsLogger {
     private let domainDisplayInfoHolder: DomainDisplayInfoHolder
     private var didDiscardChanges = false
     private var domainProfileChanges: DomainProfilePendingChanges
-    weak var purchaseDomainsFlowManager: PurchaseDomainsFlowManager?
+    weak var viewModel: PurchaseDomainsViewModel?
 
     init(view: any DomainProfileViewProtocol,
          domain: DomainToPurchase) {
@@ -67,7 +67,7 @@ extension PurchaseDomainDomainProfileViewPresenter: DomainProfileViewPresenterPr
             sections.forEach { section in
                 section.injectChanges(in: &domainProfileChanges)
             }
-            try? await purchaseDomainsFlowManager?.handle(action: .didFillProfileForDomain(domain, profileChanges: domainProfileChanges))
+            viewModel?.handleAction(.didFillProfileForDomain(domain, profileChanges: domainProfileChanges))
         }
     }
     

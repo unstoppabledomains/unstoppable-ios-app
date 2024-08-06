@@ -124,6 +124,7 @@
 		C6011AC128F4045000342666 /* DomainProfileTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6011ABC28F4045000342666 /* DomainProfileTopInfoCell.xib */; };
 		C60204182C61071B000B5553 /* DashedProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60204172C61071B000B5553 /* DashedProgressView.swift */; };
 		C60204192C61071B000B5553 /* DashedProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60204172C61071B000B5553 /* DashedProgressView.swift */; };
+		C602041A2C621728000B5553 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1E2B19939E00B79E28 /* ViewController.swift */; };
 		C60319952C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */; };
 		C60319962C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */; };
 		C60319982C2C1F7400A77109 /* BlockchainType+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319972C2C1F7400A77109 /* BlockchainType+Extension.swift */; };
@@ -992,7 +993,6 @@
 		C655CAA72B16E82800FDA063 /* PurchaseDomainsCheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA22B16E82700FDA063 /* PurchaseDomainsCheckoutView.swift */; };
 		C655CAA82B16E82800FDA063 /* PurchaseDomainsSelectWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA32B16E82700FDA063 /* PurchaseDomainsSelectWalletView.swift */; };
 		C655CAA92B16E82800FDA063 /* PurchaseDomainsEnterZIPCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA42B16E82700FDA063 /* PurchaseDomainsEnterZIPCodeView.swift */; };
-		C655CAAD2B16EFEB00FDA063 /* PurchaseDomainsCheckoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAAC2B16EFEB00FDA063 /* PurchaseDomainsCheckoutViewController.swift */; };
 		C6568EF92B204E4C0022B598 /* UIImageBridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6568EF82B204E4C0022B598 /* UIImageBridgeView.swift */; };
 		C6568EFA2B204E4C0022B598 /* UIImageBridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6568EF82B204E4C0022B598 /* UIImageBridgeView.swift */; };
 		C658D44E2B16F47C0057BE12 /* FirebaseAuthTokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C658D44D2B16F47C0057BE12 /* FirebaseAuthTokenStorage.swift */; };
@@ -1410,7 +1410,6 @@
 		C695C2682A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */; };
 		C6960C1B2B19939E00B79E28 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1A2B19939E00B79E28 /* AppDelegate.swift */; };
 		C6960C1D2B19939E00B79E28 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1C2B19939E00B79E28 /* SceneDelegate.swift */; };
-		C6960C1F2B19939E00B79E28 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1E2B19939E00B79E28 /* ViewController.swift */; };
 		C6960C222B19939E00B79E28 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C6960C202B19939E00B79E28 /* Main.storyboard */; };
 		C6960C272B1993A100B79E28 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C6960C252B1993A100B79E28 /* LaunchScreen.storyboard */; };
 		C6960C2D2B19945000B79E28 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306486892527253C00388026 /* Assets.xcassets */; };
@@ -2419,11 +2418,6 @@
 		C6D6479D2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D647992B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib */; };
 		C6D6479F2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */; };
 		C6D647A02B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */; };
-		C6D647A22B1F187600D724AC /* UDRouter+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D647A12B1F187600D724AC /* UDRouter+Common.swift */; };
-		C6D647A32B1F188400D724AC /* UDRouter+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D647A12B1F187600D724AC /* UDRouter+Common.swift */; };
-		C6D647A42B1F189400D724AC /* PurchaseDomainsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2622B14848F006D1F0B /* PurchaseDomainsNavigationController.swift */; };
-		C6D647A52B1F189800D724AC /* PurchaseDomainsCheckoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAAC2B16EFEB00FDA063 /* PurchaseDomainsCheckoutViewController.swift */; };
-		C6D647A62B1F189B00D724AC /* PurchaseSearchDomainsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2602B14840D006D1F0B /* PurchaseSearchDomainsViewController.swift */; };
 		C6D647A72B1F18AE00D724AC /* HappyEndViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3018AEC127EB2CC200E8C37D /* HappyEndViewController.swift */; };
 		C6D647A82B1F18B000D724AC /* HappyEnd.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3018AEBC27EB2AF200E8C37D /* HappyEnd.storyboard */; };
 		C6D647A92B1F18B300D724AC /* BaseHappyEndViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC762B18376100E29318 /* BaseHappyEndViewPresenter.swift */; };
@@ -2493,8 +2487,6 @@
 		C6DDF25A2B147F5E006D1F0B /* UDSubtitleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2582B147F5E006D1F0B /* UDSubtitleText.swift */; };
 		C6DDF25D2B148294006D1F0B /* DomainToPurchaseSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF25C2B148294006D1F0B /* DomainToPurchaseSuggestion.swift */; };
 		C6DDF25F2B148300006D1F0B /* PurchaseSearchDomainsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF25E2B148300006D1F0B /* PurchaseSearchDomainsView.swift */; };
-		C6DDF2612B14840D006D1F0B /* PurchaseSearchDomainsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2602B14840D006D1F0B /* PurchaseSearchDomainsViewController.swift */; };
-		C6DDF2632B14848F006D1F0B /* PurchaseDomainsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2622B14848F006D1F0B /* PurchaseDomainsNavigationController.swift */; };
 		C6DDF26A2B148A31006D1F0B /* PositionObservingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2682B148A31006D1F0B /* PositionObservingView.swift */; };
 		C6DDF26B2B148A31006D1F0B /* OffsetObservingScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2692B148A31006D1F0B /* OffsetObservingScrollView.swift */; };
 		C6DEA1642BD8D1FA00838215 /* ActivateMPCWalletViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA1632BD8D1FA00838215 /* ActivateMPCWalletViewModel.swift */; };
@@ -3428,7 +3420,6 @@
 		C655CAA22B16E82700FDA063 /* PurchaseDomainsCheckoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsCheckoutView.swift; sourceTree = "<group>"; };
 		C655CAA32B16E82700FDA063 /* PurchaseDomainsSelectWalletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsSelectWalletView.swift; sourceTree = "<group>"; };
 		C655CAA42B16E82700FDA063 /* PurchaseDomainsEnterZIPCodeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsEnterZIPCodeView.swift; sourceTree = "<group>"; };
-		C655CAAC2B16EFEB00FDA063 /* PurchaseDomainsCheckoutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsCheckoutViewController.swift; sourceTree = "<group>"; };
 		C6568EF82B204E4C0022B598 /* UIImageBridgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageBridgeView.swift; sourceTree = "<group>"; };
 		C658D44D2B16F47C0057BE12 /* FirebaseAuthTokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthTokenStorage.swift; sourceTree = "<group>"; };
 		C65955FA287C621100319ACC /* UIImage+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Colors.swift"; sourceTree = "<group>"; };
@@ -4044,7 +4035,6 @@
 		C6D647982B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainProfileTopInfoCell.swift; sourceTree = "<group>"; };
 		C6D647992B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PurchaseDomainProfileTopInfoCell.xib; sourceTree = "<group>"; };
 		C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDomainProfileTopInfoCell.swift; sourceTree = "<group>"; };
-		C6D647A12B1F187600D724AC /* UDRouter+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UDRouter+Common.swift"; sourceTree = "<group>"; };
 		C6D6E4D32817BD4B008C66BB /* TutorialViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialViewPresenter.swift; sourceTree = "<group>"; };
 		C6D6E4D82817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCreateWalletPresenter.swift; sourceTree = "<group>"; };
 		C6D6E4DD2817BF09008C66BB /* OnboardingProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingProtocols.swift; sourceTree = "<group>"; };
@@ -4097,8 +4087,6 @@
 		C6DDF2582B147F5E006D1F0B /* UDSubtitleText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDSubtitleText.swift; sourceTree = "<group>"; };
 		C6DDF25C2B148294006D1F0B /* DomainToPurchaseSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainToPurchaseSuggestion.swift; sourceTree = "<group>"; };
 		C6DDF25E2B148300006D1F0B /* PurchaseSearchDomainsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseSearchDomainsView.swift; sourceTree = "<group>"; };
-		C6DDF2602B14840D006D1F0B /* PurchaseSearchDomainsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseSearchDomainsViewController.swift; sourceTree = "<group>"; };
-		C6DDF2622B14848F006D1F0B /* PurchaseDomainsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsNavigationController.swift; sourceTree = "<group>"; };
 		C6DDF2682B148A31006D1F0B /* PositionObservingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PositionObservingView.swift; sourceTree = "<group>"; };
 		C6DDF2692B148A31006D1F0B /* OffsetObservingScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OffsetObservingScrollView.swift; sourceTree = "<group>"; };
 		C6DEA1632BD8D1FA00838215 /* ActivateMPCWalletViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivateMPCWalletViewModel.swift; sourceTree = "<group>"; };
@@ -6238,7 +6226,6 @@
 		C655CA9E2B16E81700FDA063 /* Search */ = {
 			isa = PBXGroup;
 			children = (
-				C6DDF2602B14840D006D1F0B /* PurchaseSearchDomainsViewController.swift */,
 				C6DDF25E2B148300006D1F0B /* PurchaseSearchDomainsView.swift */,
 			);
 			path = Search;
@@ -6247,7 +6234,6 @@
 		C655CA9F2B16E82700FDA063 /* Checkout */ = {
 			isa = PBXGroup;
 			children = (
-				C655CAAC2B16EFEB00FDA063 /* PurchaseDomainsCheckoutViewController.swift */,
 				C655CAA22B16E82700FDA063 /* PurchaseDomainsCheckoutView.swift */,
 				C655CAA02B16E82700FDA063 /* PurchaseDomainsSelectDiscountsView.swift */,
 				C655CAA12B16E82700FDA063 /* PurchaseDomainsEnterDiscountCodeView.swift */,
@@ -6808,7 +6794,6 @@
 				C6A2D527284DC45B00327C47 /* PermissionsService.swift */,
 				C60982092822D92300546392 /* ToastMessageService.swift */,
 				C624D79E281BCB9A00F55530 /* UDRouter.swift */,
-				C6D647A12B1F187600D724AC /* UDRouter+Common.swift */,
 				C61DB1132B95BCE600CDA243 /* DomainProfilesService */,
 				C63F1D0328AF31D5000A5C12 /* AnalyticsService */,
 				C61236EE292CADE1002BA97B /* AppGroupsBridge */,
@@ -8260,7 +8245,6 @@
 				C6489ACE2C5D0DA9004AE320 /* PurchaseDomainsNavigationDestination.swift */,
 				C6489AC52C5D09BE004AE320 /* PurchaseDomainsViewModel.swift */,
 				C6489AC82C5D09F9004AE320 /* PurchaseDomainsRootView.swift */,
-				C6DDF2622B14848F006D1F0B /* PurchaseDomainsNavigationController.swift */,
 				C655CA9F2B16E82700FDA063 /* Checkout */,
 				C655CA9E2B16E81700FDA063 /* Search */,
 			);
@@ -9195,7 +9179,6 @@
 				C6C9959E289D313D00367362 /* CInteractiveTransitioningController.swift in Sources */,
 				C6DDF25A2B147F5E006D1F0B /* UDSubtitleText.swift in Sources */,
 				C6DDF24F2B147F1A006D1F0B /* UDCollectionListRowButton.swift in Sources */,
-				C6DDF2612B14840D006D1F0B /* PurchaseSearchDomainsViewController.swift in Sources */,
 				C669C3842912576D00837F21 /* UITextField.swift in Sources */,
 				C6534A8F2BBFBA10008EEBB5 /* HomeExploreFollowerRelationshipTypePickerView.swift in Sources */,
 				C67681282BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift in Sources */,
@@ -9541,7 +9524,6 @@
 				C6B761CF2BB3C11800773943 /* HomeTab.swift in Sources */,
 				C6109E3728E5AB310027D5D8 /* AppLaunchServiceProtocol.swift in Sources */,
 				C6534A702BBFB9EF008EEBB5 /* MPCOnboardingEnterCodeViewController.swift in Sources */,
-				C6DDF2632B14848F006D1F0B /* PurchaseDomainsNavigationController.swift in Sources */,
 				C672FD75286061E300D27078 /* WalletBackUpPassword.swift in Sources */,
 				C6B65F7E2B55153E006D1812 /* HomeWalletView+Entities.swift in Sources */,
 				C6D5DAD428374B4600379C38 /* ManageMultiChainDomainAddressesViewController.swift in Sources */,
@@ -9776,7 +9758,6 @@
 				C6D646F42B1ED65200D724AC /* Extension-String+Common.swift in Sources */,
 				C6B6B02D296D309C00D4E30F /* CGSize.swift in Sources */,
 				C6DDF2522B147F1A006D1F0B /* UDIconButtonView.swift in Sources */,
-				C655CAAD2B16EFEB00FDA063 /* PurchaseDomainsCheckoutViewController.swift in Sources */,
 				C607A5CF2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift in Sources */,
 				C6A2D54A284E3ABD00327C47 /* QRScannerDomainInfoView.swift in Sources */,
 				C6A2D5CD2850EDCD00327C47 /* ConnectServerRequestConfirmationView.swift in Sources */,
@@ -9844,7 +9825,6 @@
 				C6109E8E28E6AA660027D5D8 /* AppContextProtocol.swift in Sources */,
 				C6DDF25D2B148294006D1F0B /* DomainToPurchaseSuggestion.swift in Sources */,
 				C6B65F842B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift in Sources */,
-				C6D647A22B1F187600D724AC /* UDRouter+Common.swift in Sources */,
 				C6010D1A287FBEFC00FBD401 /* DomainsPurchasedDetails.swift in Sources */,
 				C6B2E8872BE9DB3300CF4BCA /* CopyMultichainWalletAddressesPullUpView.swift in Sources */,
 				C671CD122BC67570005DA2FB /* EcomPurchaseInteractionService.swift in Sources */,
@@ -10347,6 +10327,7 @@
 				C61808442B19B8E20032E543 /* PreviewImageLoadingService.swift in Sources */,
 				C640F36D2C071266009EB0F9 /* MPCWalletTakeoverState.swift in Sources */,
 				C6D645E32B1DBD9000D724AC /* BaseCollectionViewControllerProtocol.swift in Sources */,
+				C602041A2C621728000B5553 /* ViewController.swift in Sources */,
 				C671CD1C2BC680A1005DA2FB /* PurchasedDomainsWalletDescription.swift in Sources */,
 				C6170EC22B79E8E9008E9C93 /* UDListSectionView.swift in Sources */,
 				C6C8F9792B2188FA00A9834D /* QRScannerPermissionsView.swift in Sources */,
@@ -10729,7 +10710,6 @@
 				C617FDB42B5919CC00B93433 /* OnAppearanceChange.swift in Sources */,
 				C6C8F8EB2B21836400A9834D /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
 				C6FFBAE22B834EF700CB442D /* HomeChatNavigationDestination.swift in Sources */,
-				C6960C1F2B19939E00B79E28 /* ViewController.swift in Sources */,
 				C6C8F8382B217E9600A9834D /* EnterBackupOnboardingPresenter.swift in Sources */,
 				C6D6466C2B1ED11B00D724AC /* CachedDomainProfileInfo.swift in Sources */,
 				C61807DD2B19A4D50032E543 /* PreviewUDWallet.swift in Sources */,
@@ -10800,7 +10780,6 @@
 				C6D647062B1ED7CA00D724AC /* MessagingImageLoader.swift in Sources */,
 				C6D647832B1EE23000D724AC /* UITableViewCell.swift in Sources */,
 				C6D1E74D2BA17E2700738365 /* WalletsDataNetworkServiceProtocol.swift in Sources */,
-				C6D647A32B1F188400D724AC /* UDRouter+Common.swift in Sources */,
 				C617FDA52B58E79E00B93433 /* PreviewWalletsDataService.swift in Sources */,
 				C61807FC2B19A83E0032E543 /* QRCodeService.swift in Sources */,
 				C6D646C42B1ED23700D724AC /* CurrencyImageLoader.swift in Sources */,
@@ -10984,7 +10963,6 @@
 				C6C8F83A2B217E9600A9834D /* OnboardingRecoveryPhrasePresenter.swift in Sources */,
 				C6C8F81D2B217CC000A9834D /* OnboardingAddWalletPresenter.swift in Sources */,
 				C6C8F86A2B2181AE00A9834D /* WalletDisplayInfo.swift in Sources */,
-				C6D647A52B1F189800D724AC /* PurchaseDomainsCheckoutViewController.swift in Sources */,
 				C6D647532B1EDB7C00D724AC /* SelectorButton.swift in Sources */,
 				C640F3632C0709C1009EB0F9 /* MPCTakeoverCredentials.swift in Sources */,
 				C6C8F8AB2B2182CF00A9834D /* EnterEmailViewController.swift in Sources */,
@@ -11174,7 +11152,6 @@
 				C6D646A72B1ED15A00D724AC /* ProfileFollowerImageLoader.swift in Sources */,
 				C61808662B19BC050032E543 /* UDButtonView.swift in Sources */,
 				C618083C2B19AFB70032E543 /* PreviewNotificationsService.swift in Sources */,
-				C6D647A42B1F189400D724AC /* PurchaseDomainsNavigationController.swift in Sources */,
 				C6952A302BC4EBB800F4B475 /* MPCWalletProviderSubServiceProtocol.swift in Sources */,
 				C6D646752B1ED11B00D724AC /* DomainProfileSectionType.swift in Sources */,
 				C6D647112B1ED7D000D724AC /* MessagingChatMessageImageBase64TypeDisplayInfo.swift in Sources */,
@@ -11217,7 +11194,6 @@
 				C6D645DB2B1DBD4D00D724AC /* NavBarItemsTransitionPerformer.swift in Sources */,
 				C617FDA82B58E7BB00B93433 /* WalletsDataServiceProtocol.swift in Sources */,
 				C618086D2B19BC0C0032E543 /* HexagonShape.swift in Sources */,
-				C6D647A62B1F189B00D724AC /* PurchaseSearchDomainsViewController.swift in Sources */,
 				C630C7372BD781E900AC1662 /* OnboardingAddWalletViewController.swift in Sources */,
 				C6D645C62B1DBD3900D724AC /* CNavigationBarContentView.swift in Sources */,
 				C68F156E2BD659740049BFA2 /* MPCActivateWalletEnterView.swift in Sources */,
