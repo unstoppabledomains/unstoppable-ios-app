@@ -10,7 +10,6 @@ import SwiftUI
 struct NavigationTrackerViewModifier: ViewModifier {
     
     var onDidNotFinishNavigationBack: EmptyCallback? = nil
-    @StateObject private var navigationTracker = UINavigationViewControllerTracker()
     
     func body(content: Content) -> some View {
         content
@@ -18,8 +17,8 @@ struct NavigationTrackerViewModifier: ViewModifier {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     if let topVC = appContext.coreAppCoordinator.topVC,
                        let nav = getNavigationController(from: topVC) {
-                        navigationTracker.handler = self
-                        navigationTracker.trackNavigationController(nav)
+                        UINavigationViewControllerTracker.shared.trackNavigationController(nav,
+                                                                                           handler: self)
                     }
                 }
             }
@@ -53,16 +52,40 @@ protocol UINavigationControllerTrackerHandler {
     func didNotFinishNavigationBack()
 }
 
-final class UINavigationViewControllerTracker: NSObject, ObservableObject, UINavigationControllerDelegate {
-    var handler: UINavigationControllerTrackerHandler?
+final class UINavigationViewControllerTracker: NSObject {
     
-    func trackNavigationController(_ navigationController: UINavigationController?) {
-        guard navigationController?.delegate !== self else { return }
-        
-        navigationController?.transitionCoordinator?.notifyWhenInteractionChanges({ [weak self] context in
-            if context.completionVelocity < 0 { // will restore current view controller
-                self?.handler?.didNotFinishNavigationBack()
+    static let shared = UINavigationViewControllerTracker()
+    
+    private var navsToCallbacks: [NavigationControllerHolder : [UINavigationControllerTrackerHandler]] = [:]
+    
+    func trackNavigationController(_ navigationController: UINavigationController?,
+                                   handler: UINavigationControllerTrackerHandler) {
+        let holder = NavigationControllerHolder(nav: navigationController)
+        navsToCallbacks[holder, default: []].append(handler)
+        navigationController?.interactivePopGestureRecognizer?.addTarget(self, action: #selector(handleSwipeGesture))
+    }
+    
+    @objc private func handleSwipeGesture(_ gesture: UIGestureRecognizer) {
+        for (holder, handlers) in navsToCallbacks {
+            guard holder.nav?.interactivePopGestureRecognizer == gesture else { continue }
+            
+            switch gesture.state {
+            case .began:
+                holder.nav?.transitionCoordinator?.notifyWhenInteractionChanges({ context in
+                    if context.completionVelocity < 0 { // will restore current view controller
+                        for handler in handlers {
+                            handler.didNotFinishNavigationBack()
+                        }
+                    }
+                })
+                return
+            default:
+                return
             }
-        })
+        }
+    }
+    
+    private struct NavigationControllerHolder: Hashable {
+        weak var nav: UINavigationController?
     }
 }
