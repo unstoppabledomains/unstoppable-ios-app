@@ -81,6 +81,8 @@ extension PurchaseDomains {
                 .environmentObject(viewModel)
             case .purchased(let viewModel):
                 PurchaseDomainsHappyEndViewControllerWrapper(viewModel: viewModel)
+                    .ignoresSafeArea()
+                    .navigationBarBackButtonHidden(true)
             }
         }
         
