@@ -23,9 +23,9 @@ struct WCWalletsProvider {
             return self.mobile.native
         }
         
-        func getUniversalAppLink() -> String? {
-            guard self.mobile.universal != "" else {
-                return self.mobile.native
+        func getOperationalAppLink() -> String? {
+            guard self.mobile.universal != "" && self.mobile.universal != nil else {
+                return getNativeAppLink()
             }
             return self.mobile.universal
         }
