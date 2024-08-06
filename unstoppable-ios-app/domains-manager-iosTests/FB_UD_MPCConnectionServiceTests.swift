@@ -97,7 +97,7 @@ extension FB_UD_MPCConnectionServiceTests {
         let numberOfSimReqs = 5
         
         try await withThrowingTaskGroup(of: Void.self) { group in
-            for i in 0..<5 {
+            for _ in 0..<numberOfSimReqs {
                 group.addTask {
                     let _ = try await self.mpcConnectionService.getBalancesFor(walletMetadata: mpcMetadata)
                 }

@@ -151,3 +151,20 @@ extension HappyEndViewController {
     vc.presenter = presenter
     return vc
 }
+
+import SwiftUI
+struct PurchaseDomainsHappyEndViewControllerWrapper: UIViewControllerRepresentable {
+        
+    weak var viewModel: PurchaseDomainsViewModel?
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let vc = HappyEndViewController.instance()
+        let presenter = PurchaseDomainsHappyEndViewPresenter(view: vc)
+        presenter.purchaseDomainsViewModel = viewModel
+        vc.presenter = presenter
+        return vc
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    
+}

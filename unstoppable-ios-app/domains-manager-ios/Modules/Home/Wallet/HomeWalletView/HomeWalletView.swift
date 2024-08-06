@@ -13,12 +13,12 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
     @EnvironmentObject var tabRouter: HomeTabRouter
+    @EnvironmentObject var stateManagerWrapper: NavigationStateManagerWrapper
     @StateObject var viewModel: HomeWalletViewModel
     @StateObject private var profilesAPIFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceProfilesAPIEnabled)
     @StateObject private var mpcFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceMPCEnabled)
     @State private var isOtherScreenPresented: Bool = false
-    @Binding var navigationState: NavigationStateManager?
-    @Binding var isTabBarVisible: Bool
+    private var navigationState: NavigationStateManager? { stateManagerWrapper.navigationState }
     var isOtherScreenPushed: Bool { !tabRouter.walletViewNavPath.isEmpty }
     
     var body: some View {
@@ -46,7 +46,7 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
             }.environment(\.defaultMinListRowHeight, 28)
             .onChange(of: tabRouter.walletViewNavPath) { _ in
                 updateNavTitleVisibility()
-                isTabBarVisible = !isOtherScreenPushed
+                tabRouter.isTabBarVisible = !isOtherScreenPushed
             }
             .animation(.default, value: viewModel.selectedWallet)
             .listStyle(.plain)
@@ -101,6 +101,8 @@ private extension HomeWalletView {
         navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(shouldHideAvatar: true) },
                                         id: id)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            guard id == navigationState?.customViewID else { return }
+            
             updateNavTitleVisibility()
         }
     }

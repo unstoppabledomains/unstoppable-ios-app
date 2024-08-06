@@ -7,18 +7,14 @@
 
 import SwiftUI
 
-protocol PurchaseDomainsCheckoutViewDelegate: AnyObject {
-    func purchaseViewDidPurchaseDomains()
-    func purchaseViewDidUpdateScrollOffset(_ scrollOffset: CGPoint)
-    func purchaseViewDidUpdateLoadingState(_ isLoading: Bool)
-}
-
 struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
     @Environment(\.purchaseDomainsPreferencesStorage) private var purchaseDomainsPreferencesStorage
     @Environment(\.walletsDataService) private var walletsDataService
-    
+    @EnvironmentObject var stateManagerWrapper: NavigationStateManagerWrapper
+    @EnvironmentObject var viewModel: PurchaseDomainsViewModel
+
     @State var domain: DomainToPurchase
     @State var selectedWallet: WalletEntity
     @State var wallets: [WalletEntity]
@@ -37,16 +33,13 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @State private var isSelectDiscountsPresented = false
     @State private var isEnterDiscountCodePresented = false
     
-    weak var delegate: PurchaseDomainsCheckoutViewDelegate?
-    
     var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName : domain.name,
                                                                          .price: String(domain.price)] }
-
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
-                OffsetObservingScrollView(offset: $scrollOffset) {
+                ScrollView {
                     LazyVStack {
                         headerView()
                         checkoutDashSeparator()
@@ -62,6 +55,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
             }
         }
         .allowsHitTesting(!isLoading)
+        .navigationBarBackButtonHidden(isLoading)
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
         .onReceive(purchaseDomainsService.cartStatusPublisher.receive(on: DispatchQueue.main)) { cartStatus in
@@ -74,9 +68,6 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
         .onReceive(purchaseDomainsPreferencesStorage.$checkoutData.publisher.receive(on: DispatchQueue.main), perform: { checkoutData in
             self.checkoutData = checkoutData
         })
-        .onChange(of: scrollOffset) { newValue in
-            delegate?.purchaseViewDidUpdateScrollOffset(newValue)
-        }
         .modifier(ShowingSelectWallet(isSelectWalletPresented: $isSelectWalletPresented,
                                       selectedWallet: selectedWallet,
                                       wallets: wallets,
@@ -90,6 +81,12 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
             PurchaseDomainsEnterDiscountCodeView()
                 .passViewAnalyticsDetails(logger: self)
         })
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Color.clear
+            }
+        }
+        .purchaseDomainsTitleViewModifier()
         .pullUpError($error)
         .modifier(ShowingSelectDiscounts(isSelectDiscountsPresented: $isSelectDiscountsPresented))
         .viewPullUp($pullUp)
@@ -111,7 +108,7 @@ private extension PurchaseDomainsCheckoutView {
                 }
             }
         }
-        .padding(EdgeInsets(top: 56, leading: 16, bottom: 0, trailing: 16))
+        .padding(.horizontal, 16)
     }
     
     @ViewBuilder
@@ -526,7 +523,8 @@ private extension PurchaseDomainsCheckoutView {
                 Task.detached { // Run in background
                     try? await walletsDataService.refreshDataForWallet(selectedWallet)
                 }
-                delegate?.purchaseViewDidPurchaseDomains()
+                
+                viewModel.handleAction(.didPurchaseDomains)
             } catch {
                 logAnalytic(event: .didFailToPurchaseDomains, parameters: [.value : String(cartStatus.totalPrice),
                                                                            .count: String(1),
@@ -541,7 +539,7 @@ private extension PurchaseDomainsCheckoutView {
     
     func setLoading(_ isLoading: Bool) {
         self.isLoading = isLoading
-        delegate?.purchaseViewDidUpdateLoadingState(isLoading)
+        stateManagerWrapper.navigationState?.navigationBackDisabled = isLoading
     }
     
     func checkUpdatedCartStatus() {
@@ -692,7 +690,6 @@ private extension PullUpErrorConfiguration {
                                 selectedWallet: MockEntitiesFabric.Wallet.mockEntities()[0],
                                 wallets: Array(MockEntitiesFabric.Wallet.mockEntities().prefix(4)),
                                 profileChanges: .init(domainName: "oleg.x",
-                                                      avatarData: UIImage.Preview.previewLandscape?.dataToUpload),
-                                delegate: nil)
+                                                      avatarData: UIImage.Preview.previewLandscape?.dataToUpload))
     .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
 }
