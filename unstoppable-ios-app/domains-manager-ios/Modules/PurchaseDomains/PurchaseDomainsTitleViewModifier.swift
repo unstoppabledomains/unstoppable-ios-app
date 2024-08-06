@@ -22,9 +22,11 @@ struct PurchaseDomainsTitleViewModifier: ViewModifier {
                 }
             }
             .onAppear(perform: onAppear)
-        
     }
-    
+}
+
+// MARK: - Private methods
+private extension PurchaseDomainsTitleViewModifier {
     func onAppear() {
         setupTitleView()
     }
@@ -32,7 +34,9 @@ struct PurchaseDomainsTitleViewModifier: ViewModifier {
     func setupTitleView() {
         withAnimation {
             stateManagerWrapper.navigationState?.setCustomTitle(customTitle: {
-                DashedProgressView(configuration: .init(numberOfDashes: 3), progress: viewModel.progress)
+                PurchaseDomainsTitleView()
+                    .environmentObject(viewModel)
+                    .environmentObject(tabRouter)
             },
                                                                 id: viewModel.id)
             updateTitleView()
@@ -49,7 +53,6 @@ struct PurchaseDomainsTitleViewModifier: ViewModifier {
         stateManagerWrapper.navigationState?.yOffset = 2
     }
 }
-
 
 extension View {
     func purchaseDomainsTitleViewModifier() -> some View {

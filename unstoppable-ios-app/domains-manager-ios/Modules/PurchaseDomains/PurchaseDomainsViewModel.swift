@@ -22,7 +22,27 @@ final class PurchaseDomainsViewModel: ObservableObject {
         }
         return 0
     }
-
+    
+    private var previousProgress: Double {
+        let path = router.walletViewNavPath
+        let i = path.count - 2
+        guard path.indices.contains(i) else { return 0 }
+        if case .purchaseDomains(let navigationDestination) = path[i] {
+            return navigationDestination.progress
+        }
+        return 0
+    }
+    
+    func progressFor(swipeBackProgress: Double) -> Double {
+        let previousProgress = self.previousProgress
+        let currentProgress = progress
+        let progressDiff: Double = currentProgress - previousProgress
+        let progressDiffAccordingToSwipeBackProgress: Double = progressDiff * (1 - swipeBackProgress)
+        let result: Double = previousProgress + progressDiffAccordingToSwipeBackProgress
+        
+        return result
+    }
+    
     init(router: HomeTabRouter) {
         self.router = router
     }

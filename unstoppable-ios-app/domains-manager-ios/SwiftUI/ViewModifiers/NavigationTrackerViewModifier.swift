@@ -10,6 +10,8 @@ import SwiftUI
 struct NavigationTrackerViewModifier: ViewModifier {
     
     var onDidNotFinishNavigationBack: EmptyCallback? = nil
+    var onDidStartBackGesture: EmptyCallback? = nil
+    var onDidBackGestureProgress: ((Double)->())? = nil
     
     func body(content: Content) -> some View {
         content
@@ -36,20 +38,35 @@ struct NavigationTrackerViewModifier: ViewModifier {
     
 }
 
+// MARK: - UINavigationControllerTrackerHandler
 extension NavigationTrackerViewModifier: UINavigationControllerTrackerHandler {
     func didNotFinishNavigationBack() {
         onDidNotFinishNavigationBack?()
     }
+    
+    func didStartBackGesture() {
+        onDidStartBackGesture?()
+    }
+    
+    func didBackGestureProgress(_ progress: Double) {
+        onDidBackGestureProgress?(progress)
+    }
 }
 
 extension View {
-    func trackNavigationControllerEvents(onDidNotFinishNavigationBack: EmptyCallback? = nil) -> some View {
-        modifier(NavigationTrackerViewModifier(onDidNotFinishNavigationBack: onDidNotFinishNavigationBack))
+    func trackNavigationControllerEvents(onDidNotFinishNavigationBack: EmptyCallback? = nil,
+                                         onDidStartBackGesture: EmptyCallback? = nil,
+                                         onDidBackGestureProgress: ((Double)->())? = nil) -> some View {
+        modifier(NavigationTrackerViewModifier(onDidNotFinishNavigationBack: onDidNotFinishNavigationBack,
+                                               onDidStartBackGesture: onDidStartBackGesture,
+                                               onDidBackGestureProgress: onDidBackGestureProgress))
     }
 }
 
 protocol UINavigationControllerTrackerHandler {
     func didNotFinishNavigationBack()
+    func didStartBackGesture()
+    func didBackGestureProgress(_ progress: Double)
 }
 
 final class UINavigationViewControllerTracker: NSObject {
@@ -65,20 +82,27 @@ final class UINavigationViewControllerTracker: NSObject {
         navigationController?.interactivePopGestureRecognizer?.addTarget(self, action: #selector(handleSwipeGesture))
     }
     
-    @objc private func handleSwipeGesture(_ gesture: UIGestureRecognizer) {
+    @objc private func handleSwipeGesture(_ gesture: UIPanGestureRecognizer) {
+        guard let gestureView = gesture.view else { return }
+        
+        let translation: CGPoint = gesture.translation(in: gestureView)
+        let percentProgress: CGFloat = abs(translation.x / gestureView.bounds.size.width);
+        
         for (holder, handlers) in navsToCallbacks {
             guard holder.nav?.interactivePopGestureRecognizer == gesture else { continue }
             
             switch gesture.state {
             case .began:
+                handlers.forEach { $0.didStartBackGesture() }
                 holder.nav?.transitionCoordinator?.notifyWhenInteractionChanges({ context in
+                 
                     if context.completionVelocity < 0 { // will restore current view controller
-                        for handler in handlers {
-                            handler.didNotFinishNavigationBack()
-                        }
+                        handlers.forEach { $0.didNotFinishNavigationBack() }
                     }
                 })
                 return
+            case .changed:
+                handlers.forEach { $0.didBackGestureProgress(percentProgress) }
             default:
                 return
             }

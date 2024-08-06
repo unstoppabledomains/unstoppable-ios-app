@@ -127,6 +127,8 @@
 		C602041A2C621728000B5553 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1E2B19939E00B79E28 /* ViewController.swift */; };
 		C602041C2C622851000B5553 /* PurchaseDomainsTitleViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C602041B2C622851000B5553 /* PurchaseDomainsTitleViewModifier.swift */; };
 		C602041D2C622851000B5553 /* PurchaseDomainsTitleViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C602041B2C622851000B5553 /* PurchaseDomainsTitleViewModifier.swift */; };
+		C602041F2C625315000B5553 /* PurchaseDomainsTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C602041E2C625315000B5553 /* PurchaseDomainsTitleView.swift */; };
+		C60204202C625315000B5553 /* PurchaseDomainsTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C602041E2C625315000B5553 /* PurchaseDomainsTitleView.swift */; };
 		C60319952C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */; };
 		C60319962C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */; };
 		C60319982C2C1F7400A77109 /* BlockchainType+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319972C2C1F7400A77109 /* BlockchainType+Extension.swift */; };
@@ -2824,6 +2826,7 @@
 		C6011ABC28F4045000342666 /* DomainProfileTopInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTopInfoCell.xib; sourceTree = "<group>"; };
 		C60204172C61071B000B5553 /* DashedProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashedProgressView.swift; sourceTree = "<group>"; };
 		C602041B2C622851000B5553 /* PurchaseDomainsTitleViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsTitleViewModifier.swift; sourceTree = "<group>"; };
+		C602041E2C625315000B5553 /* PurchaseDomainsTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsTitleView.swift; sourceTree = "<group>"; };
 		C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPC_MessageSigningType.swift; sourceTree = "<group>"; };
 		C60319972C2C1F7400A77109 /* BlockchainType+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlockchainType+Extension.swift"; sourceTree = "<group>"; };
 		C603A53528522C0D003962E3 /* IgnoreFailureArrayElement+PropertyWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IgnoreFailureArrayElement+PropertyWrapper.swift"; sourceTree = "<group>"; };
@@ -8249,6 +8252,7 @@
 				C6489AC52C5D09BE004AE320 /* PurchaseDomainsViewModel.swift */,
 				C6489AC82C5D09F9004AE320 /* PurchaseDomainsRootView.swift */,
 				C602041B2C622851000B5553 /* PurchaseDomainsTitleViewModifier.swift */,
+				C602041E2C625315000B5553 /* PurchaseDomainsTitleView.swift */,
 				C655CA9F2B16E82700FDA063 /* Checkout */,
 				C655CA9E2B16E81700FDA063 /* Search */,
 			);
@@ -9994,6 +9998,7 @@
 				C669C37F29124C2600837F21 /* SocialsType.swift in Sources */,
 				C69F992B2A9F1264004B1958 /* Font.swift in Sources */,
 				C6A2D5AB285062C200327C47 /* BaseSignTransactionView.swift in Sources */,
+				C602041F2C625315000B5553 /* PurchaseDomainsTitleView.swift in Sources */,
 				C6C995DA289D313E00367362 /* CNavigationBar.swift in Sources */,
 				C688C1762B8439F400BD233A /* ChatListChannelRowView.swift in Sources */,
 				C679B5ED2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift in Sources */,
@@ -10652,6 +10657,7 @@
 				C61808172B19AADA0032E543 /* FirebaseDomain.swift in Sources */,
 				C6A89C5E2B316540008AB043 /* HotFeaturesSuggestionsFetcher.swift in Sources */,
 				C6E8562A2BBE983900AAFDE4 /* PresentAsModalPreviewView.swift in Sources */,
+				C60204202C625315000B5553 /* PurchaseDomainsTitleView.swift in Sources */,
 				C6D645CD2B1DBD4100D724AC /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */,
 				C6A3592F2BB68D9B00B1209A /* ConcreteCryptoSenderProtocol.swift in Sources */,
 				C6E28F3E2B33486700026E6C /* PreviewDomainProfileActionCover.swift in Sources */,
