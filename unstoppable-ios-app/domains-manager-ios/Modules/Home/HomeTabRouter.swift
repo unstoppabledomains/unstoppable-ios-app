@@ -67,11 +67,11 @@ extension HomeTabRouter {
         tabViewSelection = .wallets
     }
     
-    func runPurchaseFlow() {
+    func runPurchaseFlow(shouldResetNavigation: Bool = true) {
         Task {
-            let currentTab = tabViewSelection
-            await showHomeScreenList()
-            await waitBeforeNextNavigationIfTabNot(currentTab)
+            if shouldResetNavigation {
+                await showHomeScreenList()
+            }
             walletViewNavPath.append(.purchaseDomains(.root(self)))
         }
     }
@@ -131,8 +131,7 @@ extension HomeTabRouter {
                            shouldResetNavigation: Bool = true,
                            sourceScreen: DomainProfileViewPresenter.SourceScreen = .domainsCollection) async {
         if shouldResetNavigation {
-            await popToRootAndWait()
-            tabViewSelection = .wallets
+            await showHomeScreenList()
         }
         await askToFinishSetupPurchasedProfileIfNeeded(domains: wallet.domains)
         guard let topVC else { return }

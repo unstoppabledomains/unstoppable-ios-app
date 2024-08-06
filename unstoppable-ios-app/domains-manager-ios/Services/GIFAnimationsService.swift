@@ -133,7 +133,6 @@ private extension GIFAnimationsService {
                                  maskingType: GIFMaskingType?) throws -> UIImage {
         return try serialQueue.sync {
             do {
-                print("LOGO: - Will create gif")
                 let start = Date()
                 let count = CGImageSourceGetCount(source)
                 let (images, delays) = try extractImagesWithDelays(from: source, maxImageSize: maxImageSize, maskingType: maskingType)
@@ -171,11 +170,8 @@ private extension GIFAnimationsService {
                     throw GIFPreparationError.failedToCreateAnimatedImage
                 }
                 
-                print("LOGO: - Did create gif")
-                
                 return animation
             } catch {
-                print("LOGO: - Did fail to create gif")
                 throw error
             }
         }
