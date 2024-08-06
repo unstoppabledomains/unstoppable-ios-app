@@ -319,26 +319,7 @@ extension UDWallet {
     var address: String { getActiveAddress(for: .UNS) ?? "" }
 }
 
-extension UDWallet {
-    func launchExternalWallet() async throws {
-        guard let wcWallet = self.walletConnectionInfo?.externalWallet,
-              let  nativePrefix = wcWallet.getNativeAppLink(),
-              let url = URL(string: nativePrefix) else {
-            throw WalletConnectRequestError.failedToFindExternalAppLink
-        }
-        
-        try await withCheckedThrowingContinuation { (completion: CheckedContinuation<Void, Swift.Error>) in
-            DispatchQueue.main.async {
-                guard UIApplication.shared.canOpenURL(url) else {
-                    completion.resume(throwing: WalletConnectRequestError.failedOpenExternalApp)
-                    return
-                }
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                completion.resume(returning: ())
-            }
-        }
-    }
-    
+extension UDWallet {    
     func getExternalWallet() -> WCWalletsProvider.WalletRecord? {
         walletConnectionInfo?.externalWallet
     }
