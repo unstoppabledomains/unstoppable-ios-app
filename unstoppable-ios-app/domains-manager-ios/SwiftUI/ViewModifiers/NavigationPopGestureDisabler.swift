@@ -35,6 +35,5 @@ public extension View {
         background {
             NavigationPopGestureDisabler(disabled: disabled)
         }
-        //        .navigationBarBackButtonHidden(disabled)
     }
 }

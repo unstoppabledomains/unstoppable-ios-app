@@ -52,13 +52,16 @@ final class PurchaseDomainsViewModel: ObservableObject {
             }
         }
     }
-    
-    private func pushTo(_ destination: PurchaseDomains.NavigationDestination) {
+}
+
+// MARK: - Private methods
+private extension PurchaseDomainsViewModel {
+    func pushTo(_ destination: PurchaseDomains.NavigationDestination) {
         router.walletViewNavPath.append(.purchaseDomains(destination))
     }
     
-    private  func moveToCheckoutWith(domains: [DomainToPurchase],
-                                     profileChanges: DomainProfilePendingChanges?) {
+    func moveToCheckoutWith(domains: [DomainToPurchase],
+                            profileChanges: DomainProfilePendingChanges?) {
         
         let wallets = appContext.walletsDataService.wallets
         let selectedWallet: WalletEntity
@@ -78,7 +81,7 @@ final class PurchaseDomainsViewModel: ObservableObject {
                                profileChanges: profileChanges,
                                selectedWallet: selectedWallet,
                                wallets: wallets),
-               viewModel: self))
+                         viewModel: self))
     }
     
     func askUserToAddWalletToPurchase(domains: [DomainToPurchase],
@@ -112,11 +115,11 @@ final class PurchaseDomainsViewModel: ObservableObject {
 @MainActor
 extension PurchaseDomainsViewModel: Hashable {
     nonisolated static func == (lhs: PurchaseDomainsViewModel, rhs: PurchaseDomainsViewModel) -> Bool {
-        lhs === rhs
+        lhs.id == rhs.id
     }
 
     nonisolated func hash(into hasher: inout Hasher) {
-        hasher.combine(UUID())
+        hasher.combine(id)
     }
 }
 
