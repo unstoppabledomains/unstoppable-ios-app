@@ -92,6 +92,11 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
             PurchaseDomainsEnterDiscountCodeView()
                 .passViewAnalyticsDetails(logger: self)
         })
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Color.clear
+            }
+        }
         .pullUpError($error)
         .modifier(ShowingSelectDiscounts(isSelectDiscountsPresented: $isSelectDiscountsPresented))
         .viewPullUp($pullUp)
