@@ -449,7 +449,6 @@
 		C61808792B19BC290032E543 /* ClearListBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99162A9F1264004B1958 /* ClearListBackground.swift */; };
 		C618087A2B19BC290032E543 /* SquareFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6289A462AAB06F9002C2DEC /* SquareFrame.swift */; };
 		C618087B2B19BC290032E543 /* UDSubtitleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2582B147F5E006D1F0B /* UDSubtitleText.swift */; };
-		C618087C2B19BC290032E543 /* SideInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99182A9F1264004B1958 /* SideInsets.swift */; };
 		C618087D2B19BC290032E543 /* AvatarStyleClipped.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99192A9F1264004B1958 /* AvatarStyleClipped.swift */; };
 		C618087E2B19BC380032E543 /* DomainAvatarImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CCB29223066005E6537 /* DomainAvatarImageView.swift */; };
 		C618087F2B19BC470032E543 /* Vibration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F2E2800520E00A517D5 /* Vibration.swift */; };
@@ -1464,7 +1463,6 @@
 		C69F99232A9F1264004B1958 /* AttributedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99142A9F1264004B1958 /* AttributedText.swift */; };
 		C69F99242A9F1264004B1958 /* ClearListBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99162A9F1264004B1958 /* ClearListBackground.swift */; };
 		C69F99252A9F1264004B1958 /* UnstoppableListRowInset.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99172A9F1264004B1958 /* UnstoppableListRowInset.swift */; };
-		C69F99262A9F1264004B1958 /* SideInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99182A9F1264004B1958 /* SideInsets.swift */; };
 		C69F99272A9F1264004B1958 /* AvatarStyleClipped.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99192A9F1264004B1958 /* AvatarStyleClipped.swift */; };
 		C69F99282A9F1264004B1958 /* AdaptiveSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F991A2A9F1264004B1958 /* AdaptiveSheet.swift */; };
 		C69F99292A9F1264004B1958 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F991C2A9F1264004B1958 /* View.swift */; };
@@ -3730,7 +3728,6 @@
 		C69F99142A9F1264004B1958 /* AttributedText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributedText.swift; sourceTree = "<group>"; };
 		C69F99162A9F1264004B1958 /* ClearListBackground.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearListBackground.swift; sourceTree = "<group>"; };
 		C69F99172A9F1264004B1958 /* UnstoppableListRowInset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnstoppableListRowInset.swift; sourceTree = "<group>"; };
-		C69F99182A9F1264004B1958 /* SideInsets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideInsets.swift; sourceTree = "<group>"; };
 		C69F99192A9F1264004B1958 /* AvatarStyleClipped.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvatarStyleClipped.swift; sourceTree = "<group>"; };
 		C69F991A2A9F1264004B1958 /* AdaptiveSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdaptiveSheet.swift; sourceTree = "<group>"; };
 		C69F991C2A9F1264004B1958 /* View.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
@@ -7272,7 +7269,6 @@
 				C631DFA02B7B1ED500040221 /* InfiniteRotationModifier.swift */,
 				C6493A012B63A8B700457363 /* TrackingPressingStateModifier.swift */,
 				C6D645792B1D7C2F00D724AC /* PullUpError.swift */,
-				C69F99182A9F1264004B1958 /* SideInsets.swift */,
 				C6170EC32B7A0075008E9C93 /* ShowingWalletSelectionModifier.swift */,
 				C6A231F42BEB22230037E093 /* TextAttributesModifier.swift */,
 				C617FDB22B5919CC00B93433 /* OnAppearanceChange.swift */,
@@ -9568,7 +9564,6 @@
 				C64BCB712A6FA59200EF8B47 /* XMTPMessagingWebSocketsService.swift in Sources */,
 				C66A26E628B4C22F005470B9 /* LoadPaginatedFetchableOperation.swift in Sources */,
 				C6124CDC2923C7FF005E6537 /* DomainProfileSectionUIChangeFailedItem.swift in Sources */,
-				C69F99262A9F1264004B1958 /* SideInsets.swift in Sources */,
 				C6F433422BB25DDD000C5E46 /* ConfirmSendAssetSendingInfoView.swift in Sources */,
 				C6D646032B1DBFEF00D724AC /* WalletConnectServiceConnectionListener.swift in Sources */,
 				C62247BF283D28C0002A0CBD /* ApplePayButton.swift in Sources */,
@@ -10503,7 +10498,6 @@
 				C6960C3A2B19976E00B79E28 /* PreviewUser.swift in Sources */,
 				C67B1DE32BFF017700C2A4DA /* ReconnectMPCWalletFlowNavigationDestination.swift in Sources */,
 				C6D646A02B1ED15A00D724AC /* PublicProfilePullUpHeaderView.swift in Sources */,
-				C618087C2B19BC290032E543 /* SideInsets.swift in Sources */,
 				C6C8F84D2B217E9600A9834D /* RevealRecoveryPhrasePresenter.swift in Sources */,
 				C6C8F8E92B21836400A9834D /* ParkedDomainsFoundInAppViewPresenter.swift in Sources */,
 				C6D646762B1ED11B00D724AC /* CryptoEditingGroupedRecord.swift in Sources */,

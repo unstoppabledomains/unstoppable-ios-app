@@ -22,24 +22,20 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     @State private var searchingText = ""
     @State private var searchResultType: SearchResultType = .userInput
     @State private var localCart = LocalCart()
-    @State private var scrollOffset: CGPoint = .zero
     @State private var skeletonItemsWidth: [CGFloat] = []
     @State private var pullUp: ViewPullUpConfigurationType?
 
-    var domainSelectedCallback: (([DomainToPurchase])->())? = nil
-    var scrollOffsetCallback: ((CGPoint)->())? = nil
     var analyticsName: Analytics.ViewName { .purchaseDomainsSearch }
 
     var body: some View {
         currentContentView()
         .animation(.default, value: UUID())
         .background(Color.backgroundDefault)
-        .onChange(of: scrollOffset) { newValue in
-            scrollOffsetCallback?(newValue)
-        }
         .viewPullUp($pullUp)
         .purchaseDomainsTitleViewModifier()
         .onAppear(perform: onAppear)
+        .navigationTitle("Buy Domains")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -73,46 +69,30 @@ private extension PurchaseSearchDomainsView {
     
     @ViewBuilder
     func contentView() -> some View {
-        GeometryReader { geom in
-            ZStack {
-                OffsetObservingScrollView(offset: $scrollOffset) {
-                    VStack {
-                        headerView()
-                        searchView()
-                        searchResultView()
-                    }
-                }
-                searchInspirationButton()
-                    .offset(y: (geom.size.height / 2) - searchInspirationButtonOffsetToKeyboard)
+        ScrollView {
+            VStack {
+                searchView()
+                searchResultView()
             }
-        }
-    }
-    
-    @ViewBuilder
-    func headerView() -> some View {
-        VStack(spacing: 16) {
-            Text(String.Constants.searchForANewDomain.localized())
-                .titleText()
-                .multilineTextAlignment(.center)
+            .padding(.horizontal, 16)
         }
     }
     
     @ViewBuilder
     func searchView() -> some View {
         UDTextFieldView(text: $debounceObject.text,
-                        placeholder: "domain.x",
+                        placeholder: "Search for a domain",
                         hint: nil,
                         rightViewMode: .always,
                         leftViewType: .search,
                         focusBehaviour: .activateOnAppear,
                         keyboardType: .alphabet,
                         autocapitalization: .never,
-                        autocorrectionDisabled: true)
+                        autocorrectionDisabled: true,
+                        height: 36)
         .onChange(of: debounceObject.debouncedText) { text in
             search(text: text, searchType: .userInput)
         }
-        .padding(EdgeInsets(top: 16, leading: 16,
-                            bottom: 0, trailing: 16))
     }
     
     var currentSearchFieldRightViewType: UDTextFieldView.RightViewType {
@@ -286,27 +266,6 @@ private extension PurchaseSearchDomainsView {
         }
         .padding()
     }
-  
-    @ViewBuilder
-    func searchInspirationButton() -> some View {
-        if isInspiring,
-           KeyboardService.shared.isKeyboardOpened,
-           !searchingText.isEmpty {
-            ZStack {
-                Rectangle()
-                    .foregroundStyle(Color.backgroundDefault)
-                    .frame(height: searchInspirationButtonStyle.height + searchInspirationButtonOffset * 2)
-                UDButtonView(text: String.Constants.search.localized(), style: searchInspirationButtonStyle) {
-                    aiSearch(hint: searchingText)
-                }
-                .padding()
-            }
-        }
-    }
-    
-    var searchInspirationButtonStyle: UDButtonStyle { .large(.raisedPrimary) }
-    var searchInspirationButtonOffset: CGFloat { 16 }
-    var searchInspirationButtonOffsetToKeyboard: CGFloat { (searchInspirationButtonStyle.height + searchInspirationButtonOffset) / 2 }
 }
 
 // MARK: - Private methods
@@ -546,8 +505,15 @@ private extension PurchaseSearchDomainsView {
 }
 
 #Preview {
-    NavigationStack {
-        PurchaseSearchDomainsView(domainSelectedCallback: { _ in })
+    let router = MockEntitiesFabric.Home.createHomeTabRouter()
+    let viewModel = PurchaseDomainsViewModel(router: router)
+    let stateWrapper = NavigationStateManagerWrapper()
+    
+    return NavigationStack {
+        PurchaseSearchDomainsView()
             .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
+            .environmentObject(stateWrapper)
+            .environmentObject(router)
+            .environmentObject(viewModel)
     }
 }

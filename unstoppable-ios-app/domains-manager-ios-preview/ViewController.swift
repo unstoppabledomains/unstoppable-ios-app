@@ -24,7 +24,7 @@ class ViewController: UIViewController {
     }
     
     func showPurchaseDomainsSearch() {
-        let view = PurchaseSearchDomainsView(domainSelectedCallback: { _ in })
+        let view = PurchaseSearchDomainsView()
         
         let vc = UIHostingController(rootView: view)
         addChildViewController(vc, andEmbedToView: self.view)
