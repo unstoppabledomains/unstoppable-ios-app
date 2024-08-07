@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
+struct PurchaseDomainsSearchView: View, ViewAnalyticsLogger {
     
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
     @EnvironmentObject var viewModel: PurchaseDomainsViewModel
@@ -45,7 +45,7 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
 }
 
 // MARK: - Views
-private extension PurchaseSearchDomainsView {
+private extension PurchaseDomainsSearchView {
     @ViewBuilder
     func currentContentView() -> some View {
         if ecommFlagTracker.maintenanceData?.isCurrentlyEnabled == true {
@@ -169,7 +169,7 @@ private extension PurchaseSearchDomainsView {
                                                                 .searchType: searchResultType.rawValue])
                     didSelectDomain(domainInfo)
                 } label: {
-                    PurchaseDomainSearchResultRowView(domain: domainInfo,
+                    PurchaseDomainsSearchResultRowView(domain: domainInfo,
                                                       mode: .list)
                         .contentShape(Rectangle())
                 }
@@ -224,7 +224,7 @@ private extension PurchaseSearchDomainsView {
 }
 
 // MARK: - Private methods
-private extension PurchaseSearchDomainsView {
+private extension PurchaseDomainsSearchView {
     func onAppear() {
         setupSkeletonItemsWidth()
         loadSuggestions()
@@ -340,7 +340,7 @@ private extension PurchaseSearchDomainsView {
 }
 
 // MARK: - Views
-private extension PurchaseSearchDomainsView {
+private extension PurchaseDomainsSearchView {
     @ViewBuilder
     func domainSearchSkeletonRow(itemWidth: CGFloat) -> some View {
         HStack(spacing: 8) {
@@ -367,7 +367,7 @@ private extension PurchaseSearchDomainsView {
 }
 
 // MARK: - Private methods
-private extension PurchaseSearchDomainsView {
+private extension PurchaseDomainsSearchView {
     enum SearchResultType: String {
         case userInput
         case suggestion
@@ -381,7 +381,7 @@ private extension PurchaseSearchDomainsView {
     let stateWrapper = NavigationStateManagerWrapper()
     
     return NavigationStack {
-        PurchaseSearchDomainsView()
+        PurchaseDomainsSearchView()
             .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
             .environmentObject(stateWrapper)
             .environmentObject(router)

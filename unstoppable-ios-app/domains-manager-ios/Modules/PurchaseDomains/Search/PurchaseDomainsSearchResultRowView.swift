@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PurchaseDomainSearchResultRowView: View {
+struct PurchaseDomainsSearchResultRowView: View {
     
     @EnvironmentObject private var localCart: PurchaseDomains.LocalCart
     let domain: DomainToPurchase
@@ -40,7 +40,7 @@ struct PurchaseDomainSearchResultRowView: View {
 }
 
 // MARK: - Private methods
-private extension PurchaseDomainSearchResultRowView {
+private extension PurchaseDomainsSearchResultRowView {
     @ViewBuilder
     func cartIconView() -> some View {
         switch mode {
@@ -62,7 +62,7 @@ private extension PurchaseDomainSearchResultRowView {
     }
 }
 
-extension PurchaseDomainSearchResultRowView {
+extension PurchaseDomainsSearchResultRowView {
     enum RowMode {
         case list
         case cart
@@ -70,7 +70,7 @@ extension PurchaseDomainSearchResultRowView {
 }
 
 #Preview {
-    PurchaseDomainSearchResultRowView(domain: .init(name: "oleg.eth",
+    PurchaseDomainsSearchResultRowView(domain: .init(name: "oleg.eth",
                                                     price: 199,
                                                     metadata: nil,
                                                     isAbleToPurchase: true),

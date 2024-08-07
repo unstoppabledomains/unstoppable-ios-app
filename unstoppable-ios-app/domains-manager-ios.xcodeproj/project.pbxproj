@@ -417,7 +417,7 @@
 		C61808522B19BA750032E543 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6010D1E287FC99400FBD401 /* Task.swift */; };
 		C61808552B19BB040032E543 /* PreviewDomainTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61808532B19BAD20032E543 /* PreviewDomainTransferService.swift */; };
 		C61808582B19BB3C0032E543 /* PreviewUDFeatureFlagsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61808562B19BB2F0032E543 /* PreviewUDFeatureFlagsService.swift */; };
-		C618085A2B19BBEB0032E543 /* PurchaseSearchDomainsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF25E2B148300006D1F0B /* PurchaseSearchDomainsView.swift */; };
+		C618085A2B19BBEB0032E543 /* PurchaseDomainsSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF25E2B148300006D1F0B /* PurchaseDomainsSearchView.swift */; };
 		C618085B2B19BBFE0032E543 /* UDTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF24C2B147F1A006D1F0B /* UDTextFieldView.swift */; };
 		C618085C2B19BBFE0032E543 /* UDCollectionSectionBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2402B147F19006D1F0B /* UDCollectionSectionBackgroundView.swift */; };
 		C618085E2B19BBFE0032E543 /* UDListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CA9A2B16E5BE00FDA063 /* UDListItemView.swift */; };
@@ -864,8 +864,8 @@
 		C64BCB7B2A6FB5B700EF8B47 /* MessagingChatMessageImageDataTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64BCB7A2A6FB5B700EF8B47 /* MessagingChatMessageImageDataTypeDisplayInfo.swift */; };
 		C64CFE452C63916600A35B9F /* PurchaseDomainsCartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64CFE442C63916600A35B9F /* PurchaseDomainsCartView.swift */; };
 		C64CFE462C63916600A35B9F /* PurchaseDomainsCartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64CFE442C63916600A35B9F /* PurchaseDomainsCartView.swift */; };
-		C64CFE482C6391FD00A35B9F /* PurchaseDomainSearchResultRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64CFE472C6391FD00A35B9F /* PurchaseDomainSearchResultRowView.swift */; };
-		C64CFE492C6391FD00A35B9F /* PurchaseDomainSearchResultRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64CFE472C6391FD00A35B9F /* PurchaseDomainSearchResultRowView.swift */; };
+		C64CFE482C6391FD00A35B9F /* PurchaseDomainsSearchResultRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64CFE472C6391FD00A35B9F /* PurchaseDomainsSearchResultRowView.swift */; };
+		C64CFE492C6391FD00A35B9F /* PurchaseDomainsSearchResultRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64CFE472C6391FD00A35B9F /* PurchaseDomainsSearchResultRowView.swift */; };
 		C64CFE4B2C63940C00A35B9F /* PurchaseSearchEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64CFE4A2C63940C00A35B9F /* PurchaseSearchEmptyView.swift */; };
 		C64CFE4C2C63940C00A35B9F /* PurchaseSearchEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64CFE4A2C63940C00A35B9F /* PurchaseSearchEmptyView.swift */; };
 		C64F6C4F2C4E72A900D89FEF /* EthereumSendTransactionPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C4E2C4E72A900D89FEF /* EthereumSendTransactionPayload.swift */; };
@@ -2494,7 +2494,7 @@
 		C6DDF2592B147F5E006D1F0B /* UDTitleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2572B147F5D006D1F0B /* UDTitleText.swift */; };
 		C6DDF25A2B147F5E006D1F0B /* UDSubtitleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2582B147F5E006D1F0B /* UDSubtitleText.swift */; };
 		C6DDF25D2B148294006D1F0B /* DomainToPurchaseSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF25C2B148294006D1F0B /* DomainToPurchaseSuggestion.swift */; };
-		C6DDF25F2B148300006D1F0B /* PurchaseSearchDomainsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF25E2B148300006D1F0B /* PurchaseSearchDomainsView.swift */; };
+		C6DDF25F2B148300006D1F0B /* PurchaseDomainsSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF25E2B148300006D1F0B /* PurchaseDomainsSearchView.swift */; };
 		C6DDF26A2B148A31006D1F0B /* PositionObservingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2682B148A31006D1F0B /* PositionObservingView.swift */; };
 		C6DDF26B2B148A31006D1F0B /* OffsetObservingScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2692B148A31006D1F0B /* OffsetObservingScrollView.swift */; };
 		C6DEA1642BD8D1FA00838215 /* ActivateMPCWalletViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA1632BD8D1FA00838215 /* ActivateMPCWalletViewModel.swift */; };
@@ -3341,7 +3341,7 @@
 		C64BCB752A6FA61F00EF8B47 /* XMTPServiceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPServiceHelper.swift; sourceTree = "<group>"; };
 		C64BCB7A2A6FB5B700EF8B47 /* MessagingChatMessageImageDataTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageImageDataTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C64CFE442C63916600A35B9F /* PurchaseDomainsCartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsCartView.swift; sourceTree = "<group>"; };
-		C64CFE472C6391FD00A35B9F /* PurchaseDomainSearchResultRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainSearchResultRowView.swift; sourceTree = "<group>"; };
+		C64CFE472C6391FD00A35B9F /* PurchaseDomainsSearchResultRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsSearchResultRowView.swift; sourceTree = "<group>"; };
 		C64CFE4A2C63940C00A35B9F /* PurchaseSearchEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseSearchEmptyView.swift; sourceTree = "<group>"; };
 		C64F6C4E2C4E72A900D89FEF /* EthereumSendTransactionPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthereumSendTransactionPayload.swift; sourceTree = "<group>"; };
 		C64F6C522C4FAF2200D89FEF /* FullMaintenanceModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullMaintenanceModeView.swift; sourceTree = "<group>"; };
@@ -4098,7 +4098,7 @@
 		C6DDF2572B147F5D006D1F0B /* UDTitleText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDTitleText.swift; sourceTree = "<group>"; };
 		C6DDF2582B147F5E006D1F0B /* UDSubtitleText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDSubtitleText.swift; sourceTree = "<group>"; };
 		C6DDF25C2B148294006D1F0B /* DomainToPurchaseSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainToPurchaseSuggestion.swift; sourceTree = "<group>"; };
-		C6DDF25E2B148300006D1F0B /* PurchaseSearchDomainsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseSearchDomainsView.swift; sourceTree = "<group>"; };
+		C6DDF25E2B148300006D1F0B /* PurchaseDomainsSearchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsSearchView.swift; sourceTree = "<group>"; };
 		C6DDF2682B148A31006D1F0B /* PositionObservingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PositionObservingView.swift; sourceTree = "<group>"; };
 		C6DDF2692B148A31006D1F0B /* OffsetObservingScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OffsetObservingScrollView.swift; sourceTree = "<group>"; };
 		C6DEA1632BD8D1FA00838215 /* ActivateMPCWalletViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivateMPCWalletViewModel.swift; sourceTree = "<group>"; };
@@ -6238,8 +6238,8 @@
 		C655CA9E2B16E81700FDA063 /* Search */ = {
 			isa = PBXGroup;
 			children = (
-				C6DDF25E2B148300006D1F0B /* PurchaseSearchDomainsView.swift */,
-				C64CFE472C6391FD00A35B9F /* PurchaseDomainSearchResultRowView.swift */,
+				C6DDF25E2B148300006D1F0B /* PurchaseDomainsSearchView.swift */,
+				C64CFE472C6391FD00A35B9F /* PurchaseDomainsSearchResultRowView.swift */,
 				C64CFE442C63916600A35B9F /* PurchaseDomainsCartView.swift */,
 				C64CFE4A2C63940C00A35B9F /* PurchaseSearchEmptyView.swift */,
 			);
@@ -9202,7 +9202,7 @@
 				C6124CCC29223066005E6537 /* DomainAvatarImageView.swift in Sources */,
 				C69F99292A9F1264004B1958 /* View.swift in Sources */,
 				C64F6C532C4FAF2200D89FEF /* FullMaintenanceModeView.swift in Sources */,
-				C64CFE482C6391FD00A35B9F /* PurchaseDomainSearchResultRowView.swift in Sources */,
+				C64CFE482C6391FD00A35B9F /* PurchaseDomainsSearchResultRowView.swift in Sources */,
 				C671CD062BC66D6E005DA2FB /* EcomPurchaseMPCWalletService.swift in Sources */,
 				C6952A372BC500D200F4B475 /* FB_UD_MPCAccountAsset.swift in Sources */,
 				C639F3992C32D10C008CC1CB /* ConnectCurveLine.swift in Sources */,
@@ -9891,7 +9891,7 @@
 				C6D646EB2B1ED55F00D724AC /* NFCService+Entities.swift in Sources */,
 				C6D2F15328757C25005F4F2E /* UIImage+SVG.swift in Sources */,
 				C65DEA7329B5837600FF142B /* WalletConnectExternalWalletHandler.swift in Sources */,
-				C6DDF25F2B148300006D1F0B /* PurchaseSearchDomainsView.swift in Sources */,
+				C6DDF25F2B148300006D1F0B /* PurchaseDomainsSearchView.swift in Sources */,
 				C6952A502BC531E000F4B475 /* MPCWalletMetadata.swift in Sources */,
 				C6D8FF242B82F8FE0094A21E /* RemoteContentMessageRowView.swift in Sources */,
 				C6D646BF2B1ED1BE00D724AC /* SaveDomainImageDescription.swift in Sources */,
@@ -10484,7 +10484,7 @@
 				C6D646702B1ED11B00D724AC /* CryptoEditingGroupedRecordsChangesCalculator.swift in Sources */,
 				C618085C2B19BBFE0032E543 /* UDCollectionSectionBackgroundView.swift in Sources */,
 				C6C8F8EA2B21836400A9834D /* LoadingParkedDomainsViewPresenter.swift in Sources */,
-				C64CFE492C6391FD00A35B9F /* PurchaseDomainSearchResultRowView.swift in Sources */,
+				C64CFE492C6391FD00A35B9F /* PurchaseDomainsSearchResultRowView.swift in Sources */,
 				C6C8F81F2B217CC000A9834D /* OnboardingCreateWalletPresenter.swift in Sources */,
 				C6D6470C2B1ED7D000D724AC /* MessagingChatMessageDisplayType.swift in Sources */,
 				C632BE4E2BA599E900C95B2D /* FB_UD_MPCConnectionNetworkService.swift in Sources */,
@@ -11297,7 +11297,7 @@
 				C6C8F9732B2188FA00A9834D /* QRScannerSightView.swift in Sources */,
 				C63AAC552C05B067001E7F23 /* MPCWalletPurchasingState.swift in Sources */,
 				C6B65F9F2B57876F006D1812 /* HomeWalletNFTCellView.swift in Sources */,
-				C618085A2B19BBEB0032E543 /* PurchaseSearchDomainsView.swift in Sources */,
+				C618085A2B19BBEB0032E543 /* PurchaseDomainsSearchView.swift in Sources */,
 				C6FEA9182BEB700E004FD740 /* SettingsCollectionViewCell.swift in Sources */,
 				C60204192C61071B000B5553 /* DashedProgressView.swift in Sources */,
 				C6450CD32BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift in Sources */,

@@ -110,7 +110,7 @@ private extension PurchaseDomainsCartView {
                 localCart.removeDomain(domain)
             }
         } label: {
-            PurchaseDomainSearchResultRowView(domain: domain,
+            PurchaseDomainsSearchResultRowView(domain: domain,
                                               mode: .cart)
             .contentShape(Rectangle())
         }

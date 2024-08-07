@@ -15,7 +15,7 @@ struct PurchaseDomainsRootView: View {
 
     var body: some View {
         ZStack {
-            PurchaseSearchDomainsView()
+            PurchaseDomainsSearchView()
                 .navigationBarTitleDisplayMode(.inline)
             if viewModel.isLoading {
                 ProgressView()

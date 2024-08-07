@@ -24,7 +24,7 @@ class ViewController: UIViewController {
     }
     
     func showPurchaseDomainsSearch() {
-        let view = PurchaseSearchDomainsView()
+        let view = PurchaseDomainsSearchView()
         
         let vc = UIHostingController(rootView: view)
         addChildViewController(vc, andEmbedToView: self.view)
