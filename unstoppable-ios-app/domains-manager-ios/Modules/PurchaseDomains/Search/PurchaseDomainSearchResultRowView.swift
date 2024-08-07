@@ -11,6 +11,7 @@ struct PurchaseDomainSearchResultRowView: View {
     
     @EnvironmentObject private var localCart: PurchaseDomains.LocalCart
     let domain: DomainToPurchase
+    let mode: RowMode
     
     var body: some View {
         HStack(spacing: 8) {
@@ -42,15 +43,29 @@ struct PurchaseDomainSearchResultRowView: View {
 private extension PurchaseDomainSearchResultRowView {
     @ViewBuilder
     func cartIconView() -> some View {
-        if localCart.isDomainInCart(domain) {
-            Image.checkCircle
+        switch mode {
+        case .list:
+            if localCart.isDomainInCart(domain) {
+                Image.checkCircle
+                    .resizable()
+                    .foregroundStyle(Color.foregroundSuccess)
+            } else {
+                Image.addToCartIcon
+                    .resizable()
+                    .foregroundStyle(Color.foregroundAccent)
+            }
+        case .cart:
+            Image.trashIcon
                 .resizable()
-                .foregroundStyle(Color.foregroundSuccess)
-        } else {
-            Image.addToCartIcon
-                .resizable()
-                .foregroundStyle(Color.foregroundAccent)
+                .foregroundStyle(Color.foregroundMuted)
         }
+    }
+}
+
+extension PurchaseDomainSearchResultRowView {
+    enum RowMode {
+        case list
+        case cart
     }
 }
 
@@ -58,6 +73,7 @@ private extension PurchaseDomainSearchResultRowView {
     PurchaseDomainSearchResultRowView(domain: .init(name: "oleg.eth",
                                                     price: 199,
                                                     metadata: nil,
-                                                    isAbleToPurchase: true))
+                                                    isAbleToPurchase: true),
+                                      mode: .list)
     .environmentObject(PurchaseDomains.LocalCart())
 }

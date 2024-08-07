@@ -97,6 +97,7 @@ private extension PurchaseSearchDomainsView {
             VStack(spacing: 10) {
                 searchView()
                 searchResultView()
+                    .padding(.top, 16)
             }
             .padding(.horizontal, 16)
             .padding(.top, 16)
@@ -147,8 +148,18 @@ private extension PurchaseSearchDomainsView {
     }
     
     @ViewBuilder
+    func sectionTitleView(_ title: String) -> some View {
+        Text(title)
+            .textAttributes(color: .foregroundDefault,
+                            fontSize: 16,
+                            fontWeight: .medium)
+            .frame(height: 24)
+    }
+    
+    @ViewBuilder
     func resultListView() -> some View {
-        LazyVStack(spacing: 20) {
+        LazyVStack(alignment: .leading, spacing: 20) {
+            sectionTitleView(String.Constants.results.localized())
             ForEach(searchResult, id: \.name) { domainInfo in
                 Button {
                     UDVibration.buttonTap.vibrate()
@@ -158,7 +169,8 @@ private extension PurchaseSearchDomainsView {
                                                                 .searchType: searchResultType.rawValue])
                     didSelectDomain(domainInfo)
                 } label: {
-                    PurchaseDomainSearchResultRowView(domain: domainInfo)
+                    PurchaseDomainSearchResultRowView(domain: domainInfo,
+                                                      mode: .list)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)

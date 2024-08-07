@@ -84,5 +84,9 @@ extension PurchaseDomains {
                 domains.remove(at: i)
             }
         }
+        
+        func clearCart() {
+            domains.removeAll()
+        }
     }
 }
