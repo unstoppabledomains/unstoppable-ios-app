@@ -17,7 +17,6 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     @State private var suggestions: [DomainToPurchaseSuggestion] = []
     @State private var searchResult: [DomainToPurchase] = []
     @State private var isLoading = false
-    @State private var isInspiring = false
     @State private var loadingError: Error?
     @State private var searchingText = ""
     @State private var searchResultType: SearchResultType = .userInput
@@ -73,6 +72,8 @@ private extension PurchaseSearchDomainsView {
             VStack {
                 searchView()
                 searchResultView()
+                    .padding(.vertical, 16)
+                
             }
             .padding(.horizontal, 16)
         }
@@ -95,18 +96,6 @@ private extension PurchaseSearchDomainsView {
         }
     }
     
-    var currentSearchFieldRightViewType: UDTextFieldView.RightViewType {
-        .inspire { isInspiring in
-            self.isInspiring = isInspiring
-            if isInspiring {
-                logButtonPressedAnalyticEvents(button: .inspire)
-            } else {
-                logButtonPressedAnalyticEvents(button: .cancelInspire)
-            }
-            searchResult = []
-        }
-    }
-    
     @ViewBuilder
     func searchResultView() -> some View {
         if isLoading && !searchingText.isEmpty {
@@ -115,8 +104,6 @@ private extension PurchaseSearchDomainsView {
             resultListView()
         } else if loadingError != nil {
             errorView()
-        } else if isInspiring {
-            inspiringHintsView()
         } else if !searchingText.isEmpty {
             noResultsView()
         } else if !suggestions.isEmpty {
@@ -126,38 +113,30 @@ private extension PurchaseSearchDomainsView {
     
     @ViewBuilder
     func loadingView() -> some View {
-        UDCollectionSectionBackgroundView {
-            VStack {
-                ForEach(skeletonItemsWidth, id: \.self) { itemWidth in
-                    domainSearchSkeletonRow(itemWidth: itemWidth)
-                }
-                .setSkeleton(.constant(true),
-                             animationType: .solid(.backgroundSubtle))
+        VStack {
+            ForEach(skeletonItemsWidth, id: \.self) { itemWidth in
+                domainSearchSkeletonRow(itemWidth: itemWidth)
             }
-            .padding(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+            .setSkeleton(.constant(true),
+                         animationType: .solid(.backgroundSubtle))
         }
-        .padding()
     }
     
     @ViewBuilder
     func resultListView() -> some View {
-        UDCollectionSectionBackgroundView {
-            LazyVStack {
-                ForEach(searchResult, id: \.name) { domainInfo in
-                    UDCollectionListRowButton(content: {
-                        domainSearchResultRow(domainInfo)
-                            .udListItemInCollectionButtonPadding()
-                    }, callback: {
-                        logButtonPressedAnalyticEvents(button: .searchDomains, parameters: [.value: domainInfo.name,
-                                                                                            .price: String(domainInfo.price),
-                                                                                            .searchType: searchResultType.rawValue])
-                        didSelectDomain(domainInfo)
-                    })
-                }
+        LazyVStack {
+            ForEach(searchResult, id: \.name) { domainInfo in
+                UDCollectionListRowButton(content: {
+                    domainSearchResultRow(domainInfo)
+                        .udListItemInCollectionButtonPadding()
+                }, callback: {
+                    logButtonPressedAnalyticEvents(button: .searchDomains, parameters: [.value: domainInfo.name,
+                                                                                        .price: String(domainInfo.price),
+                                                                                        .searchType: searchResultType.rawValue])
+                    didSelectDomain(domainInfo)
+                })
             }
-            .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
         }
-        .padding()
     }
     
     @ViewBuilder
@@ -192,79 +171,44 @@ private extension PurchaseSearchDomainsView {
             }
             .padding()
         }
-        .padding()
     }
     
     @ViewBuilder
     func noResultsView() -> some View {
-        UDCollectionSectionBackgroundView {
-            VStack(alignment: .center, spacing: 16) {
-                Image.grimaseIcon
-                    .resizable()
-                    .squareFrame(32)
-                    .foregroundColor(.foregroundSecondary)
-                VStack(spacing: 8) {
-                    Text(String.Constants.noAvailableDomains.localized())
-                        .font(.currentFont(size: 20, weight: .bold))
-                    Text(String.Constants.tryEnterDifferentName.localized())
-                        .font(.currentFont(size: 14))
-                }
-                .multilineTextAlignment(.center)
+        VStack(alignment: .center, spacing: 16) {
+            Image.grimaseIcon
+                .resizable()
+                .squareFrame(32)
                 .foregroundColor(.foregroundSecondary)
+            VStack(spacing: 8) {
+                Text(String.Constants.noAvailableDomains.localized())
+                    .font(.currentFont(size: 20, weight: .bold))
+                Text(String.Constants.tryEnterDifferentName.localized())
+                    .font(.currentFont(size: 14))
             }
-            .padding(EdgeInsets(top: 24, leading: 24, bottom: 24, trailing: 24))
+            .multilineTextAlignment(.center)
+            .foregroundColor(.foregroundSecondary)
         }
-        .padding()
+        .padding(.top, 56)
     }
     
     @ViewBuilder
     func errorView() -> some View {
-        UDCollectionSectionBackgroundView {
-            VStack(alignment: .center, spacing: 16) {
-                Image.grimaseIcon
-                    .resizable()
-                    .squareFrame(32)
-                    .foregroundColor(.foregroundSecondary)
-                VStack(spacing: 8) {
-                    Text(String.Constants.somethingWentWrong.localized())
-                        .font(.currentFont(size: 20, weight: .bold))
-                    Text(String.Constants.pleaseCheckInternetConnection.localized())
-                        .font(.currentFont(size: 14))
-                }
-                .multilineTextAlignment(.center)
+        VStack(alignment: .center, spacing: 16) {
+            Image.grimaseIcon
+                .resizable()
+                .squareFrame(32)
                 .foregroundColor(.foregroundSecondary)
+            VStack(spacing: 8) {
+                Text(String.Constants.somethingWentWrong.localized())
+                    .font(.currentFont(size: 20, weight: .bold))
+                Text(String.Constants.pleaseCheckInternetConnection.localized())
+                    .font(.currentFont(size: 14))
             }
-            .padding(EdgeInsets(top: 24, leading: 24, bottom: 24, trailing: 24))
+            .multilineTextAlignment(.center)
+            .foregroundColor(.foregroundSecondary)
         }
-        .padding()
-    }
-    
-    @ViewBuilder
-    func inspiringHintsView() -> some View {
-        UDCollectionSectionBackgroundView {
-            VStack(alignment: .leading, spacing: 12) {
-                ForEach(AIInspireHints.allCases, id: \.self) { hint in
-                    HStack(spacing: 8) {
-                        hint.icon
-                            .resizable()
-                            .squareFrame(16)
-                        Text(hint.title)
-                            .font(.currentFont(size: 14))
-                    }
-                    .foregroundStyle(Color.foregroundSecondary)
-                    if hint != .hint3 {
-                        Line()
-                            .stroke(style: StrokeStyle(lineWidth: 1, dash: [3]))
-                            .foregroundColor(.black)
-                            .opacity(0.06)
-                            .frame(height: 1)
-                            .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
-                    }
-                }
-            }
-            .padding()
-        }
-        .padding()
+        .padding(.top, 56)
     }
 }
 
@@ -304,7 +248,6 @@ private extension PurchaseSearchDomainsView {
         searchingText = text
         loadingError = nil
         
-        guard !isInspiring else { return }
         searchResult = []
         
         guard !searchingText.isEmpty else { return }
