@@ -868,6 +868,8 @@
 		C64CFE492C6391FD00A35B9F /* PurchaseDomainsSearchResultRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64CFE472C6391FD00A35B9F /* PurchaseDomainsSearchResultRowView.swift */; };
 		C64CFE4B2C63940C00A35B9F /* PurchaseSearchEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64CFE4A2C63940C00A35B9F /* PurchaseSearchEmptyView.swift */; };
 		C64CFE4C2C63940C00A35B9F /* PurchaseSearchEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64CFE4A2C63940C00A35B9F /* PurchaseSearchEmptyView.swift */; };
+		C64CFE4E2C63B03600A35B9F /* PurchaseDomainsCheckoutButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64CFE4D2C63B03600A35B9F /* PurchaseDomainsCheckoutButton.swift */; };
+		C64CFE4F2C63B03600A35B9F /* PurchaseDomainsCheckoutButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64CFE4D2C63B03600A35B9F /* PurchaseDomainsCheckoutButton.swift */; };
 		C64F6C4F2C4E72A900D89FEF /* EthereumSendTransactionPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C4E2C4E72A900D89FEF /* EthereumSendTransactionPayload.swift */; };
 		C64F6C502C4E72A900D89FEF /* EthereumSendTransactionPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C4E2C4E72A900D89FEF /* EthereumSendTransactionPayload.swift */; };
 		C64F6C532C4FAF2200D89FEF /* FullMaintenanceModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F6C522C4FAF2200D89FEF /* FullMaintenanceModeView.swift */; };
@@ -3343,6 +3345,7 @@
 		C64CFE442C63916600A35B9F /* PurchaseDomainsCartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsCartView.swift; sourceTree = "<group>"; };
 		C64CFE472C6391FD00A35B9F /* PurchaseDomainsSearchResultRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsSearchResultRowView.swift; sourceTree = "<group>"; };
 		C64CFE4A2C63940C00A35B9F /* PurchaseSearchEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseSearchEmptyView.swift; sourceTree = "<group>"; };
+		C64CFE4D2C63B03600A35B9F /* PurchaseDomainsCheckoutButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsCheckoutButton.swift; sourceTree = "<group>"; };
 		C64F6C4E2C4E72A900D89FEF /* EthereumSendTransactionPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthereumSendTransactionPayload.swift; sourceTree = "<group>"; };
 		C64F6C522C4FAF2200D89FEF /* FullMaintenanceModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullMaintenanceModeView.swift; sourceTree = "<group>"; };
 		C64F6C552C4FD48000D89FEF /* MaintenanceModeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceModeData.swift; sourceTree = "<group>"; };
@@ -6242,6 +6245,7 @@
 				C64CFE472C6391FD00A35B9F /* PurchaseDomainsSearchResultRowView.swift */,
 				C64CFE442C63916600A35B9F /* PurchaseDomainsCartView.swift */,
 				C64CFE4A2C63940C00A35B9F /* PurchaseSearchEmptyView.swift */,
+				C64CFE4D2C63B03600A35B9F /* PurchaseDomainsCheckoutButton.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -9711,6 +9715,7 @@
 				309FDFBC265E7C0C00AE53D3 /* StripePaymentHelper.swift in Sources */,
 				C6E0DC5D2B71E2410069E100 /* ShareWalletInfoView.swift in Sources */,
 				C6C8F8292B217D7C00A9834D /* WCRegistryWalletProxy.swift in Sources */,
+				C64CFE4E2C63B03600A35B9F /* PurchaseDomainsCheckoutButton.swift in Sources */,
 				C6952A482BC526F800F4B475 /* FB_UD_MPCValetStorage.swift in Sources */,
 				C6D6476B2B1EDFAA00D724AC /* WalletConnectClientUIHandler.swift in Sources */,
 				C69F99752A9F2206004B1958 /* ProfileFollowerImageLoader.swift in Sources */,
@@ -10563,6 +10568,7 @@
 				C6952A242BC4E33000F4B475 /* MPCWalletProvider.swift in Sources */,
 				C6C8F9402B2183FA00A9834D /* UIUserInterfaceStyle.swift in Sources */,
 				C6D647922B1EE75A00D724AC /* PreviewCoinRecordsService.swift in Sources */,
+				C64CFE4F2C63B03600A35B9F /* PurchaseDomainsCheckoutButton.swift in Sources */,
 				C6D646C52B1ED24300D724AC /* GroupedCoinRecord.swift in Sources */,
 				C68A5AD02BD8DADE003702A2 /* MPCActivateWalletInAppView.swift in Sources */,
 				C6D8FF252B82F8FE0094A21E /* RemoteContentMessageRowView.swift in Sources */,

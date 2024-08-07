@@ -68,6 +68,9 @@ extension PurchaseDomains {
     final class LocalCart: ObservableObject {
         @Published
         private(set) var domains: [DomainToPurchase] = []
+        @Published var isShowingCart = false
+
+        var totalPrice: Int { domains.reduce(0, { $0 + $1.price })}
         
         func isDomainInCart(_ domain: DomainToPurchase) -> Bool {
             domains.firstIndex(where: { $0.name == domain.name }) != nil

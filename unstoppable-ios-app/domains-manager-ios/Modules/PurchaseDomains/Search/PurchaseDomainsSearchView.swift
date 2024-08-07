@@ -22,9 +22,7 @@ struct PurchaseDomainsSearchView: View, ViewAnalyticsLogger {
     @State private var searchingText = ""
     @State private var searchResultType: SearchResultType = .userInput
     @State private var skeletonItemsWidth: [CGFloat] = []
-    @State private var pullUp: ViewPullUpConfigurationType?
-    @State private var isShowingCart = false
-    
+    @State private var pullUp: ViewPullUpConfigurationType?    
 
     var analyticsName: Analytics.ViewName { .purchaseDomainsSearch }
 
@@ -35,7 +33,7 @@ struct PurchaseDomainsSearchView: View, ViewAnalyticsLogger {
         .viewPullUp($pullUp)
         .purchaseDomainsTitleViewModifier()
         .onAppear(perform: onAppear)
-        .sheet(isPresented: $isShowingCart, content: {
+        .sheet(isPresented: $localCart.isShowingCart, content: {
             PurchaseDomainsCartView()
         })
         .environmentObject(localCart)
@@ -59,14 +57,15 @@ private extension PurchaseDomainsSearchView {
                         cartButtonView()
                     }
                 }
+                .modifier(PurchaseDomainsCheckoutButton())
         }
     }
     
     @ViewBuilder
     func cartButtonView() -> some View {
         Button {
-//            viewModel.handleAction(.didSelectDomains(localCart.domains))
-            isShowingCart = true
+            UDVibration.buttonTap.vibrate()
+            localCart.isShowingCart = true
         } label: {
             ZStack(alignment: .topTrailing) {
                 Image.cartIcon

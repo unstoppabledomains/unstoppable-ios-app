@@ -18,6 +18,7 @@ struct PurchaseDomainsCartView: View {
                 .presentationDetents([.height(238)])
         } else {
             cartContentView()
+                .modifier(PurchaseDomainsCheckoutButton())
                 .presentationDetents([.medium, .large])
         }
     }
