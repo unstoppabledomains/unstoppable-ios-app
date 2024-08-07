@@ -14,15 +14,17 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     @EnvironmentObject var viewModel: PurchaseDomainsViewModel
     @StateObject private var debounceObject = DebounceObject()
     @StateObject private var ecommFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceEcommEnabled)
+    @StateObject private var localCart = PurchaseDomains.LocalCart()
     @State private var suggestions: [DomainToPurchaseSuggestion] = []
     @State private var searchResult: [DomainToPurchase] = []
     @State private var isLoading = false
     @State private var loadingError: Error?
     @State private var searchingText = ""
     @State private var searchResultType: SearchResultType = .userInput
-    @State private var localCart = LocalCart()
     @State private var skeletonItemsWidth: [CGFloat] = []
     @State private var pullUp: ViewPullUpConfigurationType?
+    @State private var isShowingCart = false
+    
 
     var analyticsName: Analytics.ViewName { .purchaseDomainsSearch }
 
@@ -33,6 +35,10 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
         .viewPullUp($pullUp)
         .purchaseDomainsTitleViewModifier()
         .onAppear(perform: onAppear)
+        .sheet(isPresented: $isShowingCart, content: {
+            PurchaseDomainsCartView()
+        })
+        .environmentObject(localCart)
         .navigationTitle("Buy Domains")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -60,6 +66,7 @@ private extension PurchaseSearchDomainsView {
     func cartButtonView() -> some View {
         Button {
 //            viewModel.handleAction(.didSelectDomains(localCart.domains))
+            isShowingCart = true
         } label: {
             ZStack(alignment: .topTrailing) {
                 Image.cartIcon
@@ -123,8 +130,8 @@ private extension PurchaseSearchDomainsView {
             errorView()
         } else if !searchingText.isEmpty {
             noResultsView()
-        } else if !suggestions.isEmpty {
-            trendingListView()
+        } else {
+            PurchaseSearchEmptyView(mode: .start)
         }
     }
     
@@ -144,12 +151,13 @@ private extension PurchaseSearchDomainsView {
         LazyVStack {
             ForEach(searchResult, id: \.name) { domainInfo in
                 UDCollectionListRowButton(content: {
-                    domainSearchResultRow(domainInfo)
+                    PurchaseDomainSearchResultRowView(domain: domainInfo)
                         .udListItemInCollectionButtonPadding()
                 }, callback: {
-                    logButtonPressedAnalyticEvents(button: .searchDomains, parameters: [.value: domainInfo.name,
-                                                                                        .price: String(domainInfo.price),
-                                                                                        .searchType: searchResultType.rawValue])
+                    logButtonPressedAnalyticEvents(button: .searchDomains,
+                                                   parameters: [.value: domainInfo.name,
+                                                                .price: String(domainInfo.price),
+                                                                .searchType: searchResultType.rawValue])
                     didSelectDomain(domainInfo)
                 })
             }
@@ -157,7 +165,7 @@ private extension PurchaseSearchDomainsView {
     }
     
     @ViewBuilder
-    func trendingListView() -> some View {
+    func suggestionsSectionView() -> some View {
         UDCollectionSectionBackgroundView(withShadow: true) {
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
@@ -192,40 +200,12 @@ private extension PurchaseSearchDomainsView {
     
     @ViewBuilder
     func noResultsView() -> some View {
-        VStack(alignment: .center, spacing: 16) {
-            Image.grimaseIcon
-                .resizable()
-                .squareFrame(32)
-                .foregroundColor(.foregroundSecondary)
-            VStack(spacing: 8) {
-                Text(String.Constants.noAvailableDomains.localized())
-                    .font(.currentFont(size: 20, weight: .bold))
-                Text(String.Constants.tryEnterDifferentName.localized())
-                    .font(.currentFont(size: 14))
-            }
-            .multilineTextAlignment(.center)
-            .foregroundColor(.foregroundSecondary)
-        }
-        .padding(.top, 56)
+        PurchaseSearchEmptyView(mode: .noResults)
     }
     
     @ViewBuilder
     func errorView() -> some View {
-        VStack(alignment: .center, spacing: 16) {
-            Image.grimaseIcon
-                .resizable()
-                .squareFrame(32)
-                .foregroundColor(.foregroundSecondary)
-            VStack(spacing: 8) {
-                Text(String.Constants.somethingWentWrong.localized())
-                    .font(.currentFont(size: 20, weight: .bold))
-                Text(String.Constants.pleaseCheckInternetConnection.localized())
-                    .font(.currentFont(size: 14))
-            }
-            .multilineTextAlignment(.center)
-            .foregroundColor(.foregroundSecondary)
-        }
-        .padding(.top, 56)
+        PurchaseSearchEmptyView(mode: .error)
     }
 }
 
@@ -348,43 +328,6 @@ private extension PurchaseSearchDomainsView {
 // MARK: - Views
 private extension PurchaseSearchDomainsView {
     @ViewBuilder
-    func domainSearchResultRow(_ domain: DomainToPurchase) -> some View {
-        HStack(spacing: 8) {
-            HStack(spacing: 16) {
-                domainIconView(domain)
-                    .squareFrame(20)
-                    .foregroundStyle(Color.foregroundSuccess)
-                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
-                    .background(Color.backgroundSuccess)
-                    .clipShape(Circle())
-                Text(domain.name)
-                    .font(.currentFont(size: 16, weight: .medium))
-                    .foregroundStyle(Color.foregroundDefault)
-            }
-            Spacer()
-            Text(formatCartPrice(domain.price))
-                .font(.currentFont(size: 16))
-                .foregroundStyle(Color.foregroundSecondary)
-            Image.chevronRight
-                .resizable()
-                .squareFrame(20)
-                .foregroundStyle(Color.foregroundMuted)
-        }
-        .frame(minHeight: UDListItemView.height)
-    }
-    
-    @ViewBuilder
-    func domainIconView(_ domain: DomainToPurchase) -> some View {
-        if localCart.isDomainInCart(domain) {
-            Image.check
-                .resizable()
-        } else {
-            Image(systemName: "cart.fill.badge.plus")
-                .resizable()
-        }
-    }
-    
-    @ViewBuilder
     func domainSearchSkeletonRow(itemWidth: CGFloat) -> some View {
         HStack(spacing: 8) {
             HStack(spacing: 16) {
@@ -411,56 +354,10 @@ private extension PurchaseSearchDomainsView {
 
 // MARK: - Private methods
 private extension PurchaseSearchDomainsView {
-    enum AIInspireHints: Hashable, CaseIterable {
-        case hint1, hint2, hint3
-        
-        var title: String {
-            switch self {
-            case .hint1:
-                return String.Constants.aiSearchHint1.localized()
-            case .hint2:
-                return String.Constants.aiSearchHint2.localized()
-            case .hint3:
-                return String.Constants.aiSearchHint3.localized()
-            }
-        }
-        
-        var icon: Image {
-            switch self {
-            case .hint1:
-                return .magicWandIcon
-            case .hint2:
-                return .tapSingleIcon
-            case .hint3:
-                return .warningIcon
-            }
-        }
-    }
-    
     enum SearchResultType: String {
         case userInput
         case suggestion
         case aiSearch
-    }
-    
-    struct LocalCart {
-        private(set) var domains: [DomainToPurchase] = []
-        
-        func isDomainInCart(_ domain: DomainToPurchase) -> Bool {
-            domains.firstIndex(where: { $0.name == domain.name }) != nil
-        }
-        
-        mutating func addDomain(_ domain: DomainToPurchase) {
-            guard !isDomainInCart(domain) else { return }
-            
-            domains.append(domain)
-        }
-        
-        mutating func removeDomain(_ domain: DomainToPurchase) {
-            if let i = domains.firstIndex(where: { $0.name == domain.name }) {
-                domains.remove(at: i)
-            }
-        }
     }
 }
 
