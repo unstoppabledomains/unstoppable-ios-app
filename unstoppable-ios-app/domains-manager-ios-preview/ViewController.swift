@@ -40,15 +40,5 @@ class ViewController: UIViewController {
         addChildViewController(vc, andEmbedToView: self.view)
     }
 
-    func showDomainProfile() {
-        let domain = DomainToPurchase(name: "oleg.x", price: 10000, metadata: nil, isAbleToPurchase: true)
-        let vc = DomainProfileViewController.nibInstance()
-        let presenter = PurchaseDomainDomainProfileViewPresenter(view: vc,
-                                                                 domain: domain)
-        vc.presenter = presenter
-        let nav = EmptyRootCNavigationController(rootViewController: vc)
-        present(nav, animated: false)
-    }
-    
 }
 
