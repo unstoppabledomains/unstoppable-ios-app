@@ -50,32 +50,49 @@ private extension PurchaseSearchDomainsView {
             contentView()
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        doneButtonView()
+                        cartButtonView()
                     }
                 }
         }
     }
     
     @ViewBuilder
-    func doneButtonView() -> some View {
+    func cartButtonView() -> some View {
         Button {
-            viewModel.handleAction(.didSelectDomains(localCart.domains))
+//            viewModel.handleAction(.didSelectDomains(localCart.domains))
         } label: {
-            Text("Done")
+            ZStack(alignment: .topTrailing) {
+                Image.cartIcon
+                    .resizable()
+                    .squareFrame(28)
+                    .foregroundStyle(Color.foregroundDefault)
+                if !localCart.domains.isEmpty {
+                    Text("\(localCart.domains.count)")
+                        .textAttributes(color: .foregroundDefault,
+                                        fontSize: 11,
+                                        fontWeight: .semibold)
+                        .padding(.horizontal, 4)
+                        .frame(height: 16)
+                        .frame(minWidth: 16)
+                        .background(Color.foregroundAccent)
+                        .clipShape(.capsule)
+                        .offset(x: 6, y: -4)
+                }
+            }
         }
-        .disabled(localCart.domains.isEmpty)
+        .buttonStyle(.plain)
+        .animation(.default, value: localCart.domains)
     }
     
     @ViewBuilder
     func contentView() -> some View {
         ScrollView {
-            VStack {
+            VStack(spacing: 10) {
                 searchView()
                 searchResultView()
-                    .padding(.vertical, 16)
-                
             }
             .padding(.horizontal, 16)
+            .padding(.top, 16)
         }
     }
     
