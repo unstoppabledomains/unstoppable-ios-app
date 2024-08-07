@@ -148,18 +148,20 @@ private extension PurchaseSearchDomainsView {
     
     @ViewBuilder
     func resultListView() -> some View {
-        LazyVStack {
+        LazyVStack(spacing: 20) {
             ForEach(searchResult, id: \.name) { domainInfo in
-                UDCollectionListRowButton(content: {
-                    PurchaseDomainSearchResultRowView(domain: domainInfo)
-                        .udListItemInCollectionButtonPadding()
-                }, callback: {
+                Button {
+                    UDVibration.buttonTap.vibrate()
                     logButtonPressedAnalyticEvents(button: .searchDomains,
                                                    parameters: [.value: domainInfo.name,
                                                                 .price: String(domainInfo.price),
                                                                 .searchType: searchResultType.rawValue])
                     didSelectDomain(domainInfo)
-                })
+                } label: {
+                    PurchaseDomainSearchResultRowView(domain: domainInfo)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
             }
         }
     }

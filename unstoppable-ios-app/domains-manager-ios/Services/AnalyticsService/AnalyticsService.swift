@@ -100,7 +100,7 @@ private extension AnalyticsService {
             let tld = domain.name.getTldName()
             if tld == Constants.ensDomainTLD {
                 numberOfENSDomains += 1
-            } else if tld == Constants.comDomainTLD {
+            } else Constants.dnsDomainTLDs.contains(tld) {
                 numberOfCOMDomains += 1
             } else {
                 numberOfUDDomains += 1

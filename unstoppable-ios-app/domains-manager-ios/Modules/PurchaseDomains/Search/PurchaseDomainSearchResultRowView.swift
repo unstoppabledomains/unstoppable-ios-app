@@ -15,24 +15,24 @@ struct PurchaseDomainSearchResultRowView: View {
     var body: some View {
         HStack(spacing: 8) {
             HStack(spacing: 16) {
-                domainIconView(domain)
-                    .squareFrame(20)
-                    .foregroundStyle(Color.foregroundSuccess)
-                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
-                    .background(Color.backgroundSuccess)
-                    .clipShape(Circle())
-                Text(domain.name)
-                    .font(.currentFont(size: 16, weight: .medium))
-                    .foregroundStyle(Color.foregroundDefault)
+                domain.tldCategory.icon
+                    .squareFrame(24)
+                    .foregroundStyle(Color.foregroundSecondary)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(domain.name)
+                        .textAttributes(color: .foregroundDefault,
+                                        fontSize: 16,
+                                        fontWeight: .medium)
+                        .frame(height: 24)
+                    Text(formatCartPrice(domain.price))
+                        .textAttributes(color: .foregroundSecondary,
+                                        fontSize: 14)
+                        .frame(height: 20)
+                }
             }
             Spacer()
-            Text(formatCartPrice(domain.price))
-                .font(.currentFont(size: 16))
-                .foregroundStyle(Color.foregroundSecondary)
-            Image.chevronRight
-                .resizable()
-                .squareFrame(20)
-                .foregroundStyle(Color.foregroundMuted)
+            cartIconView()
+                .squareFrame(24)
         }
         .frame(minHeight: UDListItemView.height)
     }
@@ -41,20 +41,23 @@ struct PurchaseDomainSearchResultRowView: View {
 // MARK: - Private methods
 private extension PurchaseDomainSearchResultRowView {
     @ViewBuilder
-    func domainIconView(_ domain: DomainToPurchase) -> some View {
+    func cartIconView() -> some View {
         if localCart.isDomainInCart(domain) {
-            Image.check
+            Image.checkCircle
                 .resizable()
+                .foregroundStyle(Color.foregroundSuccess)
         } else {
-            Image(systemName: "cart.fill.badge.plus")
+            Image.addToCartIcon
                 .resizable()
+                .foregroundStyle(Color.foregroundAccent)
         }
     }
 }
 
 #Preview {
-    PurchaseDomainSearchResultRowView(domain: .init(name: "oleg.x",
+    PurchaseDomainSearchResultRowView(domain: .init(name: "oleg.eth",
                                                     price: 199,
                                                     metadata: nil,
                                                     isAbleToPurchase: true))
+    .environmentObject(PurchaseDomains.LocalCart())
 }
