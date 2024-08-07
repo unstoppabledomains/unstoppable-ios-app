@@ -981,6 +981,7 @@
 "BUY_DOMAINS_CART_TITLE" = "Your cart (%i)";
 "SEARCH_DOMAINS" = "Search domains";
 "CLEAR" = "Clear";
+"START_TYPING" = "Start typing";
 
 // Home
 "HOME_WALLET_TOKENS_COME_TITLE" = "No more tokens here yet";

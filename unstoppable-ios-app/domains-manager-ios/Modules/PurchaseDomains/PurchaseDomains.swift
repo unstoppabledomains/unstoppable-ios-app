@@ -34,7 +34,7 @@ extension PurchaseDomains {
         var title: String {
             switch self {
             case .start:
-                return "Start typing"
+                return String.Constants.startTyping.localized()
             case .noResults:
                 return String.Constants.noAvailableDomains.localized()
             case .error:
