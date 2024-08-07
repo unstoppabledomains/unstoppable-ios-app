@@ -31,13 +31,12 @@ struct PurchaseDomainsSearchView: View, ViewAnalyticsLogger {
         .animation(.default, value: UUID())
         .background(Color.backgroundDefault)
         .viewPullUp($pullUp)
-        .purchaseDomainsTitleViewModifier()
         .onAppear(perform: onAppear)
         .sheet(isPresented: $localCart.isShowingCart, content: {
             PurchaseDomainsCartView()
         })
         .environmentObject(localCart)
-        .navigationTitle("Buy Domains")
+        .navigationTitle(String.Constants.buyDomainsSearchTitle.localized())
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -106,7 +105,7 @@ private extension PurchaseDomainsSearchView {
     @ViewBuilder
     func searchView() -> some View {
         UDTextFieldView(text: $debounceObject.text,
-                        placeholder: "Search for a domain",
+                        placeholder: String.Constants.searchForADomain.localized(),
                         hint: nil,
                         rightViewMode: .always,
                         leftViewType: .search,

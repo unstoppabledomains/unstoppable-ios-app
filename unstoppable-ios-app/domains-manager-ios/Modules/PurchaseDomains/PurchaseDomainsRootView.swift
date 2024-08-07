@@ -23,7 +23,6 @@ struct PurchaseDomainsRootView: View {
         }
         .displayError($viewModel.error)
         .allowsHitTesting(!viewModel.isLoading)
-        .purchaseDomainsTitleViewModifier()
         .environmentObject(viewModel)
     }
 }

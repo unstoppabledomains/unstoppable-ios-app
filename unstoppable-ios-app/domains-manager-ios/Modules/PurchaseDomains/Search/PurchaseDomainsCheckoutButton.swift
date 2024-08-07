@@ -12,8 +12,6 @@ struct PurchaseDomainsCheckoutButton: ViewModifier {
     @EnvironmentObject var viewModel: PurchaseDomainsViewModel
     @EnvironmentObject private var localCart: PurchaseDomains.LocalCart
     
-    
-    
     func body(content: Content) -> some View {
         VStack {
             content

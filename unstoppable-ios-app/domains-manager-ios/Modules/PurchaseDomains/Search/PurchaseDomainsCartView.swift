@@ -37,16 +37,16 @@ private extension PurchaseDomainsCartView {
                 .resizable()
                 .squareFrame(48)
             VStack(spacing: 8) {
-                Text("Your cart is empty")
+                Text(String.Constants.buyDomainsCartEmptyTitle.localized())
                     .font(.currentFont(size: 22, weight: .bold))
                     .frame(height: 28)
-                Text("But it's easy to fix!")
+                Text(String.Constants.buyDomainsCartEmptySubtitle.localized())
                     .font(.currentFont(size: 16))
                     .frame(height: 24)
             }
             
             
-            UDButtonView(text: "Search domains",
+            UDButtonView(text: String.Constants.searchDomains.localized(),
                          style: .medium(.ghostPrimary)) {
                 dismiss()
             }
@@ -73,7 +73,7 @@ private extension PurchaseDomainsCartView {
     @ViewBuilder
     func headerView() -> some View {
         HStack(spacing: 4) {
-            Text("Your cart (\(localCart.domains.count))")
+            Text(String.Constants.buyDomainsCartTitle.localized(localCart.domains.count))
                 .textAttributes(color: .foregroundDefault,
                                 fontSize: 22,
                                 fontWeight: .bold)
@@ -82,7 +82,7 @@ private extension PurchaseDomainsCartView {
                 UDVibration.buttonTap.vibrate()
                 localCart.clearCart()
             } label: {
-                Text("Clear")
+                Text(String.Constants.clear.localized())
                     .textAttributes(color: .foregroundSecondary,
                                     fontSize: 16,
                                     fontWeight: .medium)
