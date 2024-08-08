@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-struct DomainToPurchase: Hashable {
+struct DomainToPurchase: Hashable, Identifiable {
+    
+    var id: String { name }
+    
     let name: String
     let price: Int
     let metadata: Data?

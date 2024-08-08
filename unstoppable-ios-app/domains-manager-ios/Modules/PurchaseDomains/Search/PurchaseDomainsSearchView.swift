@@ -170,7 +170,7 @@ private extension PurchaseDomainsSearchView {
     func resultDomainsListView(_ domains: [DomainToPurchase]) -> some View {
         LazyVStack(alignment: .leading, spacing: 20) {
             sectionTitleView(String.Constants.results.localized())
-            ForEach(domains, id: \.name) { domain in
+            ForEach(domains) { domain in
                 resultDomainRowView(domain)
             }
         }

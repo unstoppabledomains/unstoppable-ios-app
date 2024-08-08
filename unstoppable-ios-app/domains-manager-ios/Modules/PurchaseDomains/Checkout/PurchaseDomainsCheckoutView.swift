@@ -15,13 +15,11 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @EnvironmentObject var stateManagerWrapper: NavigationStateManagerWrapper
     @EnvironmentObject var viewModel: PurchaseDomainsViewModel
 
-    @State var domain: DomainToPurchase
+    @State var domains: [DomainToPurchase]
     @State var selectedWallet: WalletEntity
     @State var wallets: [WalletEntity]
     @State var profileChanges: DomainProfilePendingChanges
-
-    @State private var domainAvatar: UIImage?
-    @State private var scrollOffset: CGPoint = .zero
+    
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
     
     @State private var error: PullUpErrorConfiguration?
@@ -34,8 +32,13 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @State private var isEnterDiscountCodePresented = false
     
     var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
-    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName : domain.name,
-                                                                         .price: String(domain.price)] }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters {
+        let totalPrice = domains.reduce(0, { $0 + $1.price })
+        let name = domains.prefix(10).map { $0.name }.joined(separator: ",")
+        return [.domainName : name,
+                .count: String(domains.count),
+                .price: String(totalPrice)]
+    }
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
@@ -98,22 +101,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
 }
 
 // MARK: - Details section
-private extension PurchaseDomainsCheckoutView {
-    @ViewBuilder
-    func headerView() -> some View {
-        VStack(spacing: 32) {
-            Text(String.Constants.checkout.localized())
-                .titleText()
-            if case .hasUnpaidDomains = cartStatus {
-                topWarningViewWith(message: .hasUnpaidDomains) {
-                    logButtonPressedAnalyticEvents(button: .openUnpaidDomainsInfo)
-                    openLinkExternally(.unstoppableDomainSearch(searchKey: domain.name))
-                }
-            }
-        }
-        .padding(.horizontal, 16)
-    }
-    
+private extension PurchaseDomainsCheckoutView { 
     @ViewBuilder
     func topWarningViewWith(message: TopMessageDescription, callback: @escaping MainActorCallback) -> some View {
         Button {
@@ -303,23 +291,17 @@ private extension PurchaseDomainsCheckoutView {
         .padding()
     }
     
-    var avatarImage: UDListItemView.ImageType {
-        if let domainAvatar {
-            return .uiImage(domainAvatar)
-        }
-        return .image(.domainSharePlaceholder)
-    }
-    
     @ViewBuilder
     func summaryDomainInfoView() -> some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.backgroundOverlay)
-            UDListItemView(title: domain.name,
-                           value: formatCartPrice(domain.price),
-                           imageType: avatarImage,
-                           imageStyle: .full)
-            .padding(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
+        LazyVStack {
+            ForEach(domains) { domain in
+                Text(domain.name)
+            }
+//            UDListItemView(title: domains.name,
+//                           value: formatCartPrice(domains.price),
+//                           imageType: avatarImage,
+//                           imageStyle: .full)
+//            .padding(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
         }
     }
     
@@ -362,7 +344,7 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     var title: String {
-        var totalDue = String.Constants.totalDue.localized()
+        let totalDue = String.Constants.totalDue.localized()
         switch cartStatus {
         case .ready(let cart):
             let price = formatCartPrice(cart.totalPrice)
@@ -477,20 +459,8 @@ private extension PurchaseDomainsCheckoutView {
     func onAppear() {
         checkoutData = purchaseDomainsPreferencesStorage.checkoutData
         warnUserIfNeededAndSelectWallet(selectedWallet, forceReload: true)
-        setDomainAvatar()
         if !isApplePaySupported {
             logAnalytic(event: .applePayNotSupported)
-        }
-    }
-    
-    func setDomainAvatar() {
-        Task {
-            if let imageData = profileChanges.avatarData,
-               let avatarImage = await UIImage.createWith(anyData: imageData) {
-                domainAvatar = avatarImage
-            } else {
-                domainAvatar = await appContext.imageLoadingService.loadImage(from: .initials(domain.name, size: .default, style: .accent), downsampleDescription: nil)
-            }
         }
     }
     
@@ -515,7 +485,7 @@ private extension PurchaseDomainsCheckoutView {
             setLoading(true)
             do {
                 try await purchaseDomainsService.authoriseWithWallet(wallet.udWallet,
-                                                                     toPurchaseDomains: [domain])
+                                                                     toPurchaseDomains: domains)
             } catch {
                 Debugger.printFailure("Did fail to authorise wallet \(wallet.address) with error \(error)")
             }
@@ -539,12 +509,11 @@ private extension PurchaseDomainsCheckoutView {
                             parameters: [.value : String(totalPrice),
                                          .count: String(1),
                                          .isApplePaySupported: String(isApplePaySupported)])
-                let pendingPurchasedDomain = PendingPurchasedDomain(name: domain.name,
-                                                                    walletAddress: walletToMint.address)
-                PurchasedDomainsStorage.setPurchasedDomains([pendingPurchasedDomain])
+                let pendingPurchasedDomains: [PendingPurchasedDomain] = domains.map { PendingPurchasedDomain(name: $0.name, walletAddress: walletToMint.address) }
+                PurchasedDomainsStorage.setPurchasedDomains(pendingPurchasedDomains)
                 PurchasedDomainsStorage.addPendingNonEmptyProfiles([profileChanges])
                 
-                await walletsDataService.didPurchaseDomains([pendingPurchasedDomain],
+                await walletsDataService.didPurchaseDomains(pendingPurchasedDomains,
                                                             pendingProfiles: [profileChanges])
                 Task.detached { // Run in background
                     try? await walletsDataService.refreshDataForWallet(selectedWallet)
@@ -714,11 +683,11 @@ private extension PullUpErrorConfiguration {
     let stateWrapper = NavigationStateManagerWrapper()
     
     return NavigationStack {
-        PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x",
+        PurchaseDomainsCheckoutView(domains: [.init(name: "oleg.x",
                                                   price: 10000,
                                                   metadata: nil,
                                                   isTaken: false,
-                                                  isAbleToPurchase: true),
+                                                  isAbleToPurchase: true)],
                                     selectedWallet: MockEntitiesFabric.Wallet.mockEntities()[0],
                                     wallets: Array(MockEntitiesFabric.Wallet.mockEntities().prefix(4)),
                                     profileChanges: .init(domainName: "oleg.x",
