@@ -52,6 +52,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
                         checkoutDashSeparator()
                         summarySection()
                     }
+                    .padding(.top, 20)
                     .background(Color.backgroundDefault)
                 }
                 .background(scrollViewBackgroundView())
@@ -314,6 +315,8 @@ private extension PurchaseDomainsCheckoutView {
     func additionalCheckoutDetailsView() -> some View {
         if hasAdditionalCheckoutData {
             VStack(spacing: 8) {
+                additionalCheckoutDetailsRow(title: "Subtotal", value: formatCartPrice(cartStatus.subtotalPrice))
+                
                 if appliedDiscountsSum != nil {
                     additionalCheckoutDetailsRow(title: String.Constants.creditsAndDiscounts.localized(), value: discountValueString)
                 }
