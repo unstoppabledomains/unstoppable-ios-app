@@ -30,15 +30,5 @@ class ViewController: UIViewController {
         addChildViewController(vc, andEmbedToView: self.view)
     }
     
-    func showPurchaseDomainsCheckout() {
-        let view = PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil, isAbleToPurchase: true),
-                                               selectedWallet: MockEntitiesFabric.Wallet.mockEntities()[0],
-                                               wallets: MockEntitiesFabric.Wallet.mockEntities(),
-                                               profileChanges: .init(domainName: "oleg.x"))
-        
-        let vc = UIHostingController(rootView: view)
-        addChildViewController(vc, andEmbedToView: self.view)
-    }
-
 }
 

@@ -1098,7 +1098,6 @@ extension String {
         static let selectPrimaryDomainTitle = "SELECT_PRIMARY_DOMAIN_TITLE"
         static let selectPrimaryDomainSubtitle = "SELECT_PRIMARY_DOMAIN_SUBTITLE"
         
-        
         static let saveToPhotos = "SAVE_TO_PHOTOS"
         static let refreshMetadata = "REFRESH_METADATA"
         static let viewOnMarketPlace = "VIEW_ON_MARKETPLACE"

@@ -71,8 +71,9 @@ extension PurchaseDomainsSearchResultRowView {
 
 #Preview {
     PurchaseDomainsSearchResultRowView(domain: .init(name: "oleg.eth",
-                                                    price: 199,
-                                                    metadata: nil,
+                                                     price: 199,
+                                                     metadata: nil,
+                                                     isTaken: false,
                                                     isAbleToPurchase: true),
                                       mode: .list)
     .environmentObject(PurchaseDomains.LocalCart())

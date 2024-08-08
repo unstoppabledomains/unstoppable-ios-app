@@ -20,8 +20,12 @@ struct PurchaseDomainsCheckoutButton: ViewModifier {
                 UDButtonView(text: String.Constants.checkout.localized(),
                              subtext: subtitle,
                              style: .large(.raisedPrimary)) {
-                    localCart.isShowingCart = false
-                    viewModel.handleAction(.didSelectDomains(localCart.domains))
+                    if localCart.isShowingCart {
+                        localCart.isShowingCart = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: didConfirmToCheckout)
+                    } else {
+                        didConfirmToCheckout()
+                    }
                 }
                              .padding(.horizontal, 16)
             }
@@ -32,4 +36,7 @@ struct PurchaseDomainsCheckoutButton: ViewModifier {
         "\(String.Constants.totalDue.localized()): \(formatCartPrice(localCart.totalPrice))"
     }
     
+    private func didConfirmToCheckout() {
+        viewModel.handleAction(.didSelectDomains(localCart.domains))
+    }
 }

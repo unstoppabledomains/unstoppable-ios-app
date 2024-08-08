@@ -199,7 +199,6 @@ private extension FirebasePurchaseDomainsService {
     
     func transformDomainProductItemsToDomainsToPurchase(_ productItems: [Ecom.DomainProductItem]) -> [DomainToPurchase] {
         productItems
-            .filter({ $0.availability })
             .map { DomainToPurchase(domainProduct: $0) }
     }
 }
@@ -291,6 +290,7 @@ private extension DomainToPurchase {
         self.name = domainProduct.domain.name
         self.price = domainProduct.price
         self.metadata = domainProduct.jsonData()
+        self.isTaken = !domainProduct.availability
         self.isAbleToPurchase = domainProduct.isAbleToPurchase
     }
 }

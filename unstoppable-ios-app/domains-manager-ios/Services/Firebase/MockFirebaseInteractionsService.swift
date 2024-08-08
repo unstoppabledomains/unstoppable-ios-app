@@ -71,12 +71,25 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     func searchForDomains(key: String) async throws -> [DomainToPurchase] {
         await Task.sleep(seconds: 0.5)
         let key = key.lowercased()
-        let tlds = ["x", "crypto", "nft", "wallet", "polygon", "dao", "888", "blockchain", "go", "bitcoin"]
-        let prices = [40000, 20000, 8000, 4000, 500]
-        let notSupportedTLDs = ["eth", "com"]
+        let tlds: [String] = ["x", "crypto", "nft", "wallet", "polygon", "dao", "888", "blockchain", "go", "bitcoin"]
+        let prices: [Int] = [40000, 20000, 8000, 4000, 500]
+        let isTaken: [Bool] = [true, false]
+        let notSupportedTLDs: [String] = ["eth", "com"]
         
-        let domains = tlds.map { DomainToPurchase(name: "\(key).\($0)", price: prices.randomElement()!, metadata: nil, isAbleToPurchase: true) }
-        let notSupportedDomains = notSupportedTLDs.map { DomainToPurchase(name: "\(key).\($0)", price: prices.randomElement()!, metadata: nil, isAbleToPurchase: false) }
+        let domains = tlds.map {
+            DomainToPurchase(name: "\(key).\($0)",
+                             price: prices.randomElement()!,
+                             metadata: nil,
+                             isTaken: isTaken.randomElement()!,
+                             isAbleToPurchase: true)
+        }
+        let notSupportedDomains = notSupportedTLDs.map { 
+            DomainToPurchase(name: "\(key).\($0)", 
+                             price: prices.randomElement()!,
+                             metadata: nil, 
+                             isTaken: isTaken.randomElement()!,
+                             isAbleToPurchase: false)
+        }
         
         return domains + notSupportedDomains
     }
@@ -167,7 +180,11 @@ private extension MockFirebaseInteractionsService {
     }
     
     static func createMockCart() -> PurchaseDomainsCart {
-        .init(domains: [.init(name: "oleg.x", price: 10000, metadata: nil, isAbleToPurchase: true)],
+        .init(domains: [.init(name: "oleg.x",
+                              price: 10000,
+                              metadata: nil,
+                              isTaken: false,
+                              isAbleToPurchase: true)],
               totalPrice: 10000,
               taxes: 0,
               storeCreditsAvailable: 100,
