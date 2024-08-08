@@ -52,9 +52,13 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
                         checkoutDashSeparator()
                         summarySection()
                     }
+                    .background(Color.backgroundDefault)
                 }
+                .background(scrollViewBackgroundView())
+                
                 checkoutView()
             }
+            
             if isLoading {
                 ProgressView()
             }
@@ -101,28 +105,19 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
 }
 
 // MARK: - Details section
-private extension PurchaseDomainsCheckoutView { 
+private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
-    func topWarningViewWith(message: TopMessageDescription, callback: @escaping MainActorCallback) -> some View {
-        Button {
-            Task { @MainActor in
-                callback()
-            }
-        } label: {
-            HStack(spacing: 8) {
-                Image.infoIcon
-                    .resizable()
-                    .squareFrame(20)
-                    .foregroundStyle(Color.foregroundDanger)
-                AttributedText(attributesList: .init(text: message.message,
-                                                     font: .currentFont(withSize: 16, weight: .medium),
-                                                     textColor: .foregroundDanger,
-                                                     alignment: .left),
-                               updatedAttributesList: [.init(text: message.highlightedMessage,
-                                                             textColor: .foregroundAccent)])
-            }
-            .frame(height: 48)
-        }
+    func scrollViewBackgroundView() -> some View {
+        LinearGradient(
+            gradient: Gradient(stops: [
+                .init(color: .backgroundDefault, location: 0.0),
+                .init(color: .backgroundDefault, location: 0.5),
+                .init(color: .backgroundOverlay, location: 0.5),
+                .init(color: .backgroundOverlay, location: 1.0)
+            ]),
+            startPoint: .top,
+            endPoint: .bottom
+        )
     }
    
     @ViewBuilder
@@ -267,42 +262,52 @@ private extension PurchaseDomainsCheckoutView {
 private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func summarySection() -> some View {
-        LazyVStack(alignment: .leading, spacing: 16) {
-            Text(String.Constants.orderSummary.localized())
-                .font(.currentFont(size: 20, weight: .bold))
-                .foregroundStyle(Color.foregroundDefault)
-            UDCollectionSectionBackgroundView(backgroundColor: .backgroundSubtle) {
-                VStack(alignment: .center, spacing: 16) {
-                    summaryDomainInfoView()
-                        .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
-                    additionalCheckoutDetailsView()
-                        .padding(EdgeInsets(top: 0,
-                                            leading: 16,
-                                            bottom: shouldShowTotalDueInSummary ? 0 : 16,
-                                            trailing: 16))
-                    if shouldShowTotalDueInSummary {
-                        checkoutDashSeparator()
-                        totalDueView()
-                            .padding(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
-                    }
-                }
-            }
+        LazyVStack(alignment: .leading, spacing: 20) {
+            Text(String.Constants.orderSummary.localized() + " (\(domains.count))")
+                .textAttributes(color: .foregroundDefault,
+                                fontSize: 16,
+                                fontWeight: .medium)
+            summaryDomainInfoView()
+            additionalCheckoutDetailsView()
+            totalDueView()
         }
         .padding()
+        .background(Color.backgroundOverlay)
     }
     
     @ViewBuilder
     func summaryDomainInfoView() -> some View {
-        LazyVStack {
+        LazyVStack(spacing: 12) {
             ForEach(domains) { domain in
-                Text(domain.name)
+                domainInfoRowView(domain)
             }
-//            UDListItemView(title: domains.name,
-//                           value: formatCartPrice(domains.price),
-//                           imageType: avatarImage,
-//                           imageStyle: .full)
-//            .padding(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
         }
+    }
+    
+    @ViewBuilder
+    func domainInfoRowView(_ domain: DomainToPurchase) -> some View {
+        HStack(spacing: 16) {
+            HStack(spacing: 16) {
+                domain.tldCategory.icon
+                    .squareFrame(24)
+                    .foregroundStyle(Color.foregroundSecondary)
+                
+                HStack(spacing: 8) {
+                    VStack(spacing: 0) {
+                        Text(domain.name)
+                            .textAttributes(color: .foregroundDefault,
+                                            fontSize: 16,
+                                            fontWeight: .medium)
+                            .frame(height: 24)
+                    }
+                    Spacer()
+                    Text(formatCartPrice(domain.price))
+                        .textAttributes(color: .foregroundSecondary,
+                                        fontSize: 16)
+                }
+            }
+        }
+        .frame(height: 44)
     }
     
     @ViewBuilder
@@ -359,6 +364,9 @@ private extension PurchaseDomainsCheckoutView {
         HStack {
             VStack(alignment: .leading) {
                 Text(String.Constants.totalDue.localized())
+                    .textAttributes(color: .foregroundDefault,
+                                    fontSize: 16,
+                                    fontWeight: .medium)
                 if failedToLoadCalculations {
                     HStack {
                         Image.infoIcon
@@ -389,13 +397,14 @@ private extension PurchaseDomainsCheckoutView {
                 switch cartStatus {
                 case .ready(let cart):
                     Text(formatCartPrice(cart.totalPrice))
+                        .textAttributes(color: .foregroundDefault,
+                                        fontSize: 16,
+                                        fontWeight: .medium)
                 default:
                     Text("-")
                 }
             }
         }
-        .font(.currentFont(size: 16, weight: .medium))
-        .foregroundStyle(Color.foregroundDefault)
     }
 }
 
@@ -404,12 +413,9 @@ private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func checkoutView() -> some View {
         VStack(spacing: 0) {
-            if !shouldShowTotalDueInSummary {
-                totalDueView()
-                    .padding(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
-            }
             checkoutButton()
         }
+        .background(Color.backgroundOverlay)
     }
     
     var checkoutButtonTitle: String {
@@ -439,10 +445,6 @@ private extension PurchaseDomainsCheckoutView {
         }
         .disabled(isPayButtonDisabled)
         .padding()
-    }
-    
-    var shouldShowTotalDueInSummary: Bool {
-        true
     }
     
     var isPayButtonDisabled: Bool {
@@ -574,28 +576,6 @@ private extension PurchaseDomainsCheckoutView {
         let name: String
         let icon: UIImage
     }
-    
-    enum TopMessageDescription {
-        case hasUnpaidDomains, applePayNotSupported
-        
-        var message: String {
-            switch self {
-            case .hasUnpaidDomains:
-                return String.Constants.purchaseHasUnpaidVaultDomainsErrorMessage.localized()
-            case .applePayNotSupported:
-                return String.Constants.purchaseApplePayNotSupportedErrorMessage.localized()
-            }
-        }
-        
-        var highlightedMessage: String {
-            switch self {
-            case .hasUnpaidDomains:
-                return String.Constants.purchaseHasUnpaidVaultDomainsErrorMessageHighlighted.localized()
-            case .applePayNotSupported:
-                return String.Constants.purchaseApplePayNotSupportedErrorMessageHighlighted.localized()
-            }
-        }
-    }
 }
 
 // MARK: - Private methods
@@ -687,7 +667,17 @@ private extension PullUpErrorConfiguration {
                                                   price: 10000,
                                                   metadata: nil,
                                                   isTaken: false,
-                                                  isAbleToPurchase: true)],
+                                                  isAbleToPurchase: true),
+                                              .init(name: "oleg.com",
+                                                    price: 10000,
+                                                    metadata: nil,
+                                                    isTaken: false,
+                                                    isAbleToPurchase: true),
+                                              .init(name: "oleg.eth",
+                                                    price: 10000,
+                                                    metadata: nil,
+                                                    isTaken: false,
+                                                    isAbleToPurchase: true)],
                                     selectedWallet: MockEntitiesFabric.Wallet.mockEntities()[0],
                                     wallets: Array(MockEntitiesFabric.Wallet.mockEntities().prefix(4)),
                                     profileChanges: .init(domainName: "oleg.x",
