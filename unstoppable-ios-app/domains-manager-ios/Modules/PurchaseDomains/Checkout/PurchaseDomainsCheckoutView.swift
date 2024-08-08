@@ -43,16 +43,18 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
         ZStack {
             VStack(spacing: 0) {
                 ScrollView {
-                    LazyVStack(spacing: 20) {
+                    LazyVStack(spacing: 0) {
                         mintToRowView()
+                            .padding(.vertical, 20)
                         checkoutDashSeparator()
                         usaZIPCodeView()
+                            .padding(.vertical, 20)
                         checkoutDashSeparator()
                         discountView()
+                            .padding(.vertical, 20)
                         checkoutDashSeparator()
                         summarySection()
                     }
-                    .padding(.top, 20)
                     .background(Color.backgroundDefault)
                 }
                 .background(scrollViewBackgroundView())
