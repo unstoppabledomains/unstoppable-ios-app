@@ -133,7 +133,7 @@ private extension PurchaseDomainsCheckoutView {
                     .squareFrame(24)
                     .padding(.vertical, 10)
                 HStack(spacing: 8) {
-                    Text("Minting Wallet")
+                    Text(String.Constants.purchaseMintingWalletTitle.localized())
                         .textAttributes(color: .foregroundDefault,
                                         fontSize: 16,
                                         fontWeight: .medium)
@@ -317,7 +317,7 @@ private extension PurchaseDomainsCheckoutView {
     func additionalCheckoutDetailsView() -> some View {
         if hasAdditionalCheckoutData {
             VStack(spacing: 8) {
-                additionalCheckoutDetailsRow(title: "Subtotal", value: formatCartPrice(cartStatus.subtotalPrice))
+                additionalCheckoutDetailsRow(title: String.Constants.subtotal.localized(), value: formatCartPrice(cartStatus.subtotalPrice))
                 
                 if appliedDiscountsSum != nil {
                     additionalCheckoutDetailsRow(title: String.Constants.creditsAndDiscounts.localized(), value: discountValueString)

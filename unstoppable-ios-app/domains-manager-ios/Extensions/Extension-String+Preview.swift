@@ -1089,6 +1089,10 @@ extension String {
         static let startTyping = "START_TYPING"
         static let buyDomainsSearchResultShowMoreTitle = "BUY_DOMAINS_SEARCH_RESULT_SHOW_MORE_TITLE"
         static let buyDomainsSearchResultShowLessTitle = "BUY_DOMAINS_SEARCH_RESULT_SHOW_LESS_TITLE"
+        static let purchaseMintingWalletTitle = "PURCHASE_MINTING_WALLET_TITLE"
+        static let purchaseMintingWalletPullUpTitle = "PURCHASE_MINTING_WALLET_PULL_UP_TITLE"
+        static let purchaseMintingWalletPullUpSubtitle = "PURCHASE_MINTING_WALLET_PULL_UP_SUBTITLE"
+        static let subtotal = "SUBTOTAL"
         
         // Home
         static let homeWalletTokensComeTitle = "HOME_WALLET_TOKENS_COME_TITLE"

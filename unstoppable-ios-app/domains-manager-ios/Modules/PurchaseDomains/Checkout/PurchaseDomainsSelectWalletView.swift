@@ -25,11 +25,11 @@ struct PurchaseDomainsSelectWalletView: View, ViewAnalyticsLogger {
             ScrollView {
                 VStack(spacing: 24) {
                     VStack(spacing: 8) {
-                        Text("Select Minting Wallet")
+                        Text(String.Constants.purchaseMintingWalletPullUpTitle.localized())
                             .textAttributes(color: .foregroundDefault,
                                             fontSize: 22,
                                             fontWeight: .bold)
-                        Text("Where your domains will be minted.")
+                        Text(String.Constants.purchaseMintingWalletPullUpSubtitle.localized())
                             .textAttributes(color: .foregroundSecondary,
                                             fontSize: 16)
                     }
