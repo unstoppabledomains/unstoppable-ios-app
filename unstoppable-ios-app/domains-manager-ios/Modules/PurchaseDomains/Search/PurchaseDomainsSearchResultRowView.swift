@@ -32,8 +32,10 @@ struct PurchaseDomainsSearchResultRowView: View {
                 }
             }
             Spacer()
-            cartIconView()
-                .squareFrame(24)
+            if !domain.isTaken {
+                cartIconView()
+                    .squareFrame(24)
+            }
         }
         .frame(minHeight: UDListItemView.height)
     }

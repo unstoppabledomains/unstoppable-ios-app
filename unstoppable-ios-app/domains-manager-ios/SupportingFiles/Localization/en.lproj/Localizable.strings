@@ -982,6 +982,8 @@
 "SEARCH_DOMAINS" = "Search domains";
 "CLEAR" = "Clear";
 "START_TYPING" = "Start typing";
+"BUY_DOMAINS_SEARCH_RESULT_SHOW_MORE_TITLE" = "Show more exact matches";
+"BUY_DOMAINS_SEARCH_RESULT_SHOW_LESS_TITLE" = "Show less exact matches";
 
 // Home
 "HOME_WALLET_TOKENS_COME_TITLE" = "No more tokens here yet";

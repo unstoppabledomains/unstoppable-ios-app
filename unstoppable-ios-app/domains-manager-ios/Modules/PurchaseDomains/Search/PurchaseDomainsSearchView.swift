@@ -16,10 +16,10 @@ struct PurchaseDomainsSearchView: View, ViewAnalyticsLogger {
     @StateObject private var ecommFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceEcommEnabled)
     @StateObject private var localCart = PurchaseDomains.LocalCart()
     @State private var suggestions: [DomainToPurchaseSuggestion] = []
-    @State private var searchResult: [DomainToPurchase] = []
-    @State private var isLoading = false
+    @State private var searchResultHolder: PurchaseDomains.SearchResultHolder = .init()
+    @State private var isLoading: Bool = false
     @State private var loadingError: Error?
-    @State private var searchingText = ""
+    @State private var searchingText: String = ""
     @State private var searchResultType: SearchResultType = .userInput
     @State private var skeletonItemsWidth: [CGFloat] = []
     @State private var pullUp: ViewPullUpConfigurationType?    
@@ -123,7 +123,7 @@ private extension PurchaseDomainsSearchView {
     func searchResultView() -> some View {
         if isLoading && !searchingText.isEmpty {
             loadingView()
-        } else if !searchResult.isEmpty {
+        } else if !searchResultHolder.isEmpty {
             resultListView()
         } else if loadingError != nil {
             errorView()
@@ -156,24 +156,76 @@ private extension PurchaseDomainsSearchView {
     
     @ViewBuilder
     func resultListView() -> some View {
+        if searchResultHolder.isShowingTakenDomains {
+            resultDomainsListView(searchResultHolder.allDomains)
+        } else {
+            resultDomainsListView(searchResultHolder.availableDomains)
+        }
+        if searchResultHolder.hasTakenDomains {
+            showHideTakenDomainsView()
+        }
+    }
+    
+    @ViewBuilder
+    func resultDomainsListView(_ domains: [DomainToPurchase]) -> some View {
         LazyVStack(alignment: .leading, spacing: 20) {
             sectionTitleView(String.Constants.results.localized())
-            ForEach(searchResult, id: \.name) { domainInfo in
-                Button {
-                    UDVibration.buttonTap.vibrate()
-                    logButtonPressedAnalyticEvents(button: .searchDomains,
-                                                   parameters: [.value: domainInfo.name,
-                                                                .price: String(domainInfo.price),
-                                                                .searchType: searchResultType.rawValue])
-                    didSelectDomain(domainInfo)
-                } label: {
-                    PurchaseDomainsSearchResultRowView(domain: domainInfo,
-                                                      mode: .list)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
+            ForEach(domains, id: \.name) { domain in
+                resultDomainRowView(domain)
             }
         }
+    }
+    
+    @ViewBuilder
+    func resultDomainRowView(_ domain: DomainToPurchase) -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .searchDomains,
+                                           parameters: [.value: domain.name,
+                                                        .price: String(domain.price),
+                                                        .searchType: searchResultType.rawValue])
+            didSelectDomain(domain)
+        } label: {
+            PurchaseDomainsSearchResultRowView(domain: domain,
+                                               mode: .list)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(domain.isTaken)
+    }
+    
+    @ViewBuilder
+    func showHideTakenDomainsView() -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            withAnimation {
+                searchResultHolder.isShowingTakenDomains.toggle()
+            }
+        } label: {
+            HStack(spacing: 18) {
+                currentShowHideImage
+                    .resizable()
+                    .squareFrame(20)
+                
+                Text(currentShowHideTitle)
+                    .textAttributes(color: .foregroundSecondary,
+                                    fontSize: 14,
+                                    fontWeight: .medium)
+                    .underline()
+                Spacer()
+            }
+            .foregroundStyle(Color.foregroundSecondary)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+    
+    var currentShowHideImage: Image {
+        searchResultHolder.isShowingTakenDomains ? .chevronUp : .chevronDown
+    }
+    
+    var currentShowHideTitle: String {
+        searchResultHolder.isShowingTakenDomains ? String.Constants.buyDomainsSearchResultShowLessTitle.localized() : String.Constants.buyDomainsSearchResultShowMoreTitle.localized()
     }
     
     @ViewBuilder
@@ -257,7 +309,7 @@ private extension PurchaseDomainsSearchView {
         searchingText = text
         loadingError = nil
         
-        searchResult = []
+        searchResultHolder.clear()
         
         guard !searchingText.isEmpty else { return }
         
@@ -267,7 +319,7 @@ private extension PurchaseDomainsSearchView {
     }
     
     func aiSearch(hint: String) {
-        searchResult = []
+        searchResultHolder.clear()
         performSearchOperation(searchingText: hint, searchType: .aiSearch) {
             try await purchaseDomainsService.aiSearchForDomains(hint: hint)
         }
@@ -283,25 +335,13 @@ private extension PurchaseDomainsSearchView {
                 let searchResult = try await block()
                 guard searchingText == self.searchingText else { return } // Result is irrelevant, search query has changed
                 
-                self.searchResult = sortSearchResult(searchResult, searchText: searchingText)
+                searchResultHolder.setDomains(searchResult, searchText: searchingText)
                 self.searchResultType = searchType
             } catch {
                 loadingError = error
             }
             isLoading = false
         }
-    }
-    
-    func sortSearchResult(_ searchResult: [DomainToPurchase], searchText: String) -> [DomainToPurchase] {
-        var searchResult = searchResult
-        /// Move exactly matched domain to the top of the list
-        if let i = searchResult.firstIndex(where: { $0.name == searchText }),
-           i != 0 {
-            let matchingDomain = searchResult[i]
-            searchResult.remove(at: i)
-            searchResult.insert(matchingDomain, at: 0)
-        }
-        return searchResult
     }
     
     func didSelectDomain(_ domain: DomainToPurchase) {

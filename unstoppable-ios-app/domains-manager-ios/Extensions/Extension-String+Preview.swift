@@ -1087,6 +1087,8 @@ extension String {
         static let searchDomains = "SEARCH_DOMAINS"
         static let clear = "CLEAR"
         static let startTyping = "START_TYPING"
+        static let buyDomainsSearchResultShowMoreTitle = "BUY_DOMAINS_SEARCH_RESULT_SHOW_MORE_TITLE"
+        static let buyDomainsSearchResultShowLessTitle = "BUY_DOMAINS_SEARCH_RESULT_SHOW_LESS_TITLE"
         
         // Home
         static let homeWalletTokensComeTitle = "HOME_WALLET_TOKENS_COME_TITLE"

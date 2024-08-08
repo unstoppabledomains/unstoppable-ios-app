@@ -93,3 +93,50 @@ extension PurchaseDomains {
         }
     }
 }
+
+extension PurchaseDomains {
+    struct SearchResultHolder {
+        private(set) var availableDomains: [DomainToPurchase] = []
+        private(set) var takenDomains: [DomainToPurchase] = []
+        var isShowingTakenDomains = false
+        
+        var allDomains: [DomainToPurchase] {
+            availableDomains + takenDomains
+        }
+        var hasTakenDomains: Bool { !takenDomains.isEmpty }
+        
+        var isEmpty: Bool {
+            availableDomains.isEmpty && takenDomains.isEmpty
+        }
+        
+        mutating func clear() {
+            availableDomains.removeAll()
+            takenDomains.removeAll()
+        }
+        
+        mutating func setDomains(_ domains: [DomainToPurchase],
+                                 searchText: String) {
+            let sortedDomains = sortSearchResult(domains, searchText: searchText)
+            clear()
+            for domain in sortedDomains {
+                if domain.isTaken {
+                    takenDomains.append(domain)
+                } else {
+                    availableDomains.append(domain)
+                }
+            }
+        }
+        
+        private func sortSearchResult(_ searchResult: [DomainToPurchase], searchText: String) -> [DomainToPurchase] {
+            var searchResult = searchResult
+            /// Move exactly matched domain to the top of the list
+            if let i = searchResult.firstIndex(where: { $0.name == searchText }),
+               i != 0 {
+                let matchingDomain = searchResult[i]
+                searchResult.remove(at: i)
+                searchResult.insert(matchingDomain, at: 0)
+            }
+            return searchResult
+        }
+    }
+}
