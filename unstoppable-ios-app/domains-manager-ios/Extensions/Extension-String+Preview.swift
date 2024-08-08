@@ -1028,7 +1028,7 @@ extension String {
         static let getDomainCardSubtitle = "GET_DOMAIN_CARD_SUBTITLE"
         static let findANewDomain = "FIND_A_NEW_DOMAIN"
         static let findYourDomain = "FIND_YOUR_DOMAIN"
-        static let searchForANewDomain = "SEARCH_FOR_A_NEW_DOMAIN"
+        static let searchForADomain = "SEARCH_FOR_A_DOMAIN"
         static let trending = "TRENDING"
         static let noAvailableDomains = "NO_AVAILABLE_DOMAINS"
         static let tryEnterDifferentName = "TRY_ENTER_DIFF_NAME"
@@ -1080,6 +1080,15 @@ extension String {
         static let purchaseSearchCantButPullUpTitle = "PURCHASE_SEARCH_CANT_BUY_PULL_UP_TITLE"
         static let purchaseSearchCantButPullUpSubtitle = "PURCHASE_SEARCH_CANT_BUY_PULL_UP_SUBTITLE"
         static let payWithCredits = "PAY_WITH_CREDITS"
+        static let buyDomainsSearchTitle = "BUY_DOMAINS_SEARCH_TITLE"
+        static let buyDomainsCartEmptyTitle = "BUY_DOMAINS_CART_EMPTY_TITLE"
+        static let buyDomainsCartEmptySubtitle = "BUY_DOMAINS_CART_EMPTY_SUBTITLE"
+        static let buyDomainsCartTitle = "BUY_DOMAINS_CART_TITLE"
+        static let searchDomains = "SEARCH_DOMAINS"
+        static let clear = "CLEAR"
+        static let startTyping = "START_TYPING"
+        static let buyDomainsSearchResultShowMoreTitle = "BUY_DOMAINS_SEARCH_RESULT_SHOW_MORE_TITLE"
+        static let buyDomainsSearchResultShowLessTitle = "BUY_DOMAINS_SEARCH_RESULT_SHOW_LESS_TITLE"
         
         // Home
         static let homeWalletTokensComeTitle = "HOME_WALLET_TOKENS_COME_TITLE"
@@ -1090,7 +1099,6 @@ extension String {
         static let buyNewDomain = "BUY_NEW_DOMAIN"
         static let selectPrimaryDomainTitle = "SELECT_PRIMARY_DOMAIN_TITLE"
         static let selectPrimaryDomainSubtitle = "SELECT_PRIMARY_DOMAIN_SUBTITLE"
-        
         
         static let saveToPhotos = "SAVE_TO_PHOTOS"
         static let refreshMetadata = "REFRESH_METADATA"

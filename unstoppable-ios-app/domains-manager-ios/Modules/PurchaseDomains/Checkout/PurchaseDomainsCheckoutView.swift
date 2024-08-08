@@ -86,7 +86,6 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
                 Color.clear
             }
         }
-        .purchaseDomainsTitleViewModifier()
         .pullUpError($error)
         .modifier(ShowingSelectDiscounts(isSelectDiscountsPresented: $isSelectDiscountsPresented))
         .viewPullUp($pullUp)
@@ -686,6 +685,7 @@ private extension PullUpErrorConfiguration {
     PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", 
                                               price: 10000,
                                               metadata: nil,
+                                              isTaken: false,
                                              isAbleToPurchase: true),
                                 selectedWallet: MockEntitiesFabric.Wallet.mockEntities()[0],
                                 wallets: Array(MockEntitiesFabric.Wallet.mockEntities().prefix(4)),

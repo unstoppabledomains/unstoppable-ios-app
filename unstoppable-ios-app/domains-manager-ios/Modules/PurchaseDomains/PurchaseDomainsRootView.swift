@@ -15,7 +15,7 @@ struct PurchaseDomainsRootView: View {
 
     var body: some View {
         ZStack {
-            PurchaseSearchDomainsView()
+            PurchaseDomainsSearchView()
                 .navigationBarTitleDisplayMode(.inline)
             if viewModel.isLoading {
                 ProgressView()
@@ -23,7 +23,6 @@ struct PurchaseDomainsRootView: View {
         }
         .displayError($viewModel.error)
         .allowsHitTesting(!viewModel.isLoading)
-        .purchaseDomainsTitleViewModifier()
         .environmentObject(viewModel)
     }
 }

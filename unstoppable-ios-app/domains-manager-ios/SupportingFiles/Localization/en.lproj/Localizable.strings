@@ -923,7 +923,7 @@
 "GET_DOMAIN_CARD_SUBTITLE" = "Own your identity in the digital world.\nGet started with a Web3 domain.";
 "FIND_A_NEW_DOMAIN" = "Find a new domain";
 "FIND_YOUR_DOMAIN" = "Find your domain";
-"SEARCH_FOR_A_NEW_DOMAIN" = "Search for a new\ndomain";
+"SEARCH_FOR_A_DOMAIN" = "Search for a domain";
 "TRENDING" = "Trending";
 "NO_AVAILABLE_DOMAINS" = "No available domains";
 "TRY_ENTER_DIFF_NAME" = "Try entering a different name.";
@@ -975,6 +975,15 @@
 "PURCHASE_SEARCH_CANT_BUY_PULL_UP_TITLE" = "Coming soon";
 "PURCHASE_SEARCH_CANT_BUY_PULL_UP_SUBTITLE" = ".%@ domains are currently only for sale from our website.";
 "PAY_WITH_CREDITS" = "Pay with credits";
+"BUY_DOMAINS_SEARCH_TITLE" = "Buy Domains";
+"BUY_DOMAINS_CART_EMPTY_TITLE" = "Your cart is empty";
+"BUY_DOMAINS_CART_EMPTY_SUBTITLE" = "But it's easy to fix!";
+"BUY_DOMAINS_CART_TITLE" = "Your cart (%i)";
+"SEARCH_DOMAINS" = "Search domains";
+"CLEAR" = "Clear";
+"START_TYPING" = "Start typing";
+"BUY_DOMAINS_SEARCH_RESULT_SHOW_MORE_TITLE" = "Show more exact matches";
+"BUY_DOMAINS_SEARCH_RESULT_SHOW_LESS_TITLE" = "Show less exact matches";
 
 // Home
 "HOME_WALLET_TOKENS_COME_TITLE" = "No more tokens here yet";

@@ -10,7 +10,6 @@ import SwiftUI
 extension PurchaseDomains {
     enum NavigationDestination: Hashable {
         case root(HomeTabRouter)
-        case fillProfileForDomain(_ domain: DomainToPurchase, viewModel: PurchaseDomainsViewModel)
         case checkout(_ chekoutData: CheckoutData, viewModel: PurchaseDomainsViewModel)
         case purchased(PurchaseDomainsViewModel)
         
@@ -25,8 +24,6 @@ extension PurchaseDomains {
             switch self {
             case .root:
                 return 1 / 6
-            case .fillProfileForDomain:
-                return 3 / 6
             case .checkout:
                 return 5 / 6
             case .purchased:
@@ -37,8 +34,6 @@ extension PurchaseDomains {
         static func == (lhs: Self, rhs: Self) -> Bool {
             switch (lhs, rhs) {
             case (.root, .root):
-                return true
-            case (.fillProfileForDomain, .fillProfileForDomain):
                 return true
             case (.checkout, .checkout):
                 return true
@@ -53,8 +48,6 @@ extension PurchaseDomains {
             switch self {
             case .root:
                 hasher.combine("root")
-            case .fillProfileForDomain:
-                hasher.combine("fillProfileForDomain")
             case .checkout:
                 hasher.combine("checkout")
             case .purchased:
@@ -71,8 +64,6 @@ extension PurchaseDomains {
             switch navigationDestination {
             case .root(let router):
                 PurchaseDomainsRootView(viewModel: PurchaseDomainsViewModel(router: router))
-            case .fillProfileForDomain(let domain, let viewModel):
-                PurchaseDomainProfileViewControllerWrapper(domain: domain, viewModel: viewModel)
             case .checkout(let checkoutData, let viewModel):
                 PurchaseDomainsCheckoutView(domain: checkoutData.domains[0],
                                             selectedWallet: checkoutData.selectedWallet,

@@ -124,6 +124,12 @@ extension Image {
     static let purchaseMPCIcon = Image("purchaseMPCIcon")
     static let mpcWalletRecoveryIllustration = Image("mpcWalletRecoveryIllustration")
     static let gas = Image("gas")
+    static let cartIcon = Image("cartIcon")
+    static let addToCartIcon = Image("addToCartIcon")
+    static let cartFillIcon = Image("cartFillIcon")
+    static let unsTLDLogo = Image("unsTLDLogo")
+    static let ensTLDLogo = Image("ensTLDLogo")
+    static let dnsTLDLogo = Image("dnsTLDLogo")
     
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")
