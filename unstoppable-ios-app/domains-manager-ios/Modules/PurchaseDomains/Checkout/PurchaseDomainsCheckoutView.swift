@@ -40,10 +40,12 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
         ZStack {
             VStack(spacing: 0) {
                 ScrollView {
-                    LazyVStack {
-                        headerView()
+                    LazyVStack(spacing: 20) {
+                        mintToRowView()
                         checkoutDashSeparator()
-                        detailsSection()
+                        usaZIPCodeView()
+                        checkoutDashSeparator()
+                        discountView()
                         checkoutDashSeparator()
                         summarySection()
                     }
@@ -55,6 +57,8 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
             }
         }
         .allowsHitTesting(!isLoading)
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(isLoading)
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
@@ -134,43 +138,60 @@ private extension PurchaseDomainsCheckoutView {
     }
    
     @ViewBuilder
-    func detailsSection() -> some View {
-        UDCollectionSectionBackgroundView {
-            VStack(alignment: .center, spacing: 0) {
-                mintToRowView()
-                usaZIPCodeView()
-                discountView()
+    func mintToRowView() -> some View {
+        VStack(alignment: .leading) {
+            HStack(spacing: 16) {
+                Image(systemName: "star.fill")
+                    .resizable()
+                    .foregroundStyle(Color.foregroundSecondary)
+                    .squareFrame(24)
+                    .padding(.vertical, 10)
+                HStack(spacing: 8) {
+                    Text("Minting Wallet")
+                        .textAttributes(color: .foregroundDefault,
+                                        fontSize: 16,
+                                        fontWeight: .medium)
+                    Spacer()
+                    selectWalletButton()
+                }
             }
-            .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
         }
-        .padding()
+        .padding(.horizontal, 16)
     }
     
     @ViewBuilder
-    func mintToRowView() -> some View {
-        UDCollectionListRowButton(content: {
-            UDListItemView(title: String.Constants.mintTo.localized(),
-                           value: selectedWalletName,
-                           imageType: .image(.vaultIcon),
-                           rightViewStyle: walletSelectionIndicatorStyle)
-            .udListItemInCollectionButtonPadding()
-        }, callback: {
+    func selectWalletButton() -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            
             if !canSelectWallet,
-                isFailedToAuthWallet {
+               isFailedToAuthWallet {
                 warnUserIfNeededAndSelectWallet(selectedWallet, forceReload: true)
             } else {
                 logButtonPressedAnalyticEvents(button: .selectWallet)
                 isSelectWalletPresented = true
             }
-        })
+        } label: {
+            HStack(spacing: 8) {
+                Text(selectedWalletName)
+                    .textAttributes(color: .foregroundSecondary,
+                                    fontSize: 16)
+                if let walletSelectionIndicatorImage {
+                    walletSelectionIndicatorImage.resizable()
+                        .squareFrame(24)
+                        .foregroundStyle(Color.foregroundSecondary)
+                }
+            }
+        }
+        .buttonStyle(.plain)
         .allowsHitTesting(canSelectWallet || isFailedToAuthWallet)
     }
     
-    var walletSelectionIndicatorStyle: UDListItemView.RightViewStyle? {
+    var walletSelectionIndicatorImage: Image? {
         if case .failedToAuthoriseWallet = cartStatus {
-            return .errorCircle
+            return .infoIcon
         }
-        return canSelectWallet ? .chevron : nil
+        return canSelectWallet ? .chevronGrabberVertical : nil
     }
     
     var canSelectWallet: Bool {
@@ -249,12 +270,7 @@ private extension PurchaseDomainsCheckoutView {
     
     @ViewBuilder
     func checkoutDashSeparator() -> some View {
-        Line()
-            .stroke(style: StrokeStyle(lineWidth: 1, dash: [3]))
-            .foregroundColor(.black)
-            .opacity(0.06)
-            .frame(height: 1)
-            .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+        HomeExploreSeparatorView()
     }
     
 }
@@ -343,6 +359,17 @@ private extension PurchaseDomainsCheckoutView {
             return true
         }
         return false
+    }
+    
+    var title: String {
+        var totalDue = String.Constants.totalDue.localized()
+        switch cartStatus {
+        case .ready(let cart):
+            let price = formatCartPrice(cart.totalPrice)
+            return "\(totalDue): \(price)"
+        default:
+            return totalDue
+        }
     }
     
     @ViewBuilder
@@ -682,14 +709,23 @@ private extension PullUpErrorConfiguration {
 }
 
 #Preview {
-    PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", 
-                                              price: 10000,
-                                              metadata: nil,
-                                              isTaken: false,
-                                             isAbleToPurchase: true),
-                                selectedWallet: MockEntitiesFabric.Wallet.mockEntities()[0],
-                                wallets: Array(MockEntitiesFabric.Wallet.mockEntities().prefix(4)),
-                                profileChanges: .init(domainName: "oleg.x",
-                                                      avatarData: UIImage.Preview.previewLandscape?.dataToUpload))
-    .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
+    let router = MockEntitiesFabric.Home.createHomeTabRouter()
+    let viewModel = PurchaseDomainsViewModel(router: router)
+    let stateWrapper = NavigationStateManagerWrapper()
+    
+    return NavigationStack {
+        PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x",
+                                                  price: 10000,
+                                                  metadata: nil,
+                                                  isTaken: false,
+                                                  isAbleToPurchase: true),
+                                    selectedWallet: MockEntitiesFabric.Wallet.mockEntities()[0],
+                                    wallets: Array(MockEntitiesFabric.Wallet.mockEntities().prefix(4)),
+                                    profileChanges: .init(domainName: "oleg.x",
+                                                          avatarData: UIImage.Preview.previewLandscape?.dataToUpload))
+        .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
+        .environmentObject(stateWrapper)
+        .environmentObject(router)
+        .environmentObject(viewModel)
+    }
 }
