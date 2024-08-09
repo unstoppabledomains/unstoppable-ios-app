@@ -914,6 +914,8 @@
 		C650F8C82BA41C3300BDA099 /* FireblocksRPCMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650F8C72BA41C3300BDA099 /* FireblocksRPCMessageHandler.swift */; };
 		C651C6DB2C66016C0076F631 /* PurchaseDomainsOrderSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C651C6DA2C66016C0076F631 /* PurchaseDomainsOrderSummaryView.swift */; };
 		C651C6DC2C66016C0076F631 /* PurchaseDomainsOrderSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C651C6DA2C66016C0076F631 /* PurchaseDomainsOrderSummaryView.swift */; };
+		C651C6DE2C6609D00076F631 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C651C6DD2C6609D00076F631 /* ToastView.swift */; };
+		C651C6DF2C6609D00076F631 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C651C6DD2C6609D00076F631 /* ToastView.swift */; };
 		C651DC51286C115400808D4C /* WatchFaceDomainImagePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C651DC50286C115400808D4C /* WatchFaceDomainImagePreviewView.swift */; };
 		C651DC56286C115900808D4C /* WatchFaceDomainImagePreviewView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C651DC55286C115900808D4C /* WatchFaceDomainImagePreviewView.xib */; };
 		C652446A2AF8A7A400673CC0 /* WalletConnectNotify in Frameworks */ = {isa = PBXBuildFile; productRef = C65244692AF8A7A400673CC0 /* WalletConnectNotify */; };
@@ -3367,6 +3369,7 @@
 		C650F8C32BA41A2A00BDA099 /* FireblocksKeyStorageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksKeyStorageProvider.swift; sourceTree = "<group>"; };
 		C650F8C72BA41C3300BDA099 /* FireblocksRPCMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksRPCMessageHandler.swift; sourceTree = "<group>"; };
 		C651C6DA2C66016C0076F631 /* PurchaseDomainsOrderSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsOrderSummaryView.swift; sourceTree = "<group>"; };
+		C651C6DD2C6609D00076F631 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		C651DC50286C115400808D4C /* WatchFaceDomainImagePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFaceDomainImagePreviewView.swift; sourceTree = "<group>"; };
 		C651DC55286C115900808D4C /* WatchFaceDomainImagePreviewView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WatchFaceDomainImagePreviewView.xib; sourceTree = "<group>"; };
 		C652446B2AF8AA2600673CC0 /* WCV2DefaultCryptoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCV2DefaultCryptoProvider.swift; sourceTree = "<group>"; };
@@ -7217,6 +7220,7 @@
 				C6DDF2682B148A31006D1F0B /* PositionObservingView.swift */,
 				C6E856282BBE983900AAFDE4 /* PresentAsModalPreviewView.swift */,
 				C640D61D2C4944AB006B21C3 /* SelectionPopoverView */,
+				C651C6DD2C6609D00076F631 /* ToastView.swift */,
 				C6DDF2422B147F1A006D1F0B /* UDCollectionListRowButton.swift */,
 				C6DDF2402B147F19006D1F0B /* UDCollectionSectionBackgroundView.swift */,
 				C655CA9A2B16E5BE00FDA063 /* UDListItemView.swift */,
@@ -10188,6 +10192,7 @@
 				29150FBB2975DA4D00169A1A /* PushSubscriberInfo.swift in Sources */,
 				C666894B28116073002062B4 /* BorderedTableView.swift in Sources */,
 				C6FECF46282D0694008DAA49 /* ResizableRoundedImageView.swift in Sources */,
+				C651C6DE2C6609D00076F631 /* ToastView.swift in Sources */,
 				C61ECD792A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */,
 				C6EECE972833A3E400978ED5 /* CoinRecord.swift in Sources */,
 				C64F6C592C50F0FE00D89FEF /* UDMaintenanceModeFeatureFlagTracker.swift in Sources */,
@@ -10358,6 +10363,7 @@
 				C640D61C2C491E13006B21C3 /* SelectionPopoverViewItem.swift in Sources */,
 				C6960C4F2B19989D00B79E28 /* Env.swift in Sources */,
 				C61807D92B19A48F0032E543 /* PreviewAuthentificationService.swift in Sources */,
+				C651C6DF2C6609D00076F631 /* ToastView.swift in Sources */,
 				C632BE572BA59E8400C95B2D /* FB_UD_MPCSetupTokenResponse.swift in Sources */,
 				C6D6457B2B1D7C3100D724AC /* PullUpError.swift in Sources */,
 				C640F3702C0712A8009EB0F9 /* MPCWalletTakeoverError.swift in Sources */,

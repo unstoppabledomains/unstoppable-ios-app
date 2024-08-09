@@ -16,6 +16,9 @@ struct PurchaseDomainsOrderSummaryView: View, ViewAnalyticsLogger {
     @State var domains: [DomainToPurchase]
     let domainsUpdatedCallback: ([DomainToPurchase])->()
     
+    @State private var removedDomain: RemovedDomainInfo? = nil
+    @State private var timer: Timer?
+
     var body: some View {
         VStack {
             ScrollView {
@@ -26,6 +29,17 @@ struct PurchaseDomainsOrderSummaryView: View, ViewAnalyticsLogger {
                 .padding(.horizontal, 16)
             }
             .padding(.top, 36)
+            
+            if let removedDomain {
+                ToastView(toast: .changesConfirmed,
+                          action: .init(title: String.Constants.undo.localized(),
+                                        callback: {
+                    withAnimation {
+                        undoRemoveDomain(removedDomain)
+                    }
+                }))
+                .padding(.bottom, -8)
+            }
             
             UDButtonView(text: String.Constants.doneButtonTitle.localized(),
                          style: .large(.raisedPrimary)) {
@@ -69,9 +83,7 @@ private extension PurchaseDomainsOrderSummaryView {
         Button {
             UDVibration.buttonTap.vibrate()
             withAnimation {
-                if let i = domains.firstIndex(of: domain) {
-                    domains.remove(at: i)
-                }
+                removeDomain(domain)
             }
         } label: {
             PurchaseDomainsSearchResultRowView(domain: domain,
@@ -80,9 +92,41 @@ private extension PurchaseDomainsOrderSummaryView {
         }
         .buttonStyle(.plain)
     }
+    
+    func removeDomain(_ domain: DomainToPurchase) {
+        if let i = domains.firstIndex(of: domain) {
+            removedDomain = .init(domain: domains[i],
+                                  index: i)
+            domains.remove(at: i)
+            resetTimer()
+        }
+    }
+    
+    func undoRemoveDomain(_ removedDomain: RemovedDomainInfo) {
+        domains.insert(removedDomain.domain,
+                       at: removedDomain.index)
+        self.removedDomain = nil
+    }
+    
+    struct RemovedDomainInfo {
+        let domain: DomainToPurchase
+        let index: Int
+    }
+    
+    private func resetTimer() {
+        // Invalidate any existing timer
+        timer?.invalidate()
+        // Start a new 5-second timer
+        timer = Timer.scheduledTimer(withTimeInterval: 5.0, 
+                                     repeats: false) { _ in
+            withAnimation {
+                self.removedDomain = nil
+            }
+        }
+    }
 }
 
 #Preview {
-    PurchaseDomainsOrderSummaryView(domains: [],
+    PurchaseDomainsOrderSummaryView(domains: MockEntitiesFabric.Domains.mockDomainsToPurchase(),
                                     domainsUpdatedCallback: { _ in })
 }

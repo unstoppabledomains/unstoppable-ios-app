@@ -794,21 +794,7 @@ private extension PullUpErrorConfiguration {
     let stateWrapper = NavigationStateManagerWrapper()
     
     return NavigationStack {
-        PurchaseDomainsCheckoutView(domains: [.init(name: "oleg.x",
-                                                  price: 10000,
-                                                  metadata: nil,
-                                                  isTaken: false,
-                                                  isAbleToPurchase: true),
-                                              .init(name: "oleg.com",
-                                                    price: 10000,
-                                                    metadata: nil,
-                                                    isTaken: false,
-                                                    isAbleToPurchase: true),
-                                              .init(name: "oleg.eth",
-                                                    price: 10000,
-                                                    metadata: nil,
-                                                    isTaken: false,
-                                                    isAbleToPurchase: true)],
+        PurchaseDomainsCheckoutView(domains: MockEntitiesFabric.Domains.mockDomainsToPurchase(),
                                     selectedWallet: MockEntitiesFabric.Wallet.mockEntities()[0],
                                     wallets: Array(MockEntitiesFabric.Wallet.mockEntities().prefix(4)),
                                     profileChanges: .init(domainName: "oleg.x",
