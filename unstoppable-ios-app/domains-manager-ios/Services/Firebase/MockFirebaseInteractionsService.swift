@@ -172,7 +172,7 @@ private extension MockFirebaseInteractionsService {
         let storeCredits = checkoutData.isStoreCreditsOn ? 100 : 0
         let promoCredits = checkoutData.isPromoCreditsOn ? 2000 : 0
         let otherDiscounts = checkoutData.discountCode.isEmpty ? 0 : cart.totalPrice / 3
-        cart.appliedDiscountDetails = .init(storeCredits: storeCredits, 
+        cart.appliedDiscountDetails = .init(storeCredits: storeCredits,
                                             promoCredits: promoCredits,
                                             others: otherDiscounts)
         cart.totalPrice -= (storeCredits + promoCredits + otherDiscounts)

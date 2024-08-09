@@ -50,7 +50,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
                         usaZIPCodeView()
                             .padding(.vertical, 20)
                         checkoutDashSeparator()
-                        discountView()
+                        discountsView()
                             .padding(.vertical, 20)
                         summarySection()
                     }
@@ -299,11 +299,32 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     @ViewBuilder
-    func discountView() -> some View {
+    func discountsView() -> some View {
+        VStack(spacing: 8) {
+            otherDiscountsView()
+            promoCreditsDiscountView()
+            storeCreditsDiscountView()
+        }
+    }
+    
+    @ViewBuilder
+    func otherDiscountsView() -> some View {
         Button {
             logButtonPressedAnalyticEvents(button: .creditsAndDiscounts)
-            isEnterDiscountCodePresented = true
+            if checkoutData.discountCode.isEmpty {
+                isEnterDiscountCodePresented = true
+            } else {
+                purchaseDomainsPreferencesStorage.checkoutData.discountCode = ""
+            }
         } label: {
+            otherDiscountsLabelView()
+                .padding(.horizontal, 16)
+        }
+        .buttonStyle(.plain)
+    }
+    
+    @ViewBuilder
+        func otherDiscountsLabelView() -> some View {
             HStack(spacing: 16) {
                 Image.tagIcon
                     .resizable()
@@ -328,21 +349,72 @@ private extension PurchaseDomainsCheckoutView {
                     Spacer()
                     
                     HStack(spacing: 8) {
-                        if let appliedDiscountsSum {
-                            Text("-\(formatCartPrice(appliedDiscountsSum))")
+                        if cartStatus.otherDiscountsApplied > 0 {
+                            Text("-\(formatCartPrice(cartStatus.otherDiscountsApplied))")
                                 .textAttributes(color: .foregroundSecondary,
                                                 fontSize: 16)
                         }
-                        Image.chevronRight
+                        discountRowTrailingIcon
                             .resizable()
                             .foregroundStyle(Color.foregroundSecondary)
                             .squareFrame(24)
                     }
                 }
             }
-            .padding(.horizontal, 16)
+    }
+  
+    
+    @ViewBuilder
+    func promoCreditsDiscountView() -> some View {
+        if cartStatus.promoCreditsAvailable > 0 {
+            specificDiscountInfoRow(icon: .ticketIcon,
+                                    title: String.Constants.promoCredits.localized(),
+                                    value: cartStatus.promoCreditsAvailable)
         }
-        .buttonStyle(.plain)
+    }
+    
+    @ViewBuilder
+    func storeCreditsDiscountView() -> some View {
+        if cartStatus.storeCreditsAvailable > 0 {
+            specificDiscountInfoRow(icon: .starInCloudIcon,
+                                    title: String.Constants.storeCredits.localized(),
+                                    value: cartStatus.storeCreditsAvailable)
+        }
+    }
+    
+    @ViewBuilder
+    func specificDiscountInfoRow(icon: Image,
+                                 title: String,
+                                 value: Int) -> some View {
+        HStack(spacing: 16) {
+            icon
+                .resizable()
+                .foregroundStyle(Color.foregroundSecondary)
+                .squareFrame(24)
+                .padding(.vertical, 10)
+
+            HStack(spacing: 8) {
+                Text(title)
+                    .textAttributes(color: .foregroundDefault,
+                                    fontSize: 16,
+                                    fontWeight: .medium)
+                    .frame(height: 24)
+                Spacer()
+                
+                Text("-\(formatCartPrice(value))")
+                    .textAttributes(color: .foregroundSecondary,
+                                    fontSize: 16)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.trailing, cartStatus.otherDiscountsApplied > 0 ? 32 : 0)
+    }
+    
+    var discountRowTrailingIcon: Image {
+        if checkoutData.discountCode.isEmpty {
+            return .chevronRight
+        }
+        return .trashIcon
     }
     
     var discountValueString: String {
