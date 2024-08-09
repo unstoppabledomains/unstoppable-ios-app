@@ -25,6 +25,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @State private var pullUp: ViewPullUpConfigurationType?
     @State private var cartStatus: PurchaseDomainCartStatus = .ready(cart: .empty)
     @State private var isLoading = false
+    @State private var isKeyboardActive = false
     @State private var isSelectWalletPresented = false
     @State private var isEnterZIPCodePresented = false
     @State private var isSelectDiscountsPresented = false
@@ -51,7 +52,6 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
                         checkoutDashSeparator()
                         discountView()
                             .padding(.vertical, 20)
-                        checkoutDashSeparator()
                         summarySection()
                     }
                     .background(Color.backgroundDefault)
@@ -81,6 +81,9 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
         .onReceive(purchaseDomainsPreferencesStorage.$checkoutData.publisher.receive(on: DispatchQueue.main), perform: { checkoutData in
             self.checkoutData = checkoutData
         })
+        .onReceive(KeyboardService.shared.keyboardOpenedPublisher.receive(on: DispatchQueue.main)) { value in
+            isKeyboardActive = value
+        }
         .modifier(ShowingSelectWallet(isSelectWalletPresented: $isSelectWalletPresented,
                                       selectedWallet: selectedWallet,
                                       wallets: wallets,
@@ -97,6 +100,12 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Color.clear
+            }
+            ToolbarItem(placement: .keyboard) {
+                UDButtonView(text: String.Constants.doneButtonTitle.localized(),
+                             style: .large(.raisedPrimary)) {
+                    KeyboardService.shared.hideKeyboard()
+                }
             }
         }
         .pullUpError($error)
@@ -202,18 +211,49 @@ private extension PurchaseDomainsCheckoutView {
     
     @ViewBuilder
     func usaZIPCodeView() -> some View {
-        UDCollectionListRowButton(content: {
-            UDListItemView(title: String.Constants.zipCode.localized(),
-                           subtitle: String.Constants.toCalculateTaxes.localized(),
-                           value: usaZipCodeValue,
-                           imageType: .image(.usaFlagIcon),
-                           imageStyle: .centred(offset: EdgeInsets(top: 6, leading: 8, bottom: 6, trailing: 8)),
-                           rightViewStyle: .chevron)
-            .udListItemInCollectionButtonPadding()
-        }, callback: {
-            logButtonPressedAnalyticEvents(button: .enterUSZIPCode)
-            isEnterZIPCodePresented = true
-        })
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(spacing: 16) {
+                Image.planetIcon20
+                    .resizable()
+                    .foregroundStyle(Color.foregroundSecondary)
+                    .squareFrame(24)
+                    .padding(.vertical, 10)
+                HStack(spacing: 8) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(String.Constants.country.localized())
+                            .textAttributes(color: .foregroundDefault,
+                                            fontSize: 16,
+                                            fontWeight: .medium)
+                            .frame(height: 24)
+                        Text(String.Constants.toCalculateTaxes.localized())
+                            .textAttributes(color: .foregroundSecondary,
+                                            fontSize: 14)
+                            .frame(height: 20)
+                    }
+                    Spacer()
+                    selectCountryPicker()
+                }
+            }
+            
+            if case .usa = checkoutData.purchaseLocation {
+                UDTextFieldView(text: purchaseDomainsPreferencesStorage.$checkoutData.binding.usaZipCode,
+                                placeholder: "",
+                                hint: String.Constants.zipCodeForSalesTax.localized(),
+                                focusBehaviour: checkoutData.usaZipCode.isEmpty ? .activateOnAppear : .default,
+                                keyboardType: .numberPad)
+            }
+        }
+        .padding(.horizontal, 16)
+    }
+    
+    @ViewBuilder
+    func selectCountryPicker() -> some View {
+        Picker("", selection: purchaseDomainsPreferencesStorage.$checkoutData.binding.purchaseLocation) {
+            ForEach(PurchaseDomainsCheckoutData.UserPurchaseLocation.allCases, id: \.self) { location in
+                Text(location.rawValue)
+            }
+        }
+        .pickerStyle(.segmented)
     }
     
     var usaZipCodeValue: String {
@@ -262,6 +302,7 @@ private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func checkoutDashSeparator() -> some View {
         HomeExploreSeparatorView()
+            .padding(.horizontal, 16)
     }
     
 }
@@ -281,6 +322,10 @@ private extension PurchaseDomainsCheckoutView {
         }
         .padding()
         .background(Color.backgroundOverlay)
+        .overlay(alignment: .top, content: {
+            Line()
+                .stroke(Color.borderDefault, lineWidth: 1.0)
+        })
     }
     
     @ViewBuilder
@@ -422,10 +467,12 @@ private extension PurchaseDomainsCheckoutView {
 private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func checkoutView() -> some View {
-        VStack(spacing: 0) {
-            checkoutButton()
+        if !isKeyboardActive {
+            VStack(spacing: 0) {
+                checkoutButton()
+            }
+            .background(Color.backgroundOverlay)
         }
-        .background(Color.backgroundOverlay)
     }
     
     var checkoutButtonTitle: String {

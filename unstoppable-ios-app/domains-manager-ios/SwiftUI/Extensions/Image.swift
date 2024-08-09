@@ -130,6 +130,7 @@ extension Image {
     static let unsTLDLogo = Image("unsTLDLogo")
     static let ensTLDLogo = Image("ensTLDLogo")
     static let dnsTLDLogo = Image("dnsTLDLogo")
+    static let planetIcon20 = Image("planetIcon20")
     
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")

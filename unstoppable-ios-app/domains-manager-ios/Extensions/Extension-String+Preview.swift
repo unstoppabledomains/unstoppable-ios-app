@@ -1093,6 +1093,8 @@ extension String {
         static let purchaseMintingWalletPullUpTitle = "PURCHASE_MINTING_WALLET_PULL_UP_TITLE"
         static let purchaseMintingWalletPullUpSubtitle = "PURCHASE_MINTING_WALLET_PULL_UP_SUBTITLE"
         static let subtotal = "SUBTOTAL"
+        static let country = "COUNTRY"
+        static let zipCodeForSalesTax = "ZIP_CODE_FOR_SALES_TAX"
         
         // Home
         static let homeWalletTokensComeTitle = "HOME_WALLET_TOKENS_COME_TITLE"

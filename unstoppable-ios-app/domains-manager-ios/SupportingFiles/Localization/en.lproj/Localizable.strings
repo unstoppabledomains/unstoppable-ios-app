@@ -988,6 +988,8 @@
 "PURCHASE_MINTING_WALLET_PULL_UP_TITLE" = "Select Minting Wallet";
 "PURCHASE_MINTING_WALLET_PULL_UP_SUBTITLE" = "Where your domains will be minted.";
 "SUBTOTAL" = "Subtotal";
+"COUNTRY" = "Country";
+"ZIP_CODE_FOR_SALES_TAX" = "ZIP Code for Sales Tax";
 
 // Home
 "HOME_WALLET_TOKENS_COME_TITLE" = "No more tokens here yet";
