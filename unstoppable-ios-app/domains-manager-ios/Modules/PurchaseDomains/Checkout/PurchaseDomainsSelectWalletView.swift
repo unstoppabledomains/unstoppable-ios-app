@@ -72,7 +72,6 @@ private extension PurchaseDomainsSelectWalletView {
             .udListItemInCollectionButtonPadding()
         }, callback: {
             logButtonPressedAnalyticEvents(button: .purchaseDomainTargetWalletSelected)
-            print(wallets.count)
             self.selectedWallet = wallet
         })
     }

@@ -52,9 +52,15 @@ private extension PurchaseDomainsSearchResultRowView {
                     .resizable()
                     .foregroundStyle(Color.foregroundSuccess)
             } else {
-                Image.addToCartIcon
-                    .resizable()
-                    .foregroundStyle(Color.foregroundAccent)
+                if domain.isTooExpensiveToBuyInApp {
+                    Image.arrowTopRight
+                        .resizable()
+                        .foregroundStyle(Color.foregroundSecondary)
+                } else {
+                    Image.addToCartIcon
+                        .resizable()
+                        .foregroundStyle(Color.foregroundAccent)
+                }
             }
         case .cart:
             Image.trashIcon

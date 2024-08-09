@@ -77,6 +77,11 @@ extension PurchaseDomains {
             domains.firstIndex(where: { $0.name == domain.name }) != nil
         }
         
+        func canAddDomainToCart(_ domain: DomainToPurchase) -> Bool {
+            let totalPriceWithNewDomain = totalPrice + domain.price
+            return totalPriceWithNewDomain < Constants.maxPurchaseDomainsSum
+        }
+        
         mutating func addDomain(_ domain: DomainToPurchase) {
             guard !isDomainInCart(domain) else { return }
             

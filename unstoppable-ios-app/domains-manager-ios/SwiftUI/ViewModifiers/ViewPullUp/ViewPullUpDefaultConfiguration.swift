@@ -504,6 +504,27 @@ extension ViewPullUpDefaultConfiguration {
                      dismissCallback: nil)
     }
     
+    static func buyDomainFromTheWebsite(goToWebCallback: MainActorAsyncCallback?) -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .unsTLDLogo,
+                          size: .small),
+              title: .text(String.Constants.buyDomainFromWebPullUpTitle.localized()),
+              subtitle: .label(.text(String.Constants.buyDomainFromWebPullUpSubtitle.localized())),
+              actionButton: .main(content: .init(title: String.Constants.goToWebsite.localized(),
+                                                 analyticsName: .goToWebsite,
+                                                 action: goToWebCallback)),
+              analyticName: .wcRequestNotSupported)
+    }
+    
+    static func checkoutFromTheWebsite(goToWebCallback: MainActorAsyncCallback?) -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .unsTLDLogo,
+                          size: .small),
+              title: .text(String.Constants.checkoutFromWebPullUpTitle.localized()),
+              subtitle: .label(.text(String.Constants.checkoutFromWebPullUpSubtitle.localized())),
+              actionButton: .main(content: .init(title: String.Constants.goToWebsite.localized(),
+                                                 analyticsName: .goToWebsite,
+                                                 action: goToWebCallback)),
+              analyticName: .wcRequestNotSupported)
+    }
 }
 
 // MARK: - Open methods

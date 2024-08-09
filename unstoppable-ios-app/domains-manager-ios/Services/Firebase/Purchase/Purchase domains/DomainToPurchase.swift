@@ -17,6 +17,9 @@ struct DomainToPurchase: Hashable, Identifiable {
     let isTaken: Bool
     let isAbleToPurchase: Bool
     
+    var isTooExpensiveToBuyInApp: Bool {
+        price >= Constants.maxPurchaseDomainsSum
+    }
     var tld: String { name.components(separatedBy: .dotSeparator).last ?? "" }
     var tldCategory: TLDCategory {
         switch tld {

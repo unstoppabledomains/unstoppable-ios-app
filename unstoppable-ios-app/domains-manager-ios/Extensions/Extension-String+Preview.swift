@@ -1101,6 +1101,10 @@ extension String {
         static let domainRemoved = "DOMAIN_REMOVED"
         static let undo = "UNDO"
         static let cartCleared = "CART_CLEARED"
+        static let buyDomainFromWebPullUpTitle = "BUY_DOMAIN_FROM_WEB_PULL_UP_TITLE"
+        static let buyDomainFromWebPullUpSubtitle = "BUY_DOMAIN_FROM_WEB_PULL_UP_SUBTITLE"
+        static let checkoutFromWebPullUpTitle = "CHECKOUT_FROM_WEB_PULL_UP_TITLE"
+        static let checkoutFromWebPullUpSubtitle = "CHECKOUT_FROM_WEB_PULL_UP_SUBTITLE"
         
         // Home
         static let homeWalletTokensComeTitle = "HOME_WALLET_TOKENS_COME_TITLE"

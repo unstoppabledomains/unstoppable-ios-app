@@ -360,7 +360,7 @@ private extension PurchaseDomainsSearchView {
                            actionButton: .main(content: .init(title: String.Constants.goToWebsite.localized(),
                                                               analyticsName: .goToWebsite,
                                                               action: {
-                openLinkExternally(.unstoppableDomainSearch(searchKey: domain.name))
+                moveToPurchaseDomainsFromTheWeb(domain: domain)
             })),
                            cancelButton: .gotItButton(),
                            analyticName: .searchPurchaseDomainNotSupported))
@@ -368,11 +368,25 @@ private extension PurchaseDomainsSearchView {
     }
     
     func didSelectDomainToPurchase(_ domain: DomainToPurchase) {
-        if localCart.isDomainInCart(domain) {
+        if domain.isTooExpensiveToBuyInApp {
+            pullUp = .default(.buyDomainFromTheWebsite(goToWebCallback: {
+                moveToPurchaseDomainsFromTheWeb(domain: domain)
+            }))
+        } else if localCart.isDomainInCart(domain) {
             viewModel.localCart.removeDomain(domain)
         } else {
-            viewModel.localCart.addDomain(domain)
+            if !localCart.canAddDomainToCart(domain) {
+                pullUp = .default(.checkoutFromTheWebsite(goToWebCallback: {
+                    moveToPurchaseDomainsFromTheWeb(domain: domain)
+                }))
+            } else {
+                viewModel.localCart.addDomain(domain)
+            }
         }
+    }
+    
+    func moveToPurchaseDomainsFromTheWeb(domain: DomainToPurchase?) {
+        openLinkExternally(.unstoppableDomainSearch(searchKey: domain?.name ?? ""))
     }
 }
 
