@@ -999,7 +999,6 @@
 		C655CA992B16E51B00FDA063 /* EasySkeleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CA952B16E51B00FDA063 /* EasySkeleton.swift */; };
 		C655CA9C2B16E5BE00FDA063 /* UDListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CA9A2B16E5BE00FDA063 /* UDListItemView.swift */; };
 		C655CA9D2B16E5BE00FDA063 /* UDToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CA9B2B16E5BE00FDA063 /* UDToggleStyle.swift */; };
-		C655CAA52B16E82800FDA063 /* PurchaseDomainsSelectDiscountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA02B16E82700FDA063 /* PurchaseDomainsSelectDiscountsView.swift */; };
 		C655CAA62B16E82800FDA063 /* PurchaseDomainsEnterDiscountCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA12B16E82700FDA063 /* PurchaseDomainsEnterDiscountCodeView.swift */; };
 		C655CAA72B16E82800FDA063 /* PurchaseDomainsCheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA22B16E82700FDA063 /* PurchaseDomainsCheckoutView.swift */; };
 		C655CAA82B16E82800FDA063 /* PurchaseDomainsSelectWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA32B16E82700FDA063 /* PurchaseDomainsSelectWalletView.swift */; };
@@ -2061,7 +2060,6 @@
 		C6D645732B1D721D00D724AC /* PurchaseDomainsCheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA22B16E82700FDA063 /* PurchaseDomainsCheckoutView.swift */; };
 		C6D645742B1D721D00D724AC /* PurchaseDomainsSelectWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA32B16E82700FDA063 /* PurchaseDomainsSelectWalletView.swift */; };
 		C6D645752B1D721D00D724AC /* PurchaseDomainsEnterZIPCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA42B16E82700FDA063 /* PurchaseDomainsEnterZIPCodeView.swift */; };
-		C6D645762B1D721D00D724AC /* PurchaseDomainsSelectDiscountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA02B16E82700FDA063 /* PurchaseDomainsSelectDiscountsView.swift */; };
 		C6D645772B1D721D00D724AC /* PurchaseDomainsEnterDiscountCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA12B16E82700FDA063 /* PurchaseDomainsEnterDiscountCodeView.swift */; };
 		C6D645782B1D724500D724AC /* DeviceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C628E38127FEE31D0044E408 /* DeviceHelper.swift */; };
 		C6D6457A2B1D7C2F00D724AC /* PullUpError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D645792B1D7C2F00D724AC /* PullUpError.swift */; };
@@ -3429,7 +3427,6 @@
 		C655CA952B16E51B00FDA063 /* EasySkeleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EasySkeleton.swift; sourceTree = "<group>"; };
 		C655CA9A2B16E5BE00FDA063 /* UDListItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDListItemView.swift; sourceTree = "<group>"; };
 		C655CA9B2B16E5BE00FDA063 /* UDToggleStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDToggleStyle.swift; sourceTree = "<group>"; };
-		C655CAA02B16E82700FDA063 /* PurchaseDomainsSelectDiscountsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsSelectDiscountsView.swift; sourceTree = "<group>"; };
 		C655CAA12B16E82700FDA063 /* PurchaseDomainsEnterDiscountCodeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsEnterDiscountCodeView.swift; sourceTree = "<group>"; };
 		C655CAA22B16E82700FDA063 /* PurchaseDomainsCheckoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsCheckoutView.swift; sourceTree = "<group>"; };
 		C655CAA32B16E82700FDA063 /* PurchaseDomainsSelectWalletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsSelectWalletView.swift; sourceTree = "<group>"; };
@@ -6250,7 +6247,6 @@
 			isa = PBXGroup;
 			children = (
 				C655CAA22B16E82700FDA063 /* PurchaseDomainsCheckoutView.swift */,
-				C655CAA02B16E82700FDA063 /* PurchaseDomainsSelectDiscountsView.swift */,
 				C655CAA12B16E82700FDA063 /* PurchaseDomainsEnterDiscountCodeView.swift */,
 				C655CAA32B16E82700FDA063 /* PurchaseDomainsSelectWalletView.swift */,
 				C655CAA42B16E82700FDA063 /* PurchaseDomainsEnterZIPCodeView.swift */,
@@ -9294,7 +9290,6 @@
 				C663538B294319B400EF1DC7 /* ScrollViewOffsetListener.swift in Sources */,
 				C632BE592BA59ECF00C95B2D /* FB_UD_MPCSuccessAuthResponse.swift in Sources */,
 				C628E36327FDDAA00044E408 /* UILabel.swift in Sources */,
-				C655CAA52B16E82800FDA063 /* PurchaseDomainsSelectDiscountsView.swift in Sources */,
 				C6A232052BEB5B1B0037E093 /* WalletDetails.swift in Sources */,
 				C635AFF328338A080058F14F /* DomainURLActivityItemSource.swift in Sources */,
 				30CB2D2225C2E98C00203052 /* ApiRequestBuilder.swift in Sources */,
@@ -11370,7 +11365,6 @@
 				C6D645B22B1DBBCE00D724AC /* PreviewConnectedAppsImageCache.swift in Sources */,
 				C6A89C5F2B31654E008AB043 /* HotFeatureSuggestionsService.swift in Sources */,
 				C6B761EE2BB3F8C900773943 /* MockEntitiesFabric+Txs.swift in Sources */,
-				C6D645762B1D721D00D724AC /* PurchaseDomainsSelectDiscountsView.swift in Sources */,
 				C6D646552B1ED10100D724AC /* DomainProfileWeb3WebsiteCell.swift in Sources */,
 				C6D6462E2B1DC31700D724AC /* CollectionDashesHeaderReusableView.swift in Sources */,
 				C64F6C542C4FAF2200D89FEF /* FullMaintenanceModeView.swift in Sources */,

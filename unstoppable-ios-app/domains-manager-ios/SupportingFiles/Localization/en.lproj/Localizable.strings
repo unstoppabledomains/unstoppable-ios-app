@@ -932,6 +932,7 @@
 "MINT_TO" = "Mint to";
 "APPLY_DISCOUNTS" = "Apply discounts";
 "ADD_DISCOUNT_CODE" = "Add discount code";
+"DISCOUNT_CODE_APPLIED" = "Discount code applied";
 "PROMO_CREDITS" = "Promo credits";
 "STORE_CREDITS" = "Store credits";
 "US_ZIP_CODE" = "US ZIP code";

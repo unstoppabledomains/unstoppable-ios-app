@@ -28,7 +28,6 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @State private var isKeyboardActive = false
     @State private var isSelectWalletPresented = false
     @State private var isEnterZIPCodePresented = false
-    @State private var isSelectDiscountsPresented = false
     @State private var isEnterDiscountCodePresented = false
     
     var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
@@ -96,6 +95,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
         .sheet(isPresented: $isEnterDiscountCodePresented, content: {
             PurchaseDomainsEnterDiscountCodeView()
                 .passViewAnalyticsDetails(logger: self)
+                .presentationDetents([.medium])
         })
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -109,7 +109,6 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
             }
         }
         .pullUpError($error)
-        .modifier(ShowingSelectDiscounts(isSelectDiscountsPresented: $isSelectDiscountsPresented))
         .viewPullUp($pullUp)
         .onAppear(perform: onAppear)
     }
@@ -264,22 +263,59 @@ private extension PurchaseDomainsCheckoutView {
         }
     }
     
+    var discountViewTitle: String {
+        if appliedDiscountsSum != nil {
+            return String.Constants.discountCodeApplied.localized()
+        }
+        return String.Constants.addDiscountCode.localized()
+    }
+    
     @ViewBuilder
     func discountView() -> some View {
-        UDCollectionListRowButton(content: {
-            UDListItemView(title: String.Constants.creditsAndDiscounts.localized(),
-                           value: discountValueString,
-                           imageType: .image(.tagsCashIcon),
-                           rightViewStyle: .chevron)
-            .udListItemInCollectionButtonPadding()
-        }, callback: {
-            if cartStatus.storeCreditsAvailable == 0 && cartStatus.promoCreditsAvailable == 0 {
-                logButtonPressedAnalyticEvents(button: .creditsAndDiscounts)
-                isEnterDiscountCodePresented = true
-            } else {
-                isSelectDiscountsPresented = true
+        
+        Button {
+            logButtonPressedAnalyticEvents(button: .creditsAndDiscounts)
+            isEnterDiscountCodePresented = true
+        } label: {
+            HStack(spacing: 16) {
+                Image.tagIcon
+                    .resizable()
+                    .foregroundStyle(Color.foregroundSecondary)
+                    .squareFrame(24)
+                    .padding(.vertical, 10)
+                    .rotationEffect(.degrees(-90))
+                HStack(spacing: 8) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(discountViewTitle)
+                            .textAttributes(color: .foregroundDefault,
+                                            fontSize: 16,
+                                            fontWeight: .medium)
+                            .frame(height: 24)
+                        if let discountCode = checkoutData.discountCodeIfEntered {
+                            Text(discountCode)
+                                .textAttributes(color: .foregroundSecondary,
+                                                fontSize: 14)
+                                .frame(height: 20)
+                        }
+                    }
+                    Spacer()
+                    
+                    HStack(spacing: 8) {
+                        if let appliedDiscountsSum {
+                            Text("-\(formatCartPrice(appliedDiscountsSum))")
+                                .textAttributes(color: .foregroundSecondary,
+                                                fontSize: 16)
+                        }
+                        Image.chevronRight
+                            .resizable()
+                            .foregroundStyle(Color.foregroundSecondary)
+                            .squareFrame(24)
+                    }
+                }
             }
-        })
+            .padding(.horizontal, 16)
+        }
+        .buttonStyle(.plain)
     }
     
     var discountValueString: String {
@@ -370,7 +406,7 @@ private extension PurchaseDomainsCheckoutView {
                 additionalCheckoutDetailsRow(title: String.Constants.subtotal.localized(), value: formatCartPrice(cartStatus.subtotalPrice))
                 
                 if appliedDiscountsSum != nil {
-                    additionalCheckoutDetailsRow(title: String.Constants.creditsAndDiscounts.localized(), value: discountValueString)
+                    additionalCheckoutDetailsRow(title: String.Constants.discounts.localized(), value: discountValueString)
                 }
                 if cartStatus.taxes > 0 {
                     additionalCheckoutDetailsRow(title: String.Constants.taxes.localized(), value: formatCartPrice(cartStatus.taxes))
@@ -637,18 +673,6 @@ private extension PurchaseDomainsCheckoutView {
 
 // MARK: - Private methods
 private extension PurchaseDomainsCheckoutView {
-    struct ShowingSelectDiscounts: ViewModifier {
-        @Binding var isSelectDiscountsPresented: Bool
-        
-        func body(content: Content) -> some View {
-            content
-                .sheet(isPresented: $isSelectDiscountsPresented, content: {
-                    PurchaseDomainsSelectDiscountsView()
-                        .presentationDetents([.medium])
-                })
-        }
-    }
-    
     struct ShowingSelectWallet: ViewModifier {
         @Binding var isSelectWalletPresented: Bool
         let selectedWallet: WalletEntity

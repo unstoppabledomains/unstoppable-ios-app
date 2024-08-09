@@ -1037,6 +1037,7 @@ extension String {
         static let mintTo = "MINT_TO"
         static let applyDiscounts = "APPLY_DISCOUNTS"
         static let addDiscountCode = "ADD_DISCOUNT_CODE"
+        static let discountCodeApplied = "DISCOUNT_CODE_APPLIED"
         static let promoCredits = "PROMO_CREDITS"
         static let storeCredits = "STORE_CREDITS"
         static let usZIPCode = "US_ZIP_CODE"
