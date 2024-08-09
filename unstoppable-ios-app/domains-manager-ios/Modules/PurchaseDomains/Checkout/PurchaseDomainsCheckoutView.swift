@@ -21,7 +21,6 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @State var profileChanges: DomainProfilePendingChanges
     
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
-    
     @State private var error: PullUpErrorConfiguration?
     @State private var pullUp: ViewPullUpConfigurationType?
     @State private var cartStatus: PurchaseDomainCartStatus = .ready(cart: .empty)
@@ -127,13 +126,13 @@ private extension PurchaseDomainsCheckoutView {
     func mintToRowView() -> some View {
         VStack(alignment: .leading) {
             HStack(spacing: 16) {
-                Image(systemName: "star.fill")
+                Image.walletExternalIcon
                     .resizable()
                     .foregroundStyle(Color.foregroundSecondary)
                     .squareFrame(24)
                     .padding(.vertical, 10)
                 HStack(spacing: 8) {
-                    Text(String.Constants.purchaseMintingWalletTitle.localized())
+                    Text(String.Constants.mintTo.localized())
                         .textAttributes(color: .foregroundDefault,
                                         fontSize: 16,
                                         fontWeight: .medium)
@@ -162,6 +161,7 @@ private extension PurchaseDomainsCheckoutView {
                 Text(selectedWalletName)
                     .textAttributes(color: .foregroundSecondary,
                                     fontSize: 16)
+                    .lineLimit(1)
                 if let walletSelectionIndicatorImage {
                     walletSelectionIndicatorImage.resizable()
                         .squareFrame(24)
@@ -192,7 +192,12 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     var selectedWalletName: String {
-        selectedWallet.displayName
+        let displayInfo = selectedWallet.displayInfo
+        let address = displayInfo.address.walletAddressTruncated
+        if displayInfo.isNameSet {
+            return "\(displayInfo.name) (\(address))"
+        }
+        return address
     }
     
     @ViewBuilder
