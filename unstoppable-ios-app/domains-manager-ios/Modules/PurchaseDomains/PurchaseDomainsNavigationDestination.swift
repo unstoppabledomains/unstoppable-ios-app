@@ -10,7 +10,7 @@ import SwiftUI
 extension PurchaseDomains {
     enum NavigationDestination: Hashable {
         case root(HomeTabRouter)
-        case checkout(_ chekoutData: CheckoutData, viewModel: PurchaseDomainsViewModel)
+        case checkout(_ checkoutData: CheckoutData, viewModel: PurchaseDomainsViewModel)
         case purchased(PurchaseDomainsViewModel)
         
         var isWithCustomTitle: Bool {

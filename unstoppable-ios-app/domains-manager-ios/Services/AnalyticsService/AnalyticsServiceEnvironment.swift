@@ -421,7 +421,7 @@ extension Analytics {
         case buy, receive, profile, more
         case connectedApps
         case selectProfile, profileSelected
-        case rrDomainAvatar, purchaseDomainAvatar
+        case rrDomainAvatar, purchaseDomainAvatar, purchaseSelectCountry
         case homeContentTypeSelected
         case sort, sortType
         case notMatchingToken, notMatchingTokensSectionHeader

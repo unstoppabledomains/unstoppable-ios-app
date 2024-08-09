@@ -36,7 +36,8 @@ struct PurchaseDomainsCheckoutData: Equatable {
         }
     }
     
-    enum UserPurchaseLocation: String, Codable, CaseIterable {
+    enum UserPurchaseLocation: String, Codable, CaseIterable, UDSegmentedControlItem {
+        
         case usa
         case other
         
@@ -48,6 +49,7 @@ struct PurchaseDomainsCheckoutData: Equatable {
                 return String.Constants.other.localized()
             }
         }
+        var analyticButton: Analytics.Button { .purchaseSelectCountry }
     }
 }
 

@@ -14,7 +14,7 @@ struct PurchaseDomainsSearchView: View, ViewAnalyticsLogger {
     @EnvironmentObject var viewModel: PurchaseDomainsViewModel
     @StateObject private var debounceObject = DebounceObject()
     @StateObject private var ecommFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceEcommEnabled)
-    @StateObject private var localCart = PurchaseDomains.LocalCart()
+    private var localCart: PurchaseDomains.LocalCart { viewModel.localCart }
     @State private var suggestions: [DomainToPurchaseSuggestion] = []
     @State private var searchResultHolder: PurchaseDomains.SearchResultHolder = .init()
     @State private var isLoading: Bool = false
@@ -32,10 +32,9 @@ struct PurchaseDomainsSearchView: View, ViewAnalyticsLogger {
         .background(Color.backgroundDefault)
         .viewPullUp($pullUp)
         .onAppear(perform: onAppear)
-        .sheet(isPresented: $localCart.isShowingCart, content: {
+        .sheet(isPresented: $viewModel.localCart.isShowingCart, content: {
             PurchaseDomainsCartView()
         })
-        .environmentObject(localCart)
         .navigationTitle(String.Constants.buyDomainsSearchTitle.localized())
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -64,7 +63,7 @@ private extension PurchaseDomainsSearchView {
     func cartButtonView() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            localCart.isShowingCart = true
+            viewModel.localCart.isShowingCart = true
         } label: {
             ZStack(alignment: .topTrailing) {
                 Image.cartIcon
@@ -370,9 +369,9 @@ private extension PurchaseDomainsSearchView {
     
     func didSelectDomainToPurchase(_ domain: DomainToPurchase) {
         if localCart.isDomainInCart(domain) {
-            localCart.removeDomain(domain)
+            viewModel.localCart.removeDomain(domain)
         } else {
-            localCart.addDomain(domain)
+            viewModel.localCart.addDomain(domain)
         }
     }
 }

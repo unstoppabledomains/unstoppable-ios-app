@@ -1100,6 +1100,7 @@ extension String {
         static let zipCodeForSalesTax = "ZIP_CODE_FOR_SALES_TAX"
         static let domainRemoved = "DOMAIN_REMOVED"
         static let undo = "UNDO"
+        static let cartCleared = "CART_CLEARED"
         
         // Home
         static let homeWalletTokensComeTitle = "HOME_WALLET_TOKENS_COME_TITLE"

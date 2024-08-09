@@ -13,6 +13,7 @@ extension PurchaseDomains {
     enum FlowAction {
         case didSelectDomains(_ domains: [DomainToPurchase])
         case didFillProfileForDomain(_ domain: DomainToPurchase, profileChanges: DomainProfilePendingChanges)
+        case didRemoveAllDomainsFromTheCart
         case didPurchaseDomains
         case goToDomains
     }
@@ -65,10 +66,10 @@ extension PurchaseDomains {
 }
 
 extension PurchaseDomains {
-    final class LocalCart: ObservableObject {
-        @Published
+    struct LocalCart {
+        
         private(set) var domains: [DomainToPurchase] = []
-        @Published var isShowingCart = false
+        var isShowingCart = false
 
         var totalPrice: Int { domains.reduce(0, { $0 + $1.price })}
         
@@ -76,19 +77,19 @@ extension PurchaseDomains {
             domains.firstIndex(where: { $0.name == domain.name }) != nil
         }
         
-        func addDomain(_ domain: DomainToPurchase) {
+        mutating func addDomain(_ domain: DomainToPurchase) {
             guard !isDomainInCart(domain) else { return }
             
             domains.append(domain)
         }
         
-        func removeDomain(_ domain: DomainToPurchase) {
+        mutating func removeDomain(_ domain: DomainToPurchase) {
             if let i = domains.firstIndex(where: { $0.name == domain.name }) {
                 domains.remove(at: i)
             }
         }
         
-        func clearCart() {
+        mutating func clearCart() {
             domains.removeAll()
         }
     }

@@ -995,6 +995,7 @@
 "ZIP_CODE_FOR_SALES_TAX" = "ZIP Code for Sales Tax";
 "DOMAIN_REMOVED" = "Domain removed";
 "UNDO" = "Undo";
+"CART_CLEARED" = "Cart cleared";
 
 // Home
 "HOME_WALLET_TOKENS_COME_TITLE" = "No more tokens here yet";

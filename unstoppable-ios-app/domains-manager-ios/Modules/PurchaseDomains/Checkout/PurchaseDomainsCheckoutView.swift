@@ -124,6 +124,11 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
 // MARK: - Details section
 private extension PurchaseDomainsCheckoutView {
     func didUpdateDomainsList(_ newDomains: [DomainToPurchase]) {
+        guard !newDomains.isEmpty else {
+            viewModel.handleAction(.didRemoveAllDomainsFromTheCart)
+            return
+        }
+        
         self.domains = newDomains
         Task {
             setLoading(true)
@@ -275,12 +280,9 @@ private extension PurchaseDomainsCheckoutView {
     
     @ViewBuilder
     func selectCountryPicker() -> some View {
-        Picker("", selection: purchaseDomainsPreferencesStorage.$checkoutData.binding.purchaseLocation) {
-            ForEach(PurchaseDomainsCheckoutData.UserPurchaseLocation.allCases, id: \.self) { location in
-                Text(location.title)
-            }
-        }
-        .pickerStyle(.segmented)
+        UDSegmentedControlView(selection: purchaseDomainsPreferencesStorage.$checkoutData.binding.purchaseLocation,
+                               items: PurchaseDomainsCheckoutData.UserPurchaseLocation.allCases)
+        .frame(width: 157)
     }
     
     var usaZipCodeValue: String {

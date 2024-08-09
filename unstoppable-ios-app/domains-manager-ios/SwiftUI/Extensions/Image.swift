@@ -74,7 +74,7 @@ extension Image {
     static let udLogoBlue = Image("udLogoBlue")
     static let arrowUp24 = Image("arrowUp24")
     static let plusIcon18 = Image("plusIcon18")
-    static let trashIcon = Image("trashIcon16")
+    static let trashIcon = Image("trashIcon")
     static let framesIcon = Image("framesIcon")
     static let helpIcon = Image("helpIcon24")
     static let docsIcon = Image("docsIcon24")

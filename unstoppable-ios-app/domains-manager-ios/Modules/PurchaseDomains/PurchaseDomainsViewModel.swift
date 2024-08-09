@@ -12,6 +12,7 @@ final class PurchaseDomainsViewModel: ObservableObject {
     
     @Published var isLoading = false
     @Published var error: Error?
+    @Published var localCart = PurchaseDomains.LocalCart()
     let id = UUID().uuidString
     private var purchaseData: PurchaseData = PurchaseData()
     private let router: HomeTabRouter
@@ -57,6 +58,10 @@ final class PurchaseDomainsViewModel: ObservableObject {
                 case .didFillProfileForDomain(let domain, let profileChanges):
                     moveToCheckoutWith(domains: [domain],
                                        profileChanges: profileChanges)
+                case .didRemoveAllDomainsFromTheCart:
+                    localCart.clearCart()
+                    router.walletViewNavPath.removeLast()
+                    appContext.toastMessageService.showToast(.cartCleared, isSticky: false)
                 case .didPurchaseDomains:
                     pushTo(.purchased(self))
                 case .goToDomains:

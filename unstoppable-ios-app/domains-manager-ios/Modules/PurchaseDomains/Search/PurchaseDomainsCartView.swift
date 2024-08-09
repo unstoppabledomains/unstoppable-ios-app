@@ -10,10 +10,10 @@ import SwiftUI
 struct PurchaseDomainsCartView: View {
     
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject private var localCart: PurchaseDomains.LocalCart
+    @EnvironmentObject var viewModel: PurchaseDomainsViewModel
 
     var body: some View {
-        if localCart.domains.isEmpty {
+        if viewModel.localCart.domains.isEmpty {
             emptyView()
                 .presentationDetents([.height(238)])
         } else {
@@ -73,14 +73,14 @@ private extension PurchaseDomainsCartView {
     @ViewBuilder
     func headerView() -> some View {
         HStack(spacing: 4) {
-            Text(String.Constants.buyDomainsCartTitle.localized(localCart.domains.count))
+            Text(String.Constants.buyDomainsCartTitle.localized(viewModel.localCart.domains.count))
                 .textAttributes(color: .foregroundDefault,
                                 fontSize: 22,
                                 fontWeight: .bold)
             Spacer()
             Button {
                 UDVibration.buttonTap.vibrate()
-                localCart.clearCart()
+                viewModel.localCart.clearCart()
             } label: {
                 Text(String.Constants.clear.localized())
                     .textAttributes(color: .foregroundSecondary,
@@ -95,7 +95,7 @@ private extension PurchaseDomainsCartView {
     func domainsListView() -> some View {
         UDCollectionSectionBackgroundView {
             LazyVStack(spacing: 4) {
-                ForEach(localCart.domains) { domain in
+                ForEach(viewModel.localCart.domains) { domain in
                     domainListRow(domain)
                         .udListItemInCollectionButtonPadding()
                 }
@@ -108,7 +108,7 @@ private extension PurchaseDomainsCartView {
         Button {
             UDVibration.buttonTap.vibrate()
             withAnimation {
-                localCart.removeDomain(domain)
+                viewModel.localCart.removeDomain(domain)
             }
         } label: {
             PurchaseDomainsSearchResultRowView(domain: domain,
@@ -121,5 +121,5 @@ private extension PurchaseDomainsCartView {
 
 #Preview {
     PurchaseDomainsCartView()
-        .environmentObject(PurchaseDomains.LocalCart())
+//        .environmentObject(PurchaseDomains.LocalCart())
 }
