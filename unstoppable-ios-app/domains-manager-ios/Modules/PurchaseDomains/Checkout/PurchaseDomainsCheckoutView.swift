@@ -437,9 +437,9 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     @ViewBuilder
-    func checkoutDashSeparator() -> some View {
+    func checkoutDashSeparator(padding: CGFloat = 16) -> some View {
         HomeExploreSeparatorView()
-            .padding(.horizontal, 16)
+            .padding(.horizontal, padding)
     }
     
 }
@@ -448,13 +448,14 @@ private extension PurchaseDomainsCheckoutView {
 private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func summarySection() -> some View {
-        LazyVStack(alignment: .leading, spacing: 20) {
+        LazyVStack(alignment: .leading, spacing: 16) {
             summarySectionHeader()
             summaryDomainInfoView()
+            checkoutDashSeparator(padding: 0)
             additionalCheckoutDetailsView()
             totalDueView()
         }
-        .padding()
+        .padding(16)
         .background(Color.backgroundOverlay)
         .overlay(alignment: .top, content: {
             Line()
@@ -489,7 +490,7 @@ private extension PurchaseDomainsCheckoutView {
     
     @ViewBuilder
     func summaryDomainInfoView() -> some View {
-        LazyVStack(spacing: 12) {
+        LazyVStack(spacing: 16) {
             ForEach(domains) { domain in
                 domainInfoRowView(domain)
             }
