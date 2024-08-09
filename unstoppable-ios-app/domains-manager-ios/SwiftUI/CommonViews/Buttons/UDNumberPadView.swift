@@ -58,7 +58,6 @@ private extension UDNumberPadView {
     
     return UDNumberPadView(inputCallback: { inputType in
         interpreter.addInput(inputType)
-        print("Str: \(interpreter.getInput()) D: \(interpreter.getInterpretedNumber())")
     })
 }
 

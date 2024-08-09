@@ -133,11 +133,9 @@ extension EcomPurchaseInteractionService {
     }
     
     func loadUserCartCalculations() async throws -> Ecom.UserCartCalculationsResponse {
-        let queryComponents = ["applyPromoCredits" : String(checkoutData.isPromoCreditsOn),
-                               "applyStoreCredits" : String(checkoutData.isStoreCreditsOn),
-                               "discountCode" : checkoutData.discountCode.trimmedSpaces,
+        let queryComponents = ["discountCode" : checkoutData.discountCode.trimmedSpaces,
                                "durationsMap" : checkoutData.getDurationsMapString(),
-                               "zipCode" : checkoutData.usaZipCode.trimmedSpaces]
+                               "zipCode" : checkoutData.zipCodeIfEntered?.trimmedSpaces ?? ""]
         
         let urlString = URLSList.USER_CART_CALCULATIONS_URL.appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: urlString,
@@ -198,8 +196,8 @@ extension EcomPurchaseInteractionService {
         struct RequestBody: Codable {
             let cryptoWalletId: Int?
             let email: String?
-            let applyStoreCredits: Bool
-            let applyPromoCredits: Bool
+            var applyStoreCredits: Bool? = nil
+            var applyPromoCredits: Bool? = nil
             let discountCode: String?
             let zipCode: String?
         }
@@ -207,8 +205,6 @@ extension EcomPurchaseInteractionService {
         let urlString = URLSList.PAYMENT_STRIPE_URL
         let body = RequestBody(cryptoWalletId: cartDetails?.wallet?.id,
                                email: cartDetails?.email,
-                               applyStoreCredits: checkoutData.isStoreCreditsOn,
-                               applyPromoCredits: checkoutData.isPromoCreditsOn,
                                discountCode: checkoutData.discountCodeIfEntered,
                                zipCode: checkoutData.zipCodeIfEntered)
         let request = try APIRequest(urlString: urlString,
@@ -242,16 +238,14 @@ extension EcomPurchaseInteractionService {
     private func checkoutWithCredits(with cartDetails: Ecom.ProductsCartDetails?) async throws {
         struct RequestBody: Codable {
             let cryptoWalletId: Int?
-            let applyStoreCredits: Bool
-            let applyPromoCredits: Bool
+            var applyStoreCredits: Bool? = nil
+            var applyPromoCredits: Bool? = nil
             let discountCode: String?
             let zipCode: String?
         }
         
         let urlString = URLSList.STORE_CHECKOUT_URL
         let body = RequestBody(cryptoWalletId: cartDetails?.wallet?.id,
-                               applyStoreCredits: checkoutData.isStoreCreditsOn,
-                               applyPromoCredits: checkoutData.isPromoCreditsOn,
                                discountCode: checkoutData.discountCodeIfEntered,
                                zipCode: checkoutData.zipCodeIfEntered)
         let request = try APIRequest(urlString: urlString,

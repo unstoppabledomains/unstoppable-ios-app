@@ -932,6 +932,7 @@
 "MINT_TO" = "Mint to";
 "APPLY_DISCOUNTS" = "Apply discounts";
 "ADD_DISCOUNT_CODE" = "Add discount code";
+"DISCOUNT_CODE_APPLIED" = "Discount code applied";
 "PROMO_CREDITS" = "Promo credits";
 "STORE_CREDITS" = "Store credits";
 "US_ZIP_CODE" = "US ZIP code";
@@ -984,6 +985,21 @@
 "START_TYPING" = "Start typing";
 "BUY_DOMAINS_SEARCH_RESULT_SHOW_MORE_TITLE" = "Show more exact matches";
 "BUY_DOMAINS_SEARCH_RESULT_SHOW_LESS_TITLE" = "Show less exact matches";
+"PURCHASE_MINTING_WALLET_TITLE" = "Minting Wallet";
+"PURCHASE_MINTING_WALLET_PULL_UP_TITLE" = "Select Minting Wallet";
+"PURCHASE_MINTING_WALLET_PULL_UP_SUBTITLE" = "Where your domains will be minted.";
+"SUBTOTAL" = "Subtotal";
+"COUNTRY" = "Country";
+"USA" = "USA";
+"OTHER" = "Other";
+"ZIP_CODE_FOR_SALES_TAX" = "ZIP Code for Sales Tax";
+"DOMAIN_REMOVED" = "Domain removed";
+"UNDO" = "Undo";
+"CART_CLEARED" = "Cart cleared";
+"BUY_DOMAIN_FROM_WEB_PULL_UP_TITLE" = "Buy this domain from\nthe website";
+"BUY_DOMAIN_FROM_WEB_PULL_UP_SUBTITLE" = "For domains priced above $10,000, checkout is only possible using crypto. However, the app currently doesn’t support crypto checkout.";
+"CHECKOUT_FROM_WEB_PULL_UP_TITLE" = "Checkout from website";
+"CHECKOUT_FROM_WEB_PULL_UP_SUBTITLE" = "For purchases above $10,000 at once, checkout is only possible using crypto. However, the app currently doesn’t support crypto checkout.";
 
 // Home
 "HOME_WALLET_TOKENS_COME_TITLE" = "No more tokens here yet";

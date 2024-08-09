@@ -136,6 +136,14 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
         isAutoRefreshCartSuspended = false
     }
     
+    func setDomainsToPurchase(_ domains: [DomainToPurchase]) async throws {
+        isAutoRefreshCartSuspended = true
+        cartStatus = .ready(cart: .empty)
+        self.domainsToPurchase = domains
+        try await addDomainsToCart(domains)
+        isAutoRefreshCartSuspended = false
+    }
+    
     func reset() async {
         cartStatus = .ready(cart: .empty)
         cachedPaymentDetails = nil

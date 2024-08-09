@@ -10,7 +10,7 @@ import SwiftUI
 extension PurchaseDomains {
     enum NavigationDestination: Hashable {
         case root(HomeTabRouter)
-        case checkout(_ chekoutData: CheckoutData, viewModel: PurchaseDomainsViewModel)
+        case checkout(_ checkoutData: CheckoutData, viewModel: PurchaseDomainsViewModel)
         case purchased(PurchaseDomainsViewModel)
         
         var isWithCustomTitle: Bool {
@@ -65,7 +65,7 @@ extension PurchaseDomains {
             case .root(let router):
                 PurchaseDomainsRootView(viewModel: PurchaseDomainsViewModel(router: router))
             case .checkout(let checkoutData, let viewModel):
-                PurchaseDomainsCheckoutView(domain: checkoutData.domains[0],
+                PurchaseDomainsCheckoutView(domains: checkoutData.domains,
                                             selectedWallet: checkoutData.selectedWallet,
                                             wallets: checkoutData.wallets,
                                             profileChanges: checkoutData.profileChanges ?? .init(domainName: checkoutData.domains[0].name))

@@ -10,18 +10,17 @@ import SwiftUI
 struct PurchaseDomainsCheckoutButton: ViewModifier {
     
     @EnvironmentObject var viewModel: PurchaseDomainsViewModel
-    @EnvironmentObject private var localCart: PurchaseDomains.LocalCart
     
     func body(content: Content) -> some View {
         VStack {
             content
             
-            if !localCart.domains.isEmpty {
+            if !viewModel.localCart.domains.isEmpty {
                 UDButtonView(text: String.Constants.checkout.localized(),
                              subtext: subtitle,
                              style: .large(.raisedPrimary)) {
-                    if localCart.isShowingCart {
-                        localCart.isShowingCart = false
+                    if viewModel.localCart.isShowingCart {
+                        viewModel.localCart.isShowingCart = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: didConfirmToCheckout)
                     } else {
                         didConfirmToCheckout()
@@ -33,10 +32,10 @@ struct PurchaseDomainsCheckoutButton: ViewModifier {
     }
     
     private var subtitle: String {
-        "\(String.Constants.totalDue.localized()): \(formatCartPrice(localCart.totalPrice))"
+        "\(String.Constants.totalDue.localized()): \(formatCartPrice(viewModel.localCart.totalPrice))"
     }
     
     private func didConfirmToCheckout() {
-        viewModel.handleAction(.didSelectDomains(localCart.domains))
+        viewModel.handleAction(.didSelectDomains(viewModel.localCart.domains))
     }
 }

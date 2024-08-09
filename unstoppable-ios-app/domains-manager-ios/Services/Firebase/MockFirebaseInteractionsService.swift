@@ -72,7 +72,7 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
         await Task.sleep(seconds: 0.5)
         let key = key.lowercased()
         let tlds: [String] = ["x", "crypto", "nft", "wallet", "polygon", "dao", "888", "blockchain", "go", "bitcoin"]
-        let prices: [Int] = [40000, 20000, 8000, 4000, 500]
+        let prices: [Int] = [Constants.maxPurchaseDomainsSum, 4000_00, 40000, 20000, 8000, 4000, 500]
         let isTaken: [Bool] = [true, false]
         let notSupportedTLDs: [String] = ["eth", "com"]
         
@@ -131,6 +131,11 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
         updateCart()
     }
     
+    func setDomainsToPurchase(_ domains: [DomainToPurchase]) async throws {
+        cart = MockFirebaseInteractionsService.createMockCart()
+        updateCart()
+    }
+    
     func reset() async {
         cartStatus = .ready(cart: .empty)
         updateCart()
@@ -167,7 +172,7 @@ private extension MockFirebaseInteractionsService {
         let storeCredits = checkoutData.isStoreCreditsOn ? 100 : 0
         let promoCredits = checkoutData.isPromoCreditsOn ? 2000 : 0
         let otherDiscounts = checkoutData.discountCode.isEmpty ? 0 : cart.totalPrice / 3
-        cart.appliedDiscountDetails = .init(storeCredits: storeCredits, 
+        cart.appliedDiscountDetails = .init(storeCredits: storeCredits,
                                             promoCredits: promoCredits,
                                             others: otherDiscounts)
         cart.totalPrice -= (storeCredits + promoCredits + otherDiscounts)

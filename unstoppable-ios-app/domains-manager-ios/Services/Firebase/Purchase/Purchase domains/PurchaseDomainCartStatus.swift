@@ -61,5 +61,13 @@ enum PurchaseDomainCartStatus {
             return 0
         }
     }
+    var subtotalPrice: Int {
+        switch self {
+        case .ready(let cart):
+            return cart.subtotalPrice
+        default:
+            return 0
+        }
+    }
 }
 

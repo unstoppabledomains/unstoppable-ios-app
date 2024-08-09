@@ -178,7 +178,10 @@ extension UIImage {
     static let backupICloud = UIImage(named: "backupICloud")!
     static let paperPlaneTopRightSend = UIImage(named: "paperPlaneTopRightSend")!
     static let gas = UIImage(named: "gas")!
-
+    static let unsTLDLogo = UIImage(named: "unsTLDLogo")!
+    static let ensTLDLogo = UIImage(named: "ensTLDLogo")!
+    static let dnsTLDLogo = UIImage(named: "dnsTLDLogo")!
+    
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!
     static let telegramIcon24 = UIImage(named: "telegramIcon24")!

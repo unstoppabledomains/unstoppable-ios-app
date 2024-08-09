@@ -74,7 +74,7 @@ extension Image {
     static let udLogoBlue = Image("udLogoBlue")
     static let arrowUp24 = Image("arrowUp24")
     static let plusIcon18 = Image("plusIcon18")
-    static let trashIcon = Image("trashIcon16")
+    static let trashIcon = Image("trashIcon")
     static let framesIcon = Image("framesIcon")
     static let helpIcon = Image("helpIcon24")
     static let docsIcon = Image("docsIcon24")
@@ -130,6 +130,9 @@ extension Image {
     static let unsTLDLogo = Image("unsTLDLogo")
     static let ensTLDLogo = Image("ensTLDLogo")
     static let dnsTLDLogo = Image("dnsTLDLogo")
+    static let planetIcon20 = Image("planetIcon20")
+    static let ticketIcon = Image("ticketIcon")
+    static let starInCloudIcon = Image("starInCloudIcon")
     
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")

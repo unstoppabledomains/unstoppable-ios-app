@@ -21,23 +21,38 @@ struct PurchaseDomainsSelectWalletView: View, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { analyticsViewName }
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                Text(String.Constants.mintTo.localized())
-                    .font(.currentFont(size: 22, weight: .bold))
-                    .foregroundStyle(Color.foregroundDefault)
-                    .multilineTextAlignment(.center)
-                UDCollectionSectionBackgroundView {
-                    LazyVStack {
-                        ForEach(wallets, id: \.address) { wallet in
-                            walletRowView(wallet)
-                        }
+        VStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    VStack(spacing: 8) {
+                        Text(String.Constants.purchaseMintingWalletPullUpTitle.localized())
+                            .textAttributes(color: .foregroundDefault,
+                                            fontSize: 22,
+                                            fontWeight: .bold)
+                        Text(String.Constants.purchaseMintingWalletPullUpSubtitle.localized())
+                            .textAttributes(color: .foregroundSecondary,
+                                            fontSize: 16)
                     }
-                    .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+                    .multilineTextAlignment(.center)
+                    UDCollectionSectionBackgroundView {
+                        VStack {
+                            ForEach(wallets, id: \.address) { wallet in
+                                walletRowView(wallet)
+                            }
+                        }
+                        .padding(4)
+                    }
                 }
             }
-            .padding(EdgeInsets(top: 32, leading: 16, bottom: 16, trailing: 16))
+            UDButtonView(text: String.Constants.doneButtonTitle.localized(),
+                         style: .large(.raisedPrimary)) {
+                userProfilesService.setActiveProfile(.wallet(selectedWallet))
+                selectedWalletCallback(selectedWallet)
+                presentationMode.wrappedValue.dismiss()
+            }
         }
+        .padding(EdgeInsets(top: 32, leading: 16, bottom: 16, trailing: 16))
+        .background(Color.backgroundDefault)
     }
 }
 
@@ -57,12 +72,7 @@ private extension PurchaseDomainsSelectWalletView {
             .udListItemInCollectionButtonPadding()
         }, callback: {
             logButtonPressedAnalyticEvents(button: .purchaseDomainTargetWalletSelected)
-
-            let selectedWallet = wallet
-            self.selectedWallet = selectedWallet
-            userProfilesService.setActiveProfile(.wallet(selectedWallet))
-            selectedWalletCallback(selectedWallet)
-            presentationMode.wrappedValue.dismiss()
+            self.selectedWallet = wallet
         })
     }
     

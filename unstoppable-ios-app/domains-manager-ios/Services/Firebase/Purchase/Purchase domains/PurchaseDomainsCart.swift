@@ -20,10 +20,21 @@ struct PurchaseDomainsCart {
     
     var domains: [DomainToPurchase]
     var totalPrice: Int
+    let subtotalPrice: Int
     var taxes: Int
     let storeCreditsAvailable: Int
     let promoCreditsAvailable: Int
     var appliedDiscountDetails: AppliedDiscountDetails
+    
+    init(domains: [DomainToPurchase], totalPrice: Int, taxes: Int, storeCreditsAvailable: Int, promoCreditsAvailable: Int, appliedDiscountDetails: AppliedDiscountDetails) {
+        self.domains = domains
+        self.totalPrice = totalPrice
+        self.subtotalPrice = domains.reduce(0, { $0 + $1.price })
+        self.taxes = taxes
+        self.storeCreditsAvailable = storeCreditsAvailable
+        self.promoCreditsAvailable = promoCreditsAvailable
+        self.appliedDiscountDetails = appliedDiscountDetails
+    }
     
     struct AppliedDiscountDetails {
         let storeCredits: Int

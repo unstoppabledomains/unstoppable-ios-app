@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PurchaseDomainsSearchResultRowView: View {
     
-    @EnvironmentObject private var localCart: PurchaseDomains.LocalCart
+    @EnvironmentObject var viewModel: PurchaseDomainsViewModel
     let domain: DomainToPurchase
     let mode: RowMode
     
@@ -47,14 +47,20 @@ private extension PurchaseDomainsSearchResultRowView {
     func cartIconView() -> some View {
         switch mode {
         case .list:
-            if localCart.isDomainInCart(domain) {
+            if viewModel.localCart.isDomainInCart(domain) {
                 Image.checkCircle
                     .resizable()
                     .foregroundStyle(Color.foregroundSuccess)
             } else {
-                Image.addToCartIcon
-                    .resizable()
-                    .foregroundStyle(Color.foregroundAccent)
+                if domain.isTooExpensiveToBuyInApp {
+                    Image.arrowTopRight
+                        .resizable()
+                        .foregroundStyle(Color.foregroundSecondary)
+                } else {
+                    Image.addToCartIcon
+                        .resizable()
+                        .foregroundStyle(Color.foregroundAccent)
+                }
             }
         case .cart:
             Image.trashIcon
@@ -78,5 +84,5 @@ extension PurchaseDomainsSearchResultRowView {
                                                      isTaken: false,
                                                     isAbleToPurchase: true),
                                       mode: .list)
-    .environmentObject(PurchaseDomains.LocalCart())
+//    .environmentObject(PurchaseDomains.LocalCart())
 }

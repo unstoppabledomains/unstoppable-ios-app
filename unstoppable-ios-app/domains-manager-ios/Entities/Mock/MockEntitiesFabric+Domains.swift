@@ -109,6 +109,24 @@ extension MockEntitiesFabric {
         static func mockFirebaseDomainsDisplayInfo() -> [FirebaseDomainDisplayInfo] {
             mockFirebaseDomains().map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
         }
+        
+        static func mockDomainsToPurchase() -> [DomainToPurchase] {
+            [DomainToPurchase(name: "oleg.x",
+                              price: 10000,
+                              metadata: nil,
+                              isTaken: false,
+                              isAbleToPurchase: true),
+             DomainToPurchase(name: "oleg.com",
+                              price: 10000,
+                              metadata: nil,
+                              isTaken: false,
+                              isAbleToPurchase: true),
+             DomainToPurchase(name: "oleg.eth",
+                              price: 10000,
+                              metadata: nil,
+                              isTaken: false,
+                              isAbleToPurchase: true)]
+        }
     }
 }
 
