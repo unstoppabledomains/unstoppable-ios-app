@@ -135,7 +135,7 @@ extension EcomPurchaseInteractionService {
     func loadUserCartCalculations() async throws -> Ecom.UserCartCalculationsResponse {
         let queryComponents = ["discountCode" : checkoutData.discountCode.trimmedSpaces,
                                "durationsMap" : checkoutData.getDurationsMapString(),
-                               "zipCode" : checkoutData.usaZipCode.trimmedSpaces]
+                               "zipCode" : checkoutData.zipCodeIfEntered?.trimmedSpaces ?? ""]
         
         let urlString = URLSList.USER_CART_CALCULATIONS_URL.appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: urlString,
