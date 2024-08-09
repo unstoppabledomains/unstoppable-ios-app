@@ -131,6 +131,11 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
         updateCart()
     }
     
+    func setDomainsToPurchase(_ domains: [DomainToPurchase]) async throws {
+        cart = MockFirebaseInteractionsService.createMockCart()
+        updateCart()
+    }
+    
     func reset() async {
         cartStatus = .ready(cart: .empty)
         updateCart()

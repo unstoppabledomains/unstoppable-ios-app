@@ -95,7 +95,7 @@ private extension PurchaseDomainsCartView {
     func domainsListView() -> some View {
         UDCollectionSectionBackgroundView {
             LazyVStack(spacing: 4) {
-                ForEach(localCart.domains, id: \.name) { domain in
+                ForEach(localCart.domains) { domain in
                     domainListRow(domain)
                         .udListItemInCollectionButtonPadding()
                 }

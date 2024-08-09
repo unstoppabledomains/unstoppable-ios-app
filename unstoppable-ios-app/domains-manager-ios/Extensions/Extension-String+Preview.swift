@@ -1096,6 +1096,8 @@ extension String {
         static let subtotal = "SUBTOTAL"
         static let country = "COUNTRY"
         static let zipCodeForSalesTax = "ZIP_CODE_FOR_SALES_TAX"
+        static let usa = "USA"
+        static let other = "OTHER"
         
         // Home
         static let homeWalletTokensComeTitle = "HOME_WALLET_TOKENS_COME_TITLE"

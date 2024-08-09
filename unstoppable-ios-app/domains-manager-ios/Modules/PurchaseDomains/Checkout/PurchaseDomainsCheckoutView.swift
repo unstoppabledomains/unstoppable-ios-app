@@ -25,10 +25,11 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @State private var pullUp: ViewPullUpConfigurationType?
     @State private var cartStatus: PurchaseDomainCartStatus = .ready(cart: .empty)
     @State private var isLoading = false
+    @State private var zipCode = ""
     @State private var isKeyboardActive = false
     @State private var isSelectWalletPresented = false
-    @State private var isEnterZIPCodePresented = false
     @State private var isEnterDiscountCodePresented = false
+    @State private var isShowingOrderSummary = false
     
     var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
     var additionalAppearAnalyticParameters: Analytics.EventParameters {
@@ -88,23 +89,29 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
                                       wallets: wallets,
                                       analyticsName: analyticsName,
                                       selectedWalletCallback: { wallet in warnUserIfNeededAndSelectWallet(wallet) }))
-        .sheet(isPresented: $isEnterZIPCodePresented, content: {
-            PurchaseDomainsEnterZIPCodeView()
-                .passViewAnalyticsDetails(logger: self)
-        })
         .sheet(isPresented: $isEnterDiscountCodePresented, content: {
             PurchaseDomainsEnterDiscountCodeView()
                 .passViewAnalyticsDetails(logger: self)
                 .presentationDetents([.medium])
+        })
+        .sheet(isPresented: $isShowingOrderSummary, content: {
+            PurchaseDomainsOrderSummaryView(domains: domains,
+                                            domainsUpdatedCallback: didUpdateDomainsList)
+                .passViewAnalyticsDetails(logger: self)
         })
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Color.clear
             }
             ToolbarItem(placement: .keyboard) {
-                UDButtonView(text: String.Constants.doneButtonTitle.localized(),
-                             style: .large(.raisedPrimary)) {
-                    KeyboardService.shared.hideKeyboard()
+                if !isEnterDiscountCodePresented {
+                    UDButtonView(text: String.Constants.doneButtonTitle.localized(),
+                                 style: .large(.raisedPrimary)) {
+                        KeyboardService.shared.hideKeyboard()
+                        let zipCode = self.zipCode.trimmedSpaces
+                        purchaseDomainsPreferencesStorage.checkoutData.usaZipCode = zipCode
+                    }
+                                 .disabled(!zipCode.isEmpty && !isValidUSStateZipCode(zipCode))
                 }
             }
         }
@@ -116,6 +123,27 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
 
 // MARK: - Details section
 private extension PurchaseDomainsCheckoutView {
+    func didUpdateDomainsList(_ newDomains: [DomainToPurchase]) {
+        self.domains = newDomains
+        Task {
+            setLoading(true)
+            try? await purchaseDomainsService.setDomainsToPurchase(newDomains)
+            setLoading(false)
+        }
+    }
+    
+    func isValidUSStateZipCode(_ zipCode: String) -> Bool {
+        let numericZipCode = zipCode.replacingOccurrences(of: "-", with: "")
+        
+        if let zipInt = Int(numericZipCode),
+           zipInt >= 501 && zipInt <= 99950 { // Valid zip code range for the entire USA is 00501 to 99950
+            return true
+        }
+        
+        return false
+    }
+
+    
     @ViewBuilder
     func scrollViewBackgroundView() -> some View {
         LinearGradient(
@@ -235,7 +263,7 @@ private extension PurchaseDomainsCheckoutView {
             }
             
             if case .usa = checkoutData.purchaseLocation {
-                UDTextFieldView(text: purchaseDomainsPreferencesStorage.$checkoutData.binding.usaZipCode,
+                UDTextFieldView(text: $zipCode,
                                 placeholder: "",
                                 hint: String.Constants.zipCodeForSalesTax.localized(),
                                 focusBehaviour: checkoutData.usaZipCode.isEmpty ? .activateOnAppear : .default,
@@ -249,7 +277,7 @@ private extension PurchaseDomainsCheckoutView {
     func selectCountryPicker() -> some View {
         Picker("", selection: purchaseDomainsPreferencesStorage.$checkoutData.binding.purchaseLocation) {
             ForEach(PurchaseDomainsCheckoutData.UserPurchaseLocation.allCases, id: \.self) { location in
-                Text(location.rawValue)
+                Text(location.title)
             }
         }
         .pickerStyle(.segmented)
@@ -272,7 +300,6 @@ private extension PurchaseDomainsCheckoutView {
     
     @ViewBuilder
     func discountView() -> some View {
-        
         Button {
             logButtonPressedAnalyticEvents(button: .creditsAndDiscounts)
             isEnterDiscountCodePresented = true
@@ -348,10 +375,7 @@ private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func summarySection() -> some View {
         LazyVStack(alignment: .leading, spacing: 20) {
-            Text(String.Constants.orderSummary.localized() + " (\(domains.count))")
-                .textAttributes(color: .foregroundDefault,
-                                fontSize: 16,
-                                fontWeight: .medium)
+            summarySectionHeader()
             summaryDomainInfoView()
             additionalCheckoutDetailsView()
             totalDueView()
@@ -362,6 +386,31 @@ private extension PurchaseDomainsCheckoutView {
             Line()
                 .stroke(Color.borderDefault, lineWidth: 1.0)
         })
+    }
+    
+    @ViewBuilder
+    func summarySectionHeader() -> some View {
+        HStack {
+            Text(String.Constants.orderSummary.localized() + " (\(domains.count))")
+                .textAttributes(color: .foregroundDefault,
+                                fontSize: 16,
+                                fontWeight: .medium)
+            Spacer()
+            
+            if !isLoading,
+               case .ready = cartStatus {
+                Button {
+                    UDVibration.buttonTap.vibrate()
+                    isShowingOrderSummary = true
+                } label: {
+                    Text(String.Constants.editButtonTitle.localized())
+                        .textAttributes(color: .foregroundAccent,
+                                        fontSize: 16,
+                                        fontWeight: .medium)
+                        .underline()
+                }
+            }
+        }
     }
     
     @ViewBuilder
@@ -553,6 +602,7 @@ private extension PurchaseDomainsCheckoutView {
     var isApplePaySupported: Bool { purchaseDomainsService.isApplePaySupported }
     func onAppear() {
         checkoutData = purchaseDomainsPreferencesStorage.checkoutData
+        zipCode = checkoutData.usaZipCode
         warnUserIfNeededAndSelectWallet(selectedWallet, forceReload: true)
         if !isApplePaySupported {
             logAnalytic(event: .applePayNotSupported)

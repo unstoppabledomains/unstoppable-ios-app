@@ -39,6 +39,15 @@ struct PurchaseDomainsCheckoutData: Equatable {
     enum UserPurchaseLocation: String, Codable, CaseIterable {
         case usa
         case other
+        
+        var title: String {
+            switch self {
+            case .usa:
+                return String.Constants.usa.localized()
+            case .other:
+                return String.Constants.other.localized()
+            }
+        }
     }
 }
 

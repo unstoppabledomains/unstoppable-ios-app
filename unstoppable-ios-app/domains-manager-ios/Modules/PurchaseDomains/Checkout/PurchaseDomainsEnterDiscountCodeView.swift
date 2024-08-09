@@ -28,6 +28,7 @@ struct PurchaseDomainsEnterDiscountCodeView: View, ViewAnalyticsLogger {
                             hint: String.Constants.discountCode.localized(),
                             focusBehaviour: .activateOnAppear,
                             autocapitalization: .characters)
+            Spacer()
             UDButtonView(text: String.Constants.apply.localized(), style: .large(.raisedPrimary)) {
                 logButtonPressedAnalyticEvents(button: .confirmDiscountCode, parameters: [.value: value.trimmedSpaces])
                 UDVibration.buttonTap.vibrate()
@@ -35,7 +36,6 @@ struct PurchaseDomainsEnterDiscountCodeView: View, ViewAnalyticsLogger {
                 presentationMode.wrappedValue.dismiss()
                 enteredCallback?()
             }
-            Spacer()
         }
         .padding(EdgeInsets(top: 32, leading: 16, bottom: 16, trailing: 16))
         .onAppear {
