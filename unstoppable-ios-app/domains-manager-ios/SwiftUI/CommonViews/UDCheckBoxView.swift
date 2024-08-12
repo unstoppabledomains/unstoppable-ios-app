@@ -30,6 +30,7 @@ struct UDCheckBoxView: View {
                         .resizable()
                         .foregroundStyle(Color.white)
                         .padding(2)
+                        .background(onLinearBackground())
                         .background(isEnabled ? Color.backgroundAccentEmphasis : Color.backgroundAccent)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                 } else {
@@ -40,6 +41,23 @@ struct UDCheckBoxView: View {
             .squareFrame(24)
         }
         .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Private methods
+private extension UDCheckBoxView {
+    @ViewBuilder
+    func onLinearBackground() -> some View {
+        if isEnabled {
+            LinearGradient(
+                stops: [
+                    Gradient.Stop(color: .white.opacity(0.32), location: 0.00),
+                    Gradient.Stop(color: .white.opacity(0), location: 0.57),
+                ],
+                startPoint: UnitPoint(x: 0.49, y: 0),
+                endPoint: UnitPoint(x: 0.49, y: 1)
+            )
+        } 
     }
 }
 
