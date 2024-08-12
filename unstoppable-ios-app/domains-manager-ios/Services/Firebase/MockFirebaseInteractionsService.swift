@@ -98,10 +98,10 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
         try await searchForDomains(key: "ai_" + hint)
     }
     
-    func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion] {
+    func getDomainsSuggestions(hint: String, tlds: Set<String>) async throws -> [DomainToPurchase] {
         await Task.sleep(seconds: 0.4)
         
-        return ["greenfashion", "naturalstyle", "savvydressers", "ethicalclothes", "urbanfashions", "wearables", "consciouslook", "activegears", "minimalista", "outsizeoutfits", "styletone"].map { DomainToPurchaseSuggestion(name: $0) }
+        return try await searchForDomains(key: "suggest_" + hint)
     }
     
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws {
