@@ -15,7 +15,7 @@ struct PurchaseDomainsSearchView: View, ViewAnalyticsLogger {
     @StateObject private var debounceObject = DebounceObject()
     @StateObject private var ecommFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceEcommEnabled)
     private var localCart: PurchaseDomains.LocalCart { viewModel.localCart }
-    @State private var suggestions: [DomainToPurchaseSuggestion] = []
+    @State private var suggestions: [DomainToPurchase] = []
     @State private var searchResultHolder: PurchaseDomains.SearchResultHolder = .init()
     @State private var searchFiltersHolder: PurchaseDomains.SearchFiltersHolder = .init()
     @State private var isLoading: Bool = false
@@ -195,12 +195,20 @@ private extension PurchaseDomainsSearchView {
         if searchResultHolder.hasTakenDomains {
             showHideTakenDomainsView()
         }
+        suggestionsSectionView()
     }
     
     @ViewBuilder
     func resultDomainsListView(_ domains: [DomainToPurchase]) -> some View {
+        domainsListViewWith(title: String.Constants.results.localized(),
+                            domains: domains)
+    }
+    
+    @ViewBuilder
+    func domainsListViewWith(title: String,
+                             domains: [DomainToPurchase]) -> some View {
         LazyVStack(alignment: .leading, spacing: 20) {
-            sectionTitleView(String.Constants.results.localized())
+            sectionTitleView(title)
             ForEach(domains) { domain in
                 resultDomainRowView(domain)
             }
@@ -261,35 +269,9 @@ private extension PurchaseDomainsSearchView {
     
     @ViewBuilder
     func suggestionsSectionView() -> some View {
-        UDCollectionSectionBackgroundView(withShadow: true) {
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Image.statsIcon
-                        .resizable()
-                        .squareFrame(16)
-                    Text(String.Constants.trending.localized())
-                        .font(.currentFont(size: 14, weight: .semibold))
-                }
-                .foregroundColor(.foregroundDefault)
-                
-                FlowLayoutView(suggestions) { suggestion in
-                    Button(action: {
-                        UDVibration.buttonTap.vibrate()
-                        logButtonPressedAnalyticEvents(button: .suggestedName, parameters: [.value: suggestion.name])
-                        search(text: suggestion.name, searchType: .suggestion)
-                        debounceObject.text = suggestion.name
-                    }, label: {
-                        Text(suggestion.name)
-                            .font(.currentFont(size: 14, weight: .medium))
-                            .foregroundColor(.foregroundDefault)
-                            .padding(EdgeInsets(top: 8, leading: 12,
-                                                bottom: 8, trailing: 12))
-                            .background(Color.backgroundMuted2)
-                            .cornerRadius(16)
-                    })
-                }
-            }
-            .padding()
+        if !suggestions.isEmpty {
+            domainsListViewWith(title: String.Constants.suggestedForYou.localized(),
+                                domains: suggestions)
         }
     }
     
@@ -362,7 +344,6 @@ private extension PurchaseDomainsSearchView {
 private extension PurchaseDomainsSearchView {
     func onAppear() {
         setupSkeletonItemsWidth()
-        loadSuggestions()
     }
     
     func setupSkeletonItemsWidth() {
@@ -375,11 +356,14 @@ private extension PurchaseDomainsSearchView {
     }
     
     func loadSuggestions() {
-        guard suggestions.isEmpty else { return }
-        
+        suggestions.removeAll()
+        let searchingText = self.searchingText
         Task {
             do {
-                let suggestions = try await purchaseDomainsService.getDomainsSuggestions(hint: nil)
+                let suggestions = try await purchaseDomainsService.getDomainsSuggestions(hint: searchingText,
+                                                                                         tlds: searchFiltersHolder.tlds)
+                guard searchingText == self.searchingText else { return }
+                
                 self.suggestions = suggestions
             } catch {
                 Debugger.printFailure("Failed to load suggestions")
@@ -402,6 +386,7 @@ private extension PurchaseDomainsSearchView {
                 searchType: SearchResultType) {
         let text = text.trimmedSpaces.lowercased()
         guard searchingText != text else { return }
+        loadSuggestions()
         searchingText = text
         loadingError = nil
         

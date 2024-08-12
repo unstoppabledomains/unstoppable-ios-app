@@ -106,9 +106,11 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
         return domains
     }
     
-    func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion] {
-        let domainProducts = try await aiSearchForFBDomains(hint: hint ?? "Anything you think is trending now")
-        return domainProducts.map { DomainToPurchaseSuggestion(name: $0.domain.label) }
+    func getDomainsSuggestions(hint: String, tlds: Set<String>) async throws -> [DomainToPurchase] {
+        let domainProducts = try await getDomainsSearchSuggestions(hint: hint,
+                                                                   tlds: tlds)
+        let domains = transformDomainProductItemsToDomainsToPurchase(domainProducts)
+        return domains
     }
     
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws {
@@ -177,9 +179,24 @@ private extension FirebasePurchaseDomainsService {
         return searchResponse
     }
     
+    
+    func getDomainsSearchSuggestions(hint: String, tlds: Set<String>) async throws -> [Ecom.DomainProductItem] {
+        var queryComponents: [String : String] = ["q" : hint,
+                                                  "page" : "1",
+                                                  "rowsPerPage" : "10"]
+        var urlString = URLSList.DOMAIN_SUGGESTIONS_URL.appendingURLQueryComponents(queryComponents)
+        for tld in tlds {
+            urlString += "&extension[]=\(tld)"
+        }
+        let request = try APIRequest(urlString: urlString,
+                                     method: .get)
+        let response: SuggestDomainsResponse = try await NetworkService().makeDecodableAPIRequest(request)
+        return response.suggestions
+    }
+    
     func aiSearchForFBDomains(hint: String) async throws -> [Ecom.DomainProductItem] {
-        let queryComponents = ["extension" : "All",
-                               "phrase" : hint]
+        let queryComponents: [String : String] = ["extension" : "All",
+                                                  "phrase" : hint]
         let urlString = URLSList.DOMAIN_AI_SUGGESTIONS_URL.appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: urlString,
                                      method: .get)
@@ -188,8 +205,8 @@ private extension FirebasePurchaseDomainsService {
     }
     
     func makeSearchDomainsRequestWith(key: String) async throws -> SearchDomainsResponse {
-        let queryComponents = ["q" : key]
-        let urlString = URLSList.DOMAIN_SEARCH_URL.appendingURLQueryComponents(queryComponents)
+        let queryComponents: [String : String] = ["q" : key]
+        let urlString = URLSList.DOMAIN_UD_SEARCH_URL.appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: urlString,
                                      method: .get)
         let response: SearchDomainsResponse = try await NetworkService().makeDecodableAPIRequest(request)

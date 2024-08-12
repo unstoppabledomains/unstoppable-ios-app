@@ -1001,6 +1001,7 @@
 "CHECKOUT_FROM_WEB_PULL_UP_TITLE" = "Checkout from website";
 "CHECKOUT_FROM_WEB_PULL_UP_SUBTITLE" = "For purchases above $10,000 at once, checkout is only possible using crypto. However, the app currently doesn’t support crypto checkout.";
 "ENDINGS" = "Endings";
+"SUGGESTIONS" = "Suggestions";
 
 // Home
 "HOME_WALLET_TOKENS_COME_TITLE" = "No more tokens here yet";
