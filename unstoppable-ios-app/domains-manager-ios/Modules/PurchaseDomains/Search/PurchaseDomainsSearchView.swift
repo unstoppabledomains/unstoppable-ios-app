@@ -129,7 +129,7 @@ private extension PurchaseDomainsSearchView {
         } else if !searchingText.isEmpty {
             noResultsView()
         } else {
-            PurchaseSearchEmptyView(mode: .start)
+            emptyStateView()
         }
     }
     
@@ -270,6 +270,60 @@ private extension PurchaseDomainsSearchView {
     func errorView() -> some View {
         PurchaseSearchEmptyView(mode: .error)
     }
+    
+    @ViewBuilder
+    func emptyStateView() -> some View {
+        if searchResultHolder.recentSearches.isEmpty {
+            PurchaseSearchEmptyView(mode: .start)
+        } else {
+            recentSearchesSectionView()
+        }
+    }
+    
+    @ViewBuilder
+    func recentSearchesSectionView() -> some View {
+        LazyVStack(alignment: .leading, spacing: 20) {
+            sectionTitleView(String.Constants.recent.localized())
+            ForEach(searchResultHolder.recentSearches, id: \.self) { search in
+                recentSearchRowView(search)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func recentSearchRowView(_ search: String) -> some View {
+        HStack(spacing: 16) {
+            Button {
+                UDVibration.buttonTap.vibrate()
+                self.search(text: search, searchType: .recent)
+                debounceObject.text = search
+            } label: {
+                Image.clock
+                    .resizable()
+                    .squareFrame(24)
+                    .foregroundStyle(Color.foregroundSecondary)
+                Text(search)
+                    .textAttributes(color: .foregroundDefault,
+                                    fontSize: 16,
+                                    fontWeight: .medium)
+            }
+            .buttonStyle(.plain)
+            
+            Spacer()
+            
+            Button {
+                UDVibration.buttonTap.vibrate()
+                searchResultHolder.removeRecentSearch(string: search)
+            } label: {
+                Image.cancelIcon
+                    .resizable()
+                    .squareFrame(24)
+                    .foregroundStyle(Color.foregroundSecondary)
+            }
+            .buttonStyle(.plain)
+        }
+        .frame(height: 44)
+    }
 }
 
 // MARK: - Private methods
@@ -277,7 +331,6 @@ private extension PurchaseDomainsSearchView {
     func onAppear() {
         setupSkeletonItemsWidth()
         loadSuggestions()
-        
     }
     
     func setupSkeletonItemsWidth() {
@@ -422,11 +475,13 @@ private extension PurchaseDomainsSearchView {
     enum SearchResultType: String {
         case userInput
         case suggestion
+        case recent
         case aiSearch
     }
 }
 
 #Preview {
+    PurchaseDomains.RecentDomainsToPurchaseSearchStorage.instance.addDomainToPurchaseSearchToRecents("somesearchqueue")
     let router = MockEntitiesFabric.Home.createHomeTabRouter()
     let viewModel = PurchaseDomainsViewModel(router: router)
     let stateWrapper = NavigationStateManagerWrapper()
