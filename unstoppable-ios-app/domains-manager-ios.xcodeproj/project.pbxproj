@@ -1035,6 +1035,8 @@
 		C661DC2B2C06DB6A00844AF5 /* MPCOnboardingPurchaseAlreadyHaveWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661DC292C06DB6A00844AF5 /* MPCOnboardingPurchaseAlreadyHaveWalletViewController.swift */; };
 		C661DC2D2C06DBED00844AF5 /* PurchaseMPCWalletAlreadyHaveWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661DC2C2C06DBED00844AF5 /* PurchaseMPCWalletAlreadyHaveWalletView.swift */; };
 		C661DC2E2C06DBED00844AF5 /* PurchaseMPCWalletAlreadyHaveWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661DC2C2C06DBED00844AF5 /* PurchaseMPCWalletAlreadyHaveWalletView.swift */; };
+		C6631BB22C69DFAC0045186D /* RecentDomainsToPurchaseSearchStorageProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6631BB12C69DFAC0045186D /* RecentDomainsToPurchaseSearchStorageProtocol.swift */; };
+		C6631BB32C69E0780045186D /* RecentDomainsToPurchaseSearchStorageProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6631BB12C69DFAC0045186D /* RecentDomainsToPurchaseSearchStorageProtocol.swift */; };
 		C663538B294319B400EF1DC7 /* ScrollViewOffsetListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663538A294319B400EF1DC7 /* ScrollViewOffsetListener.swift */; };
 		C6637A6A2810074D0000AE56 /* SecurityWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6637A692810074D0000AE56 /* SecurityWindow.swift */; };
 		C6637A7128100D3A0000AE56 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6637A6F28100D3A0000AE56 /* LaunchViewController.swift */; };
@@ -3452,6 +3454,7 @@
 		C661DC242C06D0F900844AF5 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		C661DC292C06DB6A00844AF5 /* MPCOnboardingPurchaseAlreadyHaveWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCOnboardingPurchaseAlreadyHaveWalletViewController.swift; sourceTree = "<group>"; };
 		C661DC2C2C06DBED00844AF5 /* PurchaseMPCWalletAlreadyHaveWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseMPCWalletAlreadyHaveWalletView.swift; sourceTree = "<group>"; };
+		C6631BB12C69DFAC0045186D /* RecentDomainsToPurchaseSearchStorageProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentDomainsToPurchaseSearchStorageProtocol.swift; sourceTree = "<group>"; };
 		C663538A294319B400EF1DC7 /* ScrollViewOffsetListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewOffsetListener.swift; sourceTree = "<group>"; };
 		C6637A692810074D0000AE56 /* SecurityWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityWindow.swift; sourceTree = "<group>"; };
 		C6637A6F28100D3A0000AE56 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
@@ -6468,6 +6471,7 @@
 				C6952A3C2BC5084000F4B475 /* NetworkBearerAuthorisationHeaderBuilder.swift */,
 				C66804AC280D93E5007E6390 /* ObjectWithAttributedString.swift */,
 				C67DE1442B984031002374CE /* RecentGlobalSearchProfilesStorageProtocol.swift */,
+				C6631BB12C69DFAC0045186D /* RecentDomainsToPurchaseSearchStorageProtocol.swift */,
 				C663538A294319B400EF1DC7 /* ScrollViewOffsetListener.swift */,
 			);
 			path = Protocols;
@@ -9735,6 +9739,7 @@
 				C6B366D72A1C715000DE512B /* PushRESTAPIService.swift in Sources */,
 				C630E4A92B7F4959008F3269 /* ChatViewModel.swift in Sources */,
 				C6F060C42ACAA35B00BA2E7E /* MessagingService+Tools.swift in Sources */,
+				C6631BB22C69DFAC0045186D /* RecentDomainsToPurchaseSearchStorageProtocol.swift in Sources */,
 				C6534AA12BBFBA10008EEBB5 /* HomeExploreDomainSearchTypePickerView.swift in Sources */,
 				C67213E22BAA967C0075B9C7 /* SendCryptoAssetRootView.swift in Sources */,
 				C69F997B2A9F2206004B1958 /* PublicProfileViewModel.swift in Sources */,
@@ -11063,6 +11068,7 @@
 				C6D6460C2B1DC07200D724AC /* FirebaseDomainDisplayInfo.swift in Sources */,
 				C6952A352BC4FFC200F4B475 /* FB_UD_MPCAccount.swift in Sources */,
 				C61808102B19AA4C0032E543 /* LinkPresentationService.swift in Sources */,
+				C6631BB32C69E0780045186D /* RecentDomainsToPurchaseSearchStorageProtocol.swift in Sources */,
 				C6D6469A2B1ED14E00D724AC /* ManageMultiChainDomainAddressesViewPresenter.swift in Sources */,
 				C630C73D2BD7838900AC1662 /* OnboardingAddWalletType.swift in Sources */,
 				C61808342B19AEEC0032E543 /* PublishingAppStorage.swift in Sources */,

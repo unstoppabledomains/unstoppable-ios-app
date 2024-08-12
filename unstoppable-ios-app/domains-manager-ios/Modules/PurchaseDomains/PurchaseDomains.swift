@@ -104,6 +104,9 @@ extension PurchaseDomains {
     struct SearchResultHolder {
         private(set) var availableDomains: [DomainToPurchase] = []
         private(set) var takenDomains: [DomainToPurchase] = []
+        private(set) var recentSearches: [String] = []
+        private let recentSearchesStorage: RecentDomainsToPurchaseSearchStorageProtocol = RecentDomainsToPurchaseSearchStorage.instance
+
         var isShowingTakenDomains = false
         
         var allDomains: [DomainToPurchase] {
@@ -113,6 +116,10 @@ extension PurchaseDomains {
         
         var isEmpty: Bool {
             availableDomains.isEmpty && takenDomains.isEmpty
+        }
+        
+        init() {
+            loadRecentSearches()
         }
         
         mutating func clear() {
@@ -131,6 +138,7 @@ extension PurchaseDomains {
                     availableDomains.append(domain)
                 }
             }
+            addRecentSearch(string: searchText)
         }
         
         private func sortSearchResult(_ searchResult: [DomainToPurchase], searchText: String) -> [DomainToPurchase] {
@@ -144,5 +152,77 @@ extension PurchaseDomains {
             }
             return searchResult
         }
+        mutating func removeRecentSearch(string: String) {
+            makeChangesToRecentProfilesStorage { storage in
+                storage.removeDomainToPurchaseSearchToRecents(string)
+            }
+        }
+        
+        private mutating func addRecentSearch(string: String) {
+            makeChangesToRecentProfilesStorage { storage in
+                storage.addDomainToPurchaseSearchToRecents(string)
+            }
+        }
+
+        private mutating func loadRecentSearches() {
+            recentSearches = recentSearchesStorage.getRecentDomainsToPurchaseSearches()
+        }
+        
+        private mutating func makeChangesToRecentProfilesStorage(_ block: (RecentDomainsToPurchaseSearchStorageProtocol)->()) {
+            block(recentSearchesStorage)
+            loadRecentSearches()
+        }
     }
+}
+
+// MARK: - Open methods
+extension PurchaseDomains {
+    struct RecentDomainsToPurchaseSearchStorage: RecentDomainsToPurchaseSearchStorageProtocol {
+        
+        typealias Object = String
+        static private let domainPFPStorageFileName = "purchase.domains.recent.search.data"
+        
+        static var instance = RecentDomainsToPurchaseSearchStorage()
+        private let storage = SpecificStorage<[Object]>(fileName: RecentDomainsToPurchaseSearchStorage.domainPFPStorageFileName)
+        private let maxNumberOfRecentSearches = 10
+        
+        private init() {}
+        
+        func getRecentDomainsToPurchaseSearches() -> [Object] {
+            storage.retrieve() ?? []
+        }
+        
+        func addDomainToPurchaseSearchToRecents(_ search: Object) {
+            let targetProfileIndex = 0
+            var profilesList = getRecentDomainsToPurchaseSearches()
+            if let index = profilesList.firstIndex(where: { $0 == search }) {
+                if index == targetProfileIndex {
+                    return
+                }
+                profilesList.swapAt(index, targetProfileIndex)
+            } else {
+                profilesList.insert(search, at: targetProfileIndex)
+                profilesList = Array(profilesList.prefix(maxNumberOfRecentSearches))
+            }
+            
+            set(newProfilesList: profilesList)
+        }
+        
+        func removeDomainToPurchaseSearchToRecents(_ search: Object) {
+            var profilesList = getRecentDomainsToPurchaseSearches()
+            if let index = profilesList.firstIndex(where: { $0 == search }) {
+                profilesList.remove(at: index)
+                set(newProfilesList: profilesList)
+            }
+        }
+        
+        private func set(newProfilesList: [Object]) {
+            storage.store(newProfilesList)
+        }
+        
+        func clearRecentDomainsToPurchaseSearches() {
+            storage.remove()
+        }
+    }
+
 }
