@@ -1105,6 +1105,7 @@ extension String {
         static let buyDomainFromWebPullUpSubtitle = "BUY_DOMAIN_FROM_WEB_PULL_UP_SUBTITLE"
         static let checkoutFromWebPullUpTitle = "CHECKOUT_FROM_WEB_PULL_UP_TITLE"
         static let checkoutFromWebPullUpSubtitle = "CHECKOUT_FROM_WEB_PULL_UP_SUBTITLE"
+        static let endings = "ENDINGS"
         
         // Home
         static let homeWalletTokensComeTitle = "HOME_WALLET_TOKENS_COME_TITLE"
@@ -1419,6 +1420,8 @@ extension String {
     var asURL: URL? {
         URL(string: self)
     }
+    
+    
 }
 
 extension String {

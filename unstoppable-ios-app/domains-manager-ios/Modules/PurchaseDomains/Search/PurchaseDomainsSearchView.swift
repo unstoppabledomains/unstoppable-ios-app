@@ -17,6 +17,7 @@ struct PurchaseDomainsSearchView: View, ViewAnalyticsLogger {
     private var localCart: PurchaseDomains.LocalCart { viewModel.localCart }
     @State private var suggestions: [DomainToPurchaseSuggestion] = []
     @State private var searchResultHolder: PurchaseDomains.SearchResultHolder = .init()
+    @State private var searchFiltersHolder: PurchaseDomains.SearchFiltersHolder = .init()
     @State private var isLoading: Bool = false
     @State private var loadingError: Error?
     @State private var searchingText: String = ""
@@ -35,6 +36,10 @@ struct PurchaseDomainsSearchView: View, ViewAnalyticsLogger {
         .sheet(isPresented: $viewModel.localCart.isShowingCart, content: {
             PurchaseDomainsCartView()
         })
+        .sheet(isPresented: $searchFiltersHolder.isFiltersVisible, content: {
+            PurchaseDomainsSearchFiltersView(appliedFilters: searchFiltersHolder.tlds, 
+                                             callback: updateTLDFilters)
+        })
         .navigationTitle(String.Constants.buyDomainsSearchTitle.localized())
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -52,7 +57,11 @@ private extension PurchaseDomainsSearchView {
             contentView()
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
+                        filterButtonView()
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
                         cartButtonView()
+                            .padding(.leading, 10)
                     }
                 }
                 .modifier(PurchaseDomainsCheckoutButton())
@@ -80,6 +89,29 @@ private extension PurchaseDomainsSearchView {
                         .frame(minWidth: 16)
                         .background(Color.foregroundAccent)
                         .clipShape(.capsule)
+                        .offset(x: 6, y: -4)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .animation(.default, value: localCart.domains)
+    }
+    
+    @ViewBuilder
+    func filterButtonView() -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            searchFiltersHolder.isFiltersVisible = true
+        } label: {
+            ZStack(alignment: .topTrailing) {
+                Image.filter
+                    .resizable()
+                    .squareFrame(28)
+                    .foregroundStyle(Color.foregroundDefault)
+                if searchFiltersHolder.isFiltersApplied {
+                    Circle()
+                        .squareFrame(16)
+                        .foregroundStyle(Color.foregroundAccent)
                         .offset(x: 6, y: -4)
                 }
             }
@@ -355,7 +387,19 @@ private extension PurchaseDomainsSearchView {
         }
     }
     
-    func search(text: String, searchType: SearchResultType) {
+    func updateTLDFilters(_ tlds: Set<String>) {
+        self.searchFiltersHolder.setTLDs(tlds)
+        
+        let searchingText = self.searchingText
+        if !searchingText.isEmpty {
+            self.searchingText = ""
+            self.search(text: searchingText,
+                        searchType: self.searchResultType)
+        }
+    }
+    
+    func search(text: String, 
+                searchType: SearchResultType) {
         let text = text.trimmedSpaces.lowercased()
         guard searchingText != text else { return }
         searchingText = text
@@ -386,8 +430,9 @@ private extension PurchaseDomainsSearchView {
             do {
                 let searchResult = try await block()
                 guard searchingText == self.searchingText else { return } // Result is irrelevant, search query has changed
+                let filteredResult = searchFiltersHolder.filterDomains(searchResult)
                 
-                searchResultHolder.setDomains(searchResult, searchText: searchingText)
+                searchResultHolder.setDomains(filteredResult, searchText: searchingText)
                 self.searchResultType = searchType
             } catch {
                 loadingError = error

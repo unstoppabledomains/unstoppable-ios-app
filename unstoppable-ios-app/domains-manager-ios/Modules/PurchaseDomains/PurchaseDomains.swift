@@ -175,6 +175,28 @@ extension PurchaseDomains {
     }
 }
 
+extension PurchaseDomains {
+    struct SearchFiltersHolder {
+        private(set) var tlds: Set<String> = []
+        var isFiltersVisible = false
+        
+        var isFiltersApplied: Bool {
+            !tlds.isEmpty
+        }
+        
+        mutating func setTLDs(_ tlds: Set<String>) {
+            self.tlds = tlds
+        }
+        
+        func filterDomains(_ domains: [DomainToPurchase]) -> [DomainToPurchase] {
+            if tlds.isEmpty {
+                return domains
+            }
+            return domains.filter({ tlds.contains($0.tld) })
+        }
+    }
+}
+
 // MARK: - Open methods
 extension PurchaseDomains {
     struct RecentDomainsToPurchaseSearchStorage: RecentDomainsToPurchaseSearchStorageProtocol {
@@ -224,5 +246,4 @@ extension PurchaseDomains {
             storage.remove()
         }
     }
-
 }
