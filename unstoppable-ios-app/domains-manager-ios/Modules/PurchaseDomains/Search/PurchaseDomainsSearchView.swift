@@ -57,7 +57,11 @@ private extension PurchaseDomainsSearchView {
             contentView()
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
+                        filterButtonView()
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
                         cartButtonView()
+                            .padding(.leading, 10)
                     }
                 }
                 .modifier(PurchaseDomainsCheckoutButton())
@@ -85,6 +89,29 @@ private extension PurchaseDomainsSearchView {
                         .frame(minWidth: 16)
                         .background(Color.foregroundAccent)
                         .clipShape(.capsule)
+                        .offset(x: 6, y: -4)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .animation(.default, value: localCart.domains)
+    }
+    
+    @ViewBuilder
+    func filterButtonView() -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            searchFiltersHolder.isFiltersVisible = true
+        } label: {
+            ZStack(alignment: .topTrailing) {
+                Image.filter
+                    .resizable()
+                    .squareFrame(28)
+                    .foregroundStyle(Color.foregroundDefault)
+                if searchFiltersHolder.isFiltersApplied {
+                    Circle()
+                        .squareFrame(16)
+                        .foregroundStyle(Color.foregroundAccent)
                         .offset(x: 6, y: -4)
                 }
             }
@@ -403,8 +430,9 @@ private extension PurchaseDomainsSearchView {
             do {
                 let searchResult = try await block()
                 guard searchingText == self.searchingText else { return } // Result is irrelevant, search query has changed
+                let filteredResult = searchFiltersHolder.filterDomains(searchResult)
                 
-                searchResultHolder.setDomains(searchResult, searchText: searchingText)
+                searchResultHolder.setDomains(filteredResult, searchText: searchingText)
                 self.searchResultType = searchType
             } catch {
                 loadingError = error

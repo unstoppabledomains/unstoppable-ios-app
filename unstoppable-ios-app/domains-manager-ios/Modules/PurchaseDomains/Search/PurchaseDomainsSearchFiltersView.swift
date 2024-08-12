@@ -40,7 +40,7 @@ struct PurchaseDomainsSearchFiltersView: View {
         self.appliedFilters = appliedFilters
         self.callback = callback
         self.tlds = User.instance.getAppVersionInfo().tlds
-        self.currentFilters = appliedFilters
+        self._currentFilters = State(wrappedValue: appliedFilters)
     }
     
 }
@@ -68,7 +68,7 @@ private extension PurchaseDomainsSearchFiltersView {
                 .frame(height: 24)
             filtersListView()
         }
-               .padding()
+        .padding()
     }
     
     @ViewBuilder
@@ -98,15 +98,17 @@ private extension PurchaseDomainsSearchFiltersView {
                                 fontWeight: .medium)
             Spacer()
             
-            UDCheckBoxView(isOn: Binding(get: {
-                currentFilters.contains(tld)
-            }, set: { isOn in
-                if isOn {
-                    currentFilters.insert(tld)
-                } else {
-                    currentFilters.remove(tld)
-                }
-            }))
+            UDCheckBoxView(isOn: Binding(
+                get: {
+                    currentFilters.contains(tld)
+                }, set: { isOn in
+                    if isOn {
+                        currentFilters.insert(tld)
+                    } else {
+                        currentFilters.remove(tld)
+                    }
+                })
+            )
         }
         .frame(height: 40)
     }
@@ -118,7 +120,7 @@ private extension PurchaseDomainsSearchFiltersView {
             dismiss()
             callback(currentFilters)
         }
-                     .padding(.horizontal, 16)
+        .padding(.horizontal, 16)
     }
     
     @ViewBuilder
@@ -127,7 +129,7 @@ private extension PurchaseDomainsSearchFiltersView {
                      style: .medium(.ghostPrimary)) {
             currentFilters = []
         }
-                     .disabled(currentFilters.isEmpty)
+        .disabled(currentFilters.isEmpty)
     }
 }
 
