@@ -57,7 +57,7 @@ private extension UDCheckBoxView {
                 startPoint: UnitPoint(x: 0.49, y: 0),
                 endPoint: UnitPoint(x: 0.49, y: 1)
             )
-        } 
+        }
     }
 }
 

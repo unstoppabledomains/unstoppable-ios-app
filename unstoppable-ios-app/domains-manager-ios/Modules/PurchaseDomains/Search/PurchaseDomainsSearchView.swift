@@ -17,6 +17,7 @@ struct PurchaseDomainsSearchView: View, ViewAnalyticsLogger {
     private var localCart: PurchaseDomains.LocalCart { viewModel.localCart }
     @State private var suggestions: [DomainToPurchaseSuggestion] = []
     @State private var searchResultHolder: PurchaseDomains.SearchResultHolder = .init()
+    @State private var searchFiltersHolder: PurchaseDomains.SearchFiltersHolder = .init()
     @State private var isLoading: Bool = false
     @State private var loadingError: Error?
     @State private var searchingText: String = ""
@@ -34,6 +35,10 @@ struct PurchaseDomainsSearchView: View, ViewAnalyticsLogger {
         .onAppear(perform: onAppear)
         .sheet(isPresented: $viewModel.localCart.isShowingCart, content: {
             PurchaseDomainsCartView()
+        })
+        .sheet(isPresented: $searchFiltersHolder.isFiltersVisible, content: {
+            PurchaseDomainsSearchFiltersView(appliedFilters: searchFiltersHolder.tlds, 
+                                             callback: updateTLDFilters)
         })
         .navigationTitle(String.Constants.buyDomainsSearchTitle.localized())
         .navigationBarTitleDisplayMode(.inline)
@@ -355,7 +360,19 @@ private extension PurchaseDomainsSearchView {
         }
     }
     
-    func search(text: String, searchType: SearchResultType) {
+    func updateTLDFilters(_ tlds: Set<String>) {
+        self.searchFiltersHolder.setTLDs(tlds)
+        
+        let searchingText = self.searchingText
+        if !searchingText.isEmpty {
+            self.searchingText = ""
+            self.search(text: searchingText,
+                        searchType: self.searchResultType)
+        }
+    }
+    
+    func search(text: String, 
+                searchType: SearchResultType) {
         let text = text.trimmedSpaces.lowercased()
         guard searchingText != text else { return }
         searchingText = text
