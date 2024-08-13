@@ -10,6 +10,8 @@ import Foundation
 @MainActor
 final class PurchaseDomainsViewModel: ObservableObject {
     
+    static private var didCheckLocation = false
+    
     @Published var isLoading = false
     @Published var error: Error?
     @Published var localCart = PurchaseDomains.LocalCart()
@@ -46,6 +48,7 @@ final class PurchaseDomainsViewModel: ObservableObject {
     
     init(router: HomeTabRouter) {
         self.router = router
+        updateUserSettingsForCurrentLocation()
     }
     
     func handleAction(_ action: PurchaseDomains.FlowAction) {
@@ -128,6 +131,28 @@ private extension PurchaseDomainsViewModel {
                     }
                 })
             }
+        }
+    }
+    
+    func updateUserSettingsForCurrentLocation() {
+        guard !Self.didCheckLocation else { return }
+        
+        Task {
+            do {
+                let isInTheUS = try await appContext.ipVerificationService.isUserInTheUS()
+                let purchaseLocation = PurchaseDomainsPreferencesStorage.shared.checkoutData.purchaseLocation
+                
+                if isInTheUS,
+                   case .other = purchaseLocation {
+                    PurchaseDomainsPreferencesStorage.shared.checkoutData.purchaseLocation = .usa
+                } else if !isInTheUS,
+                          case .usa = purchaseLocation,
+                          PurchaseDomainsPreferencesStorage.shared.checkoutData.zipCodeIfEntered == nil {
+                    PurchaseDomainsPreferencesStorage.shared.checkoutData.purchaseLocation = .other
+                }
+                
+                Self.didCheckLocation = true
+            } catch { }
         }
     }
 }
