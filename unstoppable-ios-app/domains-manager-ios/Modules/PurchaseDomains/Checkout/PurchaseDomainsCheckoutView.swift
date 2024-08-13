@@ -12,6 +12,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
     @Environment(\.purchaseDomainsPreferencesStorage) private var purchaseDomainsPreferencesStorage
     @Environment(\.walletsDataService) private var walletsDataService
+    @Environment(\.userProfilesService) private var userProfilesService
     @EnvironmentObject var stateManagerWrapper: NavigationStateManagerWrapper
     @EnvironmentObject var viewModel: PurchaseDomainsViewModel
 
@@ -30,6 +31,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @State private var isSelectWalletPresented = false
     @State private var isEnterDiscountCodePresented = false
     @State private var isShowingOrderSummary = false
+    @State private var didCheckPreferredWalletToMint = false
     
     var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
     var additionalAppearAnalyticParameters: Analytics.EventParameters {
@@ -76,6 +78,10 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
                 appContext.toastMessageService.showToast(.purchaseDomainsDiscountApplied(cartStatus.otherDiscountsApplied), isSticky: false)
             }
             self.cartStatus = cartStatus
+            if case .ready = cartStatus,
+               !didCheckPreferredWalletToMint {
+                setPreferredWalletToMint()
+            }
             checkUpdatedCartStatus()
         }
         .onReceive(purchaseDomainsPreferencesStorage.$checkoutData.publisher.receive(on: DispatchQueue.main), perform: { checkoutData in
@@ -148,6 +154,20 @@ private extension PurchaseDomainsCheckoutView {
         return false
     }
 
+    func setPreferredWalletToMint() {
+        Task {
+            do {
+                let preferredWalletToMint = try await purchaseDomainsService.getPreferredWalletToMint()
+                let preferredWalletAddress = preferredWalletToMint.address.lowercased()
+                if selectedWallet.address != preferredWalletAddress,
+                   let preferredWallet = wallets.findWithAddress(preferredWalletAddress) {
+                    selectedWallet = preferredWallet
+                    userProfilesService.setActiveProfile(.wallet(selectedWallet))
+                }
+                didCheckPreferredWalletToMint = true
+            }
+        }
+    }
     
     @ViewBuilder
     func scrollViewBackgroundView() -> some View {

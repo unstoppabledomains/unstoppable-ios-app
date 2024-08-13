@@ -120,6 +120,13 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
         return userWallets.map { PurchasedDomainsWalletDescription(address: $0.address, metadata: $0.jsonData()) }
     }
     
+    func getPreferredWalletToMint() async throws -> PurchasedDomainsWalletDescription {
+        let userWallets = try await loadUserCryptoWallets()
+        let wallet = userWallets[0]
+        return PurchasedDomainsWalletDescription(address: wallet.address,
+                                                 metadata: wallet.jsonData())
+    }
+    
     func purchaseDomainsInTheCartAndMintTo(wallet: PurchasedDomainsWalletDescription) async throws {
         
     }

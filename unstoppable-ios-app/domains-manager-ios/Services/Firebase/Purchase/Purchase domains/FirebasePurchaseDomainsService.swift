@@ -155,7 +155,15 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     
     func getSupportedWalletsToMint() async throws -> [PurchasedDomainsWalletDescription] {
         let userWallets = try await loadUserCryptoWallets()
-        return userWallets.map { PurchasedDomainsWalletDescription(address: $0.address, metadata: $0.jsonData()) }
+        return userWallets.map { PurchasedDomainsWalletDescription(ecomWallet: $0) }
+    }
+    
+    func getPreferredWalletToMint() async throws -> PurchasedDomainsWalletDescription {
+        guard firebaseAuthService.isAuthorised else { throw PurchaseDomainsError.unauthorized }
+        
+        let mintingWallet = try await getEcommMintingWallet()
+        let wallet = PurchasedDomainsWalletDescription(ecomWallet: mintingWallet)
+        return wallet
     }
     
     func refreshCart() async throws {
@@ -179,6 +187,18 @@ private extension FirebasePurchaseDomainsService {
         return searchResponse
     }
     
+    func getEcommMintingWallet() async throws -> Ecom.UDUserAccountCryptWallet {
+        struct Response: Codable {
+            let cryptoWallet: Ecom.UDUserAccountCryptWallet
+        }
+        
+        let urlString = URLSList.USER_MINTING_WALLET_URL
+        let request = try APIRequest(urlString: urlString,
+                                     method: .get)
+        let response: Response = try await makeFirebaseDecodableAPIDataRequest(request)
+        
+        return response.cryptoWallet
+    }
     
     func getDomainsSearchSuggestions(hint: String, tlds: Set<String>) async throws -> [Ecom.DomainProductItem] {
         var queryComponents: [String : String] = ["q" : hint,
@@ -306,6 +326,7 @@ private extension FirebasePurchaseDomainsService {
    
     enum PurchaseDomainsError: String, LocalizedError {
         case udAccountHasUnpaidVault
+        case unauthorized
     }
 }
 
@@ -317,5 +338,13 @@ private extension DomainToPurchase {
         self.metadata = domainProduct.jsonData()
         self.isTaken = !domainProduct.availability
         self.isAbleToPurchase = domainProduct.isAbleToPurchase
+    }
+}
+
+// MARK: - Private methods
+private extension PurchasedDomainsWalletDescription {
+    init(ecomWallet: Ecom.UDUserAccountCryptWallet) {
+        self.address = ecomWallet.address
+        self.metadata = ecomWallet.jsonData()
     }
 }
