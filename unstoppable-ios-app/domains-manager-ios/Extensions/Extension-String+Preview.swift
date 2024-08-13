@@ -1106,6 +1106,8 @@ extension String {
         static let checkoutFromWebPullUpTitle = "CHECKOUT_FROM_WEB_PULL_UP_TITLE"
         static let checkoutFromWebPullUpSubtitle = "CHECKOUT_FROM_WEB_PULL_UP_SUBTITLE"
         static let endings = "ENDINGS"
+        static let suggestions = "SUGGESTIONS"
+        static let domainsPurchasedSummaryMessage = "DOMAINS_PURCHASED_SUMMARY_MESSAGE"
         
         // Home
         static let homeWalletTokensComeTitle = "HOME_WALLET_TOKENS_COME_TITLE"

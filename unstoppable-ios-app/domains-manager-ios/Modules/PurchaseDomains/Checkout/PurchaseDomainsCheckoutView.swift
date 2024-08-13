@@ -739,7 +739,11 @@ private extension PurchaseDomainsCheckoutView {
                     try? await walletsDataService.refreshDataForWallet(selectedWallet)
                 }
                 
-                viewModel.handleAction(.didPurchaseDomains)
+                let purchasedData = PurchaseDomains.PurchasedDomainsData(domains: domains,
+                                                                         totalSum: formatCartPrice(totalPrice),
+                                                                         wallet: selectedWallet)
+                
+                viewModel.handleAction(.didPurchaseDomains(purchasedData))
             } catch {
                 logAnalytic(event: .didFailToPurchaseDomains, parameters: [.value : String(cartStatus.totalPrice),
                                                                            .count: String(1),

@@ -14,7 +14,7 @@ extension PurchaseDomains {
         case didSelectDomains(_ domains: [DomainToPurchase])
         case didFillProfileForDomain(_ domain: DomainToPurchase, profileChanges: DomainProfilePendingChanges)
         case didRemoveAllDomainsFromTheCart
-        case didPurchaseDomains
+        case didPurchaseDomains(_ purchasedDomainsData: PurchasedDomainsData)
         case goToDomains
     }
 }
@@ -25,6 +25,12 @@ extension PurchaseDomains {
         let profileChanges: DomainProfilePendingChanges?
         let selectedWallet: WalletEntity
         let wallets: [WalletEntity]
+    }
+    
+    struct PurchasedDomainsData: Hashable {
+        let domains: [DomainToPurchase]
+        let totalSum: String
+        let wallet: WalletEntity
     }
     
     enum EmptyStateMode {

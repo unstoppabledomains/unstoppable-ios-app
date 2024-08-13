@@ -11,7 +11,7 @@ extension PurchaseDomains {
     enum NavigationDestination: Hashable {
         case root(HomeTabRouter)
         case checkout(_ checkoutData: CheckoutData, viewModel: PurchaseDomainsViewModel)
-        case purchased(PurchaseDomainsViewModel)
+        case purchased(_ purchasedDomainsData: PurchasedDomainsData, viewModel: PurchaseDomainsViewModel)
         
         var isWithCustomTitle: Bool {
             if case .purchased = self {
@@ -70,10 +70,9 @@ extension PurchaseDomains {
                                             wallets: checkoutData.wallets,
                                             profileChanges: checkoutData.profileChanges ?? .init(domainName: checkoutData.domains[0].name))
                 .environmentObject(viewModel)
-            case .purchased(let viewModel):
-                PurchaseDomainsHappyEndViewControllerWrapper(viewModel: viewModel)
-                    .ignoresSafeArea()
-                    .navigationBarBackButtonHidden(true)
+            case .purchased(let purchasedDomainsData, let viewModel):
+                PurchaseDomainsCompletedView(purchasedDomainsData: purchasedDomainsData)
+                    .environmentObject(viewModel)
             }
         }
         
