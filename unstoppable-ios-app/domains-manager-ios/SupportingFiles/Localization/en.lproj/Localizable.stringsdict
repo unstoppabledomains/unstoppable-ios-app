@@ -557,7 +557,7 @@
 	<key>SDICT:MINTING_N_DOMAINS</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>Minting %d %#@domain@</string>
+		<string>Minting %d %#@domain@...</string>
 		<key>domain</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>

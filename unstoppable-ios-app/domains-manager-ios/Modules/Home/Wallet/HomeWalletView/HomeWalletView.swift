@@ -17,7 +17,6 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
     @StateObject var viewModel: HomeWalletViewModel
     @StateObject private var profilesAPIFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceProfilesAPIEnabled)
     @StateObject private var mpcFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceMPCEnabled)
-    @State private var isOtherScreenPresented: Bool = false
     private var navigationState: NavigationStateManager? { stateManagerWrapper.navigationState }
     var isOtherScreenPushed: Bool { !tabRouter.walletViewNavPath.isEmpty }
     
@@ -77,6 +76,9 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 logAnalytic(event: .didPullToRefresh)
                 try? await appContext.walletsDataService.refreshDataForWallet(viewModel.selectedWallet)
             }
+            .sheet(isPresented: $tabRouter.isShowingMintingWalletsList, content: {
+                MintingDomainsListView(domains: viewModel.domainsData.mintingDomains)
+            })
             .onAppear(perform: onAppear)
     }
 }

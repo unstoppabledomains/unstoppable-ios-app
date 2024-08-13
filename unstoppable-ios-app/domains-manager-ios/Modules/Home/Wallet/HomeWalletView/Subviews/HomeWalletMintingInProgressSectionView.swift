@@ -9,12 +9,15 @@ import SwiftUI
 
 struct HomeWalletMintingInProgressSectionView: View {
     
+    @EnvironmentObject var tabRouter: HomeTabRouter
+
     let mintingDomains: [DomainDisplayInfo]
     
     var body: some View {
         if !mintingDomains.isEmpty {
             Button {
                 UDVibration.buttonTap.vibrate()
+                tabRouter.isShowingMintingWalletsList = true
             } label: {
                 ZStack {
                     Image.mpcWalletGrid
