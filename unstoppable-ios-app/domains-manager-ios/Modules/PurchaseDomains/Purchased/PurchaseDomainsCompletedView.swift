@@ -16,7 +16,7 @@ struct PurchaseDomainsCompletedView: View {
     @State private var confettiCounter = 0
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             OffsetObservingScrollView(offset: $offset) {
                 headerView()
                 purchasedDomainsList()
@@ -27,6 +27,7 @@ struct PurchaseDomainsCompletedView: View {
         .navigationBarBackButtonHidden(true)
         .navigationTitle(navTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .background(Color.backgroundDefault)
         .toolbar {
             // To keep showing top bar when scrolling
             ToolbarItem(placement: .topBarTrailing) {
@@ -119,6 +120,7 @@ private extension PurchaseDomainsCompletedView {
             }
         }
         .padding(.top, 32)
+        .padding(.horizontal, 16)
     }
     
     @ViewBuilder
@@ -146,9 +148,17 @@ private extension PurchaseDomainsCompletedView {
                      style: .large(.raisedPrimary)) {
             viewModel.handleAction(.goToDomains)
         }
-        .padding(.horizontal, 16)
+                     .padding(.horizontal, 16)
+                     .background(Color.backgroundDefault)
+                     .background(
+                        Color.backgroundDefault
+                            .shadow(color: Color.backgroundDefault,
+                                    radius: 8,
+                                    y: -8)
+                            .mask(Rectangle().padding(.top, -20))
+                     )
     }
- }
+}
 
 #Preview {
     let router = MockEntitiesFabric.Home.createHomeTabRouter()
