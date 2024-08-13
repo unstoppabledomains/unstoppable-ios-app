@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct HomeWalletMintingInProgressSectionView: View {
-    
+struct HomeWalletMintingInProgressSectionView: View, ViewAnalyticsLogger {
+
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     @EnvironmentObject var tabRouter: HomeTabRouter
 
     let mintingDomains: [DomainDisplayInfo]
@@ -16,6 +18,7 @@ struct HomeWalletMintingInProgressSectionView: View {
     var body: some View {
         if !mintingDomains.isEmpty {
             Button {
+                logButtonPressedAnalyticEvents(button: .showMoreMintingDomains)
                 UDVibration.buttonTap.vibrate()
                 tabRouter.isShowingMintingWalletsList = true
             } label: {

@@ -121,6 +121,8 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
                 }
             }
         }
+        .trackAppearanceAnalytics(analyticsLogger: self)
+        .passViewAnalyticsDetails(logger: self)
         .pullUpError($error)
         .viewPullUp($pullUp)
         .onAppear(perform: onAppear)
@@ -161,6 +163,7 @@ private extension PurchaseDomainsCheckoutView {
                 let preferredWalletAddress = preferredWalletToMint.address.lowercased()
                 if selectedWallet.address != preferredWalletAddress,
                    let preferredWallet = wallets.findWithAddress(preferredWalletAddress) {
+                    logAnalytic(event: .willChangeWalletToWebPreferred)
                     selectedWallet = preferredWallet
                     userProfilesService.setActiveProfile(.wallet(selectedWallet))
                 }
@@ -495,6 +498,7 @@ private extension PurchaseDomainsCheckoutView {
             if !isLoading,
                case .ready = cartStatus {
                 Button {
+                    logButtonPressedAnalyticEvents(button: .edit)
                     UDVibration.buttonTap.vibrate()
                     isShowingOrderSummary = true
                 } label: {

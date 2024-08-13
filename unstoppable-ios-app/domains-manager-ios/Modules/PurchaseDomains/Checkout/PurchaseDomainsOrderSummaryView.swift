@@ -34,6 +34,7 @@ struct PurchaseDomainsOrderSummaryView: View, ViewAnalyticsLogger {
                 ToastView(toast: .changesConfirmed,
                           action: .init(title: String.Constants.undo.localized(),
                                         callback: {
+                    logButtonPressedAnalyticEvents(button: .undoRemoveDomain)
                     withAnimation {
                         undoRemoveDomain(removedDomain)
                     }
@@ -81,6 +82,7 @@ private extension PurchaseDomainsOrderSummaryView {
     @ViewBuilder
     func domainListRow(_ domain: DomainToPurchase) -> some View {
         Button {
+            logButtonPressedAnalyticEvents(button: .removeDomain)
             UDVibration.buttonTap.vibrate()
             withAnimation {
                 removeDomain(domain)

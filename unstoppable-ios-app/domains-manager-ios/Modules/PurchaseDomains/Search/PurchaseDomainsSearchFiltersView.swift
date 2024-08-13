@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PurchaseDomainsSearchFiltersView: View {
+struct PurchaseDomainsSearchFiltersView: View, ViewAnalyticsLogger {
     
     @Environment(\.dismiss) var dismiss
     
@@ -15,7 +15,8 @@ struct PurchaseDomainsSearchFiltersView: View {
     let callback: (Set<String>)->()
     private let tlds: [String]
     @State private var currentFilters: Set<String> = []
-    
+    var analyticsName: Analytics.ViewName { .purchaseDomainsFilters }
+
     var body: some View {
         NavigationStack {
             contentView()
@@ -24,6 +25,7 @@ struct PurchaseDomainsSearchFiltersView: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         CloseButtonView {
+                            logButtonPressedAnalyticEvents(button: .close)
                             dismiss()
                         }
                     }
@@ -32,6 +34,7 @@ struct PurchaseDomainsSearchFiltersView: View {
                        resetButton()
                     }
                 }
+                .trackAppearanceAnalytics(analyticsLogger: self)
         }
     }
     
@@ -102,11 +105,15 @@ private extension PurchaseDomainsSearchFiltersView {
                 get: {
                     currentFilters.contains(tld)
                 }, set: { isOn in
+                    let analyticsButton: Analytics.Button
                     if isOn {
                         currentFilters.insert(tld)
+                        analyticsButton = .selectTLD
                     } else {
                         currentFilters.remove(tld)
+                        analyticsButton = .deselectTLD
                     }
+                    logButtonPressedAnalyticEvents(button: analyticsButton)
                 })
             )
         }
@@ -117,6 +124,7 @@ private extension PurchaseDomainsSearchFiltersView {
     func doneButton() -> some View {
         UDButtonView(text: String.Constants.doneButtonTitle.localized(),
                      style: .large(.raisedPrimary)) {
+            logButtonPressedAnalyticEvents(button: .done)
             dismiss()
             callback(currentFilters)
         }
@@ -127,6 +135,7 @@ private extension PurchaseDomainsSearchFiltersView {
     func resetButton() -> some View {
         UDButtonView(text: String.Constants.reset.localized(),
                      style: .medium(.ghostPrimary)) {
+            logButtonPressedAnalyticEvents(button: .reset)
             currentFilters = []
         }
         .disabled(currentFilters.isEmpty)

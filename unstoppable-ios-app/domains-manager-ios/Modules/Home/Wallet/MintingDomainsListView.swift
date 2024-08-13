@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-struct MintingDomainsListView: View {
+struct MintingDomainsListView: View, ViewAnalyticsLogger {
     
     @Environment(\.walletsDataService) var walletsDataService
     @Environment(\.dismiss) var dismiss
+    var analyticsName: Analytics.ViewName { .mintingDomainsList }
     
     @State var domains: [DomainDisplayInfo]
     
@@ -33,6 +34,7 @@ struct MintingDomainsListView: View {
                 setMintingDomainsFrom(wallet: selectedWallet)
             }
         }
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .presentationDetents([.medium, .large])
     }
 }
@@ -92,6 +94,7 @@ private extension MintingDomainsListView {
     func doneButton() -> some View {
         UDButtonView(text: String.Constants.doneButtonTitle.localized(),
                      style: .large(.raisedPrimary)) {
+            logButtonPressedAnalyticEvents(button: .done)
             dismiss()
         }
     }

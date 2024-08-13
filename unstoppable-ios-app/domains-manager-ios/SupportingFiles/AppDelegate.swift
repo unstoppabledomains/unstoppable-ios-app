@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         #if DEBUG
         
-        Debugger.setAllowedTopicsSet(.debugNetwork)
+        Debugger.setAllowedTopicsSet(.custom([.Analytics]))
 //        CoreDataMessagingStorageService(decrypterService: AESMessagingContentDecrypterService()).clear()
 //        MessagingFilesService(decrypterService: AESMessagingContentDecrypterService()).clear()
 //        clearImagesCache()
