@@ -1002,6 +1002,7 @@
 "CHECKOUT_FROM_WEB_PULL_UP_SUBTITLE" = "For purchases above $10,000 at once, checkout is only possible using crypto. However, the app currently doesn’t support crypto checkout.";
 "ENDINGS" = "Endings";
 "SUGGESTIONS" = "Suggestions";
+"DOMAINS_PURCHASED_SUMMARY_MESSAGE" = "Order total: %@\n\nMinting started, this can take up to 5 minutes.\nWill be minted to: %@";
 
 // Home
 "HOME_WALLET_TOKENS_COME_TITLE" = "No more tokens here yet";

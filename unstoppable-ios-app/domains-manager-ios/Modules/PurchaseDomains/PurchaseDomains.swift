@@ -27,6 +27,12 @@ extension PurchaseDomains {
         let wallets: [WalletEntity]
     }
     
+    struct PurchasedDomainsData: Hashable {
+        let domains: [DomainToPurchase]
+        let totalSum: String
+        let wallet: WalletEntity
+    }
+    
     enum EmptyStateMode {
         case start
         case noResults
