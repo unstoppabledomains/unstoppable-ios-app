@@ -7,25 +7,33 @@
 
 import SwiftUI
 
-struct PurchaseDomainsCartView: View {
+struct PurchaseDomainsCartView: View, ViewAnalyticsLogger {
     
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: PurchaseDomainsViewModel
-
+    var analyticsName: Analytics.ViewName { .purchaseDomainsCart }
+    
     var body: some View {
+        contentView()
+            .trackAppearanceAnalytics(analyticsLogger: self)
+    }
+}
+
+// MARK: - Private methods
+private extension PurchaseDomainsCartView {
+    @ViewBuilder
+    func contentView() -> some View {
         if viewModel.localCart.domains.isEmpty {
             emptyView()
                 .presentationDetents([.height(238)])
         } else {
             cartContentView()
                 .modifier(PurchaseDomainsCheckoutButton())
+                .passViewAnalyticsDetails(logger: self)
                 .presentationDetents([.medium, .large])
         }
     }
-}
-
-// MARK: - Private methods
-private extension PurchaseDomainsCartView {
+    
     @ViewBuilder
     func emptyView() -> some View {
         VStack(spacing: 16) {
@@ -48,6 +56,7 @@ private extension PurchaseDomainsCartView {
             
             UDButtonView(text: String.Constants.searchDomains.localized(),
                          style: .medium(.ghostPrimary)) {
+                logButtonPressedAnalyticEvents(button: .searchDomains)
                 dismiss()
             }
             Spacer()
@@ -79,6 +88,7 @@ private extension PurchaseDomainsCartView {
                                 fontWeight: .bold)
             Spacer()
             Button {
+                logButtonPressedAnalyticEvents(button: .clear)
                 UDVibration.buttonTap.vibrate()
                 viewModel.localCart.clearCart()
             } label: {
@@ -106,6 +116,7 @@ private extension PurchaseDomainsCartView {
     @ViewBuilder
     func domainListRow(_ domain: DomainToPurchase) -> some View {
         Button {
+            logButtonPressedAnalyticEvents(button: .removeDomain)
             UDVibration.buttonTap.vibrate()
             withAnimation {
                 viewModel.localCart.removeDomain(domain)

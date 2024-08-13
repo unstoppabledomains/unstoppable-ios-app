@@ -144,10 +144,14 @@ private extension PurchaseDomainsViewModel {
                 
                 if isInTheUS,
                    case .other = purchaseLocation {
+                    appContext.analyticsService.log(event: .willChangePurchaseDomainsLocation,
+                                                    withParameters: [.value: PurchaseDomainsCheckoutData.UserPurchaseLocation.usa.rawValue])
                     PurchaseDomainsPreferencesStorage.shared.checkoutData.purchaseLocation = .usa
                 } else if !isInTheUS,
                           case .usa = purchaseLocation,
                           PurchaseDomainsPreferencesStorage.shared.checkoutData.zipCodeIfEntered == nil {
+                    appContext.analyticsService.log(event: .willChangePurchaseDomainsLocation,
+                                                    withParameters: [.value: PurchaseDomainsCheckoutData.UserPurchaseLocation.other.rawValue])
                     PurchaseDomainsPreferencesStorage.shared.checkoutData.purchaseLocation = .other
                 }
                 

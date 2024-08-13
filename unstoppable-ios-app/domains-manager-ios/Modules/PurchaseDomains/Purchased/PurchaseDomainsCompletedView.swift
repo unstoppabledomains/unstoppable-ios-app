@@ -7,13 +7,14 @@
 
 import SwiftUI
 
-struct PurchaseDomainsCompletedView: View {
+struct PurchaseDomainsCompletedView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: PurchaseDomainsViewModel
 
     let purchasedDomainsData: PurchaseDomains.PurchasedDomainsData
     @State private var offset: CGPoint = .zero
     @State private var confettiCounter = 0
+    var analyticsName: Analytics.ViewName { .purchaseDomainsCompleted }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -35,6 +36,7 @@ struct PurchaseDomainsCompletedView: View {
             }
         }
         .udConfetti(counter: $confettiCounter)
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .onAppear {
             confettiCounter += 1
         }
@@ -146,6 +148,7 @@ private extension PurchaseDomainsCompletedView {
     func doneButtonView() -> some View {
         UDButtonView(text: String.Constants.goToDomains.localized(),
                      style: .large(.raisedPrimary)) {
+            logButtonPressedAnalyticEvents(button: .done)
             viewModel.handleAction(.goToDomains)
         }
                      .padding(.horizontal, 16)

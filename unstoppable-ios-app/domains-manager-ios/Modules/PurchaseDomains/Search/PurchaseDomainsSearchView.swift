@@ -42,6 +42,8 @@ struct PurchaseDomainsSearchView: View, ViewAnalyticsLogger {
         })
         .navigationTitle(String.Constants.buyDomainsSearchTitle.localized())
         .navigationBarTitleDisplayMode(.inline)
+        .trackAppearanceAnalytics(analyticsLogger: self)
+        .passViewAnalyticsDetails(logger: self)
     }
 }
 
@@ -71,6 +73,7 @@ private extension PurchaseDomainsSearchView {
     @ViewBuilder
     func cartButtonView() -> some View {
         Button {
+            logButtonPressedAnalyticEvents(button: .cart)
             UDVibration.buttonTap.vibrate()
             viewModel.localCart.isShowingCart = true
         } label: {
@@ -100,6 +103,7 @@ private extension PurchaseDomainsSearchView {
     @ViewBuilder
     func filterButtonView() -> some View {
         Button {
+            logButtonPressedAnalyticEvents(button: .filterOption)
             UDVibration.buttonTap.vibrate()
             searchFiltersHolder.isFiltersVisible = true
         } label: {
@@ -219,10 +223,6 @@ private extension PurchaseDomainsSearchView {
     func resultDomainRowView(_ domain: DomainToPurchase) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            logButtonPressedAnalyticEvents(button: .searchDomains,
-                                           parameters: [.value: domain.name,
-                                                        .price: String(domain.price),
-                                                        .searchType: searchResultType.rawValue])
             didSelectDomain(domain)
         } label: {
             PurchaseDomainsSearchResultRowView(domain: domain,
@@ -308,6 +308,7 @@ private extension PurchaseDomainsSearchView {
     func recentSearchRowView(_ search: String) -> some View {
         HStack(spacing: 16) {
             Button {
+                logButtonPressedAnalyticEvents(button: .recentSearch, parameters: [.value: search])
                 UDVibration.buttonTap.vibrate()
                 self.search(text: search, searchType: .recent)
                 debounceObject.text = search
@@ -326,6 +327,7 @@ private extension PurchaseDomainsSearchView {
             Spacer()
             
             Button {
+                logButtonPressedAnalyticEvents(button: .clearFromRecentSearch, parameters: [.value: search])
                 UDVibration.buttonTap.vibrate()
                 searchResultHolder.removeRecentSearch(string: search)
             } label: {
@@ -430,6 +432,7 @@ private extension PurchaseDomainsSearchView {
         if domain.isAbleToPurchase {
             didSelectDomainToPurchase(domain)
         } else {
+            logButtonAnalyticsForDomain(domain, button: .domainUnableToPurchase)
             logAnalytic(event: .didSelectNotSupportedDomainForPurchaseInSearch, parameters: [.domainName: domain.name,
                                                                                              .price : String(domain.price),
                                                                                              .searchType: searchResultType.rawValue])
@@ -452,12 +455,15 @@ private extension PurchaseDomainsSearchView {
     
     func didSelectDomainToPurchase(_ domain: DomainToPurchase) {
         if domain.isTooExpensiveToBuyInApp {
+            logButtonAnalyticsForDomain(domain, button: .expensiveDomain)
             pullUp = .default(.buyDomainFromTheWebsite(goToWebCallback: {
                 moveToPurchaseDomainsFromTheWeb(domain: domain)
             }))
         } else if localCart.isDomainInCart(domain) {
+            logButtonAnalyticsForDomain(domain, button: .removeDomain)
             viewModel.localCart.removeDomain(domain)
         } else {
+            logButtonAnalyticsForDomain(domain, button: .addDomain)
             if !localCart.canAddDomainToCart(domain) {
                 pullUp = .default(.checkoutFromTheWebsite(goToWebCallback: {
                     moveToPurchaseDomainsFromTheWeb(domain: domain)
@@ -466,6 +472,14 @@ private extension PurchaseDomainsSearchView {
                 viewModel.localCart.addDomain(domain)
             }
         }
+    }
+    
+    func logButtonAnalyticsForDomain(_ domain: DomainToPurchase,
+                                     button: Analytics.Button) {
+        let analyticsParameters: Analytics.EventParameters = [.value: domain.name,
+                                                              .price: String(domain.price),
+                                                              .searchType: searchResultType.rawValue]
+        logButtonPressedAnalyticEvents(button: button, parameters: analyticsParameters)
     }
     
     func moveToPurchaseDomainsFromTheWeb(domain: DomainToPurchase?) {
