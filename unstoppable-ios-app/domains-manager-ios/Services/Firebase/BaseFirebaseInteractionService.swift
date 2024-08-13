@@ -46,6 +46,7 @@ class BaseFirebaseInteractionService {
         static var CRYPTO_WALLETS_URL: String { baseAPIURL.appendingURLPathComponent("crypto-wallets") }
         
         static var USER_WALLET_URL: String { USER_URL.appendingURLPathComponent("wallet") }
+        static var USER_MINTING_WALLET_URL: String { USER_WALLET_URL.appendingURLPathComponent("minting") }
         static var USER_MPC_WALLET_URL: String { USER_WALLET_URL.appendingURLPathComponent("mpc") }
         static func USER_MPC_SETUP_URL(walletAddress: String) -> String {
             USER_WALLET_URL.appendingURLPathComponents(walletAddress, "mpc", "claim")
