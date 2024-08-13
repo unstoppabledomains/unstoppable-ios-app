@@ -14,7 +14,7 @@ extension PurchaseDomains {
         case didSelectDomains(_ domains: [DomainToPurchase])
         case didFillProfileForDomain(_ domain: DomainToPurchase, profileChanges: DomainProfilePendingChanges)
         case didRemoveAllDomainsFromTheCart
-        case didPurchaseDomains
+        case didPurchaseDomains(_ purchasedDomainsData: PurchasedDomainsData)
         case goToDomains
     }
 }

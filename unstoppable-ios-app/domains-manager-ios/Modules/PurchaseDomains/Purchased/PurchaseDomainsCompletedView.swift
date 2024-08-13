@@ -12,42 +12,63 @@ struct PurchaseDomainsCompletedView: View {
     @EnvironmentObject var viewModel: PurchaseDomainsViewModel
 
     let purchasedDomainsData: PurchaseDomains.PurchasedDomainsData
+    @State private var offset: CGPoint = .zero
     @State private var confettiCounter = 0
     
     var body: some View {
         VStack {
-            ScrollView {
+            OffsetObservingScrollView(offset: $offset) {
                 headerView()
                 purchasedDomainsList()
             }
             
             doneButtonView()
         }
+        .navigationBarBackButtonHidden(true)
+        .navigationTitle(navTitle)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            // To keep showing top bar when scrolling
+            ToolbarItem(placement: .topBarTrailing) {
+                Color.clear
+            }
+        }
         .udConfetti(counter: $confettiCounter)
         .onAppear {
             confettiCounter += 1
         }
     }
+ 
 }
 
 // MARK: - Private methods
 private extension PurchaseDomainsCompletedView {
+    var navTitle: String {
+        if offset.y > 144 {
+            return String.Constants.youAreAllDoneTitle.localized()
+        }
+        return ""
+    }
+    
     @ViewBuilder
     func headerView() -> some View {
-        VStack(spacing: 24) {
+        LazyVStack(spacing: 24) {
             Image.checkCircle
                 .resizable()
                 .squareFrame(56)
                 .foregroundStyle(Color.foregroundAccent)
-            VStack(spacing: 16) {
+            LazyVStack(spacing: 16) {
                 Text(String.Constants.youAreAllDoneTitle.localized())
                     .textAttributes(color: .foregroundDefault,
                                     fontSize: 32,
                                     fontWeight: .bold)
+                    .onDisappear {
+                        print("title disappeared")
+                    }
                 orderInfoView()
             }
         }
-        .padding(.top, 48)
+        .padding(.top, 32)
         .padding(.horizontal, 16)
     }
     
@@ -91,7 +112,7 @@ private extension PurchaseDomainsCompletedView {
     @ViewBuilder
     func purchasedDomainsList() -> some View {
         UDCollectionSectionBackgroundView {
-            VStack(alignment: .center, spacing: 4) {
+            LazyVStack(alignment: .center, spacing: 4) {
                 ForEach(purchasedDomainsData.domains) { domain in
                     domainRowView(domain)
                 }
@@ -135,7 +156,7 @@ private extension PurchaseDomainsCompletedView {
     let domains = MockEntitiesFabric.Domains.mockDomainsToPurchase()
     let sum = formatCartPrice(domains.reduce(0, { $0 + $1.price }))
     let wallet = MockEntitiesFabric.Wallet.mockEntities().randomElement()!
-    
+
     return NavigationStack {
         PurchaseDomainsCompletedView(purchasedDomainsData: .init(domains: domains,
                                                                  totalSum: sum,

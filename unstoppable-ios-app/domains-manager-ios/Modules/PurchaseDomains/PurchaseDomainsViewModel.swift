@@ -62,8 +62,8 @@ final class PurchaseDomainsViewModel: ObservableObject {
                     localCart.clearCart()
                     router.walletViewNavPath.removeLast()
                     appContext.toastMessageService.showToast(.cartCleared, isSticky: false)
-                case .didPurchaseDomains:
-                    pushTo(.purchased(self))
+                case .didPurchaseDomains(let purchasedDomainsData):
+                    pushTo(.purchased(purchasedDomainsData, viewModel: self))
                 case .goToDomains:
                     router.didPurchaseDomains()
                 }
