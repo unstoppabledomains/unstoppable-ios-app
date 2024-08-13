@@ -19,15 +19,27 @@ extension MockEntitiesFabric {
             let tlds: [String] = ["x", "nft", "unstoppable"]
             
             for tld in tlds {
+                
+                
+                
                 for i in 0..<5 {
+                    var state: DomainDisplayInfo.State = .default
+                    if i == 0 {
+                        state = .minting
+                    }
                     let domain = DomainDisplayInfo(name: "oleg_\(i)_\(ownerWallet.last ?? "a").\(tld)",
                                                    ownerWallet: ownerWallet,
                                                    blockchain: .Matic,
+                                                   state: state,
                                                    isSetForRR: i == 0)
                     domains.append(domain)
                 }
                 
                 for i in 0..<5 {
+                    var state: DomainDisplayInfo.State = .default
+                    if i == 0 {
+                        state = .minting
+                    }
                     var name = "subdomain_\(i).oleg_0.\(tld)"
                     if i == 3 {
                         name = "long_long_long_long_long_" + name
@@ -35,6 +47,7 @@ extension MockEntitiesFabric {
                     let domain = DomainDisplayInfo(name: name,
                                                    ownerWallet: ownerWallet,
                                                    blockchain: .Matic,
+                                                   state: state,
                                                    isSetForRR: false)
                     domains.append(domain)
                 }

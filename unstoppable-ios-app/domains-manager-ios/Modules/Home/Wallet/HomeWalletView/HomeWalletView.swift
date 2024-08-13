@@ -17,7 +17,6 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
     @StateObject var viewModel: HomeWalletViewModel
     @StateObject private var profilesAPIFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceProfilesAPIEnabled)
     @StateObject private var mpcFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceMPCEnabled)
-    @State private var isOtherScreenPresented: Bool = false
     private var navigationState: NavigationStateManager? { stateManagerWrapper.navigationState }
     var isOtherScreenPushed: Bool { !tabRouter.walletViewNavPath.isEmpty }
     
@@ -41,6 +40,11 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 .listRowSeparator(.hidden)
                 .unstoppableListRowInset()
                 
+                mintingDomainsSection()
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 32, leading: 16, bottom: 32, trailing: 16))
+
                 userDataContentViewsIfAvailable()
                 
             }.environment(\.defaultMinListRowHeight, 28)
@@ -72,6 +76,9 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 logAnalytic(event: .didPullToRefresh)
                 try? await appContext.walletsDataService.refreshDataForWallet(viewModel.selectedWallet)
             }
+            .sheet(isPresented: $tabRouter.isShowingMintingWalletsList, content: {
+                MintingDomainsListView(domains: viewModel.domainsData.mintingDomains)
+            })
             .onAppear(perform: onAppear)
     }
 }
@@ -115,6 +122,11 @@ private extension HomeWalletView {
     
     var isHomeInMaintenance: Bool {
         profilesAPIFlagTracker.maintenanceData?.isCurrentlyEnabled == true
+    }
+    
+    @ViewBuilder
+    func mintingDomainsSection() -> some View {
+        HomeWalletMintingInProgressSectionView(mintingDomains: viewModel.domainsData.mintingDomains)
     }
     
     @ViewBuilder
