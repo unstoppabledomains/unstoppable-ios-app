@@ -41,6 +41,11 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 .listRowSeparator(.hidden)
                 .unstoppableListRowInset()
                 
+                mintingDomainsSection()
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 32, leading: 16, bottom: 32, trailing: 16))
+
                 userDataContentViewsIfAvailable()
                 
             }.environment(\.defaultMinListRowHeight, 28)
@@ -115,6 +120,11 @@ private extension HomeWalletView {
     
     var isHomeInMaintenance: Bool {
         profilesAPIFlagTracker.maintenanceData?.isCurrentlyEnabled == true
+    }
+    
+    @ViewBuilder
+    func mintingDomainsSection() -> some View {
+        HomeWalletMintingInProgressSectionView(mintingDomains: viewModel.domainsData.mintingDomains)
     }
     
     @ViewBuilder

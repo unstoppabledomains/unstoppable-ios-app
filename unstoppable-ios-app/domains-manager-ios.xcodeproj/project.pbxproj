@@ -1045,6 +1045,8 @@
 		C6631BC52C6A45FC0045186D /* UDConfettiViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6631BC32C6A45FC0045186D /* UDConfettiViewModifier.swift */; };
 		C6631BC82C6A46F70045186D /* PurchaseDomainsCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6631BC72C6A46F70045186D /* PurchaseDomainsCompletedView.swift */; };
 		C6631BC92C6A46F70045186D /* PurchaseDomainsCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6631BC72C6A46F70045186D /* PurchaseDomainsCompletedView.swift */; };
+		C6631BCB2C6B4B7F0045186D /* HomeWalletMintingInProgressSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6631BCA2C6B4B7F0045186D /* HomeWalletMintingInProgressSectionView.swift */; };
+		C6631BCC2C6B4B7F0045186D /* HomeWalletMintingInProgressSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6631BCA2C6B4B7F0045186D /* HomeWalletMintingInProgressSectionView.swift */; };
 		C663538B294319B400EF1DC7 /* ScrollViewOffsetListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663538A294319B400EF1DC7 /* ScrollViewOffsetListener.swift */; };
 		C6637A6A2810074D0000AE56 /* SecurityWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6637A692810074D0000AE56 /* SecurityWindow.swift */; };
 		C6637A7128100D3A0000AE56 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6637A6F28100D3A0000AE56 /* LaunchViewController.swift */; };
@@ -3467,6 +3469,7 @@
 		C6631BB72C69EDB50045186D /* TLDCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TLDCategory.swift; sourceTree = "<group>"; };
 		C6631BC32C6A45FC0045186D /* UDConfettiViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDConfettiViewModifier.swift; sourceTree = "<group>"; };
 		C6631BC72C6A46F70045186D /* PurchaseDomainsCompletedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsCompletedView.swift; sourceTree = "<group>"; };
+		C6631BCA2C6B4B7F0045186D /* HomeWalletMintingInProgressSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletMintingInProgressSectionView.swift; sourceTree = "<group>"; };
 		C663538A294319B400EF1DC7 /* ScrollViewOffsetListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewOffsetListener.swift; sourceTree = "<group>"; };
 		C6637A692810074D0000AE56 /* SecurityWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityWindow.swift; sourceTree = "<group>"; };
 		C6637A6F28100D3A0000AE56 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
@@ -7749,6 +7752,7 @@
 				C6B65F4F2B54DA84006D1812 /* HomeWalletViewModel.swift */,
 				C6B65F7D2B55153E006D1812 /* HomeWalletView+Entities.swift */,
 				C6FED9E12B4FD7F600D6378F /* HomeWalletView.swift */,
+				C6631BCA2C6B4B7F0045186D /* HomeWalletMintingInProgressSectionView.swift */,
 				C6B65F922B565E52006D1812 /* Subviews */,
 			);
 			path = HomeWalletView;
@@ -9401,6 +9405,7 @@
 				C6F4332F2BB15641000C5E46 /* DomainsTLDGroup.swift in Sources */,
 				C6631BC42C6A45FC0045186D /* UDConfettiViewModifier.swift in Sources */,
 				C630C72F2BD779A500AC1662 /* RestoreWalletType.swift in Sources */,
+				C6631BCB2C6B4B7F0045186D /* HomeWalletMintingInProgressSectionView.swift in Sources */,
 				C68F157C2BD76A650049BFA2 /* MPCWalletActivationError.swift in Sources */,
 				C6526DED29D2E12000D6F2EB /* ParkedDomainsFoundInAppViewPresenter.swift in Sources */,
 				C630C7392BD7836C00AC1662 /* OnboardingAddWalletView.swift in Sources */,
@@ -10619,6 +10624,7 @@
 				C6D646CF2B1ED28400D724AC /* PrimaryWhiteButton.swift in Sources */,
 				C6952A382BC500D200F4B475 /* FB_UD_MPCAccountAsset.swift in Sources */,
 				C6D6477A2B1EE0E600D724AC /* UnstoppableImagePicker.swift in Sources */,
+				C6631BCC2C6B4B7F0045186D /* HomeWalletMintingInProgressSectionView.swift in Sources */,
 				C6D646362B1DC44C00D724AC /* SecondaryDangerButton.swift in Sources */,
 				C6D6477C2B1EE0ED00D724AC /* CropImageViewController.swift in Sources */,
 				C6D6460B2B1DC06B00D724AC /* OnboardingData.swift in Sources */,

@@ -393,6 +393,7 @@ extension String {
         static let pluralNProfilesFound = "SDICT:N_PROFILES_FOUND"
         static let pluralNHolders = "SDICT:N_HOLDERS"
         static let pluralNAddresses = "SDICT:N_ADDRESSES"
+        static let pluralMintingNDomains = "SDICT:MINTING_N_DOMAINS"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
