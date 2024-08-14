@@ -51,7 +51,7 @@ struct Constants {
     static let shouldHideBlockedUsersLocally = true
     static let isCommunitiesEnabled = true
     static let ensDomainTLD: String = "eth"
-    static let dnsDomainTLDs: Set<String> = ["com", "ca", "pw"]
+    static var dnsDomainTLDs: Set<String> = ["com", "ca", "pw"]
     static let lensDomainTLD: String = "lens"
     static let coinbaseDomainTLD: String = "id"
     static let swiftUIPreviewDevices = ["iPhone 14 Pro", "iPhone 14 Pro Max", "iPhone SE (1st generation)", "iPhone SE (3rd generation)", "iPhone 13 mini"]

@@ -86,6 +86,7 @@ struct AppVersionAPIResponse: Decodable {
     let mintingZilTldOnPolygonReleased: Bool
     let tlds: [String]
     let tldsToPurchase: [String]
+    let dnsTlds: [String]
     var dotcoinDeprecationReleased: Bool?
     var mobileUnsReleaseVersion: String?
     var limits: AppConfigurationLimits?
@@ -113,5 +114,6 @@ struct AppVersionInfo: Codable {
                          "dao",
                          "zil"]
     var tldsToPurchase: [String]?
+    var dnsTlds: [String]?
     var limits: AppConfigurationLimits?
 }
