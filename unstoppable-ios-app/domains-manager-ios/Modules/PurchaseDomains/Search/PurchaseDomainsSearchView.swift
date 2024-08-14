@@ -397,7 +397,8 @@ private extension PurchaseDomainsSearchView {
         guard !searchingText.isEmpty else { return }
         
         performSearchOperation(searchingText: text, searchType: searchType) {
-            try await purchaseDomainsService.searchForDomains(key: text)
+            try await purchaseDomainsService.searchForDomains(key: text,
+                                                              tlds: searchFiltersHolder.tlds)
         }
     }
     
@@ -417,9 +418,8 @@ private extension PurchaseDomainsSearchView {
             do {
                 let searchResult = try await block()
                 guard searchingText == self.searchingText else { return } // Result is irrelevant, search query has changed
-                let filteredResult = searchFiltersHolder.filterDomains(searchResult)
                 
-                searchResultHolder.setDomains(filteredResult, searchText: searchingText)
+                searchResultHolder.setDomains(searchResult, searchText: searchingText)
                 self.searchResultType = searchType
             } catch {
                 loadingError = error

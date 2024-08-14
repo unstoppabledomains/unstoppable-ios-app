@@ -94,8 +94,10 @@ final class FirebasePurchaseDomainsService: EcomPurchaseInteractionService {
 
 // MARK: - PurchaseDomainsServiceProtocol
 extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
-    func searchForDomains(key: String) async throws -> [DomainToPurchase] {
-        let searchResult = try await self.searchForFBDomains(key: key)
+    func searchForDomains(key: String,
+                          tlds: Set<String>) async throws -> [DomainToPurchase] {
+        let searchResult = try await self.searchForFBDomains(key: key,
+                                                             tlds: tlds)
         let domains = transformDomainProductItemsToDomainsToPurchase(searchResult.exact)
         return domains
     }
@@ -181,8 +183,10 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
 
 // MARK: - Private methods
 private extension FirebasePurchaseDomainsService {
-    func searchForFBDomains(key: String) async throws -> SearchDomainsResponse {
-        var searchResponse = try await makeSearchDomainsRequestWith(key: key)
+    func searchForFBDomains(key: String,
+                            tlds: Set<String>) async throws -> SearchDomainsResponse {
+        var searchResponse = try await makeSearchDomainsRequestWith(key: key,
+                                                                    tlds: tlds)
         searchResponse.exact = searchResponse.exact
         return searchResponse
     }
@@ -201,7 +205,7 @@ private extension FirebasePurchaseDomainsService {
     }
     
     func getDomainsSearchSuggestions(hint: String, tlds: Set<String>) async throws -> [Ecom.DomainProductItem] {
-        var queryComponents: [String : String] = ["q" : hint,
+        let queryComponents: [String : String] = ["q" : hint,
                                                   "page" : "1",
                                                   "rowsPerPage" : "10"]
         var urlString = URLSList.DOMAIN_SUGGESTIONS_URL.appendingURLQueryComponents(queryComponents)
@@ -224,9 +228,13 @@ private extension FirebasePurchaseDomainsService {
         return response.suggestions
     }
     
-    func makeSearchDomainsRequestWith(key: String) async throws -> SearchDomainsResponse {
+    func makeSearchDomainsRequestWith(key: String,
+                                      tlds: Set<String>) async throws -> SearchDomainsResponse {
         let queryComponents: [String : String] = ["q" : key]
-        let urlString = URLSList.DOMAIN_UD_SEARCH_URL.appendingURLQueryComponents(queryComponents)
+        var urlString = URLSList.DOMAIN_UD_SEARCH_URL.appendingURLQueryComponents(queryComponents)
+        for tld in tlds {
+            urlString += "&includeDomainEndings[]=\(tld)"
+        }
         let request = try APIRequest(urlString: urlString,
                                      method: .get)
         let response: SearchDomainsResponse = try await NetworkService().makeDecodableAPIRequest(request)

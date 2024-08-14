@@ -11,7 +11,8 @@ protocol PurchaseDomainsServiceProtocol {
     var cartStatusPublisher: Published<PurchaseDomainCartStatus>.Publisher  { get }
     var isApplePaySupported: Bool { get }
     
-    func searchForDomains(key: String) async throws -> [DomainToPurchase]
+    func searchForDomains(key: String,
+                          tlds: Set<String>) async throws -> [DomainToPurchase]
     func aiSearchForDomains(hint: String) async throws -> [DomainToPurchase]
     func getDomainsSuggestions(hint: String, tlds: Set<String>) async throws -> [DomainToPurchase]
     

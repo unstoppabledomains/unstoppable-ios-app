@@ -42,7 +42,8 @@ struct PurchaseDomainsSearchFiltersView: View, ViewAnalyticsLogger {
          callback: @escaping (Set<String>) -> Void) {
         self.appliedFilters = appliedFilters
         self.callback = callback
-        self.tlds = User.instance.getAppVersionInfo().tlds
+        let tlds = User.instance.getAppVersionInfo().tldsToPurchase ?? []
+        self.tlds = tlds.filter({ TLDCategory.categoryFor(tld: $0) == .uns })
         self._currentFilters = State(wrappedValue: appliedFilters)
     }
     
