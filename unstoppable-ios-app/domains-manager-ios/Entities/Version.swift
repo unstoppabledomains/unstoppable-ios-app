@@ -85,6 +85,7 @@ struct AppVersionAPIResponse: Decodable {
     let polygonClaimingReleased: Bool
     let mintingZilTldOnPolygonReleased: Bool
     let tlds: [String]
+    let tldsToPurchase: [String]
     var dotcoinDeprecationReleased: Bool?
     var mobileUnsReleaseVersion: String?
     var limits: AppConfigurationLimits?
@@ -111,5 +112,6 @@ struct AppVersionInfo: Codable {
                          "nft",
                          "dao",
                          "zil"]
+    var tldsToPurchase: [String]?
     var limits: AppConfigurationLimits?
 }

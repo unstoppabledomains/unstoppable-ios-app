@@ -68,7 +68,8 @@ extension MockFirebaseInteractionsService: FirebaseAuthenticationServiceProtocol
 
 // MARK: - PurchaseDomainsServiceProtocol
 extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
-    func searchForDomains(key: String) async throws -> [DomainToPurchase] {
+    func searchForDomains(key: String,
+                          tlds: Set<String>) async throws -> [DomainToPurchase] {
         await Task.sleep(seconds: 0.5)
         let key = key.lowercased()
         let tlds: [String] = ["x", "crypto", "nft", "wallet", "polygon", "dao", "888", "blockchain", "go", "bitcoin"]
@@ -95,13 +96,15 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     }
     
     func aiSearchForDomains(hint: String) async throws -> [DomainToPurchase] {
-        try await searchForDomains(key: "ai_" + hint)
+        try await searchForDomains(key: "ai_" + hint,
+                                   tlds: [])
     }
     
     func getDomainsSuggestions(hint: String, tlds: Set<String>) async throws -> [DomainToPurchase] {
         await Task.sleep(seconds: 0.4)
         
-        return try await searchForDomains(key: "suggest_" + hint)
+        return try await searchForDomains(key: "suggest_" + hint,
+                                          tlds: [])
     }
     
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws {
