@@ -504,6 +504,15 @@ extension ViewPullUpDefaultConfiguration {
                      dismissCallback: nil)
     }
     
+    static func transferDomainsFromVaultUnavailable() -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .hammerWrenchIcon24,
+                          size: .small),
+              title: .text(String.Constants.transferDomainsFromVaultMaintenanceMessageTitle.localized()),
+              subtitle: .label(.text(String.Constants.transferDomainsFromVaultMaintenanceMessageSubtitle.localized())),
+              cancelButton: .gotItButton(),
+              analyticName: .transferDomainsFromVaultMaintenance)
+    }
+    
 }
 
 // MARK: - Open methods
