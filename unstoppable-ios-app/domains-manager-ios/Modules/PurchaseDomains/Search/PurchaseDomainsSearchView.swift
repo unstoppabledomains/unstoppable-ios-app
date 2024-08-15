@@ -388,7 +388,6 @@ private extension PurchaseDomainsSearchView {
                 searchType: SearchResultType) {
         let text = text.trimmedSpaces.lowercased()
         guard searchingText != text else { return }
-        loadSuggestions()
         searchingText = text
         loadingError = nil
         
@@ -396,6 +395,7 @@ private extension PurchaseDomainsSearchView {
         
         guard !searchingText.isEmpty else { return }
         
+        loadSuggestions()
         performSearchOperation(searchingText: text, searchType: searchType) {
             try await purchaseDomainsService.searchForDomains(key: text,
                                                               tlds: searchFiltersHolder.tlds)
