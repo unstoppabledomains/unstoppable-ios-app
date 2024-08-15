@@ -71,6 +71,7 @@ protocol PullUpViewServiceProtocol {
     func showExternalWalletConnectionHintPullUp(for walletRecord: WCWalletsProvider.WalletRecord,
                                                 in viewController: UIViewController) async
     func showExternalWalletFailedToSignPullUp(in viewController: UIViewController) async
+    func showConnectLedgerWithMMPullUp(in viewController: UIViewController)
     
     // MARK: - Domain profile
     func showManageDomainRouteCryptoPullUp(in viewController: UIViewController,

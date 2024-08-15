@@ -466,6 +466,7 @@ extension Analytics {
         case removeWalletConfirmation
         case connectedExternalWalletInfo
         case externalWalletDisconnected, switchExternalWalletConfirmation
+        case connectLedgerWithMM
         case themeSelection
         case routeCryptoInfo
         case domainRecordsChangesConfirmation

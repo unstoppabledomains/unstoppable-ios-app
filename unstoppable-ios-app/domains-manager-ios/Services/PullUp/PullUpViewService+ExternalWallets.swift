@@ -430,4 +430,18 @@ extension PullUpViewService {
         }
     }
     
+    func showConnectLedgerWithMMPullUp(in viewController: UIViewController) {
+        let selectionViewHeight: CGFloat = 372
+        let title = String.Constants.connectedLedgerWithMMPullUpTitle.localized()
+        let subtitle = String.Constants.connectedLedgerWithMMPullUpSubtitle.localized()
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(title),
+                                                                     contentAlignment: .center,
+                                                                     icon: .init(icon: .externalWalletIndicator,
+                                                                                 size: .small),
+                                                                     subtitle: .label(.text(subtitle)),
+                                                                     cancelButton: .gotItButton()),
+                                                items: PullUpSelectionViewEmptyItem.allCases)
+        
+        showOrUpdate(in: viewController, pullUp: .connectLedgerWithMM, contentView: selectionView, height: selectionViewHeight)
+    }
 }

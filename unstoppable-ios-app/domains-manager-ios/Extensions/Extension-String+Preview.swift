@@ -1304,6 +1304,10 @@ extension String {
         static let sendCryptoMaintenanceMessageSubtitle = "SEND_CRYPTO_MAINTENANCE_MESSAGE_SUBTITLE"
         static let signMessagesMaintenanceMessageTitle = "SIGN_MESSAGES_MAINTENANCE_MESSAGE_TITLE"
         static let signMessagesMaintenanceMessageSubtitle = "SIGN_MESSAGES_MAINTENANCE_MESSAGE_SUBTITLE"
+        
+        // Connect Ledger with MM
+        static let connectedLedgerWithMMPullUpTitle = "CONNECT_LEDGER_WITH_MM_PULL_UP_TITLE"
+        static let connectedLedgerWithMMPullUpSubtitle = "CONNECT_LEDGER_WITH_MM_PULL_UP_SUBTITLE"
     }
     
     enum SystemImage: String {

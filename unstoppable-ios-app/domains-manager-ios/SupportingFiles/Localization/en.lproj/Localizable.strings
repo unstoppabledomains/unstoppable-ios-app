@@ -1198,3 +1198,7 @@ More tabs are coming in the next updates.";
 "SEND_CRYPTO_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.\nMeantime try to switch to another wallet.";
 "SIGN_MESSAGES_MAINTENANCE_MESSAGE_TITLE" = "Signing messages is currently unavailable";
 "SIGN_MESSAGES_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+
+// Connect Ledger with MM
+"CONNECT_LEDGER_WITH_MM_PULL_UP_TITLE" = "Use MetaMask rather than Ledger Live";
+"CONNECT_LEDGER_WITH_MM_PULL_UP_SUBTITLE" = "1. Connect your Ledger device to the MetaMask mobile wallet\n2. Connect MetaMask to this app";
