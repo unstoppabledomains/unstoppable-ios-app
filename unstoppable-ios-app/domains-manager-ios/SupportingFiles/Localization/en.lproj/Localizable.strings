@@ -1198,6 +1198,10 @@ More tabs are coming in the next updates.";
 "SEND_CRYPTO_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.\nMeantime try to switch to another wallet.";
 "SIGN_MESSAGES_MAINTENANCE_MESSAGE_TITLE" = "Signing messages is currently unavailable";
 "SIGN_MESSAGES_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"TRANSFER_DOMAINS_FROM_VAULT_MAINTENANCE_MESSAGE_TITLE" = "We'll be back soon";
+"TRANSFER_DOMAINS_FROM_VAULT_MAINTENANCE_MESSAGE_SUBTITLE" = "Transferring domains from the vault is temporarily unavailable. Please try again later.";
+"MPC_MAINTENANCE_MESSAGE_TITLE" = "We'll be back soon";
+"MPC_MAINTENANCE_MESSAGE_SUBTITLE" = "Transferring domains from the vault is temporarily unavailable. Please try again later.";
 
 // Connect Ledger with MM
 "CONNECT_LEDGER_WITH_MM_PULL_UP_TITLE" = "Use MetaMask rather than Ledger Live";

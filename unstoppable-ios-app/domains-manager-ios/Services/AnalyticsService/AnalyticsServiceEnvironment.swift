@@ -511,7 +511,7 @@ extension Analytics {
         case copyMultiChainAddresses
         case removeMPCWalletConfirmation
         case transactionDetails
-        case domainProfileMaintenance, signMessagesMaintenance
+        case domainProfileMaintenance, signMessagesMaintenance, transferDomainsFromVaultMaintenance
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
