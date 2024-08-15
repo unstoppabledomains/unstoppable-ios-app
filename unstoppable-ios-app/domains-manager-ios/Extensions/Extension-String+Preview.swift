@@ -1306,6 +1306,8 @@ extension String {
         static let signMessagesMaintenanceMessageSubtitle = "SIGN_MESSAGES_MAINTENANCE_MESSAGE_SUBTITLE"
         static let transferDomainsFromVaultMaintenanceMessageTitle = "TRANSFER_DOMAINS_FROM_VAULT_MAINTENANCE_MESSAGE_TITLE"
         static let transferDomainsFromVaultMaintenanceMessageSubtitle = "TRANSFER_DOMAINS_FROM_VAULT_MAINTENANCE_MESSAGE_SUBTITLE"
+        static let mpcMaintenanceMessageTitle = "MPC_MAINTENANCE_MESSAGE_TITLE"
+        static let mpcMaintenanceMessageSubtitle = "MPC_MAINTENANCE_MESSAGE_SUBTITLE"
         
         // Connect Ledger with MM
         static let connectedLedgerWithMMPullUpTitle = "CONNECT_LEDGER_WITH_MM_PULL_UP_TITLE"

@@ -11,6 +11,7 @@ enum MPCWalletError: String, LocalizedError {
     case incorrectCode
     case incorrectPassword
     case messageSignDisabled
+    case maintenanceEnabled
     
     public var errorDescription: String? {
         return rawValue
