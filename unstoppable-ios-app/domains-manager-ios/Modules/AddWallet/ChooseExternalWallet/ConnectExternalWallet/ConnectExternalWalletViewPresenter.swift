@@ -47,6 +47,11 @@ extension ConnectExternalWalletViewPresenter: ConnectExternalWalletViewPresenter
         
         switch item {
         case .externalWallet(let description):
+            if description.walletRecord.make == .ledgerLive {
+                showConnectLedgerWithMM()
+                return
+            }
+            
             let wcWalletSelected = description.walletRecord
             logButtonPressedAnalyticEvents(button: .externalWalletSelected, parameters: [.externalWallet: wcWalletSelected.name])
 
@@ -116,6 +121,12 @@ private extension ConnectExternalWalletViewPresenter {
             
             view?.applySnapshot(snapshot, animated: true)
         }
+    }
+    
+    func showConnectLedgerWithMM() {
+        guard let view else { return }
+        
+        appContext.pullUpViewService.showConnectLedgerWithMMPullUp(in: view)
     }
 }
 
