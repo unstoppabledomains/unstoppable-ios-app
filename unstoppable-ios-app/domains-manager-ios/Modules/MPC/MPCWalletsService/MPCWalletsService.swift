@@ -38,6 +38,7 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
         AsyncThrowingStream { continuation in
             Task {
                 do {
+                    try verifyMPCServiceAvailableOrFail()
                     let subService = try getSubServiceFor(provider: .fireblocksUD)
                     
                     for try await step in subService.setupMPCWalletWith(code: code,
@@ -53,6 +54,7 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
     
     func signPersonalMessage(_ messageString: String,
                              by walletMetadata: MPCWalletMetadata) async throws -> String {
+        try verifyMPCServiceAvailableOrFail()
         guard udFeatureFlagsService.valueFor(flag: .isMPCSignatureEnabled) else  { throw MPCWalletError.messageSignDisabled }
         let subService = try getSubServiceFor(provider: walletMetadata.provider)
         
@@ -64,6 +66,7 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
     func signTypedDataMessage(_ message: String,
                               chain: BlockchainType,
                               by walletMetadata: MPCWalletMetadata) async throws -> String {
+        try verifyMPCServiceAvailableOrFail()
         guard udFeatureFlagsService.valueFor(flag: .isMPCSignatureEnabled) else  { throw MPCWalletError.messageSignDisabled }
         let subService = try getSubServiceFor(provider: walletMetadata.provider)
         
@@ -91,6 +94,7 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
                         chain: String,
                         destinationAddress: String,
                         by walletMetadata: MPCWalletMetadata) async throws -> String {
+        try verifyMPCServiceAvailableOrFail()
         let subService = try getSubServiceFor(provider: walletMetadata.provider)
         
         return try await subService.transferAssets(amount,
@@ -105,6 +109,7 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
                             chain: BlockchainType,
                             destinationAddress: String,
                             by walletMetadata: MPCWalletMetadata) async throws -> String {
+        try verifyMPCServiceAvailableOrFail()
         let subService = try getSubServiceFor(provider: walletMetadata.provider)
         
         return try await subService.sendETHTransaction(data: data,
@@ -125,6 +130,7 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
                         chain: String,
                         destinationAddress: String,
                         by walletMetadata: MPCWalletMetadata) async throws -> Double {
+        try verifyMPCServiceAvailableOrFail()
         let subService = try getSubServiceFor(provider: walletMetadata.provider)
         
         return try await subService.fetchGasFeeFor(amount,
@@ -137,6 +143,14 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
 
 // MARK: - Private methods
 private extension MPCWalletsService {
+    func verifyMPCServiceAvailableOrFail() throws {
+        let maintenanceData: MaintenanceModeData? = appContext.udFeatureFlagsService.entityValueFor(flag: .isMaintenanceMPCEnabled)
+        
+        if maintenanceData?.isCurrentlyEnabled == true {
+            throw MPCWalletError.maintenanceEnabled
+        }
+    }
+    
     func getSubServiceFor(provider: MPCWalletProvider) throws -> MPCWalletProviderSubServiceProtocol {
         guard let subService = subServices.first(where: { $0.provider == provider }) else {
             Debugger.printFailure("Failed to get mpc wallet sub service for provider: \(provider.rawValue)")

@@ -35,6 +35,10 @@ extension Error {
                   case .messageSignDisabled = mpcError {
             title = String.Constants.mpcWalletSigningUnavailableErrorMessage.localizedMPCProduct()
             message = String.Constants.tryAgainLater.localized()
+        } else if let mpcError = self as? MPCWalletError,
+                  case .maintenanceEnabled = mpcError {
+            title = String.Constants.mpcMaintenanceMessageTitle.localizedMPCProduct()
+            message = String.Constants.mpcMaintenanceMessageSubtitle.localized()
         } else {
             title = String.Constants.somethingWentWrong.localized()
             message = String.Constants.pleaseTryAgain.localized()

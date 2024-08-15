@@ -473,6 +473,7 @@ extension Analytics {
         case removeWalletConfirmation
         case connectedExternalWalletInfo
         case externalWalletDisconnected, switchExternalWalletConfirmation
+        case connectLedgerWithMM
         case themeSelection
         case routeCryptoInfo
         case domainRecordsChangesConfirmation
@@ -517,7 +518,7 @@ extension Analytics {
         case copyMultiChainAddresses
         case removeMPCWalletConfirmation
         case transactionDetails
-        case domainProfileMaintenance, signMessagesMaintenance
+        case domainProfileMaintenance, signMessagesMaintenance, transferDomainsFromVaultMaintenance
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
