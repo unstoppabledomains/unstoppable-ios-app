@@ -26,9 +26,19 @@ final class DomainProfileFetchFailedActionCoverViewPresenter: DomainProfileActio
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        view?.set(title: String.Constants.profileLoadingFailedTitle.localized(),
-                  domainName:  domain.name,
-                  description: String.Constants.profileLoadingFailedDescription.localized())
+        let wallets = appContext.walletsDataService.wallets
+        if let wallet = wallets.first(where: { $0.isOwningDomain(domain.name) }),
+           wallet.udWallet.type == .mpc,
+            let maintenanceData: MaintenanceModeData? = appContext.udFeatureFlagsService.entityValueFor(flag: .isMaintenanceMPCEnabled),
+           maintenanceData?.isCurrentlyEnabled == true {
+            view?.set(title: String.Constants.mpcMaintenanceMessageTitle.localized(),
+                      domainName:  nil,
+                      description: String.Constants.mpcMaintenanceMessageSubtitle.localized())
+        } else {
+            view?.set(title: String.Constants.profileLoadingFailedTitle.localized(),
+                      domainName:  domain.name,
+                      description: String.Constants.profileLoadingFailedDescription.localized())
+        }
         view?.setPrimaryButton(with: .init(title: String.Constants.refresh.localized(), icon: .refreshArrow20))
         view?.setSecondaryButton(with: nil)
     }
