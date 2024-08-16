@@ -502,6 +502,10 @@ private extension SettingsView {
                 case .connect:
                     connectNewWallet()
                 case .mpc:
+                    guard !udFeatureFlagsService.valueFor(flag: .isMaintenanceMPCEnabled) else {
+                        self.error = MPCWalletError.maintenanceEnabled
+                        return
+                    }
                     activateMPCWallet(preFilledEmail: nil)
                 }
             }
