@@ -15,6 +15,7 @@ protocol RecoveryPhraseViewControllerProtocol: BaseViewControllerProtocol & View
     func setDoneButtonTitle(_ title: String)
     func setDoneButtonHidden(_ isHidden: Bool)
     func setSubtitleHidden(_ isHidden: Bool)
+    func setRecoveryPhraseUnavailable() 
 }
 
 final class RecoveryPhraseViewController: BaseViewController, TitleVisibilityAfterLimitNavBarScrollingBehaviour, BlurVisibilityAfterLimitNavBarScrollingBehaviour {
@@ -126,6 +127,12 @@ extension RecoveryPhraseViewController: RecoveryPhraseViewControllerProtocol {
     
     func setSubtitleHidden(_ isHidden: Bool) {
         subTitleButton.isHidden = isHidden
+    }
+    
+    func setRecoveryPhraseUnavailable() {
+        mnemonicsContainerView.isHidden = true
+        titleLabel.setTitle(String.Constants.somethingWentWrong.localized())
+        setExplanationText("")
     }
 }
 

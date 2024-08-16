@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -35,7 +35,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oC6-m2-C7e">
-                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                    <rect key="frame" x="0.0" y="48" width="414" height="814"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Ca-eN-xu2">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="1"/>
@@ -45,19 +45,19 @@
                             </constraints>
                         </view>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="KYo-Fj-F2E">
-                            <rect key="frame" x="16" y="60" width="382" height="1108.5"/>
+                            <rect key="frame" x="16" y="60" width="382" height="1145.5"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="PVW-Lw-nI0">
-                                    <rect key="frame" x="81.5" y="0.0" width="219.5" height="83.5"/>
+                                    <rect key="frame" x="70.5" y="0.0" width="241.5" height="120.5"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Recovery phrase" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e1C-oj-gDw" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="0.0" width="219.5" height="33.5"/>
+                                            <rect key="frame" x="11" y="0.0" width="219.5" height="33.5"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bTU-8r-Yhd">
-                                            <rect key="frame" x="19" y="49.5" width="181.5" height="34"/>
+                                            <rect key="frame" x="0.0" y="49.5" width="241.5" height="71"/>
                                             <accessibility key="accessibilityConfiguration">
                                                 <accessibilityTraits key="traits" button="YES" notEnabled="YES"/>
                                                 <bool key="isElement" value="NO"/>
@@ -70,7 +70,7 @@
                                     </subviews>
                                 </stackView>
                                 <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="av9-7g-LPy">
-                                    <rect key="frame" x="43" y="115.5" width="296" height="894"/>
+                                    <rect key="frame" x="43" y="152.5" width="296" height="894"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="MFp-xX-3FX">
                                             <rect key="frame" x="0.0" y="0.0" width="296" height="894"/>
@@ -488,7 +488,7 @@
                                     </userDefinedRuntimeAttributes>
                                 </view>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t4J-o6-fm7">
-                                    <rect key="frame" x="3" y="1041.5" width="376.5" height="67"/>
+                                    <rect key="frame" x="3" y="1078.5" width="376.5" height="67"/>
                                     <string key="text">For your eyes only! Anyone who has access to your 12 word recovery phrase can access your entire wallet. Store your recovery phrase somewhere safe. 
 Learn more</string>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -544,7 +544,7 @@ Learn more</string>
         </view>
     </objects>
     <resources>
-        <image name="checkCircle" width="20" height="20"/>
+        <image name="checkCircle" width="56" height="57"/>
         <namedColor name="backgroundOverlay">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
@@ -555,7 +555,7 @@ Learn more</string>
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGreenColor">
-            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
