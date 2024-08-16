@@ -391,19 +391,19 @@ private extension PurchaseDomainsCheckoutView {
     
     @ViewBuilder
     func promoCreditsDiscountView() -> some View {
-        if cartStatus.promoCreditsAvailable > 0 {
+        if cartStatus.promoCreditsApplied > 0 {
             specificDiscountInfoRow(icon: .ticketIcon,
                                     title: String.Constants.promoCredits.localized(),
-                                    value: cartStatus.promoCreditsAvailable)
+                                    value: cartStatus.promoCreditsApplied)
         }
     }
     
     @ViewBuilder
     func storeCreditsDiscountView() -> some View {
-        if cartStatus.storeCreditsAvailable > 0 {
+        if cartStatus.storeCreditsApplied > 0 {
             specificDiscountInfoRow(icon: .starInCloudIcon,
                                     title: String.Constants.storeCredits.localized(),
-                                    value: cartStatus.storeCreditsAvailable)
+                                    value: cartStatus.storeCreditsApplied)
         }
     }
     

@@ -275,8 +275,8 @@ private extension FirebasePurchaseDomainsService {
                                    storeCreditsAvailable: udCart.discountDetails.storeCredits,
                                    promoCreditsAvailable: udCart.discountDetails.promoCredits,
                                    appliedDiscountDetails: .init(storeCredits: udCart.calculations.storeCreditsUsed,
-                                                          promoCredits: udCart.calculations.promoCreditsUsed,
-                                                          others: otherDiscountsSum))
+                                                                 promoCredits: udCart.calculations.promoCreditsUsed,
+                                                                 others: otherDiscountsSum))
     }
    
     func loadCartParkingProducts(in cart: Ecom.UDUserCart) async {

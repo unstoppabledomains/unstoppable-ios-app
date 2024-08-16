@@ -13,18 +13,18 @@ enum PurchaseDomainCartStatus {
     case failedToLoadCalculations(MainActorAsyncCallback)
     case ready(cart: PurchaseDomainsCart)
     
-    var promoCreditsAvailable: Int {
+    var promoCreditsApplied: Int {
         switch self {
         case .ready(let cart):
-            return cart.promoCreditsAvailable
+            return cart.appliedDiscountDetails.promoCredits
         default:
             return 0
         }
     }
-    var storeCreditsAvailable: Int {
+    var storeCreditsApplied: Int {
         switch self {
         case .ready(let cart):
-            return cart.storeCreditsAvailable
+            return cart.appliedDiscountDetails.storeCredits
         default:
             return 0
         }

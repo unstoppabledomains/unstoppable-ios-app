@@ -133,7 +133,10 @@ extension EcomPurchaseInteractionService {
     }
     
     func loadUserCartCalculations() async throws -> Ecom.UserCartCalculationsResponse {
-        let queryComponents = ["discountCode" : checkoutData.discountCode.trimmedSpaces,
+        /// Always apply credits
+        let queryComponents = ["applyPromoCredits" : String(true),
+                               "applyStoreCredits" : String(true),
+                               "discountCode" : checkoutData.discountCode.trimmedSpaces,
                                "durationsMap" : checkoutData.getDurationsMapString(),
                                "zipCode" : checkoutData.zipCodeIfEntered?.trimmedSpaces ?? ""]
         
