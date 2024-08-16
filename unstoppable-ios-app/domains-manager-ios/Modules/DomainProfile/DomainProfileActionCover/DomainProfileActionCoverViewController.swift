@@ -11,7 +11,7 @@ import UIKit
 protocol DomainProfileActionCoverViewProtocol: BaseViewControllerProtocol {
     func setPrimaryButton(with description: DomainProfileActionCoverViewController.ActionButtonDescription)
     func setSecondaryButton(with description: DomainProfileActionCoverViewController.ActionButtonDescription?)
-    func set(title: String, domainName: String, description: String)
+    func set(title: String, domainName: String?, description: String)
     func set(avatarImage: UIImage?, avatarStyle: DomainAvatarImageView.AvatarStyle, backgroundImage: UIImage?)
 }
 
@@ -63,15 +63,16 @@ extension DomainProfileActionCoverViewController: DomainProfileActionCoverViewPr
         }
     }
     
-    func set(title: String, domainName: String, description: String) {
+    func set(title: String, domainName: String?, description: String) {
         titleLabel.setAttributedTextWith(text: title,
                                          font: .currentFont(withSize: 22, weight: .bold),
                                          textColor: .white,
                                          lineBreakMode: .byTruncatingTail)
-        domainNameLabel.setAttributedTextWith(text: domainName,
+        domainNameLabel.setAttributedTextWith(text: domainName ?? "",
                                               font: .currentFont(withSize: 22, weight: .bold),
                                               textColor: .white.withAlphaComponent(0.56),
                                               lineBreakMode: .byTruncatingTail)
+        domainNameLabel.isHidden = domainName == nil 
         descriptionLabel.setAttributedTextWith(text: description,
                                                font: .currentFont(withSize: 16, weight: .regular),
                                                textColor: .white.withAlphaComponent(0.56))

@@ -265,6 +265,8 @@
 "RECOVERY_PHRASE_HELP_TEXT" = "A recovery phrase is the human-readable form of your wallet private key — the unique, secret passcode used to authenticate and encrypt your wallet access. This phrase allows you to sign transactions, confirm ownership of your Web3 domains, and recover them in the event that your mobile device is lost, stolen, or becomes inaccessible.\n\nHowever you choose to store your recovery phrase, you should consider two things:\n\n•  Your 12 word recovery phrase should be safe from other people.\n•  Your 12 word recovery phrase should be in a reliable location that you’ll always have access to.\n\nNote: Unstoppable Domains cannot recover your 12 word recovery phrase for you.";
 "RECOVERY_PHRASE_HELP_TEXT_HIGHLIGHTED" = "Note: Unstoppable Domains cannot recover your 12 word recovery phrase for you.";
 "RECOVERY_PHRASE_HELP_TEXT_BULLETS" = "•  Your 12 word recovery phrase should be safe from other people.\n•  Your 12 word recovery phrase should be in a reliable location that you’ll always have access to.";
+"RECOVERY_PHRASE_NOT_AVAILABLE_TITLE" = "Wallet not available";
+"RECOVERY_PHRASE_NOT_AVAILABLE_MESSAGE" = "The app doesn't have access to the secure storage with private keys. If this is a new phone please remove this wallet and import it manually, using the private key or a recovery phrase from your old phone / manually recorded keys.";
 
 // Confirm words screen
 "CONFIRM_YOUR_WORDS" = "Confirm your words";
@@ -1228,8 +1230,8 @@ More tabs are coming in the next updates.";
 "SIGN_MESSAGES_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
 "TRANSFER_DOMAINS_FROM_VAULT_MAINTENANCE_MESSAGE_TITLE" = "We'll be back soon";
 "TRANSFER_DOMAINS_FROM_VAULT_MAINTENANCE_MESSAGE_SUBTITLE" = "Transferring domains from the vault is temporarily unavailable. Please try again later.";
-"MPC_MAINTENANCE_MESSAGE_TITLE" = "We'll be back soon";
-"MPC_MAINTENANCE_MESSAGE_SUBTITLE" = "Transferring domains from the vault is temporarily unavailable. Please try again later.";
+"MPC_MAINTENANCE_MESSAGE_TITLE" = "Managing profile is currently unavailable";
+"MPC_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon";
 
 // Connect Ledger with MM
 "CONNECT_LEDGER_WITH_MM_PULL_UP_TITLE" = "Use MetaMask rather than Ledger Live";

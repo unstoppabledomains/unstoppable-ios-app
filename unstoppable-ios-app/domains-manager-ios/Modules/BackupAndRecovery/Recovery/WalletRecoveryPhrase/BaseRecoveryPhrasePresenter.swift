@@ -88,22 +88,30 @@ extension BaseRecoveryPhrasePresenter: RecoveryPhrasePresenterProtocol {
 // MARK: - Private methods
 private extension BaseRecoveryPhrasePresenter {
     func configureMnem() {
-        guard let wallet = self.wallet else { return }
-        
-        switch recoveryType {
-        case .privateKey:
-            guard let privateKey = wallet.getPrivateKey() else { return }
-
-            self.privateKey = privateKey
-            view?.setPrivateKey(privateKey)
-        case .recoveryPhrase:
-            guard let mnem = wallet.getMnemonics()?.mnemonicsArray else { return }
+        do {
+            guard let wallet = self.wallet else {
+                throw BaseRecoveryPhrasePresenterError.failedToGetPK
+            }
             
-            configure(with: mnem)
+            switch recoveryType {
+            case .privateKey:
+                let privateKey = try wallet.getPrivateKeyThrowing()
+                self.privateKey = privateKey
+                view?.setPrivateKey(privateKey)
+            case .recoveryPhrase:
+                let seedPhrase = try wallet.getMnemonicsThrowing()
+                let mnem = seedPhrase.mnemonicsArray
+                
+                try configure(with: mnem)
+            }
+        } catch {
+            view?.setRecoveryPhraseUnavailable()
         }
     }
-   
-    func configure(with mnem: [String]) {
+    
+    func configure(with mnem: [String]) throws {
+        guard mnem.count == 12 else { throw BaseRecoveryPhrasePresenterError.incorrectMnemonicsCount }
+        
         self.mnems = mnem
                 
         let leftMnems = Array(mnem[0...5])
@@ -117,6 +125,15 @@ private extension BaseRecoveryPhrasePresenter {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             self?.view?.setCopiedToClipboardButtonForState(false)
+        }
+    }
+    
+    enum BaseRecoveryPhrasePresenterError: String, LocalizedError {
+        case failedToGetPK
+        case incorrectMnemonicsCount
+            
+        public var errorDescription: String? {
+            return rawValue
         }
     }
 }
