@@ -21,6 +21,7 @@ protocol RecoveryPhraseViewControllerProtocol: BaseViewControllerProtocol & View
 final class RecoveryPhraseViewController: BaseViewController, TitleVisibilityAfterLimitNavBarScrollingBehaviour, BlurVisibilityAfterLimitNavBarScrollingBehaviour {
     
     @IBOutlet private weak var titleLabel: UDTitleLabel!
+    @IBOutlet private weak var subtitleLabel: UILabel!
     @IBOutlet private weak var subTitleButton: UIButton!
     @IBOutlet private weak var mnemonicsContainerView: UIView!
     @IBOutlet private weak var copyToClipboardButton: TextButton!
@@ -131,7 +132,12 @@ extension RecoveryPhraseViewController: RecoveryPhraseViewControllerProtocol {
     
     func setRecoveryPhraseUnavailable() {
         mnemonicsContainerView.isHidden = true
-        titleLabel.setTitle(String.Constants.somethingWentWrong.localized())
+        subtitleLabel.isHidden = false
+        subtitleLabel.setAttributedTextWith(text: String.Constants.recoveryPhraseNotAvailableMessage.localized(),
+                                            font: .currentFont(withSize: 17, weight: .regular),
+                                            textColor: .foregroundDefault,
+                                            alignment: .center)
+        titleLabel.setTitle(String.Constants.recoveryPhraseNotAvailableTitle.localized())
         setExplanationText("")
     }
 }

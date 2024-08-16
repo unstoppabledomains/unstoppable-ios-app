@@ -23,6 +23,7 @@
                 <outlet property="rightMnemonicsStackView" destination="C11-lc-vJS" id="zkY-NN-np0"/>
                 <outlet property="scrollView" destination="oC6-m2-C7e" id="2i9-mY-YDj"/>
                 <outlet property="subTitleButton" destination="bTU-8r-Yhd" id="FnT-db-JQa"/>
+                <outlet property="subtitleLabel" destination="46e-pQ-bnf" id="K7m-eb-Ptk"/>
                 <outlet property="titleLabel" destination="e1C-oj-gDw" id="drZ-KB-Tzf"/>
                 <outlet property="view" destination="d7V-7Z-4i9" id="eTd-bL-ibX"/>
                 <outletCollection property="blurCoverViews" destination="wUh-Vu-LXP" collectionClass="NSMutableArray" id="VrF-Xa-wRx"/>
@@ -53,6 +54,12 @@
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Recovery phrase" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e1C-oj-gDw" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
                                             <rect key="frame" x="11" y="0.0" width="219.5" height="33.5"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="46e-pQ-bnf">
+                                            <rect key="frame" x="100" y="41.5" width="41.5" height="0.0"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
