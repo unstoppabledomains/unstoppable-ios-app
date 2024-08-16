@@ -196,9 +196,6 @@ private extension PurchaseDomainsSearchView {
         } else {
             resultDomainsListView(searchResultHolder.availableDomains)
         }
-        if searchResultHolder.hasTakenDomains {
-            showHideTakenDomainsView()
-        }
         suggestionsSectionView()
     }
     
