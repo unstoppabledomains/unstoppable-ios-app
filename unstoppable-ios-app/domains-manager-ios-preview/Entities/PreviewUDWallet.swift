@@ -32,6 +32,18 @@ struct UDWallet: Codable, Hashable {
         }
     }
     
+    func getMnemonicsThrowing() throws -> String {
+        guard let mnemonics = getMnemonics() else { throw Error.failedToRetrieveSP }
+        
+        return mnemonics
+    }
+    
+    func getPrivateKeyThrowing() throws -> String {
+        guard let privateKey = getPrivateKey() else { throw Error.failedToRetrievePK }
+        
+        return privateKey
+    }
+    
     private var walletConnectionInfo: WalletConnectionInfo?
    
     func getExternalWallet() -> WCWalletsProvider.WalletRecord? {
@@ -96,6 +108,8 @@ struct UDWallet: Codable, Hashable {
     enum Error: String, Swift.Error, RawValueLocalizable {
         case failedSignature
         case failedToFindMPCMetadata
+        case failedToRetrieveSP
+        case failedToRetrievePK
     }
 }
 

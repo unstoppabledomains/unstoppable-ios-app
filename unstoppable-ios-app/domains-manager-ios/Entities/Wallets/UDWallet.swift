@@ -28,6 +28,8 @@ struct UDWallet: Codable, @unchecked Sendable {
         case failedToFindWallet = "Failed to Find a Wallet"
         case failedSignature
         case failedToFindMPCMetadata
+        case failedToRetrievePK
+        case failedToRetrieveSP
     }
     
     struct WalletConnectionInfo: Codable {
@@ -72,6 +74,12 @@ struct UDWallet: Codable, @unchecked Sendable {
         }
     }
     
+    func getPrivateKeyThrowing() throws -> String {
+        guard let privateKey = getPrivateKey() else { throw Error.failedToRetrievePK }
+        
+        return privateKey
+    }
+    
     func getPrivateKey() -> String? {
         guard let ethWallet = self.ethWallet else { return nil }
         switch ethWallet.securityType {
@@ -84,6 +92,12 @@ struct UDWallet: Codable, @unchecked Sendable {
             return privateKey
         case .undefined: return nil
         }
+    }
+    
+    func getMnemonicsThrowing() throws -> String {
+        guard let mnemonics = getMnemonics() else { throw Error.failedToRetrieveSP }
+        
+        return mnemonics
     }
     
     func getMnemonics() -> String? {

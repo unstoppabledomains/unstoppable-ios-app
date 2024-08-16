@@ -319,6 +319,8 @@ extension String {
         static let recoveryPhraseHelpText = "RECOVERY_PHRASE_HELP_TEXT"
         static let recoveryPhraseHelpTextHighlighted = "RECOVERY_PHRASE_HELP_TEXT_HIGHLIGHTED"
         static let recoveryPhraseHelpTextBullets = "RECOVERY_PHRASE_HELP_TEXT_BULLETS"
+        static let recoveryPhraseNotAvailableTitle = "RECOVERY_PHRASE_NOT_AVAILABLE_TITLE"
+        static let recoveryPhraseNotAvailableMessage = "RECOVERY_PHRASE_NOT_AVAILABLE_MESSAGE"
         
         static let confirmYourWords = "CONFIRM_YOUR_WORDS"
         static let iForgotMyWords = "I_FORGOT_MY_WORDS"
