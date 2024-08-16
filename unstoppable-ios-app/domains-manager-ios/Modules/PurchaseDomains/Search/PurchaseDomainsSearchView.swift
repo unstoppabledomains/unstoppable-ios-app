@@ -310,18 +310,21 @@ private extension PurchaseDomainsSearchView {
                 self.search(text: search, searchType: .recent)
                 debounceObject.text = search
             } label: {
-                Image.clock
-                    .resizable()
-                    .squareFrame(24)
-                    .foregroundStyle(Color.foregroundSecondary)
-                Text(search)
-                    .textAttributes(color: .foregroundDefault,
-                                    fontSize: 16,
-                                    fontWeight: .medium)
+                HStack {
+                    Image.clock
+                        .resizable()
+                        .squareFrame(24)
+                        .foregroundStyle(Color.foregroundSecondary)
+                    Text(search)
+                        .textAttributes(color: .foregroundDefault,
+                                        fontSize: 16,
+                                        fontWeight: .medium)
+                        .lineLimit(1)
+                    Spacer()
+                }
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            
-            Spacer()
             
             Button {
                 logButtonPressedAnalyticEvents(button: .clearFromRecentSearch, parameters: [.value: search])
