@@ -503,6 +503,9 @@ private extension DomainProfileViewPresenter {
             } else if let error = errors.compactMap({ $0.error as? MPCWalletError }).first(where: { $0 == .messageSignDisabled }) {
                 view.showAlertWith(error: error, handler: nil)
                 throw MPCWalletError.messageSignDisabled
+            } else if let error = errors.compactMap({ $0.error as? MPCWalletError }).first(where: { $0 == .maintenanceEnabled }) {
+                view.showAlertWith(error: error, handler: nil)
+                throw MPCWalletError.maintenanceEnabled
             } else {
                 try await requiredPullUp()
             }

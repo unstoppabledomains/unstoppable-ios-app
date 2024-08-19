@@ -135,12 +135,9 @@ private extension ExternalWalletConnectionService {
     
     func startExternalWallet(wcWallet: WCWalletsProvider.WalletRecord, connectionUrlString: String?) {
         let appPrefix: String
-        if let universalPrefix = wcWallet.getUniversalAppLink(),
+        if let universalPrefix = wcWallet.getOperationalAppLink(),
            !universalPrefix.isEmpty {
             appPrefix = universalPrefix
-        } else if let nativePrefix = wcWallet.getNativeAppLink(),
-                  !nativePrefix.isEmpty {
-            appPrefix = nativePrefix
         } else {
             Debugger.printFailure("Cannot get a Universal or Native link for a wallet \(wcWallet.name)", critical: true)
             finishWith(result: .failure(.failedToConnect))

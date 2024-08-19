@@ -28,6 +28,8 @@ struct UDWallet: Codable, @unchecked Sendable {
         case failedToFindWallet = "Failed to Find a Wallet"
         case failedSignature
         case failedToFindMPCMetadata
+        case failedToRetrievePK
+        case failedToRetrieveSP
     }
     
     struct WalletConnectionInfo: Codable {
@@ -72,6 +74,12 @@ struct UDWallet: Codable, @unchecked Sendable {
         }
     }
     
+    func getPrivateKeyThrowing() throws -> String {
+        guard let privateKey = getPrivateKey() else { throw Error.failedToRetrievePK }
+        
+        return privateKey
+    }
+    
     func getPrivateKey() -> String? {
         guard let ethWallet = self.ethWallet else { return nil }
         switch ethWallet.securityType {
@@ -84,6 +92,12 @@ struct UDWallet: Codable, @unchecked Sendable {
             return privateKey
         case .undefined: return nil
         }
+    }
+    
+    func getMnemonicsThrowing() throws -> String {
+        guard let mnemonics = getMnemonics() else { throw Error.failedToRetrieveSP }
+        
+        return mnemonics
     }
     
     func getMnemonics() -> String? {
@@ -319,26 +333,7 @@ extension UDWallet {
     var address: String { getActiveAddress(for: .UNS) ?? "" }
 }
 
-extension UDWallet {
-    func launchExternalWallet() async throws {
-        guard let wcWallet = self.walletConnectionInfo?.externalWallet,
-              let  nativePrefix = wcWallet.getNativeAppLink(),
-              let url = URL(string: nativePrefix) else {
-            throw WalletConnectRequestError.failedToFindExternalAppLink
-        }
-        
-        try await withCheckedThrowingContinuation { (completion: CheckedContinuation<Void, Swift.Error>) in
-            DispatchQueue.main.async {
-                guard UIApplication.shared.canOpenURL(url) else {
-                    completion.resume(throwing: WalletConnectRequestError.failedOpenExternalApp)
-                    return
-                }
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                completion.resume(returning: ())
-            }
-        }
-    }
-    
+extension UDWallet {    
     func getExternalWallet() -> WCWalletsProvider.WalletRecord? {
         walletConnectionInfo?.externalWallet
     }

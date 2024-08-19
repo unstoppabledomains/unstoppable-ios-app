@@ -83,7 +83,10 @@ private extension HomeWalletView {
     }
     
     func walletActions() -> [WalletAction] {
-        var actions: [WalletAction] = [.buy(enabled: viewModel.isBuyButtonEnabled)]
+        var actions: [WalletAction] = []
+        if viewModel.isBuyButtonEnabled {
+            actions.append(.buy(enabled: true))
+        }
         if viewModel.isSendCryptoEnabled {
             actions.append(.send)
         }
