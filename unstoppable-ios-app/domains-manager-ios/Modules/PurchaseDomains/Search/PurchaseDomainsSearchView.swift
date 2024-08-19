@@ -366,7 +366,7 @@ private extension PurchaseDomainsSearchView {
                                                                                          tlds: searchFiltersHolder.tlds)
                 guard searchingText == self.searchingText else { return }
                 
-                self.suggestions = suggestions
+                self.suggestions = suggestions.filter({ $0.tldCategory == .uns })
             } catch {
                 Debugger.printFailure("Failed to load suggestions")
             }
