@@ -149,7 +149,7 @@ private extension HomeWalletDomainCellView {
             .shadow(color: .black.opacity(0.32), radius: 8.99346, x: 0, y: 6.29542)
             Spacer()
         }
-        .sideInsets(8)
+        .padding(.horizontal, 8)
     }
     
     @ViewBuilder

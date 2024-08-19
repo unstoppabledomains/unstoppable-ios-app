@@ -39,7 +39,7 @@ struct UDTextFieldView: View, ViewAnalyticsLogger {
             ZStack {
                 getTextFieldBackground()
                 getTextFieldContent()
-                    .sideInsets(16)
+                    .padding(.horizontal, 16)
             }
             .frame(height: height)
         }

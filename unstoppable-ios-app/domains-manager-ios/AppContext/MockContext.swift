@@ -73,6 +73,8 @@ final class MockContext: AppContextProtocol {
     func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
         MockStripeService(amount: amount)
     }
+    
+    private(set) lazy var ipVerificationService: IPVerificationServiceProtocol = IPVerificationService()
 
 }
 

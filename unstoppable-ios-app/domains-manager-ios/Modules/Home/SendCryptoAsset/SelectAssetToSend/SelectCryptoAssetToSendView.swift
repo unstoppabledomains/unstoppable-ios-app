@@ -260,7 +260,9 @@ private extension SelectCryptoAssetToSendView {
             domainsContentView()
         } else {
             SelectCryptoAssetToSendEmptyView(assetType: .domains,
-                                             actionCallback: tabRouter.runPurchaseFlow)
+                                             actionCallback: { [weak tabRouter] in
+                tabRouter?.runPurchaseFlow()
+            })
         }
     }
     

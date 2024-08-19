@@ -21,7 +21,7 @@ final class MainWindow: UIWindow {
 // MARK: - Private methods
 private extension MainWindow {
     func checkToastView() {
-        if let toastView = self.firstSubviewOfType(ToastView.self) {
+        if let toastView = self.firstSubviewOfType(ToastUIView.self) {
             bringSubviewToFront(toastView)
         }
     }

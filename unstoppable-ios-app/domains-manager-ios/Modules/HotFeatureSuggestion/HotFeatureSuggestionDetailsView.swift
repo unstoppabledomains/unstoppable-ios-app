@@ -22,7 +22,7 @@ struct HotFeatureSuggestionDetailsView: View, ViewAnalyticsLogger {
         NavigationView {
             OffsetObservingScrollView(offset: $scrollOffset) {
                 contentView()
-                    .sideInsets(16)
+                    .padding(.horizontal, 16)
                 UDButtonView(text: String.Constants.gotIt.localized(),
                              style: .large(.raisedTertiary)) {
                     logButtonPressedAnalyticEvents(button: .gotIt)

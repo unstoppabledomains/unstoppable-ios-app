@@ -232,7 +232,7 @@ extension Ecom {
             return price + productsPrice + (ensStatus?.registrationFees ?? 0)
         }
         var isENSDomain: Bool { domain.extension == Constants.ensDomainTLD }
-        var isCOMDomain: Bool { domain.extension == Constants.comDomainTLD }
+        var isCOMDomain: Bool { Constants.dnsDomainTLDs.contains(domain.extension) }
         var isAbleToPurchase: Bool { !isENSDomain && !isCOMDomain }
         
         var hasUDVEnabled: Bool {

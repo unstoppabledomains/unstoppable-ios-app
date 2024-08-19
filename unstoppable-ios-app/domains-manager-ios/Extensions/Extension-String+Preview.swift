@@ -395,6 +395,7 @@ extension String {
         static let pluralNProfilesFound = "SDICT:N_PROFILES_FOUND"
         static let pluralNHolders = "SDICT:N_HOLDERS"
         static let pluralNAddresses = "SDICT:N_ADDRESSES"
+        static let pluralMintingNDomains = "SDICT:MINTING_N_DOMAINS"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -1030,7 +1031,7 @@ extension String {
         static let getDomainCardSubtitle = "GET_DOMAIN_CARD_SUBTITLE"
         static let findANewDomain = "FIND_A_NEW_DOMAIN"
         static let findYourDomain = "FIND_YOUR_DOMAIN"
-        static let searchForANewDomain = "SEARCH_FOR_A_NEW_DOMAIN"
+        static let searchForADomain = "SEARCH_FOR_A_DOMAIN"
         static let trending = "TRENDING"
         static let noAvailableDomains = "NO_AVAILABLE_DOMAINS"
         static let tryEnterDifferentName = "TRY_ENTER_DIFF_NAME"
@@ -1039,6 +1040,7 @@ extension String {
         static let mintTo = "MINT_TO"
         static let applyDiscounts = "APPLY_DISCOUNTS"
         static let addDiscountCode = "ADD_DISCOUNT_CODE"
+        static let discountCodeApplied = "DISCOUNT_CODE_APPLIED"
         static let promoCredits = "PROMO_CREDITS"
         static let storeCredits = "STORE_CREDITS"
         static let usZIPCode = "US_ZIP_CODE"
@@ -1082,6 +1084,33 @@ extension String {
         static let purchaseSearchCantButPullUpTitle = "PURCHASE_SEARCH_CANT_BUY_PULL_UP_TITLE"
         static let purchaseSearchCantButPullUpSubtitle = "PURCHASE_SEARCH_CANT_BUY_PULL_UP_SUBTITLE"
         static let payWithCredits = "PAY_WITH_CREDITS"
+        static let buyDomainsSearchTitle = "BUY_DOMAINS_SEARCH_TITLE"
+        static let buyDomainsCartEmptyTitle = "BUY_DOMAINS_CART_EMPTY_TITLE"
+        static let buyDomainsCartEmptySubtitle = "BUY_DOMAINS_CART_EMPTY_SUBTITLE"
+        static let buyDomainsCartTitle = "BUY_DOMAINS_CART_TITLE"
+        static let searchDomains = "SEARCH_DOMAINS"
+        static let clear = "CLEAR"
+        static let startTyping = "START_TYPING"
+        static let buyDomainsSearchResultShowMoreTitle = "BUY_DOMAINS_SEARCH_RESULT_SHOW_MORE_TITLE"
+        static let buyDomainsSearchResultShowLessTitle = "BUY_DOMAINS_SEARCH_RESULT_SHOW_LESS_TITLE"
+        static let purchaseMintingWalletTitle = "PURCHASE_MINTING_WALLET_TITLE"
+        static let purchaseMintingWalletPullUpTitle = "PURCHASE_MINTING_WALLET_PULL_UP_TITLE"
+        static let purchaseMintingWalletPullUpSubtitle = "PURCHASE_MINTING_WALLET_PULL_UP_SUBTITLE"
+        static let subtotal = "SUBTOTAL"
+        static let country = "COUNTRY"
+        static let usa = "USA"
+        static let other = "OTHER"
+        static let zipCodeForSalesTax = "ZIP_CODE_FOR_SALES_TAX"
+        static let domainRemoved = "DOMAIN_REMOVED"
+        static let undo = "UNDO"
+        static let cartCleared = "CART_CLEARED"
+        static let buyDomainFromWebPullUpTitle = "BUY_DOMAIN_FROM_WEB_PULL_UP_TITLE"
+        static let buyDomainFromWebPullUpSubtitle = "BUY_DOMAIN_FROM_WEB_PULL_UP_SUBTITLE"
+        static let checkoutFromWebPullUpTitle = "CHECKOUT_FROM_WEB_PULL_UP_TITLE"
+        static let checkoutFromWebPullUpSubtitle = "CHECKOUT_FROM_WEB_PULL_UP_SUBTITLE"
+        static let endings = "ENDINGS"
+        static let suggestions = "SUGGESTIONS"
+        static let domainsPurchasedSummaryMessage = "DOMAINS_PURCHASED_SUMMARY_MESSAGE"
         
         // Home
         static let homeWalletTokensComeTitle = "HOME_WALLET_TOKENS_COME_TITLE"
@@ -1092,7 +1121,6 @@ extension String {
         static let buyNewDomain = "BUY_NEW_DOMAIN"
         static let selectPrimaryDomainTitle = "SELECT_PRIMARY_DOMAIN_TITLE"
         static let selectPrimaryDomainSubtitle = "SELECT_PRIMARY_DOMAIN_SUBTITLE"
-        
         
         static let saveToPhotos = "SAVE_TO_PHOTOS"
         static let refreshMetadata = "REFRESH_METADATA"
@@ -1405,6 +1433,8 @@ extension String {
     var asURL: URL? {
         URL(string: self)
     }
+    
+    
 }
 
 extension String {

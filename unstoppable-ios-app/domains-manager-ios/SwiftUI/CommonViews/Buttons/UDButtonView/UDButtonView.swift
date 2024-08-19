@@ -156,12 +156,12 @@ fileprivate extension UDButtonView {
             switch style {
             case .large:
                 content
-                    .sideInsets(24)
+                    .padding(.horizontal, 24)
                     .frame(maxWidth: .infinity)
                     .frame(height: style.height)
             case .medium, .small, .verySmall:
                 content
-                    .sideInsets(withTitle ? 12 : 6)
+                    .padding(.horizontal, withTitle ? 12 : 6)
                     .frame(height: style.height)
             }
         }

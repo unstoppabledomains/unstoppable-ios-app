@@ -25,6 +25,8 @@ enum Toast: Hashable {
     case communityProfileEnabled
     case purchaseDomainsDiscountApplied(Int)
     case followedProfileAs(DomainName)
+    case domainRemoved
+    case cartCleared
 
     var message: String {
         switch self {
@@ -68,12 +70,16 @@ enum Toast: Hashable {
             return String.Constants.discountAppliedToastMessage.localized(formatCartPrice(discount))
         case .followedProfileAs(let domainName):
             return String.Constants.followedAsX.localized(domainName)
+        case .domainRemoved:
+            return String.Constants.domainRemoved.localized()
+        case .cartCleared:
+            return String.Constants.cartCleared.localized()
         }
     }
     
     var secondaryMessage: String? {
         switch self {
-        case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .noInternetConnection, .changesConfirmed, .mintingSuccessful, .mintingUnavailable, .updatingRecords, .domainCopied, .failedToRefreshBadges, .itemSaved, .itemCopied, .userLoggedOut, .communityProfileEnabled, .purchaseDomainsDiscountApplied, .followedProfileAs:
+        case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .noInternetConnection, .changesConfirmed, .mintingSuccessful, .mintingUnavailable, .updatingRecords, .domainCopied, .failedToRefreshBadges, .itemSaved, .itemCopied, .userLoggedOut, .communityProfileEnabled, .purchaseDomainsDiscountApplied, .followedProfileAs, .domainRemoved, .cartCleared:
             return nil
         case .failedToFetchDomainProfileData:
             return String.Constants.refresh.localized()
@@ -84,7 +90,7 @@ enum Toast: Hashable {
     
     var style: Style {
         switch self {
-        case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .changesConfirmed, .mintingSuccessful, .domainCopied, .itemSaved, .itemCopied, .userLoggedOut, .communityProfileEnabled, .purchaseDomainsDiscountApplied, .followedProfileAs:
+        case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .changesConfirmed, .mintingSuccessful, .domainCopied, .itemSaved, .itemCopied, .userLoggedOut, .communityProfileEnabled, .purchaseDomainsDiscountApplied, .followedProfileAs, .domainRemoved, .cartCleared:
             return .success
         case .noInternetConnection, .updatingRecords, .mintingUnavailable, .failedToFetchDomainProfileData, .failedToUpdateProfile:
             return .dark
@@ -95,7 +101,7 @@ enum Toast: Hashable {
     
     var image: UIImage {
         switch self {
-        case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .changesConfirmed, .mintingSuccessful, .domainCopied, .itemSaved, .itemCopied, .userLoggedOut, .communityProfileEnabled, .purchaseDomainsDiscountApplied, .followedProfileAs:
+        case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .changesConfirmed, .mintingSuccessful, .domainCopied, .itemSaved, .itemCopied, .userLoggedOut, .communityProfileEnabled, .purchaseDomainsDiscountApplied, .followedProfileAs, .domainRemoved, .cartCleared:
             return .checkCircleWhite
         case .noInternetConnection:
             return .connectionOffIcon
@@ -151,6 +157,10 @@ enum Toast: Hashable {
         case (.purchaseDomainsDiscountApplied, .purchaseDomainsDiscountApplied):
             return true
         case (.followedProfileAs, .followedProfileAs):
+            return true
+        case (.domainRemoved, .domainRemoved):
+            return true
+        case (.cartCleared, .cartCleared):
             return true
         default:
             return false

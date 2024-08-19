@@ -12,6 +12,8 @@ final class GIFAnimationsService {
     static let shared = GIFAnimationsService()
     
     func createGIFImageWithData(_ data: Data,
+                                id: String,
+                                maxImageSize: CGFloat,
                                 maskingType: GIFMaskingType? = nil) async -> UIImage? {
         UIImage(data: data)
         

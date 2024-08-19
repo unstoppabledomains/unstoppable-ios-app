@@ -24,17 +24,18 @@ struct PurchaseDomainsEnterDiscountCodeView: View, ViewAnalyticsLogger {
                 .foregroundStyle(Color.foregroundDefault)
                 .multilineTextAlignment(.center)
             UDTextFieldView(text: $value,
-                            placeholder: String.Constants.discountCode.localized(),
+                            placeholder: "",
+                            hint: String.Constants.discountCode.localized(),
                             focusBehaviour: .activateOnAppear,
                             autocapitalization: .characters)
-            UDButtonView(text: String.Constants.confirm.localized(), style: .large(.raisedPrimary)) {
+            Spacer()
+            UDButtonView(text: String.Constants.apply.localized(), style: .large(.raisedPrimary)) {
                 logButtonPressedAnalyticEvents(button: .confirmDiscountCode, parameters: [.value: value.trimmedSpaces])
                 UDVibration.buttonTap.vibrate()
                 purchaseDomainsPreferencesStorage.checkoutData.discountCode = value.trimmedSpaces
                 presentationMode.wrappedValue.dismiss()
                 enteredCallback?()
             }
-            Spacer()
         }
         .padding(EdgeInsets(top: 32, leading: 16, bottom: 16, trailing: 16))
         .onAppear {
