@@ -95,11 +95,29 @@ final class FirebasePurchaseDomainsService: EcomPurchaseInteractionService {
 // MARK: - PurchaseDomainsServiceProtocol
 extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     func searchForDomains(key: String,
-                          tlds: Set<String>) async throws -> [DomainToPurchase] {
-        let searchResult = try await self.searchForFBDomains(key: key,
-                                                             tlds: tlds)
-        let domains = transformDomainProductItemsToDomainsToPurchase(searchResult.exact)
-        return domains
+                           tlds: Set<String>) -> AsyncThrowingStream<[DomainToPurchase], Error> {
+        AsyncThrowingStream { continuation in
+            Task {
+                try? await withThrowingTaskGroup(of: Void.self) { group in
+                    TLDCategory.allCases.forEach { tld in
+                        let start = Date()
+                        group.addTask {
+                            do {
+                                let searchResult = try await self.searchForEcommDomains(key: key,
+                                                                                        tlds: tlds,
+                                                                                        tldCategory: tld)
+                                let domains = self.transformDomainProductItemsToDomainsToPurchase(searchResult.exact)
+                                continuation.yield(domains)
+                            } catch { }
+                        }
+                    }
+                    
+                    for try await _ in group { }
+                }
+                
+                continuation.finish()
+            }
+        }
     }
     
     func aiSearchForDomains(hint: String) async throws -> [DomainToPurchase] {
@@ -182,10 +200,12 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
 
 // MARK: - Private methods
 private extension FirebasePurchaseDomainsService {
-    func searchForFBDomains(key: String,
-                            tlds: Set<String>) async throws -> SearchDomainsResponse {
+    func searchForEcommDomains(key: String,
+                               tlds: Set<String>,
+                               tldCategory: TLDCategory) async throws -> SearchDomainsResponse {
         var searchResponse = try await makeSearchDomainsRequestWith(key: key,
-                                                                    tlds: tlds)
+                                                                    tlds: tlds,
+                                                                    tldCategory: tldCategory)
         searchResponse.exact = searchResponse.exact
         return searchResponse
     }
@@ -228,9 +248,10 @@ private extension FirebasePurchaseDomainsService {
     }
     
     func makeSearchDomainsRequestWith(key: String,
-                                      tlds: Set<String>) async throws -> SearchDomainsResponse {
+                                      tlds: Set<String>,
+                                      tldCategory: TLDCategory) async throws -> SearchDomainsResponse {
         let queryComponents: [String : String] = ["q" : key]
-        var urlString = URLSList.DOMAIN_UD_SEARCH_URL.appendingURLQueryComponents(queryComponents)
+        var urlString = URLSList.DOMAIN_UD_SEARCH_URL(tld: tldCategory).appendingURLQueryComponents(queryComponents)
         for tld in tlds {
             urlString += "&includeDomainEndings[]=\(tld)"
         }

@@ -69,25 +69,36 @@ extension MockFirebaseInteractionsService: FirebaseAuthenticationServiceProtocol
 // MARK: - PurchaseDomainsServiceProtocol
 extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     func searchForDomains(key: String,
-                          tlds: Set<String>) async throws -> [DomainToPurchase] {
-        await Task.sleep(seconds: 0.5)
-        let key = key.lowercased()
+                          tlds: Set<String>) -> AsyncThrowingStream<[DomainToPurchase], Error> {
+        AsyncThrowingStream { continuation in
+            Task {
+                await Task.sleep(seconds: 0.5)
+                let key = key.lowercased()
+                
+                let domains = createDomainsWith(name: key)
+                continuation.yield(domains)
+                continuation.finish()
+            }
+        }
+    }
+    
+    private func createDomainsWith(name: String) -> [DomainToPurchase] {
         let tlds: [String] = ["x", "crypto", "nft", "wallet", "polygon", "dao", "888", "blockchain", "go", "bitcoin"]
         let prices: [Int] = [Constants.maxPurchaseDomainsSum, 4000_00, 40000, 20000, 8000, 4000, 500]
         let isTaken: [Bool] = [true, false]
         let notSupportedTLDs: [String] = ["eth", "com"]
         
         let domains = tlds.map {
-            DomainToPurchase(name: "\(key).\($0)",
+            DomainToPurchase(name: "\(name).\($0)",
                              price: prices.randomElement()!,
                              metadata: nil,
                              isTaken: isTaken.randomElement()!,
                              isAbleToPurchase: true)
         }
-        let notSupportedDomains = notSupportedTLDs.map { 
-            DomainToPurchase(name: "\(key).\($0)", 
+        let notSupportedDomains = notSupportedTLDs.map {
+            DomainToPurchase(name: "\(name).\($0)",
                              price: prices.randomElement()!,
-                             metadata: nil, 
+                             metadata: nil,
                              isTaken: isTaken.randomElement()!,
                              isAbleToPurchase: false)
         }
@@ -96,15 +107,13 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     }
     
     func aiSearchForDomains(hint: String) async throws -> [DomainToPurchase] {
-        try await searchForDomains(key: "ai_" + hint,
-                                   tlds: [])
+        createDomainsWith(name: "ai_" + hint)
     }
     
     func getDomainsSuggestions(hint: String, tlds: Set<String>) async throws -> [DomainToPurchase] {
         await Task.sleep(seconds: 0.4)
         
-        return try await searchForDomains(key: "suggest_" + hint,
-                                          tlds: [])
+        return createDomainsWith(name: "suggest_" + hint)
     }
     
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws {

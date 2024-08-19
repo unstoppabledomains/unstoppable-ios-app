@@ -156,7 +156,7 @@ private extension PurchaseDomainsSearchView {
     
     @ViewBuilder
     func searchResultView() -> some View {
-        if isLoading && !searchingText.isEmpty {
+        if isLoading && !searchingText.isEmpty && searchResultHolder.isEmpty {
             loadingView()
         } else if !searchResultHolder.isEmpty {
             resultListView()
@@ -396,31 +396,26 @@ private extension PurchaseDomainsSearchView {
         guard !searchingText.isEmpty else { return }
         
         loadSuggestions()
-        performSearchOperation(searchingText: text, searchType: searchType) {
-            try await purchaseDomainsService.searchForDomains(key: text,
-                                                              tlds: searchFiltersHolder.tlds)
-        }
+        let stream = purchaseDomainsService.searchForDomains(key: text,
+                                                             tlds: searchFiltersHolder.tlds)
+        performSearchOperation(searchingText: text, searchType: searchType, stream: stream)
     }
     
-    func aiSearch(hint: String) {
-        searchResultHolder.clear()
-        performSearchOperation(searchingText: hint, searchType: .aiSearch) {
-            try await purchaseDomainsService.aiSearchForDomains(hint: hint)
-        }
-    }
-    
-    func performSearchOperation(searchingText: String, searchType: SearchResultType, _ block: @escaping () async throws -> ([DomainToPurchase])) {
+    func performSearchOperation(searchingText: String, 
+                                searchType: SearchResultType,
+                                stream: AsyncThrowingStream<[DomainToPurchase], Error>) {
         Task {
             logAnalytic(event: .didSearch, parameters: [.value: searchingText,
                                                         .searchType: searchType.rawValue])
             
             isLoading = true
             do {
-                let searchResult = try await block()
-                guard searchingText == self.searchingText else { return } // Result is irrelevant, search query has changed
-                
-                searchResultHolder.setDomains(searchResult, searchText: searchingText)
-                self.searchResultType = searchType
+                for try await searchResult in stream {
+                    guard searchingText == self.searchingText else { return } // Result is irrelevant, search query has changed
+                    
+                    searchResultHolder.addDomains(searchResult, searchText: searchingText)
+                    self.searchResultType = searchType
+                }
             } catch {
                 loadingError = error
             }
