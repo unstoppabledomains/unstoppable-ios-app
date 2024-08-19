@@ -177,7 +177,6 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
         let userWallet = try Ecom.UDUserAccountCryptWallet.objectFromDataThrowing(wallet.metadata ?? Data())
         try await purchaseProductsInTheCart(with: .init(wallet: userWallet),
                                             totalAmountDue: udCart.calculations.totalAmountDue)
-        isAutoRefreshCartSuspended = false
     }
 }
 

@@ -27,7 +27,9 @@ final class EcomPurchaseMPCWalletService: EcomPurchaseInteractionService {
         preferencesService.$checkoutData.publisher
             .sink { [weak self] checkoutData in
                 self?.checkoutData = checkoutData
-                self?.refreshUserCartAsync()
+                if self?.ongoingPurchaseSession != nil {
+                    self?.refreshUserCartAsync()
+                }
             }
             .store(in: &cancellables)
     }
@@ -169,7 +171,6 @@ extension EcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
                                             totalAmountDue: udCart.calculations.totalAmountDue)
         ongoingPurchaseSession?.orderId = cachedPaymentDetails?.orderId
         try await waitForMPCWalletIsCreated()
-        isAutoRefreshCartSuspended = false
     }
     
     func validateCredentialsForTakeover(credentials: MPCTakeoverCredentials) async throws -> Bool {

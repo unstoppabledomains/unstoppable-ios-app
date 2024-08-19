@@ -15,7 +15,7 @@ class EcomPurchaseInteractionService: BaseFirebaseInteractionService {
         }
     }
     var checkoutData: PurchaseDomainsCheckoutData
-    var isAutoRefreshCartSuspended = false
+    var isAutoRefreshCartSuspended = true
     var cachedPaymentDetails: Ecom.StripePaymentDetails? = nil
     var isApplePaySupported: Bool { StripeService.isApplePaySupported }
 
