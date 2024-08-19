@@ -121,7 +121,7 @@ extension PurchaseDomains {
         var hasTakenDomains: Bool { !takenDomains.isEmpty }
         
         var isEmpty: Bool {
-            availableDomains.isEmpty && takenDomains.isEmpty
+            availableDomains.isEmpty
         }
         
         init() {
