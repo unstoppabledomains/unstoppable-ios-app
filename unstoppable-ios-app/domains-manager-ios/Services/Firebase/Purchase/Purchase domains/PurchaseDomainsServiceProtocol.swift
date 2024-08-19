@@ -12,7 +12,7 @@ protocol PurchaseDomainsServiceProtocol {
     var isApplePaySupported: Bool { get }
     
     func searchForDomains(key: String,
-                          tlds: Set<String>) async throws -> [DomainToPurchase]
+                          tlds: Set<String>) -> AsyncThrowingStream<[DomainToPurchase], Error>
     func aiSearchForDomains(hint: String) async throws -> [DomainToPurchase]
     func getDomainsSuggestions(hint: String, tlds: Set<String>) async throws -> [DomainToPurchase]
     

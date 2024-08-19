@@ -22,9 +22,21 @@ class BaseFirebaseInteractionService {
         
         static var DOMAIN_URL: String { baseAPIURL.appendingURLPathComponent("domain") }
         static var DOMAIN_SEARCH_URL: String { DOMAIN_URL.appendingURLPathComponents("search") }
-        static var DOMAIN_UD_SEARCH_URL: String { DOMAIN_SEARCH_URL.appendingURLPathComponents("internal") }
+        
+        static func DOMAIN_UD_SEARCH_URL(tld: TLDCategory) -> String {
+            switch tld {
+            case .uns:
+                DOMAIN_SEARCH_URL.appendingURLPathComponents("internal")
+            case .dns:
+                DOMAIN_SEARCH_URL.appendingURLPathComponents("dns")
+            case .ens:
+                DOMAIN_SEARCH_URL.appendingURLPathComponents("ens")
+            }
+        }
+        
+        
         static var DOMAIN_SUGGESTIONS_URL: String { DOMAIN_SEARCH_URL.appendingURLPathComponents("suggestions") }
-        static var DOMAIN_AI_SUGGESTIONS_URL: String { DOMAIN_UD_SEARCH_URL.appendingURLPathComponents("ai-suggestions") }
+        static var DOMAIN_AI_SUGGESTIONS_URL: String { DOMAIN_UD_SEARCH_URL(tld: .uns).appendingURLPathComponents("ai-suggestions") }
         static func DOMAIN_ENS_STATUS_URL(domain: String) -> String {
             DOMAIN_URL.appendingURLPathComponents(domain, "ens-status")
         }

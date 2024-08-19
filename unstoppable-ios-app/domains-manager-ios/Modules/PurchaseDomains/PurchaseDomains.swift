@@ -133,10 +133,9 @@ extension PurchaseDomains {
             takenDomains.removeAll()
         }
         
-        mutating func setDomains(_ domains: [DomainToPurchase],
+        mutating func addDomains(_ domains: [DomainToPurchase],
                                  searchText: String) {
             let sortedDomains = sortSearchResult(domains, searchText: searchText)
-            clear()
             for domain in sortedDomains {
                 if domain.isTaken {
                     takenDomains.append(domain)

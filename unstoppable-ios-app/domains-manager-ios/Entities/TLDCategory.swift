@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum TLDCategory {
+enum TLDCategory: CaseIterable {
     case uns
     case ens
     case dns
