@@ -22,6 +22,7 @@ struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : Mut
     var body: some View {
         NavigationStack(path: $path) {
             content()
+                .navigationPopGestureDisabled(navigationState.navigationBackDisabled)
                 .environmentObject(navigationState)
         }
         .overlay(alignment: .top, content: {
@@ -78,6 +79,7 @@ final class NavigationStateManager: ObservableObject, Hashable {
     @Published var isTitleVisible: Bool = false
     @Published var yOffset: CGFloat = 0
     @Published var dismiss: Bool = false
+    @Published var navigationBackDisabled: Bool = false
     @Published private(set) var customTitle: (() -> any View)?
     private(set) var customViewID: String?
     
@@ -87,4 +89,10 @@ final class NavigationStateManager: ObservableObject, Hashable {
         self.customTitle = customTitle
         customViewID = id
     }
+}
+
+final class NavigationStateManagerWrapper: ObservableObject {
+    
+    @Published var navigationState: NavigationStateManager?
+    
 }

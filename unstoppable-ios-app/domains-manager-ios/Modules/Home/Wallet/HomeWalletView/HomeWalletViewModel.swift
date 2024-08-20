@@ -117,7 +117,7 @@ extension HomeWalletView {
         func didSelectBuyOption(_ buyOption: HomeWalletView.BuyOptions) {
             switch buyOption {
             case .domains:
-                router.runPurchaseFlow()
+                router.runPurchaseFlow(shouldResetNavigation: false)
             case .crypto:
                 router.runBuyCryptoFlowTo(wallet: selectedWallet)
             }
@@ -163,7 +163,7 @@ extension HomeWalletView {
         }
         
         func buyDomainPressed() {
-            router.runPurchaseFlow()
+            router.runPurchaseFlow(shouldResetNavigation: false)
         }
         
         func domainPurchased() {

@@ -25,6 +25,12 @@ extension Double {
         return (self * multiplier).rounded() / multiplier
     }
     
+    func formattedBalance() -> String {
+        formatted(toMaxNumberAfterComa: 2)
+    }
+}
+
+extension Numeric where Self: LosslessStringConvertible {
     func formatted(toMaxNumberAfterComa maxNumberAfterComa: Int,
                    minNumberAfterComa: Int = 2) -> String {
         
@@ -47,10 +53,6 @@ extension Double {
         formatter.minimumFractionDigits = minNumberAfterComa
         formatter.roundingMode = .halfEven
         
-        return formatter.string(from: self as NSNumber) ?? "0.0"
-    }
-    
-    func formattedBalance() -> String {
-        formatted(toMaxNumberAfterComa: 2)
+        return formatter.string(from: self as! NSNumber) ?? "0.0"
     }
 }

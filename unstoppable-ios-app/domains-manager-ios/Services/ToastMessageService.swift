@@ -25,9 +25,9 @@ final class ToastMessageService {
         
     private let animationDuration: TimeInterval = 0.25
     private let dismissDelay: TimeInterval = 3 // sec
-    private var visibleToast: ToastView?
+    private var visibleToast: ToastUIView?
     private var dismissToastWorkingItem: DispatchWorkItem?
-    private var stickyToastView: ToastView?
+    private var stickyToastView: ToastUIView?
     private var toastActions: [Toast : EmptyCallback] = [:]
     
     nonisolated init() { }
@@ -83,7 +83,7 @@ extension ToastMessageService: ToastMessageServiceProtocol {
                    isSticky: Bool,
                    dismissDelay: TimeInterval?,
                    action: EmptyCallback?) {
-        if let toastView = view.firstSubviewOfType(ToastView.self) {
+        if let toastView = view.firstSubviewOfType(ToastUIView.self) {
             if toastView.toast == toast {
                 return
             }
@@ -106,7 +106,7 @@ extension ToastMessageService: ToastMessageServiceProtocol {
     }
     
     func removeToast(from view: UIView) {
-        if let toastView = view.firstSubviewOfType(ToastView.self) {
+        if let toastView = view.firstSubviewOfType(ToastUIView.self) {
             removeAction(for: toastView)
             toastView.removeFromSuperview()
         }
@@ -121,10 +121,10 @@ private extension ToastMessageService {
                             image: UIImage,
                             secondaryMessage: String?,
                             style: Toast.Style,
-                            in frame: CGRect?) -> ToastView {
+                            in frame: CGRect?) -> ToastUIView {
         let windowFrame = frame ?? window?.frame ?? .zero
         let sideOffset: CGFloat = 12
-        let view = ToastView(frame: CGRect(x: 0, y: 0, width: windowFrame.width, height: 36))
+        let view = ToastUIView(frame: CGRect(x: 0, y: 0, width: windowFrame.width, height: 36))
         view.backgroundColor = style.color
         view.layer.cornerRadius = 18
         
@@ -162,7 +162,7 @@ private extension ToastMessageService {
         return view
     }
     
-    func showToastView(_ toastView: ToastView, in view: UIView?, at position: Toast.Position, dismissDelay: TimeInterval) {
+    func showToastView(_ toastView: ToastUIView, in view: UIView?, at position: Toast.Position, dismissDelay: TimeInterval) {
         guard let container = view ?? self.window else { return }
         
         if toastView.isSticky == false {
@@ -201,7 +201,7 @@ private extension ToastMessageService {
         }
     }
     
-    func scheduleDismissWorkingItemFor(toastView: ToastView, dismissDelay: TimeInterval) {
+    func scheduleDismissWorkingItemFor(toastView: ToastUIView, dismissDelay: TimeInterval) {
         let dismissToastWorkingItem = DispatchWorkItem { [weak self, weak toastView] in
             if let toastView = toastView {
                 self?.removeToastView(toastView)
@@ -211,7 +211,7 @@ private extension ToastMessageService {
         DispatchQueue.main.asyncAfter(deadline: .now() + dismissDelay, execute: dismissToastWorkingItem)
     }
     
-    func removeToastView(_ toastView: ToastView) {
+    func removeToastView(_ toastView: ToastUIView) {
         self.visibleToast = nil
         dismissToastWorkingItem?.cancel()
         dismissToastWorkingItem = nil
@@ -236,26 +236,26 @@ private extension ToastMessageService {
     }
     
     @objc func swipeDismissView(_ gesture: UISwipeGestureRecognizer) {
-        guard let toastView = gesture.view as? ToastView else { return }
+        guard let toastView = gesture.view as? ToastUIView else { return }
         
         removeToastView(toastView)
     }
     
-    func add(action: EmptyCallback?, for toast: Toast, to view: ToastView) {
+    func add(action: EmptyCallback?, for toast: Toast, to view: ToastUIView) {
         guard let action else { return }
         
         toastActions[toast] = action
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapToast)))
     }
     
-    func removeAction(for toastView: ToastView) {
+    func removeAction(for toastView: ToastUIView) {
         if let toast = toastView.toast {
             toastActions[toast] = nil
         }
     }
     
     @objc func didTapToast(_ gesture: UITapGestureRecognizer) {
-        guard let toastView = gesture.view as? ToastView,
+        guard let toastView = gesture.view as? ToastUIView,
             let toast = toastView.toast else { return }
         
         UDVibration.buttonTap.vibrate()
@@ -264,7 +264,7 @@ private extension ToastMessageService {
     }
 }
 
-final class ToastView: UIView {
+final class ToastUIView: UIView {
     
     var toast: Toast?
     var initialY: CGFloat = 0 { didSet { frame.origin.y = initialY } }

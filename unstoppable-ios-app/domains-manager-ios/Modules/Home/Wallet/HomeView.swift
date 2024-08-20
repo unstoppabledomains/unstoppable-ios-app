@@ -10,26 +10,24 @@ import SwiftUI
 struct HomeView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var tabRouter: HomeTabRouter
-    @State private var navigationState: NavigationStateManager?
-    @State private var isTabBarVisible: Bool = true
+    @StateObject private var stateManagerWrapper = NavigationStateManagerWrapper()
+    
     var analyticsName: Analytics.ViewName { .home }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.profileId: tabRouter.profile.id] }
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             currentWalletView()
-                .onChange(of: isTabBarVisible) { _ in
-                    tabRouter.isTabBarVisible = isTabBarVisible
-                }
                 .navigationDestination(for: HomeWalletNavigationDestination.self) { destination in
                     HomeWalletLinkNavigationDestination.viewFor(navigationDestination: destination)
+                        .environmentObject(stateManagerWrapper)
                 }
                 .trackAppearanceAnalytics(analyticsLogger: self)
                 .passViewAnalyticsDetails(logger: self)
                 .checkPendingEventsOnAppear()
-
+                .environmentObject(stateManagerWrapper)
         }, navigationStateProvider: { state in
-            self.navigationState = state
+            self.stateManagerWrapper.navigationState = state
         }, path: $tabRouter.walletViewNavPath)
     }
     
@@ -42,13 +40,9 @@ private extension HomeView {
         switch tabRouter.profile {
         case .wallet(let wallet):
             HomeWalletView(viewModel: .init(selectedWallet: wallet,
-                                            router: tabRouter),
-                           navigationState: $navigationState,
-                           isTabBarVisible: $isTabBarVisible)
+                                            router: tabRouter))
         case .webAccount(let user):
-            HomeWebAccountView(user: user,
-                               navigationState: $navigationState,
-                               isTabBarVisible: $isTabBarVisible)
+            HomeWebAccountView(user: user)
         }
     }
 }

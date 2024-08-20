@@ -14,7 +14,7 @@ enum HomeWalletNavigationDestination: Hashable {
                  mintedDomains: [DomainDisplayInfo],
                  domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback,
                  mintingNavProvider: (MintDomainsNavigationController)->())
-    case purchaseDomains(domainsPurchasedCallback: PurchaseDomainsNavigationController.DomainsPurchasedCallback)
+    case purchaseDomains(PurchaseDomains.NavigationDestination)
     case login(mode: LoginFlowNavigationController.Mode, callback: LoginFlowNavigationController.LoggedInCallback)
     case walletDetails(WalletEntity)
     case securitySettings
@@ -68,6 +68,7 @@ enum HomeWalletNavigationDestination: Hashable {
 
 struct HomeWalletLinkNavigationDestination {
     
+    @MainActor
     @ViewBuilder
     static func viewFor(navigationDestination: HomeWalletNavigationDestination) -> some View {
         switch navigationDestination {
@@ -85,10 +86,8 @@ struct HomeWalletLinkNavigationDestination {
                                                    mintingNavProvider: mintingNavProvider)
             .toolbar(.hidden, for: .navigationBar)
             .ignoresSafeArea()
-        case .purchaseDomains(let callback):
-            PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
-                .toolbar(.hidden, for: .navigationBar)
-                .ignoresSafeArea()
+        case .purchaseDomains(let destination):
+            PurchaseDomains.LinkNavigationDestination.viewFor(navigationDestination: destination)
         case .login(let mode, let callback):
             LoginFlowNavigationControllerWrapper(mode: mode,
                                                  callback: callback)

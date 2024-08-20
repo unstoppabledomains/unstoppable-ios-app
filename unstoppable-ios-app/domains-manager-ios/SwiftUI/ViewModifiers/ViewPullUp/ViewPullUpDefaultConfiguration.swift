@@ -331,10 +331,10 @@ extension ViewPullUpDefaultConfiguration {
                      dismissCallback: nil)
     }
     
-    static func showFinishSetupProfilePullUp(pendingProfile: DomainProfilePendingChanges, 
-                                      signCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
+    static func showFinishSetupProfilePullUp(pendingProfile: DomainProfilePendingChanges,
+                                             signCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
         let domainName = pendingProfile.domainName
-
+        
         return .init(icon: .init(icon: .infoIcon,
                                  size: .large),
                      title: .highlightedText(.init(text: String.Constants.finishSetupProfilePullUpTitle.localized(String(domainName.prefix(40))),
@@ -363,9 +363,9 @@ extension ViewPullUpDefaultConfiguration {
                                                         analyticsName: .tryAgain,
                                                         action: { completion(.success(Void())) })),
                      cancelButton: .primaryGhost(content: .init(title: String.Constants.cancelSetup.localized(),
-                                                             icon: nil,
-                                                             analyticsName: .cancel,
-                                                             action: { completion(.failure(PullUpError.dismissed)) })),
+                                                                icon: nil,
+                                                                analyticsName: .cancel,
+                                                                action: { completion(.failure(PullUpError.dismissed)) })),
                      analyticName: .failedToFinishProfileForPurchasedDomains,
                      dismissCallback: nil)
     }
@@ -388,7 +388,7 @@ extension ViewPullUpDefaultConfiguration {
     
     static func legalSelectionPullUp(selectionCallback: @escaping (LegalType)->()) -> ViewPullUpDefaultConfiguration {
         var selectedItem: LegalType?
-
+        
         return .init(title: .text(String.Constants.settingsLegal.localized()),
                      items: LegalType.allCases,
                      itemSelectedCallback: { item in
@@ -444,7 +444,7 @@ extension ViewPullUpDefaultConfiguration {
                      analyticName: .noRecordsSetToSendCrypto,
                      dismissCallback: nil)
     }
- 
+    
     static func showSendCryptoForTheFirstTimeConfirmationPullUp(confirmCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
         var icon: UIImage?
         if User.instance.getSettings().touchIdActivated,
@@ -492,8 +492,8 @@ extension ViewPullUpDefaultConfiguration {
                      title: .text(String.Constants.removeMPCWalletPullUpTitle.localizedMPCProduct()),
                      subtitle: .label(.text(String.Constants.removeMPCWalletPullUpSubtitle.localized())),
                      actionButton: .primaryDanger(content: .init(title: String.Constants.removeWallet.localized(),
-                                                        analyticsName: .walletRemove,
-                                                        action: {
+                                                                 analyticsName: .walletRemove,
+                                                                 action: {
             removeCallback()
         })),
                      cancelButton: .secondary(content: .init(title: String.Constants.cancel.localized(),
@@ -504,6 +504,28 @@ extension ViewPullUpDefaultConfiguration {
                      dismissCallback: nil)
     }
     
+    static func buyDomainFromTheWebsite(goToWebCallback: MainActorAsyncCallback?) -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .unsTLDLogo,
+                          size: .small),
+              title: .text(String.Constants.buyDomainFromWebPullUpTitle.localized()),
+              subtitle: .label(.text(String.Constants.buyDomainFromWebPullUpSubtitle.localized())),
+              actionButton: .main(content: .init(title: String.Constants.goToWebsite.localized(),
+                                                 analyticsName: .goToWebsite,
+                                                 action: goToWebCallback)),
+              analyticName: .wcRequestNotSupported)
+    }
+    
+    static func checkoutFromTheWebsite(goToWebCallback: MainActorAsyncCallback?) -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .unsTLDLogo,
+                          size: .small),
+              title: .text(String.Constants.checkoutFromWebPullUpTitle.localized()),
+              subtitle: .label(.text(String.Constants.checkoutFromWebPullUpSubtitle.localized())),
+              actionButton: .main(content: .init(title: String.Constants.goToWebsite.localized(),
+                                                 analyticsName: .goToWebsite,
+                                                 action: goToWebCallback)),
+              analyticName: .wcRequestNotSupported)
+    }
+    
     static func transferDomainsFromVaultUnavailable() -> ViewPullUpDefaultConfiguration {
         .init(icon: .init(icon: .hammerWrenchIcon24,
                           size: .small),
@@ -512,7 +534,6 @@ extension ViewPullUpDefaultConfiguration {
               cancelButton: .gotItButton(),
               analyticName: .transferDomainsFromVaultMaintenance)
     }
-    
 }
 
 // MARK: - Open methods

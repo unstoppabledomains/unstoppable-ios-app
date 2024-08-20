@@ -34,7 +34,9 @@ final class ImageLoadingService: ImageLoadingServiceProtocol {
                 return UIImage.Preview.previewLandscape
                 let imageData = try Data(contentsOf: url)
                 
-                if let gif = await GIFAnimationsService.shared.createGIFImageWithData(imageData) {
+                if let gif = await GIFAnimationsService.shared.createGIFImageWithData(imageData,
+                                                                                      id: UUID().uuidString,
+                                                                                      maxImageSize: maxImageSize ?? Constants.downloadedImageMaxSize) {
                     return gif
                 }
                 

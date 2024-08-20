@@ -13,12 +13,11 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
     @EnvironmentObject var tabRouter: HomeTabRouter
+    @EnvironmentObject var stateManagerWrapper: NavigationStateManagerWrapper
     @StateObject var viewModel: HomeWalletViewModel
     @StateObject private var profilesAPIFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceProfilesAPIEnabled)
     @StateObject private var mpcFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceMPCEnabled)
-    @State private var isOtherScreenPresented: Bool = false
-    @Binding var navigationState: NavigationStateManager?
-    @Binding var isTabBarVisible: Bool
+    private var navigationState: NavigationStateManager? { stateManagerWrapper.navigationState }
     var isOtherScreenPushed: Bool { !tabRouter.walletViewNavPath.isEmpty }
     
     var body: some View {
@@ -41,12 +40,17 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 .listRowSeparator(.hidden)
                 .unstoppableListRowInset()
                 
+                mintingDomainsSection()
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 32, leading: 16, bottom: 32, trailing: 16))
+
                 userDataContentViewsIfAvailable()
                 
             }.environment(\.defaultMinListRowHeight, 28)
             .onChange(of: tabRouter.walletViewNavPath) { _ in
                 updateNavTitleVisibility()
-                isTabBarVisible = !isOtherScreenPushed
+                tabRouter.isTabBarVisible = !isOtherScreenPushed
             }
             .animation(.default, value: viewModel.selectedWallet)
             .listStyle(.plain)
@@ -72,6 +76,9 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 logAnalytic(event: .didPullToRefresh)
                 try? await appContext.walletsDataService.refreshDataForWallet(viewModel.selectedWallet)
             }
+            .sheet(isPresented: $tabRouter.isShowingMintingWalletsList, content: {
+                MintingDomainsListView(domains: viewModel.domainsData.mintingDomains)
+            })
             .onAppear(perform: onAppear)
     }
 }
@@ -104,6 +111,8 @@ private extension HomeWalletView {
         navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(shouldHideAvatar: true) },
                                         id: id)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            guard id == navigationState?.customViewID else { return }
+            
             updateNavTitleVisibility()
         }
     }
@@ -116,6 +125,11 @@ private extension HomeWalletView {
     
     var isHomeInMaintenance: Bool {
         profilesAPIFlagTracker.maintenanceData?.isCurrentlyEnabled == true
+    }
+    
+    @ViewBuilder
+    func mintingDomainsSection() -> some View {
+        HomeWalletMintingInProgressSectionView(mintingDomains: viewModel.domainsData.mintingDomains)
     }
     
     @ViewBuilder

@@ -68,27 +68,52 @@ extension MockFirebaseInteractionsService: FirebaseAuthenticationServiceProtocol
 
 // MARK: - PurchaseDomainsServiceProtocol
 extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
-    func searchForDomains(key: String) async throws -> [DomainToPurchase] {
-        await Task.sleep(seconds: 0.5)
-        let key = key.lowercased()
-        let tlds = ["x", "crypto", "nft", "wallet", "polygon", "dao", "888", "blockchain", "go", "bitcoin"]
-        let prices = [40000, 20000, 8000, 4000, 500]
-        let notSupportedTLDs = ["eth", "com"]
+    func searchForDomains(key: String,
+                          tlds: Set<String>) -> AsyncThrowingStream<[DomainToPurchase], Error> {
+        AsyncThrowingStream { continuation in
+            Task {
+                await Task.sleep(seconds: 0.5)
+                let key = key.lowercased()
+                
+                let domains = createDomainsWith(name: key)
+                continuation.yield(domains)
+                continuation.finish()
+            }
+        }
+    }
+    
+    private func createDomainsWith(name: String) -> [DomainToPurchase] {
+        let tlds: [String] = ["x", "crypto", "nft", "wallet", "polygon", "dao", "888", "blockchain", "go", "bitcoin"]
+        let prices: [Int] = [Constants.maxPurchaseDomainsSum, 4000_00, 40000, 20000, 8000, 4000, 500]
+        let isTaken: [Bool] = [true, false]
+        let notSupportedTLDs: [String] = ["eth", "com"]
         
-        let domains = tlds.map { DomainToPurchase(name: "\(key).\($0)", price: prices.randomElement()!, metadata: nil, isAbleToPurchase: true) }
-        let notSupportedDomains = notSupportedTLDs.map { DomainToPurchase(name: "\(key).\($0)", price: prices.randomElement()!, metadata: nil, isAbleToPurchase: false) }
+        let domains = tlds.map {
+            DomainToPurchase(name: "\(name).\($0)",
+                             price: prices.randomElement()!,
+                             metadata: nil,
+                             isTaken: isTaken.randomElement()!,
+                             isAbleToPurchase: true)
+        }
+        let notSupportedDomains = notSupportedTLDs.map {
+            DomainToPurchase(name: "\(name).\($0)",
+                             price: prices.randomElement()!,
+                             metadata: nil,
+                             isTaken: isTaken.randomElement()!,
+                             isAbleToPurchase: false)
+        }
         
         return domains + notSupportedDomains
     }
     
     func aiSearchForDomains(hint: String) async throws -> [DomainToPurchase] {
-        try await searchForDomains(key: "ai_" + hint)
+        createDomainsWith(name: "ai_" + hint)
     }
     
-    func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion] {
+    func getDomainsSuggestions(hint: String, tlds: Set<String>) async throws -> [DomainToPurchase] {
         await Task.sleep(seconds: 0.4)
         
-        return ["greenfashion", "naturalstyle", "savvydressers", "ethicalclothes", "urbanfashions", "wearables", "consciouslook", "activegears", "minimalista", "outsizeoutfits", "styletone"].map { DomainToPurchaseSuggestion(name: $0) }
+        return createDomainsWith(name: "suggest_" + hint)
     }
     
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws {
@@ -107,6 +132,13 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
         return userWallets.map { PurchasedDomainsWalletDescription(address: $0.address, metadata: $0.jsonData()) }
     }
     
+    func getPreferredWalletToMint() async throws -> PurchasedDomainsWalletDescription {
+        let userWallets = try await loadUserCryptoWallets()
+        let wallet = userWallets[0]
+        return PurchasedDomainsWalletDescription(address: wallet.address,
+                                                 metadata: wallet.jsonData())
+    }
+    
     func purchaseDomainsInTheCartAndMintTo(wallet: PurchasedDomainsWalletDescription) async throws {
         
     }
@@ -114,6 +146,11 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     func refreshCart() async throws { }
     
     func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws {
+        cart = MockFirebaseInteractionsService.createMockCart()
+        updateCart()
+    }
+    
+    func setDomainsToPurchase(_ domains: [DomainToPurchase]) async throws {
         cart = MockFirebaseInteractionsService.createMockCart()
         updateCart()
     }
@@ -142,10 +179,13 @@ private extension MockFirebaseInteractionsService {
     }
     
     func loadUserCryptoWallets() async throws -> [Ecom.UDUserAccountCryptWallet] {
-        let wallets = appContext.udWalletsService.getUserWallets()
-        return wallets.map { Ecom.UDUserAccountCryptWallet(id: 1, address: $0.address, type: "") }
-//        [.init(id: 1605, address: "0xc4a748796805dfa42cafe0901ec182936584cc6e"),
-//         .init(id: 1606, address: "0x8ed92xjd2793yenx837g3847d3n4dx9h")]
+        let wallets = MockEntitiesFabric.Wallet.mockEntities()
+        var cryptoWallets: [Ecom.UDUserAccountCryptWallet] = []
+        for (i, wallet) in wallets.enumerated() {
+            let cryptoWallet = Ecom.UDUserAccountCryptWallet(id: i, address: wallet.address, type: "")
+            cryptoWallets.append(cryptoWallet)
+        }
+        return cryptoWallets
     }
     
     func updateCart() {
@@ -154,7 +194,7 @@ private extension MockFirebaseInteractionsService {
         let storeCredits = checkoutData.isStoreCreditsOn ? 100 : 0
         let promoCredits = checkoutData.isPromoCreditsOn ? 2000 : 0
         let otherDiscounts = checkoutData.discountCode.isEmpty ? 0 : cart.totalPrice / 3
-        cart.appliedDiscountDetails = .init(storeCredits: storeCredits, 
+        cart.appliedDiscountDetails = .init(storeCredits: storeCredits,
                                             promoCredits: promoCredits,
                                             others: otherDiscounts)
         cart.totalPrice -= (storeCredits + promoCredits + otherDiscounts)
@@ -167,7 +207,11 @@ private extension MockFirebaseInteractionsService {
     }
     
     static func createMockCart() -> PurchaseDomainsCart {
-        .init(domains: [.init(name: "oleg.x", price: 10000, metadata: nil, isAbleToPurchase: true)],
+        .init(domains: [.init(name: "oleg.x",
+                              price: 10000,
+                              metadata: nil,
+                              isTaken: false,
+                              isAbleToPurchase: true)],
               totalPrice: 10000,
               taxes: 0,
               storeCreditsAvailable: 100,

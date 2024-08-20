@@ -94,10 +94,30 @@ final class FirebasePurchaseDomainsService: EcomPurchaseInteractionService {
 
 // MARK: - PurchaseDomainsServiceProtocol
 extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
-    func searchForDomains(key: String) async throws -> [DomainToPurchase] {
-        let searchResult = try await self.searchForFBDomains(key: key)
-        let domains = transformDomainProductItemsToDomainsToPurchase(searchResult.exact)
-        return domains
+    func searchForDomains(key: String,
+                           tlds: Set<String>) -> AsyncThrowingStream<[DomainToPurchase], Error> {
+        AsyncThrowingStream { continuation in
+            Task {
+                try? await withThrowingTaskGroup(of: Void.self) { group in
+                    TLDCategory.allCases.forEach { tld in
+                        let start = Date()
+                        group.addTask {
+                            do {
+                                let searchResult = try await self.searchForEcommDomains(key: key,
+                                                                                        tlds: tlds,
+                                                                                        tldCategory: tld)
+                                let domains = self.transformDomainProductItemsToDomainsToPurchase(searchResult.exact)
+                                continuation.yield(domains)
+                            } catch { }
+                        }
+                    }
+                    
+                    for try await _ in group { }
+                }
+                
+                continuation.finish()
+            }
+        }
     }
     
     func aiSearchForDomains(hint: String) async throws -> [DomainToPurchase] {
@@ -106,9 +126,11 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
         return domains
     }
     
-    func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion] {
-        let domainProducts = try await aiSearchForFBDomains(hint: hint ?? "Anything you think is trending now")
-        return domainProducts.map { DomainToPurchaseSuggestion(name: $0.domain.label) }
+    func getDomainsSuggestions(hint: String, tlds: Set<String>) async throws -> [DomainToPurchase] {
+        let domainProducts = try await getDomainsSearchSuggestions(hint: hint,
+                                                                   tlds: tlds)
+        let domains = transformDomainProductItemsToDomainsToPurchase(domainProducts)
+        return domains
     }
     
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws {
@@ -136,6 +158,14 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
         isAutoRefreshCartSuspended = false
     }
     
+    func setDomainsToPurchase(_ domains: [DomainToPurchase]) async throws {
+        isAutoRefreshCartSuspended = true
+        cartStatus = .ready(cart: .empty)
+        self.domainsToPurchase = domains
+        try await addDomainsToCart(domains)
+        isAutoRefreshCartSuspended = false
+    }
+    
     func reset() async {
         cartStatus = .ready(cart: .empty)
         cachedPaymentDetails = nil
@@ -145,7 +175,15 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     
     func getSupportedWalletsToMint() async throws -> [PurchasedDomainsWalletDescription] {
         let userWallets = try await loadUserCryptoWallets()
-        return userWallets.map { PurchasedDomainsWalletDescription(address: $0.address, metadata: $0.jsonData()) }
+        return userWallets.map { PurchasedDomainsWalletDescription(ecomWallet: $0) }
+    }
+    
+    func getPreferredWalletToMint() async throws -> PurchasedDomainsWalletDescription {
+        guard firebaseAuthService.isAuthorised else { throw PurchaseDomainsError.unauthorized }
+        
+        let mintingWallet = try await getEcommMintingWallet()
+        let wallet = PurchasedDomainsWalletDescription(ecomWallet: mintingWallet)
+        return wallet
     }
     
     func refreshCart() async throws {
@@ -157,21 +195,51 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
         let userWallet = try Ecom.UDUserAccountCryptWallet.objectFromDataThrowing(wallet.metadata ?? Data())
         try await purchaseProductsInTheCart(with: .init(wallet: userWallet),
                                             totalAmountDue: udCart.calculations.totalAmountDue)
-        isAutoRefreshCartSuspended = false
     }
 }
 
 // MARK: - Private methods
 private extension FirebasePurchaseDomainsService {
-    func searchForFBDomains(key: String) async throws -> SearchDomainsResponse {
-        var searchResponse = try await makeSearchDomainsRequestWith(key: key)
+    func searchForEcommDomains(key: String,
+                               tlds: Set<String>,
+                               tldCategory: TLDCategory) async throws -> SearchDomainsResponse {
+        var searchResponse = try await makeSearchDomainsRequestWith(key: key,
+                                                                    tlds: tlds,
+                                                                    tldCategory: tldCategory)
         searchResponse.exact = searchResponse.exact
         return searchResponse
     }
     
+    func getEcommMintingWallet() async throws -> Ecom.UDUserAccountCryptWallet {
+        struct Response: Codable {
+            let cryptoWallet: Ecom.UDUserAccountCryptWallet
+        }
+        
+        let urlString = URLSList.USER_MINTING_WALLET_URL
+        let request = try APIRequest(urlString: urlString,
+                                     method: .get)
+        let response: Response = try await makeFirebaseDecodableAPIDataRequest(request)
+        
+        return response.cryptoWallet
+    }
+    
+    func getDomainsSearchSuggestions(hint: String, tlds: Set<String>) async throws -> [Ecom.DomainProductItem] {
+        let queryComponents: [String : String] = ["q" : hint,
+                                                  "page" : "1",
+                                                  "rowsPerPage" : "10"]
+        var urlString = URLSList.DOMAIN_SUGGESTIONS_URL.appendingURLQueryComponents(queryComponents)
+        for tld in tlds {
+            urlString += "&extension[]=\(tld)"
+        }
+        let request = try APIRequest(urlString: urlString,
+                                     method: .get)
+        let response: SuggestDomainsResponse = try await NetworkService().makeDecodableAPIRequest(request)
+        return response.suggestions
+    }
+    
     func aiSearchForFBDomains(hint: String) async throws -> [Ecom.DomainProductItem] {
-        let queryComponents = ["extension" : "All",
-                               "phrase" : hint]
+        let queryComponents: [String : String] = ["extension" : "All",
+                                                  "phrase" : hint]
         let urlString = URLSList.DOMAIN_AI_SUGGESTIONS_URL.appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: urlString,
                                      method: .get)
@@ -179,9 +247,14 @@ private extension FirebasePurchaseDomainsService {
         return response.suggestions
     }
     
-    func makeSearchDomainsRequestWith(key: String) async throws -> SearchDomainsResponse {
-        let queryComponents = ["q" : key]
-        let urlString = URLSList.DOMAIN_SEARCH_URL.appendingURLQueryComponents(queryComponents)
+    func makeSearchDomainsRequestWith(key: String,
+                                      tlds: Set<String>,
+                                      tldCategory: TLDCategory) async throws -> SearchDomainsResponse {
+        let queryComponents: [String : String] = ["q" : key]
+        var urlString = URLSList.DOMAIN_UD_SEARCH_URL(tld: tldCategory).appendingURLQueryComponents(queryComponents)
+        for tld in tlds {
+            urlString += "&includeDomainEndings[]=\(tld)"
+        }
         let request = try APIRequest(urlString: urlString,
                                      method: .get)
         let response: SearchDomainsResponse = try await NetworkService().makeDecodableAPIRequest(request)
@@ -199,7 +272,6 @@ private extension FirebasePurchaseDomainsService {
     
     func transformDomainProductItemsToDomainsToPurchase(_ productItems: [Ecom.DomainProductItem]) -> [DomainToPurchase] {
         productItems
-            .filter({ $0.availability })
             .map { DomainToPurchase(domainProduct: $0) }
     }
 }
@@ -223,8 +295,8 @@ private extension FirebasePurchaseDomainsService {
                                    storeCreditsAvailable: udCart.discountDetails.storeCredits,
                                    promoCreditsAvailable: udCart.discountDetails.promoCredits,
                                    appliedDiscountDetails: .init(storeCredits: udCart.calculations.storeCreditsUsed,
-                                                          promoCredits: udCart.calculations.promoCreditsUsed,
-                                                          others: otherDiscountsSum))
+                                                                 promoCredits: udCart.calculations.promoCreditsUsed,
+                                                                 others: otherDiscountsSum))
     }
    
     func loadCartParkingProducts(in cart: Ecom.UDUserCart) async {
@@ -282,6 +354,7 @@ private extension FirebasePurchaseDomainsService {
    
     enum PurchaseDomainsError: String, LocalizedError {
         case udAccountHasUnpaidVault
+        case unauthorized
     }
 }
 
@@ -291,6 +364,15 @@ private extension DomainToPurchase {
         self.name = domainProduct.domain.name
         self.price = domainProduct.price
         self.metadata = domainProduct.jsonData()
+        self.isTaken = !domainProduct.availability
         self.isAbleToPurchase = domainProduct.isAbleToPurchase
+    }
+}
+
+// MARK: - Private methods
+private extension PurchasedDomainsWalletDescription {
+    init(ecomWallet: Ecom.UDUserAccountCryptWallet) {
+        self.address = ecomWallet.address
+        self.metadata = ecomWallet.jsonData()
     }
 }

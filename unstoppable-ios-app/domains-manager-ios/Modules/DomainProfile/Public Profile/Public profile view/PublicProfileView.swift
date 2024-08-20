@@ -202,7 +202,7 @@ private extension PublicProfileView {
                     AvatarShapeClipper(style: avatarStyle,
                                        avatarSize: avatarSize)
                 })
-                .sideInsets(-sidePadding)
+                .padding(.horizontal, -sidePadding)
             
             avatarWithActionsView()
             
@@ -222,7 +222,7 @@ private extension PublicProfileView {
             .offset(y: -26)
             Spacer()
         }
-        .sideInsets(sidePadding)
+        .padding(.horizontal, sidePadding)
         .frame(width: UIScreen.main.bounds.width)
         .padding(EdgeInsets(top: 0, leading: 0, bottom: 100, trailing: 0))
     }
@@ -463,9 +463,9 @@ private extension PublicProfileView {
                 carouselSocialAccountsItemIfAvailable(in: profile)
                 carouselCryptoRecordsItemIfAvailable(in: profile)
             }
-            .sideInsets(sidePadding)
+            .padding(.horizontal, sidePadding)
         }
-        .sideInsets(-sidePadding)
+        .padding(.horizontal, -sidePadding)
     }
     
     @ViewBuilder
@@ -508,7 +508,7 @@ private extension PublicProfileView {
                     .fill(Color.white)
                     .opacity(0.16)
                 content()
-                    .sideInsets(12)
+                    .padding(.horizontal, 12)
             }
             .frame(height: 32)
             

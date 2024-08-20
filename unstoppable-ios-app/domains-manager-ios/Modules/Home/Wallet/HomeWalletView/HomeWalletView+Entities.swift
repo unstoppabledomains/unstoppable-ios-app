@@ -303,8 +303,9 @@ extension HomeWalletView {
 
 extension HomeWalletView {
     struct DomainsSectionData {
-        private(set) var domainsGroups: [DomainsTLDGroup]
-        private(set) var subdomains: [DomainDisplayInfo]
+        private(set) var domainsGroups: [DomainsTLDGroup] = []
+        private(set) var subdomains: [DomainDisplayInfo] = []
+        private(set) var mintingDomains: [DomainDisplayInfo] = []
         var isSubdomainsVisible: Bool = false
         var domainsTLDsExpandedList: Set<String> = []
         var isSearching: Bool = false
@@ -312,6 +313,7 @@ extension HomeWalletView {
         mutating func setDomains(_ domains: [DomainDisplayInfo]) {
             domainsGroups = DomainsTLDGroup.createFrom(domains: domains.filter({ !$0.isSubdomain }))
             subdomains = domains.filter({ $0.isSubdomain })
+            mintingDomains = domains.filter { $0.isMinting }
         }
         
         mutating func setDomainsFrom(wallet: WalletEntity) {

@@ -23,7 +23,6 @@ struct MPCEnterCredentialsReconnectView: View {
 // MARK: - Private methods
 private extension MPCEnterCredentialsReconnectView {
     func didEnterCredentials(_ credentials: MPCActivateCredentials) {
-        print(credentials)
         viewModel.handleAction(.didEnterCredentials(credentials))
     }
 }

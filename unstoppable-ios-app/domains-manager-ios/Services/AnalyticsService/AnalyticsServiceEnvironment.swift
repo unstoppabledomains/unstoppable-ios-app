@@ -74,6 +74,7 @@ extension Analytics {
         case didPurchaseDomains, didFailToPurchaseDomains, accountHasUnpaidDomains, applePayNotSupported
         case purchaseFirebaseRequestError, purchaseGetPaymentDetailsError, purchaseWillUseCachedPaymentDetails
         case didSelectNotSupportedDomainForPurchaseInSearch
+        case willChangePurchaseDomainsLocation, willChangeWalletToWebPreferred
         
         case shareResult, didSelectHomeTab
         case didPullToRefresh
@@ -261,6 +262,8 @@ extension Analytics {
         case reconnectMPCWalletPrompt
         
         case fullMaintenance
+        case mintingDomainsList
+        case purchaseDomainsCart, purchaseDomainsFilters, purchaseDomainsCompleted
     }
 }
 
@@ -271,6 +274,7 @@ extension Analytics {
         case skip, `continue`, learnMore, done, update, close, confirm, clear, share, cancel, gotIt, delete, pay, later, edit, verify, open, refresh, tryAgain, next, lock, logOut, send, logIn
         case copyToClipboard, pasteFromClipboard
         case agreeCheckbox
+        case checkout
         case termsOfUse, privacyPolicy
         case getStarted
         case hidePassword, showPassword
@@ -421,7 +425,7 @@ extension Analytics {
         case buy, receive, profile, more
         case connectedApps
         case selectProfile, profileSelected
-        case rrDomainAvatar, purchaseDomainAvatar
+        case rrDomainAvatar, purchaseDomainAvatar, purchaseSelectCountry
         case homeContentTypeSelected
         case sort, sortType
         case notMatchingToken, notMatchingTokensSectionHeader
@@ -450,6 +454,9 @@ extension Analytics {
         
         case all, income, outcome
         case filterOption, reset
+        case cart
+        case removeDomain, undoRemoveDomain, addDomain, selectTLD, deselectTLD, expensiveDomain, domainUnableToPurchase
+        case recentSearch, clearFromRecentSearch
     }
 }
 

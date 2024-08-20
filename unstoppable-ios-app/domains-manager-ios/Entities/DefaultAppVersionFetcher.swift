@@ -25,6 +25,8 @@ struct DefaultAppVersionFetcher: AppVersionApi {
                                             dotcoinDeprecationReleased: response.dotcoinDeprecationReleased,
                                             mobileUnsReleaseVersion: response.mobileUnsReleaseVersion,
                                             tlds: response.tlds,
+                                            tldsToPurchase: response.tldsToPurchase,
+                                            dnsTlds: response.dnsTlds,
                                             limits: response.limits)
             return appVersion
         } else {

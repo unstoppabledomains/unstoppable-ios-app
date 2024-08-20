@@ -13,6 +13,7 @@ struct PurchaseDomainsCheckoutData: Equatable {
     var usaZipCode: String = ""
     var discountCode: String = ""
     var durationsMap: [String : Double] = [:]
+    var purchaseLocation: UserPurchaseLocation = .other
     
     func getDurationsMapString() -> String {
         if durationsMap.isEmpty {
@@ -26,7 +27,30 @@ struct PurchaseDomainsCheckoutData: Equatable {
     }
     
     var discountCodeIfEntered: String? { discountCode.isEmpty ? nil : discountCode }
-    var zipCodeIfEntered: String? { usaZipCode.isEmpty ? nil : usaZipCode }
+    var zipCodeIfEntered: String? {
+        switch purchaseLocation {
+        case .usa:
+            return usaZipCode.isEmpty ? nil : usaZipCode
+        case .other:
+            return nil
+        }
+    }
+    
+    enum UserPurchaseLocation: String, Codable, CaseIterable, UDSegmentedControlItem {
+        
+        case usa
+        case other
+        
+        var title: String {
+            switch self {
+            case .usa:
+                return String.Constants.usa.localized()
+            case .other:
+                return String.Constants.other.localized()
+            }
+        }
+        var analyticButton: Analytics.Button { .purchaseSelectCountry }
+    }
 }
 
 extension PurchaseDomainsCheckoutData: Codable {
@@ -36,6 +60,7 @@ extension PurchaseDomainsCheckoutData: Codable {
         case usaZipCode
         case discountCode
         case durationsMap
+        case purchaseLocation
     }
     
     func encode(to encoder: Encoder) throws {
@@ -45,6 +70,7 @@ extension PurchaseDomainsCheckoutData: Codable {
         try container.encode(usaZipCode, forKey: .usaZipCode)
         try container.encode(discountCode, forKey: .discountCode)
         try container.encode(durationsMap, forKey: .durationsMap)
+        try container.encode(purchaseLocation, forKey: .purchaseLocation)
     }
     
     // Implement the init(from:) method
@@ -55,6 +81,13 @@ extension PurchaseDomainsCheckoutData: Codable {
         usaZipCode = try container.decode(String.self, forKey: .usaZipCode)
         discountCode = try container.decode(String.self, forKey: .discountCode)
         durationsMap = try container.decode([String: Double].self, forKey: .durationsMap)
+        
+        let purchaseLocation = try? container.decode(UserPurchaseLocation.self, forKey: .purchaseLocation)
+        if let purchaseLocation {
+            self.purchaseLocation = purchaseLocation
+        } else {
+            self.purchaseLocation = usaZipCode.isEmpty ? .other : .usa
+        }
     }
 }
 
