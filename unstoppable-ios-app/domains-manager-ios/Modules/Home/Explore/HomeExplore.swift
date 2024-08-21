@@ -43,7 +43,11 @@ extension HomeExplore {
         var title: String {
             switch self {
             case .noProfile:
-                String.Constants.exploreEmptyNoProfileTitle.localized()
+                if isActionAvailable {
+                    String.Constants.exploreEmptyNoProfileTitle.localized()
+                } else {
+                    String.Constants.homeWalletDomainsEmptyTitle.localized()
+                }
             case .noFollowers:
                 String.Constants.exploreEmptyNoFollowersTitle.localized()
             case .noFollowing:
@@ -59,6 +63,17 @@ extension HomeExplore {
                 String.Constants.exploreEmptyNoFollowersSubtitle.localized()
             case .noFollowing:
                 String.Constants.exploreEmptyNoFollowingSubtitle.localized()
+            }
+        }
+        
+        var isActionAvailable: Bool {
+            switch self {
+            case .noProfile:
+                appContext.udFeatureFlagsService.valueFor(flag: .isBuyDomainEnabled)
+            case .noFollowers:
+                true
+            case .noFollowing:
+                true
             }
         }
         
