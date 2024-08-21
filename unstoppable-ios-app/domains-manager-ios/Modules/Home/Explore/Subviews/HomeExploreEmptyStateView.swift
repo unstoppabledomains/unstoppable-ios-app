@@ -35,9 +35,11 @@ struct HomeExploreEmptyStateView: View, ViewAnalyticsLogger {
 private extension HomeExploreEmptyStateView {
     @ViewBuilder
     func actionButtonView() -> some View {
-        UDButtonView(text: state.actionTitle, style: state.actionStyle) {
-            logButtonPressedAnalyticEvents(button: state.analyticButton)
-            viewModel.didSelectActionInEmptyState(state)
+        if state.isActionAvailable {
+            UDButtonView(text: state.actionTitle, style: state.actionStyle) {
+                logButtonPressedAnalyticEvents(button: state.analyticButton)
+                viewModel.didSelectActionInEmptyState(state)
+            }
         }
     }
 }

@@ -16,7 +16,12 @@ final class UDFeatureFlagsService: UDFeatureFlagsServiceProtocol {
     }
     
     func valueFor(flag: UDFeatureFlag) -> Bool {
-        true
+        switch flag {
+        case .isBuyDomainEnabled, .isBuyCryptoEnabled:
+            return true
+        default:
+        return true
+        }
     }
     
     func addListener(_ listener: UDFeatureFlagsListener) {
