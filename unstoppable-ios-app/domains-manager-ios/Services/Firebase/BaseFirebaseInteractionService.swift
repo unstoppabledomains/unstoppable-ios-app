@@ -10,17 +10,18 @@ import Foundation
 class BaseFirebaseInteractionService {
     
     enum URLSList {
-        static var baseURL: String {
+        static private var baseURL: String {
             NetworkConfig.baseAPIUrl
         }
-        static var baseAPIURL: String { baseURL.appendingURLPathComponent("api") }
+        static private var baseAPIURL: String { baseURL.appendingURLPathComponent("api") }
         
         static var logoutURL: String { baseAPIURL.appendingURLPathComponents("user", "session", "clear") }
         
-        static var USER_URL: String { baseAPIURL.appendingURLPathComponent("user") }
+        static private var USER_URL: String { baseAPIURL.appendingURLPathComponent("user") }
         static var USER_PROFILE_URL: String { USER_URL.appendingURLPathComponent("profile") }
+        static var USER_DOMAINS_URL: String { USER_URL.appendingURLPathComponent("domains") }
         
-        static var DOMAIN_URL: String { baseAPIURL.appendingURLPathComponent("domain") }
+        static private var DOMAIN_URL: String { baseAPIURL.appendingURLPathComponent("domain") }
         static var DOMAIN_SEARCH_URL: String { DOMAIN_URL.appendingURLPathComponents("search") }
         
         static func DOMAIN_UD_SEARCH_URL(tld: TLDCategory) -> String {
@@ -41,7 +42,7 @@ class BaseFirebaseInteractionService {
             DOMAIN_URL.appendingURLPathComponents(domain, "ens-status")
         }
         
-        static var DOMAINS_URL: String { baseAPIURL.appendingURLPathComponent("domains") }
+        static private var DOMAINS_URL: String { baseAPIURL.appendingURLPathComponent("domains") }
         static func DOMAINS_PARKING_PRODUCT_URL(domain: String) -> String {
             DOMAINS_URL.appendingURLPathComponents(domain, "parking-product")
         }
@@ -50,14 +51,14 @@ class BaseFirebaseInteractionService {
         static var CART_ADD_URL: String { CART_URL.appendingURLPathComponent("add") }
         static var CART_REMOVE_URL: String { CART_URL.appendingURLPathComponent("remove") }
         
-        static var USER_CART_URL: String { USER_URL.appendingURLPathComponent("cart") }
+        static private var USER_CART_URL: String { USER_URL.appendingURLPathComponent("cart") }
         static var USER_CART_CALCULATIONS_URL: String { USER_CART_URL.appendingURLPathComponent("calculations") }
         
         static var PAYMENT_STRIPE_URL: String { baseAPIURL.appendingURLPathComponents("payment", "stripe") }
         static var STORE_CHECKOUT_URL: String { baseAPIURL.appendingURLPathComponents("store", "checkout") }
         static var CRYPTO_WALLETS_URL: String { baseAPIURL.appendingURLPathComponent("crypto-wallets") }
         
-        static var USER_WALLET_URL: String { USER_URL.appendingURLPathComponent("wallet") }
+        static private var USER_WALLET_URL: String { USER_URL.appendingURLPathComponent("wallet") }
         static var USER_MINTING_WALLET_URL: String { USER_WALLET_URL.appendingURLPathComponent("minting") }
         static var USER_MPC_WALLET_URL: String { USER_WALLET_URL.appendingURLPathComponent("mpc") }
         static func USER_MPC_SETUP_URL(walletAddress: String) -> String {

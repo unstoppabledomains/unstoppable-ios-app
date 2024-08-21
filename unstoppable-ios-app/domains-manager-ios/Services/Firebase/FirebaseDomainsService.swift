@@ -81,7 +81,7 @@ private extension FirebaseDomainsService {
                                "perPage" : String(perPage),
                                "status" : "unclaimed"]
 
-        let url = URLSList.baseAPIURL.appendingURLPathComponents("user", "domains").appendingURLQueryComponents(queryComponents)
+        let url = URLSList.USER_DOMAINS_URL.appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: url, method: .get)
         let response: Response = try await makeFirebaseDecodableAPIDataRequest(request,
                                                                                dateDecodingStrategy: .defaultDateDecodingStrategy())

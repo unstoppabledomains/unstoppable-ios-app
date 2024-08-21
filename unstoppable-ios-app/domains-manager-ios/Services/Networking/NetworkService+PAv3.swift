@@ -386,7 +386,7 @@ private extension NetworkService {
             userAPIURL.appendingURLPathComponents(wallet, "domains")
         }
         
-        static func domainRecordsURL(domain: DomainName) -> String {
+        private static func domainRecordsURL(domain: DomainName) -> String {
             userAPIURL.appendingURLPathComponents(domain, "records")
         }
         
