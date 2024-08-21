@@ -232,14 +232,11 @@ extension ConnectedAppsListViewController {
     }
     
     enum ItemAction: Hashable {
-        case domainInfo(domain: DomainDisplayInfo)
         case networksInfo(networks: [String])
         case disconnect
         
         var title: String {
             switch self {
-            case .domainInfo(let domain):
-                return domain.name
             case .networksInfo:
                 return String.Constants.supportedNetworks.localized()
             case .disconnect:
@@ -249,8 +246,6 @@ extension ConnectedAppsListViewController {
         
         var subtitle: String? {
             switch self {
-            case .domainInfo:
-                return String.Constants.connected.localized()
             case .networksInfo(let networks):
                 return networks.joined(separator: ", ")
             case .disconnect:
@@ -261,8 +256,6 @@ extension ConnectedAppsListViewController {
         var icon: UIImage {
             get async {
                 switch self {
-                case .domainInfo(let domain):
-                    return await UIMenuDomainAvatarLoader.menuAvatarFor(domain: domain) ?? .systemGlobe
                 case .networksInfo:
                     return .systemGlobe
                 case .disconnect:
@@ -273,8 +266,6 @@ extension ConnectedAppsListViewController {
         
         var analyticName: Analytics.Button {
             switch self {
-            case .domainInfo:
-                return .connectedAppDomain
             case .networksInfo:
                 return .connectedAppSupportedNetworks
             case .disconnect:

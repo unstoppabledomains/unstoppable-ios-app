@@ -124,10 +124,6 @@ private extension ConnectedAppsListViewPresenter {
         Task {
             guard let view = self.view else { return }
             switch action {
-            case .domainInfo(let domain):
-                await appContext.pullUpViewService.showConnectedAppDomainInfoPullUp(for: domain,
-                                                                                    connectedApp: app,
-                                                                                    in: view)
             case .networksInfo:
                 appContext.pullUpViewService.showConnectedAppNetworksInfoPullUp(in: view)
             case .disconnect:

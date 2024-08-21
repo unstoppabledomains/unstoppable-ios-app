@@ -28,8 +28,7 @@ final class TransactionInProgressViewController: BaseViewController {
     var cellIdentifiers: [UICollectionViewCell.Type] { [MintDomainsConfigurationCardCell.self,
                                                         MintingDomainListCell.self,
                                                         CollectionViewHeaderCell.self,
-                                                        DomainTransactionInProgressCell.self,
-                                                        ReverseResolutionTransactionInProgressCardCell.self] }
+                                                        DomainTransactionInProgressCell.self] }
     var presenter: TransactionInProgressViewPresenterProtocol!
     override var isNavBarHidden: Bool { presenter.isNavBarHidden }
     override var navBackStyle: BaseViewController.NavBackIconStyle { presenter.navBackStyle }
@@ -121,12 +120,6 @@ private extension TransactionInProgressViewController {
                 cell.setWith(domain: domain)
                 collectionView.isScrollEnabled = false
                 return cell
-            case .reverseResolutionCard(let domain, let walletInfo):
-                let cell = collectionView.dequeueCellOfType(ReverseResolutionTransactionInProgressCardCell.self, forIndexPath: indexPath)
-                
-                cell.setWith(domain: domain, walletInfo: walletInfo)
-                collectionView.isScrollEnabled = false
-                return cell
             case .firstMintingList(let domain, let isSelectable):
                 let cell = collectionView.dequeueCellOfType(MintingDomainListCell.self, forIndexPath: indexPath)
                 
@@ -211,7 +204,6 @@ extension TransactionInProgressViewController {
         case header(_ headerDescription: HeaderDescription)
         case nameCard(domain: String)
         case domainCard(domain: DomainDisplayInfo)
-        case reverseResolutionCard(domain: DomainDisplayInfo, walletInfo: WalletDisplayInfo)
         case firstMintingList(domain: String, isSelectable: Bool)
         case mintingList(domain: DomainDisplayInfo, isSelectable: Bool)
     }

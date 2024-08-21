@@ -22,13 +22,11 @@ extension UIImage {
     static let cloudIcon = UIImage(named: "cloudIcon")!
     static let checkCircleWhite = UIImage(named: "checkCircleWhite")!
     static let checkCircle = UIImage(named: "checkCircle")!
-    static let connectionOffIcon = UIImage(named: "connectionOffIcon")!
     static let shareIcon = UIImage(named: "shareIcon")!
     static let shareIconSmall = UIImage(named: "shareIconSmall")!
     static let penIcon = UIImage(named: "penIcon")!
     static let dotsCircleIcon = UIImage(named: "dotsCircleIcon")!
     static let udLogo = UIImage(named: "udLogo")!
-    static let walletBTCIcon = UIImage(named: "walletBTCIcon")!
     static let stopIcon = UIImage(named: "stopIcon")!
     static let infoIcon16 = UIImage(named: "infoIcon16")!
     static let infoIcon12 = UIImage(named: "infoIcon12")!
@@ -47,12 +45,6 @@ extension UIImage {
     static let magicWandIcon = UIImage(named: "magicWandIcon")!
     static let widgetIcon = UIImage(named: "widgetIcon")!
     static let searchIcon = UIImage(named: "searchIcon")!
-    static let ethBGLarge = UIImage(named: "ethBGLarge")!
-    static let maticBGLarge = UIImage(named: "maticBGLarge")!
-    static let baseBGLarge = UIImage(named: "BASE")!
-    static let baseBGSmall = UIImage(named: "BASE")!
-    static let ethBGSmall = UIImage(named: "ethBGSmall")!
-    static let maticBGSmall = UIImage(named: "maticBGSmall")!
     static let checkBadge = UIImage(named: "checkBadge")!
     static let grimaseIcon = UIImage(named: "grimaseIcon")!
     static let cloudOfflineIcon = UIImage(named: "cloudOfflineIcon")!
@@ -67,27 +59,21 @@ extension UIImage {
     static let smileIcon = UIImage(named: "smileIcon")!
     static let tapIcon = UIImage(named: "tapIcon")!
     static let walletIcon = UIImage(named: "walletIcon")!
-    static let udWalletListIcon = UIImage(named: "udWalletListIcon")!
     static let recoveryPhraseIcon = UIImage(named: "recoveryPhraseIcon")!
     static let plusIconSmall = UIImage(named: "plusIconSmall")!
     static let plusIconNav = UIImage(named: "plusIconNav")!
-    static let domainsListIcon = UIImage(named: "domainsListIcon")!
     static let cartIcon = UIImage(named: "cartIcon")!
+    static let udCartLogo = UIImage(named: "udCartLogo")!
     static let navArrowLeft = UIImage(named: "navArrowLeft")!
     static let cancelIcon = UIImage(named: "cancelIcon")!
     static let domainSharePlaceholder = UIImage(named: "domainSharePlaceholder")!
-    static let walletOpen = UIImage(named: "walletOpen")!
     static let reverseResolutionCircleSign = UIImage(named: "reverseResolutionCircleSign")!
-    static let reverseResolutionArrows = UIImage(named: "reverseResolutionArrows")!
-    static let reverseResolutionArrows12 = UIImage(named: "reverseResolutionArrows12")!
-    static let homeDomainInfoVisualisation = UIImage(named: "homeDomainInfoVisualisation")!
     static let trashIcon = UIImage(named: "trashIcon")!
     static let trashFill = UIImage(named: "trashFill")!
     static let settingsIconAppearance = UIImage(named: "settingsIconAppearance")!
-    static let infoIcon = UIImage(named: "settingsIconPrivacy")!
+    static let infoIcon = UIImage(named: "infoIcon")!
     static let arrowTopRight = UIImage(named: "arrowTopRight")!
     static let framesIcon = UIImage(named: "framesIcon")!
-    static let framesIcon16 = UIImage(named: "framesIcon16")!
     static let framesIcon20 = UIImage(named: "framesIcon20")!
     static let scanQRIcon = UIImage(named: "scanQRIcon")!
     static let scanQRIcon16 = UIImage(named: "scanQRIcon16")!
@@ -99,7 +85,6 @@ extension UIImage {
     static let profileAccessIllustration = UIImage(named: "profileAccessIllustration")!
     static let profileAccessIllustrationLarge = UIImage(named: "profileAccessIllustrationLarge")!
     static let profileAccessIllustrationLargeiPhoneSE = UIImage(named: "profileAccessIllustrationLargeiPhoneSE")!
-    static let avatarsIcon16 = UIImage(named: "avatarsIcon16")!
     static let avatarsIcon20 = UIImage(named: "avatarsIcon20")!
     static let avatarsIcon24 = UIImage(named: "avatarsIcon24")!
     static let avatarsIcon32 = UIImage(named: "avatarsIcon32")!
@@ -122,36 +107,27 @@ extension UIImage {
     static let smileyNegative = UIImage(named: "smileyNegative")!
     static let alertCircle = UIImage(named: "alertCircle")!
     static let hammerWrenchIcon24 = UIImage(named: "hammerWrenchIcon24")!
-    static let showcaseDomainProfileIllustration = UIImage(named: "showcaseDomainProfileIllustration")!
     static let arrowRight = UIImage(named: "arrowRight")!
     static let timeIcon24 = UIImage(named: "timeIcon24")!
-    static let dragIcon24 = UIImage(named: "dragIcon24")!
     static let parkingIcon24 = UIImage(named: "parkingIcon24")!
     static let logOutIcon24 = UIImage(named: "logOutIcon24")!
     static let connectedAppNetworksInfoIllustration = UIImage(named: "connectedAppNetworksInfoIllustration")!
     static let nfcIcon20 = UIImage(named: "nfcIcon20")!
-    static let giftBoxIcon20 = UIImage(named: "giftBoxIcon20")!
-    static let helpCircleIcon24 = UIImage(named: "helpCircleIcon24")!
     static let messageCircleIcon24 = UIImage(named: "messageCircleIcon24")!
     static let plusIcon18 = UIImage(named: "plusIcon18")!
     static let arrowUp24 = UIImage(named: "arrowUp24")!
     static let chatRequestsIcon = UIImage(named: "chatRequestsIcon")!
     static let newMessageIcon = UIImage(named: "newMessageIcon")!
     static let trashIcon16 = UIImage(named: "trashIcon16")!
-    static let alertOctagon24 = UIImage(named: "alertOctagon24")!
     static let infoEmptyIcon24 = UIImage(named: "infoEmptyIcon24")!
     static let docsIcon24 = UIImage(named: "docsIcon24")!
-    static let helpIcon24 = UIImage(named: "helpIcon24")!
     static let followerGrayPlaceholder = UIImage(named: "followerGrayPlaceholder")!
     static let cellChevron = UIImage(named: "cellChevron")!
-    static let udCartLogoRaster = UIImage(named: "udCartLogoRaster")!
-    static let chooseRRDomainIllustration = UIImage(named: "chooseRRDomainIllustration")!
     static let check = UIImage(named: "check")!
     static let statsIcon = UIImage(named: "statsIcon")!
     static let sparkleIcon = UIImage(named: "sparkleIcon")!
     static let chevronRight = UIImage(named: "chevronRight")!
     static let tagsCashIcon = UIImage(named: "tagsCashIcon")!
-    static let usaFlagIcon = UIImage(named: "usaFlagIcon")!
     static let tagIcon = UIImage(named: "tagIcon")!
     static let tapSingleIcon = UIImage(named: "tapSingleIcon")!
     static let layoutGridEmptyIcon = UIImage(named: "layoutGridEmptyIcon")!
@@ -241,36 +217,6 @@ extension UIImage {
     func templateImageOfSize(_ size: CGSize) -> UIImage {
         scalePreservingAspectRatio(targetSize: size)
             .withRenderingMode(.alwaysTemplate)
-    }
-    
-    class func getNetworkLargeIcon(by blockchainType: BlockchainType) -> UIImage? {
-        switch blockchainType {
-        case .Ethereum:
-            return .ethBGLarge
-        case .Matic:
-            return .maticBGLarge
-        case .Base:
-            return .baseBGLarge
-        case .Bitcoin:
-            return .bitcoinIcon
-        case .Solana:
-            return .solanaIcon
-        }
-    }
-    
-    class func getNetworkSmallIcon(by blockchainType: BlockchainType) -> UIImage? {
-        switch blockchainType {
-        case .Ethereum:
-            return .ethBGSmall
-        case .Matic:
-            return .maticBGSmall
-        case .Base:
-            return .baseBGSmall
-        case .Bitcoin:
-            return .bitcoinIcon
-        case .Solana:
-            return .solanaIcon
-        }
     }
     
     func cropTo(rect: CGRect) -> UIImage? {

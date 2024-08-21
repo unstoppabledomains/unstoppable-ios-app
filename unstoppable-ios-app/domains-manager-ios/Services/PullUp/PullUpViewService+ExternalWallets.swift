@@ -332,63 +332,6 @@ extension PullUpViewService {
         presentPullUpView(in: viewController, pullUp: .connectedAppNetworksInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
     
-    func showConnectedAppDomainInfoPullUp(for domain: DomainDisplayInfo,
-                                          connectedApp: any UnifiedConnectAppInfoProtocol,
-                                          in viewController: UIViewController) async {
-        let selectionViewHeight: CGFloat = 296
-        
-        let avatarImage = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain,
-                                                                                                     size: .default),
-                                                                         downsampleDescription: .icon) ?? .init()
-        let domainImageView = buildImageViewWith(image: avatarImage.circleCroppedImage(size: 56),
-                                                 width: 56,
-                                                 height: 56)
-        
-        let connectedAppImageBackgroundView = buildImageViewWith(image: avatarImage,
-                                                                 width: 20,
-                                                                 height: 20)
-        connectedAppImageBackgroundView.image = nil
-        connectedAppImageBackgroundView.clipsToBounds = true
-        connectedAppImageBackgroundView.layer.cornerRadius = 8
-        let connectedAppImageView = buildImageViewWith(image: avatarImage,
-                                                       width: 20,
-                                                       height: 20)
-        
-        let icon = await appContext.imageLoadingService.loadImage(from: .connectedApp(connectedApp, size: .default), downsampleDescription: .mid)
-        if connectedApp.appIconUrls.isEmpty {
-            connectedAppImageBackgroundView.backgroundColor = .clear
-        } else {
-            let color = await ConnectedAppsImageCache.shared.colorForApp(connectedApp)
-            connectedAppImageBackgroundView.backgroundColor = (color ?? .brandWhite)
-        }
-        connectedAppImageView.image = icon
-        
-        connectedAppImageBackgroundView.addSubview(connectedAppImageView)
-        connectedAppImageView.centerXAnchor.constraint(equalTo: connectedAppImageBackgroundView.centerXAnchor).isActive = true
-        connectedAppImageView.centerYAnchor.constraint(equalTo: connectedAppImageBackgroundView.centerYAnchor).isActive = true
-        
-        domainImageView.addSubview(connectedAppImageBackgroundView)
-        connectedAppImageBackgroundView.trailingAnchor.constraint(equalTo: domainImageView.trailingAnchor).isActive = true
-        connectedAppImageBackgroundView.bottomAnchor.constraint(equalTo: domainImageView.bottomAnchor).isActive = true
-        
-        
-        let title = String.Constants.connectedAppDomainInfoTitle.localized(domain.name, connectedApp.displayName)
-        var subtitle: String?
-        if let connectionDate = connectedApp.connectionStartDate {
-            let formattedDate = DateFormattingService.shared.formatRecentActivityDate(connectionDate)
-            subtitle = String.Constants.connectedAppDomainInfoSubtitle.localized(formattedDate)
-        }
-        
-        let selectionView = PullUpSelectionView(configuration: .init(customHeader: domainImageView,
-                                                                     title: .text(title),
-                                                                     contentAlignment: .center,
-                                                                     subtitle: subtitle == nil ? nil : .label(.text(subtitle ?? "")),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        presentPullUpView(in: viewController, pullUp: .connectedAppDomainInfo, additionalAnalyticParameters: [.domainName: domain.name, .wcAppName: connectedApp.appName], contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
-    }
-    
     func showExternalWalletConnectionHintPullUp(for walletRecord: WCWalletsProvider.WalletRecord,
                                                 in viewController: UIViewController) async {
         await withSafeCheckedMainActorContinuation(critical: false) { completion in

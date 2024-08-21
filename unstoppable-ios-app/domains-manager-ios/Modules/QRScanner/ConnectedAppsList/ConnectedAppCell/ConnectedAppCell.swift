@@ -66,7 +66,7 @@ extension ConnectedAppCell {
 private extension ConnectedAppCell {
     func menuElement(for action: ConnectedAppsListViewController.ItemAction) async -> UIMenuElement {
         switch action {
-        case .domainInfo, .networksInfo:
+        case .networksInfo:
             return UIAction.createWith(title: action.title,
                                        subtitle: action.subtitle,
                                        image: await action.icon,

@@ -81,7 +81,7 @@ extension PaymentTransactionGasOnlyCostView: PaymentTransactionDisplayCostView {
                                             font: .currentFont(withSize: 16, weight: .medium),
                                             textColor: .foregroundDefault,
                                             alignment: .center)
-        feeNetworkImageView.image = UIImage.getNetworkLargeIcon(by: blockchainType)
+        feeNetworkImageView.image = blockchainType.icon
     }
 }
 

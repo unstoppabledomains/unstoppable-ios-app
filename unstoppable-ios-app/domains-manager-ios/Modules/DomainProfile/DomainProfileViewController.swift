@@ -49,8 +49,7 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
                                                         DomainProfileNoSocialsCell.self,
                                                         DomainProfileWeb3WebsiteCell.self,
                                                         DomainProfileWeb3WebsiteLoadingCell.self,
-                                                        DomainProfileUpdatingRecordsCell.self,
-                                                        PurchaseDomainProfileTopInfoCell.self] }
+                                                        DomainProfileUpdatingRecordsCell.self] }
     var presenter: DomainProfileViewPresenterProtocol!
     var progress: Double? { presenter.progress }
 
@@ -378,7 +377,7 @@ private extension DomainProfileViewController {
             
         case .mintedOn(let chain):
             return UIAction(title: chain.fullName,
-                            image: .getNetworkSmallIcon(by: chain),
+                            image: chain.icon,
                             identifier: .init(UUID().uuidString),
                             handler: { [weak self] _ in  self?.didTapMintedOnChainButton() })
         }
@@ -413,11 +412,6 @@ private extension DomainProfileViewController {
             switch item {
             case .topInfo(let data):
                 let cell = collectionView.dequeueCellOfType(DomainProfileTopInfoCell.self, forIndexPath: indexPath)
-                cell.set(with: data)
-                
-                return cell
-            case .purchaseTopInfo(let data):
-                let cell = collectionView.dequeueCellOfType(PurchaseDomainProfileTopInfoCell.self, forIndexPath: indexPath)
                 cell.set(with: data)
                 
                 return cell
@@ -679,7 +673,6 @@ extension DomainProfileViewController {
     
     enum Item: Hashable, Sendable {
         case topInfo(data: ItemTopInfoData)
-        case purchaseTopInfo(data: ItemTopInfoData)
         case updatingRecords(displayInfo: DomainProfileUpdatingRecordsDisplayInfo)
         case generalInfo(displayInfo: DomainProfileGeneralDisplayInfo)
         case loading(id: UUID = .init(),
@@ -696,7 +689,6 @@ extension DomainProfileViewController {
     
     enum State: Hashable {
         case loading, `default`, updatingRecords, loadingError, updatingProfile(dataType: UpdateProfileDataType)
-        case purchaseNew
         
         enum UpdateProfileDataType: Hashable {
             case onChain, offChain, mixed

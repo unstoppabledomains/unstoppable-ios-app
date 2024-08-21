@@ -45,7 +45,7 @@ extension DomainProfileMetadataSection: DomainProfileSection {
         snapshot.appendSections([.dashesSeparator()])
         snapshot.appendSections([.profileMetadata(headerDescription: sectionHeader())])
         switch state {
-        case .default, .updatingRecords, .loadingError, .updatingProfile, .purchaseNew:
+        case .default, .updatingRecords, .loadingError, .updatingProfile:
             var items: [DomainProfileViewController.Item] = []
             
             if metadataData.humanityCheckVerified {

@@ -708,8 +708,6 @@
 		C638680B2858DA0F000F98C4 /* KeepingAnimationImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C638680A2858DA0F000F98C4 /* KeepingAnimationImageView.swift */; };
 		C6386838285C0ED1000F98C4 /* AppUpdatedRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6386836285C0ED0000F98C4 /* AppUpdatedRequired.swift */; };
 		C638683C285C0ED1000F98C4 /* AppUpdatedRequired.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6386837285C0ED1000F98C4 /* AppUpdatedRequired.xib */; };
-		C6386843285C2D4E000F98C4 /* UpgradeToPolygonTutorial.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6386841285C2D4E000F98C4 /* UpgradeToPolygonTutorial.swift */; };
-		C6386847285C2D4E000F98C4 /* UpgradeToPolygonTutorial.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6386842285C2D4E000F98C4 /* UpgradeToPolygonTutorial.xib */; };
 		C6386871285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6386870285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift */; };
 		C63902B328E2FADC00E16B42 /* WCCompatibleWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902B228E2FADC00E16B42 /* WCCompatibleWallet.swift */; };
 		C63902B828E2FB5B00E16B42 /* PaymentError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902B728E2FB5B00E16B42 /* PaymentError.swift */; };
@@ -815,6 +813,14 @@
 		C64312A22B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C643129F2B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift */; };
 		C64312A32B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64312A02B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib */; };
 		C64312A42B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64312A02B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib */; };
+		C644CC232C761CAF00553D21 /* DomainProfileTutorialViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */; };
+		C644CC242C761CAF00553D21 /* DomainProfileTutorialItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C42181293741A4005B791B /* DomainProfileTutorialItemViewController.swift */; };
+		C644CC252C761CAF00553D21 /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4218629379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift */; };
+		C644CC262C761CAF00553D21 /* DomainProfileTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */; };
+		C644CC272C761CB000553D21 /* DomainProfileTutorialViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */; };
+		C644CC282C761CB000553D21 /* DomainProfileTutorialItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C42181293741A4005B791B /* DomainProfileTutorialItemViewController.swift */; };
+		C644CC292C761CB000553D21 /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4218629379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift */; };
+		C644CC2A2C761CB000553D21 /* DomainProfileTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */; };
 		C6450CD22BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6450CD12BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift */; };
 		C6450CD32BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6450CD12BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift */; };
 		C64513072808089400413C51 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64513062808089400413C51 /* UserDefaults.swift */; };
@@ -1297,8 +1303,6 @@
 		C68580372B3545BC00907568 /* PreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */; };
 		C685803B2B357EF400907568 /* NavBarVisibleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */; };
 		C685803C2B357EF400907568 /* NavBarVisibleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */; };
-		C685A94F284097E200E54044 /* UDDomainCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685A94E284097E200E54044 /* UDDomainCardView.swift */; };
-		C685A954284097E600E54044 /* UDDomainCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C685A953284097E600E54044 /* UDDomainCardView.xib */; };
 		C685A95B28409AFE00E54044 /* MintDomainsConfigurationCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685A95928409AFE00E54044 /* MintDomainsConfigurationCardCell.swift */; };
 		C685A95F28409AFE00E54044 /* MintDomainsConfigurationCardCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C685A95A28409AFE00E54044 /* MintDomainsConfigurationCardCell.xib */; };
 		C685A97B2840BF6200E54044 /* InfoScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685A9792840BF6200E54044 /* InfoScreen.swift */; };
@@ -1381,7 +1385,6 @@
 		C68F157C2BD76A650049BFA2 /* MPCWalletActivationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F157B2BD76A650049BFA2 /* MPCWalletActivationError.swift */; };
 		C68F157D2BD76A650049BFA2 /* MPCWalletActivationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F157B2BD76A650049BFA2 /* MPCWalletActivationError.swift */; };
 		C691CF6C28BE4DA80077C59F /* HelveticaNeue-Custom.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */; };
-		C691CFA828C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */; };
 		C692C304282E012900C31393 /* WalletDataValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C692C303282E012900C31393 /* WalletDataValidator.swift */; };
 		C692C309282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C692C308282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift */; };
 		C692C30E282E0C7500C31393 /* CreateBackupPasswordToBackupWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C692C30D282E0C7500C31393 /* CreateBackupPasswordToBackupWalletPresenter.swift */; };
@@ -1760,10 +1763,6 @@
 		C6C1EC5A2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC592A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift */; };
 		C6C1EC5F2A3AD483005EB37D /* UIAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC5E2A3AD483005EB37D /* UIAction.swift */; };
 		C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
-		C6C4217829371446005B791B /* DomainProfileTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */; };
-		C6C4217C29371446005B791B /* DomainProfileTutorialViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */; };
-		C6C42182293741A4005B791B /* DomainProfileTutorialItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C42181293741A4005B791B /* DomainProfileTutorialItemViewController.swift */; };
-		C6C4218729379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4218629379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift */; };
 		C6C4218C293A1E21005B791B /* UDConfigurableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4218B293A1E20005B791B /* UDConfigurableButton.swift */; };
 		C6C57C3D2869C0890093FD8C /* UDDomainSharingWatchCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C57C3C2869C0890093FD8C /* UDDomainSharingWatchCardView.swift */; };
 		C6C57C472869C0A50093FD8C /* UDDomainSharingWatchCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C57C462869C0A50093FD8C /* UDDomainSharingWatchCardView.xib */; };
@@ -1907,13 +1906,10 @@
 		C6C8F8CC2B21832F00A9834D /* TransferDomainTransactionInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D59529FA56C1001CC77C /* TransferDomainTransactionInProgressViewPresenter.swift */; };
 		C6C8F8CD2B21832F00A9834D /* BaseMintingTransactionInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6ECBF7428D2C6D300E94309 /* BaseMintingTransactionInProgressViewPresenter.swift */; };
 		C6C8F8CE2B21832F00A9834D /* MintingInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C642A6A22841157E00299C6E /* MintingInProgressViewPresenter.swift */; };
-		C6C8F8CF2B21832F00A9834D /* ReverseResolutionTransactionInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6ECBF7928D2C86F00E94309 /* ReverseResolutionTransactionInProgressViewPresenter.swift */; };
 		C6C8F8D02B21833D00A9834D /* UDBTSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685D8162AA978DE00212879 /* UDBTSearchView.swift */; };
 		C6C8F8D22B21833D00A9834D /* UBTSearchingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685D8152AA978DE00212879 /* UBTSearchingView.swift */; };
 		C6C8F8D32B21833D00A9834D /* UBTDomainCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685D8142AA978DE00212879 /* UBTDomainCardView.swift */; };
 		C6C8F8D42B21833D00A9834D /* UBTController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685D8122AA978DE00212879 /* UBTController.swift */; };
-		C6C8F8D52B21834200A9834D /* UpgradeToPolygonTutorial.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6386842285C2D4E000F98C4 /* UpgradeToPolygonTutorial.xib */; };
-		C6C8F8D62B21834200A9834D /* UpgradeToPolygonTutorial.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6386841285C2D4E000F98C4 /* UpgradeToPolygonTutorial.swift */; };
 		C6C8F8D72B21834A00A9834D /* BuyDomainsWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6010D14287EE5C700FBD401 /* BuyDomainsWebViewController.swift */; };
 		C6C8F8D82B21835800A9834D /* OnboardingProtectWalletViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4E22817C0F4008C66BB /* OnboardingProtectWalletViewPresenter.swift */; };
 		C6C8F8D92B21835800A9834D /* ProtectWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3026FA1B27E76F6600FE058B /* ProtectWalletViewController.swift */; };
@@ -2268,10 +2264,6 @@
 		C6D646A72B1ED15A00D724AC /* ProfileFollowerImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F996B2A9F2206004B1958 /* ProfileFollowerImageLoader.swift */; };
 		C6D646A82B1ED15A00D724AC /* PublicProfileCryptoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F996C2A9F2206004B1958 /* PublicProfileCryptoListView.swift */; };
 		C6D646AA2B1ED15F00D724AC /* DomainProfileViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63A350928F0071B0057D34B /* DomainProfileViewPresenter.swift */; };
-		C6D646AB2B1ED16900D724AC /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4218629379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift */; };
-		C6D646AC2B1ED16900D724AC /* DomainProfileTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */; };
-		C6D646AD2B1ED16900D724AC /* DomainProfileTutorialViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */; };
-		C6D646AE2B1ED16900D724AC /* DomainProfileTutorialItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C42181293741A4005B791B /* DomainProfileTutorialItemViewController.swift */; };
 		C6D646AF2B1ED17100D724AC /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
 		C6D646B02B1ED17E00D724AC /* SocialsDomainImagePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A223C22869FE1E005C3267 /* SocialsDomainImagePreviewView.swift */; };
 		C6D646B12B1ED17E00D724AC /* SocialsDomainImagePreviewView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A223C72869FE24005C3267 /* SocialsDomainImagePreviewView.xib */; };
@@ -2282,10 +2274,8 @@
 		C6D646B62B1ED18F00D724AC /* WallpaperDomainImagePreviewView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C57C572869DC810093FD8C /* WallpaperDomainImagePreviewView.xib */; };
 		C6D646B72B1ED18F00D724AC /* SaveDomainImageTypePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C57C4C2869D8C90093FD8C /* SaveDomainImageTypePullUpView.swift */; };
 		C6D646B82B1ED1A300D724AC /* UDDomainSharingWatchCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C57C3C2869C0890093FD8C /* UDDomainSharingWatchCardView.swift */; };
-		C6D646B92B1ED1A300D724AC /* UDDomainCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685A94E284097E200E54044 /* UDDomainCardView.swift */; };
 		C6D646BA2B1ED1A300D724AC /* UDDomainSharingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E28828533783002CDAC2 /* UDDomainSharingCardView.swift */; };
 		C6D646BB2B1ED1A300D724AC /* UDDomainSharingWatchCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C57C462869C0A50093FD8C /* UDDomainSharingWatchCardView.xib */; };
-		C6D646BC2B1ED1A300D724AC /* UDDomainCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C685A953284097E600E54044 /* UDDomainCardView.xib */; };
 		C6D646BD2B1ED1A300D724AC /* UDDomainSharingCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D9E28D28533788002CDAC2 /* UDDomainSharingCardView.xib */; };
 		C6D646BF2B1ED1BE00D724AC /* SaveDomainImageDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646BE2B1ED1BE00D724AC /* SaveDomainImageDescription.swift */; };
 		C6D646C02B1ED1BE00D724AC /* SaveDomainImageDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646BE2B1ED1BE00D724AC /* SaveDomainImageDescription.swift */; };
@@ -2416,15 +2406,12 @@
 		C6D647722B1EE07700D724AC /* CollectionViewHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C603E8C7285859560028C21C /* CollectionViewHeaderCell.swift */; };
 		C6D647742B1EE08900D724AC /* DomainTransactionInProgressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D59B29FA588B001CC77C /* DomainTransactionInProgressCell.swift */; };
 		C6D647752B1EE08900D724AC /* DomainTransactionInProgressCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */; };
-		C6D647762B1EE09100D724AC /* ReverseResolutionTransactionInProgressCardCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6ECBF8028D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.xib */; };
-		C6D647772B1EE09100D724AC /* ReverseResolutionTransactionInProgressCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6ECBF7F28D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift */; };
 		C6D647782B1EE09E00D724AC /* MintDomainsConfigurationCardCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C685A95A28409AFE00E54044 /* MintDomainsConfigurationCardCell.xib */; };
 		C6D647792B1EE09E00D724AC /* MintDomainsConfigurationCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685A95928409AFE00E54044 /* MintDomainsConfigurationCardCell.swift */; };
 		C6D6477A2B1EE0E600D724AC /* UnstoppableImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */; };
 		C6D6477B2B1EE0ED00D724AC /* CropImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C671E3B8290133E000A2B3A0 /* CropImageViewController.xib */; };
 		C6D6477C2B1EE0ED00D724AC /* CropImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3B7290133E000A2B3A0 /* CropImageViewController.swift */; };
 		C6D6477D2B1EE0F200D724AC /* RaisedWhiteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3C729014D7700A2B3A0 /* RaisedWhiteButton.swift */; };
-		C6D6477F2B1EE1DF00D724AC /* ReverseResolutionIllustrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */; };
 		C6D647802B1EE1EF00D724AC /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
 		C6D647812B1EE1FC00D724AC /* UDCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6858F28007C09000F9037 /* UDCheckBox.swift */; };
 		C6D647822B1EE22D00D724AC /* UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C628E34E27FDB2A30044E408 /* UITableView.swift */; };
@@ -2438,10 +2425,6 @@
 		C6D6478F2B1EE73D00D724AC /* CoinRecordsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6478E2B1EE73D00D724AC /* CoinRecordsServiceProtocol.swift */; };
 		C6D647902B1EE73D00D724AC /* CoinRecordsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6478E2B1EE73D00D724AC /* CoinRecordsServiceProtocol.swift */; };
 		C6D647922B1EE75A00D724AC /* PreviewCoinRecordsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D647912B1EE75A00D724AC /* PreviewCoinRecordsService.swift */; };
-		C6D6479A2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D647982B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift */; };
-		C6D6479B2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D647982B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift */; };
-		C6D6479C2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D647992B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib */; };
-		C6D6479D2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D647992B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib */; };
 		C6D6479F2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */; };
 		C6D647A02B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */; };
 		C6D647A72B1F18AE00D724AC /* HappyEndViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3018AEC127EB2CC200E8C37D /* HappyEndViewController.swift */; };
@@ -2580,9 +2563,6 @@
 		C6EA6D6328B36E7C00B2785F /* ViewAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EA6D6228B36E7C00B2785F /* ViewAnalyticsLogger.swift */; };
 		C6EA6D6828B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EA6D6728B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift */; };
 		C6ECBF7528D2C6D300E94309 /* BaseMintingTransactionInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6ECBF7428D2C6D300E94309 /* BaseMintingTransactionInProgressViewPresenter.swift */; };
-		C6ECBF7A28D2C86F00E94309 /* ReverseResolutionTransactionInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6ECBF7928D2C86F00E94309 /* ReverseResolutionTransactionInProgressViewPresenter.swift */; };
-		C6ECBF8128D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6ECBF7F28D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift */; };
-		C6ECBF8528D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6ECBF8028D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.xib */; };
 		C6ECBF8B28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6ECBF8A28D2D20900E94309 /* WalletInfoBadgeView.swift */; };
 		C6ECBF9028D2D20D00E94309 /* WalletInfoBadgeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6ECBF8F28D2D20D00E94309 /* WalletInfoBadgeView.xib */; };
 		C6ECBF9628D2E06800E94309 /* GenericBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6ECBF9528D2E06800E94309 /* GenericBadgeView.swift */; };
@@ -3253,8 +3233,6 @@
 		C638680A2858DA0F000F98C4 /* KeepingAnimationImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepingAnimationImageView.swift; sourceTree = "<group>"; };
 		C6386836285C0ED0000F98C4 /* AppUpdatedRequired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdatedRequired.swift; sourceTree = "<group>"; };
 		C6386837285C0ED1000F98C4 /* AppUpdatedRequired.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppUpdatedRequired.xib; sourceTree = "<group>"; };
-		C6386841285C2D4E000F98C4 /* UpgradeToPolygonTutorial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeToPolygonTutorial.swift; sourceTree = "<group>"; };
-		C6386842285C2D4E000F98C4 /* UpgradeToPolygonTutorial.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpgradeToPolygonTutorial.xib; sourceTree = "<group>"; };
 		C6386870285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTransactionInProgressViewPresenter.swift; sourceTree = "<group>"; };
 		C63902B228E2FADC00E16B42 /* WCCompatibleWallet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WCCompatibleWallet.swift; sourceTree = "<group>"; };
 		C63902B728E2FB5B00E16B42 /* PaymentError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentError.swift; sourceTree = "<group>"; };
@@ -3656,8 +3634,6 @@
 		C684A0272B85A8E500B751A5 /* MessageReactionSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageReactionSelectionView.swift; sourceTree = "<group>"; };
 		C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCollectionViewCell.swift; sourceTree = "<group>"; };
 		C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarVisibleModifier.swift; sourceTree = "<group>"; };
-		C685A94E284097E200E54044 /* UDDomainCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDDomainCardView.swift; sourceTree = "<group>"; };
-		C685A953284097E600E54044 /* UDDomainCardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDDomainCardView.xib; sourceTree = "<group>"; };
 		C685A95928409AFE00E54044 /* MintDomainsConfigurationCardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintDomainsConfigurationCardCell.swift; sourceTree = "<group>"; };
 		C685A95A28409AFE00E54044 /* MintDomainsConfigurationCardCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MintDomainsConfigurationCardCell.xib; sourceTree = "<group>"; };
 		C685A9792840BF6200E54044 /* InfoScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoScreen.swift; sourceTree = "<group>"; };
@@ -3708,7 +3684,6 @@
 		C68F15782BD76A550049BFA2 /* MPCWalletActivationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletActivationState.swift; sourceTree = "<group>"; };
 		C68F157B2BD76A650049BFA2 /* MPCWalletActivationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletActivationError.swift; sourceTree = "<group>"; };
 		C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "HelveticaNeue-Custom.ttf"; sourceTree = "<group>"; };
-		C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseResolutionIllustrationView.swift; sourceTree = "<group>"; };
 		C692C303282E012900C31393 /* WalletDataValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDataValidator.swift; sourceTree = "<group>"; };
 		C692C308282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterBackupToBackupWalletPresenter.swift; sourceTree = "<group>"; };
 		C692C30D282E0C7500C31393 /* CreateBackupPasswordToBackupWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateBackupPasswordToBackupWalletPresenter.swift; sourceTree = "<group>"; };
@@ -4072,8 +4047,6 @@
 		C6D6478A2B1EE5B600D724AC /* PreviewDomainProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewDomainProfile.swift; sourceTree = "<group>"; };
 		C6D6478E2B1EE73D00D724AC /* CoinRecordsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinRecordsServiceProtocol.swift; sourceTree = "<group>"; };
 		C6D647912B1EE75A00D724AC /* PreviewCoinRecordsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCoinRecordsService.swift; sourceTree = "<group>"; };
-		C6D647982B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainProfileTopInfoCell.swift; sourceTree = "<group>"; };
-		C6D647992B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PurchaseDomainProfileTopInfoCell.xib; sourceTree = "<group>"; };
 		C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDomainProfileTopInfoCell.swift; sourceTree = "<group>"; };
 		C6D6E4D32817BD4B008C66BB /* TutorialViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialViewPresenter.swift; sourceTree = "<group>"; };
 		C6D6E4D82817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCreateWalletPresenter.swift; sourceTree = "<group>"; };
@@ -4168,9 +4141,6 @@
 		C6EA6D6228B36E7C00B2785F /* ViewAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewAnalyticsLogger.swift; sourceTree = "<group>"; };
 		C6EA6D6728B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintingNotPrimaryDomainsInProgressViewPresenter.swift; sourceTree = "<group>"; };
 		C6ECBF7428D2C6D300E94309 /* BaseMintingTransactionInProgressViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseMintingTransactionInProgressViewPresenter.swift; sourceTree = "<group>"; };
-		C6ECBF7928D2C86F00E94309 /* ReverseResolutionTransactionInProgressViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseResolutionTransactionInProgressViewPresenter.swift; sourceTree = "<group>"; };
-		C6ECBF7F28D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseResolutionTransactionInProgressCardCell.swift; sourceTree = "<group>"; };
-		C6ECBF8028D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReverseResolutionTransactionInProgressCardCell.xib; sourceTree = "<group>"; };
 		C6ECBF8A28D2D20900E94309 /* WalletInfoBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletInfoBadgeView.swift; sourceTree = "<group>"; };
 		C6ECBF8F28D2D20D00E94309 /* WalletInfoBadgeView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WalletInfoBadgeView.xib; sourceTree = "<group>"; };
 		C6ECBF9528D2E06800E94309 /* GenericBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericBadgeView.swift; sourceTree = "<group>"; };
@@ -4379,9 +4349,7 @@
 				C66FCD1128450A80009B9525 /* GIFAnimationViews */,
 				C66FCCF128448609009B9525 /* Gradient */,
 				C609831E282B76D300546392 /* PullUp */,
-				C691CFA628C06D850077C59F /* RRVisualisationView */,
 				C628E34227FDB11B0044E408 /* TableViewSelectionCell */,
-				C685A94D284097D700E54044 /* UDDomainCardView */,
 				C6D9E28728533766002CDAC2 /* UDDomainSharingCardView */,
 				C6C57C3B2869C0700093FD8C /* UDDomainSharingWatchCardView */,
 				C6D0548C27FF05AF0036B200 /* UDTextFieldV2 */,
@@ -5660,15 +5628,6 @@
 			path = AppUpdatedRequired;
 			sourceTree = "<group>";
 		};
-		C6386840285C2D37000F98C4 /* UpgradeToPolygonTutorial */ = {
-			isa = PBXGroup;
-			children = (
-				C6386841285C2D4E000F98C4 /* UpgradeToPolygonTutorial.swift */,
-				C6386842285C2D4E000F98C4 /* UpgradeToPolygonTutorial.xib */,
-			);
-			path = UpgradeToPolygonTutorial;
-			sourceTree = "<group>";
-		};
 		C63902B128E2F89F00E16B42 /* Payment */ = {
 			isa = PBXGroup;
 			children = (
@@ -5835,7 +5794,6 @@
 			isa = PBXGroup;
 			children = (
 				C6386870285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift */,
-				C6ECBF7928D2C86F00E94309 /* ReverseResolutionTransactionInProgressViewPresenter.swift */,
 				C6ECBF7428D2C6D300E94309 /* BaseMintingTransactionInProgressViewPresenter.swift */,
 				C642A6A22841157E00299C6E /* MintingInProgressViewPresenter.swift */,
 				C6EA6D6728B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift */,
@@ -5851,7 +5809,6 @@
 			isa = PBXGroup;
 			children = (
 				C673D59A29FA5877001CC77C /* DomainTransactionInProgressCell */,
-				C6ECBF7E28D2D0B100E94309 /* ReverseResolutionTransactionInProgressCardCell */,
 				C642A6B2284118D500299C6E /* MintingDomainListCell */,
 			);
 			path = Cells;
@@ -6970,15 +6927,6 @@
 			path = Preview;
 			sourceTree = "<group>";
 		};
-		C685A94D284097D700E54044 /* UDDomainCardView */ = {
-			isa = PBXGroup;
-			children = (
-				C685A94E284097E200E54044 /* UDDomainCardView.swift */,
-				C685A953284097E600E54044 /* UDDomainCardView.xib */,
-			);
-			path = UDDomainCardView;
-			sourceTree = "<group>";
-		};
 		C685A95828409AED00E54044 /* MintDomainsConfigurationCardCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -7098,14 +7046,6 @@
 				C68F157B2BD76A650049BFA2 /* MPCWalletActivationError.swift */,
 			);
 			path = Activating;
-			sourceTree = "<group>";
-		};
-		C691CFA628C06D850077C59F /* RRVisualisationView */ = {
-			isa = PBXGroup;
-			children = (
-				C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */,
-			);
-			path = RRVisualisationView;
 			sourceTree = "<group>";
 		};
 		C692C302282E010800C31393 /* Validators */ = {
@@ -8156,21 +8096,11 @@
 			path = CoinRecordsService;
 			sourceTree = "<group>";
 		};
-		C6D647962B1EF49400D724AC /* PurchaseDomainProfileTopInfoCell */ = {
-			isa = PBXGroup;
-			children = (
-				C6D647982B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift */,
-				C6D647992B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib */,
-			);
-			path = PurchaseDomainProfileTopInfoCell;
-			sourceTree = "<group>";
-		};
 		C6D647972B1EF49B00D724AC /* TopInfoCell */ = {
 			isa = PBXGroup;
 			children = (
 				C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */,
 				C6E1189128F7D26900C6AD4D /* DomainProfileTopInfoCell */,
-				C6D647962B1EF49400D724AC /* PurchaseDomainProfileTopInfoCell */,
 			);
 			path = TopInfoCell;
 			sourceTree = "<group>";
@@ -8224,7 +8154,6 @@
 				C6A2D5A7285061DF00327C47 /* SignTransactions */,
 				C642A6A12841155700299C6E /* TransactionInProgress */,
 				C685D8112AA978DE00212879 /* UBTSearch */,
-				C6386840285C2D37000F98C4 /* UpgradeToPolygonTutorial */,
 				C60981D22822563E00546392 /* WalletDetails */,
 				C674598D280E9C560074CBE5 /* WebViewController */,
 			);
@@ -8421,15 +8350,6 @@
 				C6E69FEE288AD405000A8346 /* String+Notification.swift */,
 			);
 			path = Extenstions;
-			sourceTree = "<group>";
-		};
-		C6ECBF7E28D2D0B100E94309 /* ReverseResolutionTransactionInProgressCardCell */ = {
-			isa = PBXGroup;
-			children = (
-				C6ECBF7F28D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift */,
-				C6ECBF8028D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.xib */,
-			);
-			path = ReverseResolutionTransactionInProgressCardCell;
 			sourceTree = "<group>";
 		};
 		C6ECBF8928D2D20400E94309 /* WalletInfoBadgeView */ = {
@@ -8790,19 +8710,15 @@
 				C628E31B27FDA3270044E408 /* Inter-ExtraLight.ttf in Resources */,
 				C642A6B9284118E800299C6E /* MintingDomainListCell.xib in Resources */,
 				C6A2D581284F9EC700327C47 /* ConnectedAppsListViewController.xib in Resources */,
-				C6C4217C29371446005B791B /* DomainProfileTutorialViewController.xib in Resources */,
 				C664310528D8B85800A9C734 /* ConnectExternalWalletViewController.xib in Resources */,
 				C6D5DAD828374B4600379C38 /* ManageMultiChainDomainAddressesViewController.xib in Resources */,
 				C628E32F27FDA3270044E408 /* Inter-ExtraBold.ttf in Resources */,
-				C6D6479C2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib in Resources */,
-				C6386847285C2D4E000F98C4 /* UpgradeToPolygonTutorial.xib in Resources */,
 				290136B42BFBFA3F00AB126D /* EIP712View.xib in Resources */,
 				3046D390255C63A10099B482 /* Localizable.strings in Resources */,
 				C62C3FC1283F6E410094FC93 /* MintDomainsConfigurationViewController.xib in Resources */,
 				C60982F4282A7D7200546392 /* ConfirmWordConfirmationCell.xib in Resources */,
 				C60982D4282A7A8E00546392 /* AddWalletViewController.xib in Resources */,
 				C60982DE282A7B6B00546392 /* WalletConnectedViewController.xib in Resources */,
-				C685A954284097E600E54044 /* UDDomainCardView.xib in Resources */,
 				30A280372714217200FD3759 /* wallets-registry.json in Resources */,
 				30BFA4D527DE0C5C00644CD5 /* Tutorial.storyboard in Resources */,
 				C60982B5282A762C00546392 /* BackupWalletViewController.xib in Resources */,
@@ -8887,6 +8803,7 @@
 				C63A351428F0071B0057D34B /* DomainProfileViewController.xib in Resources */,
 				C665B9B528325282005E535C /* DomainDetailsViewController.xib in Resources */,
 				C642A6AD2841157E00299C6E /* TransactionInProgressViewController.xib in Resources */,
+				C644CC272C761CB000553D21 /* DomainProfileTutorialViewController.xib in Resources */,
 				C6A2D531284DCB9200327C47 /* InfoPlist.strings in Resources */,
 				C685A97F2840BF6200E54044 /* InfoScreen.xib in Resources */,
 				C638683C285C0ED1000F98C4 /* AppUpdatedRequired.xib in Resources */,
@@ -8900,7 +8817,6 @@
 				C692C359282EA63100C31393 /* AppearanceSettingsViewController.xib in Resources */,
 				C692C364282EA71C00C31393 /* AppearanceSettingsCell.xib in Resources */,
 				C666E07A29C9F1900003DECB /* LoginWithEmailViewController.xib in Resources */,
-				C6ECBF8528D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.xib in Resources */,
 				C676813B2BECB47C0093AFA0 /* ListItemView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8951,6 +8867,7 @@
 				C6C8F97B2B2188FA00A9834D /* ConnectedAppCell.xib in Resources */,
 				C6C8F83B2B217E9600A9834D /* RecoveryPhraseViewController.xib in Resources */,
 				C6D6464C2B1ED0F300D724AC /* ManageDomainLoadingCell.xib in Resources */,
+				C644CC232C761CAF00553D21 /* DomainProfileTutorialViewController.xib in Resources */,
 				C6C8F9352B2183D100A9834D /* DomainDetailsViewController.xib in Resources */,
 				C6C8F8DD2B21836400A9834D /* ParkedDomainCell.xib in Resources */,
 				C6D646492B1ED0D900D724AC /* DomainProfileViewController.xib in Resources */,
@@ -8966,7 +8883,6 @@
 				C6C8F81C2B217CC000A9834D /* ConnectExternalWalletCell.xib in Resources */,
 				C6D646502B1ED0F300D724AC /* ManageDomainRecordCell.xib in Resources */,
 				C6960C4A2B19986E00B79E28 /* Inter-ExtraBold.ttf in Resources */,
-				C6C8F8D52B21834200A9834D /* UpgradeToPolygonTutorial.xib in Resources */,
 				C6D646B12B1ED17E00D724AC /* SocialsDomainImagePreviewView.xib in Resources */,
 				C6D647702B1EE06B00D724AC /* MintingDomainListCell.xib in Resources */,
 				C6D6465F2B1ED10D00D724AC /* DomainProfileNoSocialsCell.xib in Resources */,
@@ -8978,13 +8894,11 @@
 				C6C8F8AC2B2182CF00A9834D /* EnterEmailVerificationCodeViewController.xib in Resources */,
 				C6D645EE2B1DBEA000D724AC /* CarouselCollectionViewCell.xib in Resources */,
 				C6C8F8E02B21836400A9834D /* LoadingParkedDomainsViewController.xib in Resources */,
-				C6D647762B1EE09100D724AC /* ReverseResolutionTransactionInProgressCardCell.xib in Resources */,
 				C6C8F8502B217E9600A9834D /* ConfirmWordsViewController.xib in Resources */,
 				C6D646B32B1ED18F00D724AC /* WatchFaceDomainImagePreviewView.xib in Resources */,
 				C6D646BB2B1ED1A300D724AC /* UDDomainSharingWatchCardView.xib in Resources */,
 				C6D6465D2B1ED10D00D724AC /* DomainProfileGeneralInfoCell.xib in Resources */,
 				C6C8F8132B217CC000A9834D /* CreateWalletViewController.xib in Resources */,
-				C6D646AD2B1ED16900D724AC /* DomainProfileTutorialViewController.xib in Resources */,
 				C6C8F8BA2B2182CF00A9834D /* NoDomainsToMintViewController.xib in Resources */,
 				C6C8F8302B217E7F00A9834D /* AppUpdatedRequired.xib in Resources */,
 				C6960C4E2B19987C00B79E28 /* allDoneConfettiAnimation.gif in Resources */,
@@ -9006,7 +8920,6 @@
 				C6C8F8812B21827700A9834D /* LoginWithEmailViewController.xib in Resources */,
 				C6D646562B1ED10100D724AC /* DomainProfileSocialCell.xib in Resources */,
 				C6D646F82B1ED73300D724AC /* GenericBadgeView.xib in Resources */,
-				C6D646BC2B1ED1A300D724AC /* UDDomainCardView.xib in Resources */,
 				C6960C492B19986E00B79E28 /* Inter-Bold.ttf in Resources */,
 				C6D6469F2B1ED14E00D724AC /* ManageMultiChainDomainAddressesViewController.xib in Resources */,
 				C6C8F9822B2188FA00A9834D /* QRScannerSightView.xib in Resources */,
@@ -9023,7 +8936,6 @@
 				C6960C482B19986E00B79E28 /* HelveticaNeue-Custom.ttf in Resources */,
 				C6C8F8192B217CC000A9834D /* WalletConnectedViewController.xib in Resources */,
 				C6C8F8E12B21836400A9834D /* NoParkedDomainsFoundViewController.xib in Resources */,
-				C6D6479D2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib in Resources */,
 				C6D647172B1ED82E00D724AC /* CollectionViewShowHideCell.xib in Resources */,
 				C6C8F87C2B21827700A9834D /* LoginViewController.xib in Resources */,
 				C6C8F8B52B2182CF00A9834D /* EnterEmailViewController.xib in Resources */,
@@ -9106,7 +9018,6 @@
 				C61DB10E2B95925C00CDA243 /* BalanceStringFormatter.swift in Sources */,
 				C621A4452BB11B0100CB5CB9 /* QRScannerHint.swift in Sources */,
 				C63095D32B0DA5DE00205054 /* PurchasedDomainsWalletDescription.swift in Sources */,
-				C6ECBF8128D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift in Sources */,
 				C617D0B02B9C334600607555 /* PublicProfileBadgesSectionView.swift in Sources */,
 				C609823A2823F62C00546392 /* BaseBackupWalletPresenter.swift in Sources */,
 				C6526DE329D2E05F00D6F2EB /* NoParkedDomainsFoundInAppViewPresenter.swift in Sources */,
@@ -9292,7 +9203,6 @@
 				C63095F32B0DA66400205054 /* FirebasePurchaseDomainsEntities.swift in Sources */,
 				C6456F1B2800302900A517D5 /* ConfirmWordListCell.swift in Sources */,
 				C692C36A282EADA400C31393 /* SelectAppearanceThemePullUpView.swift in Sources */,
-				C6ECBF7A28D2C86F00E94309 /* ReverseResolutionTransactionInProgressViewPresenter.swift in Sources */,
 				C6952A292BC4E9F700F4B475 /* MPCWalletsServiceProtocol.swift in Sources */,
 				C6631BC82C6A46F70045186D /* PurchaseDomainsCompletedView.swift in Sources */,
 				C645131128095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */,
@@ -9375,7 +9285,6 @@
 				C6D5DAE928374C7300379C38 /* WalletAddressFieldCollectionCell.swift in Sources */,
 				C6B65F942B5665F0006D1812 /* HomeTabView.swift in Sources */,
 				C6BF80352BA2ED7100CC4CB3 /* FireblockJoinWalletHandlerImplementation.swift in Sources */,
-				C6386843285C2D4E000F98C4 /* UpgradeToPolygonTutorial.swift in Sources */,
 				C628E37227FDE1D60044E408 /* UDSubtitleLabel.swift in Sources */,
 				291AD2452BD5265E006B8096 /* EVMCryptoSender.swift in Sources */,
 				C671E3E42902817000A2B3A0 /* DomainProfileGeneralInfoCell.swift in Sources */,
@@ -9447,6 +9356,9 @@
 				C6493A022B63A8B700457363 /* TrackingPressingStateModifier.swift in Sources */,
 				C650F8C42BA41A2A00BDA099 /* FireblocksKeyStorageProvider.swift in Sources */,
 				C6D647342B1ED9D600D724AC /* WCRequestUIConfiguration.swift in Sources */,
+				C644CC282C761CB000553D21 /* DomainProfileTutorialItemViewController.swift in Sources */,
+				C644CC292C761CB000553D21 /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */,
+				C644CC2A2C761CB000553D21 /* DomainProfileTutorialViewController.swift in Sources */,
 				C650AC3D298105C900A398AB /* UDSegmentedControl.swift in Sources */,
 				C6A474E029D1756D0073415F /* LoadingParkedDomainsViewPresenter.swift in Sources */,
 				C65CEB8E2B67537900A13B34 /* SwiftUIViewPaymentHandler.swift in Sources */,
@@ -9510,7 +9422,6 @@
 				C6668946281151F6002062B4 /* TertiaryButton.swift in Sources */,
 				C60982462823F82000546392 /* CreateBackupPasswordBasePresenter.swift in Sources */,
 				C6952A1F2BC4DD8500F4B475 /* FB_UD_MPC.swift in Sources */,
-				C6C4218729379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */,
 				C65DEA7B29B5837600FF142B /* MockWalletConnectExternalWalletHandler.swift in Sources */,
 				C6170EC12B79E8E9008E9C93 /* UDListSectionView.swift in Sources */,
 				C6C8F99C2B218E5500A9834D /* GIFAnimationsService+GIF.swift in Sources */,
@@ -9616,7 +9527,6 @@
 				291A9C6A29E444CF00527FF1 /* WC_v1+v2.swift in Sources */,
 				C655CA962B16E51B00FDA063 /* Color+Skeleton.swift in Sources */,
 				C6D6457A2B1D7C2F00D724AC /* PullUpError.swift in Sources */,
-				C6C42182293741A4005B791B /* DomainProfileTutorialItemViewController.swift in Sources */,
 				C62C3F96283F40D30094FC93 /* CodeVerificationCharacterView.swift in Sources */,
 				C642A6B5284118E800299C6E /* MintingDomainListCell.swift in Sources */,
 				C6DF462C2AA196C100D124E7 /* ViewErrorHolder.swift in Sources */,
@@ -9712,7 +9622,6 @@
 				C64939EF2B63579700457363 /* HomeTabPullUpHandlerModifier.swift in Sources */,
 				30BA2B45252C4E2B0097817E /* DomainItem.swift in Sources */,
 				C6631BB52C69EA600045186D /* PurchaseDomainsSearchFiltersView.swift in Sources */,
-				C6C4217829371446005B791B /* DomainProfileTutorialViewController.swift in Sources */,
 				307852642771FB030039FF40 /* DeepLinks.swift in Sources */,
 				C6D3B9BA2A6EB8F80091B279 /* PushMessagingChannelsAPIService.swift in Sources */,
 				C6F433512BB27AEF000C5E46 /* SendCryptoAssetSuccessView.swift in Sources */,
@@ -9998,7 +9907,6 @@
 				C6534AC72BBFBAF5008EEBB5 /* UserProfilesServiceProtocol.swift in Sources */,
 				C64939F52B6373C700457363 /* UIWindow.swift in Sources */,
 				C6B6B023296D2CDC00D4E30F /* MintingDomain.swift in Sources */,
-				C6D6479A2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift in Sources */,
 				C6D5DAD028374B4600379C38 /* ManageMultiChainDomainAddressesViewPresenter.swift in Sources */,
 				C6489ACC2C5D0A0C004AE320 /* PurchaseDomains.swift in Sources */,
 				C6DDF2512B147F1A006D1F0B /* UDButtonView.swift in Sources */,
@@ -10051,7 +9959,6 @@
 				C64312A12B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift in Sources */,
 				C664B679291551E600A76154 /* LinkPresentationService.swift in Sources */,
 				C6F9FBBE2A25C32700102F81 /* MessagingWebSocketEvent.swift in Sources */,
-				C691CFA828C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */,
 				C6A359352BB6BB2100B1209A /* TxHash.swift in Sources */,
 				C6B65FA42B5791B4006D1812 /* HomeWalletDomainCellView.swift in Sources */,
 				C66556812BF73DCB00F0BD7A /* MPCOnboardingPurchaseTakeoverCredentialsViewController.swift in Sources */,
@@ -10248,7 +10155,6 @@
 				C6A3592A2BB5586700B1209A /* NavigationTrackerViewModifier.swift in Sources */,
 				C666E0A129CB3FEA0003DECB /* ParkedDomainCell.swift in Sources */,
 				29AEA04B292F7D60003BB5B4 /* SecurePersistedStorage.swift in Sources */,
-				C685A94F284097E200E54044 /* UDDomainCardView.swift in Sources */,
 				C643129B2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift in Sources */,
 				C6B65F5C2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift in Sources */,
 				C650F8C82BA41C3300BDA099 /* FireblocksRPCMessageHandler.swift in Sources */,
@@ -10494,7 +10400,6 @@
 				C6C8F8142B217CC000A9834D /* WalletConnectedViewController.swift in Sources */,
 				C671CD202BC680F7005DA2FB /* PurchasedDomainsStorage.swift in Sources */,
 				C688C1AB2B84A4CF00BD233A /* UnencryptedMessageInfoPullUpView.swift in Sources */,
-				C6D6477F2B1EE1DF00D724AC /* ReverseResolutionIllustrationView.swift in Sources */,
 				C6D645AB2B1DBB3F00D724AC /* BaseListCollectionViewCell.swift in Sources */,
 				C67097AD2BABD47E00BB8AB1 /* DebounceObject.swift in Sources */,
 				C67681322BEC807B0093AFA0 /* UINavigationBarAppearance.swift in Sources */,
@@ -10582,7 +10487,6 @@
 				C6C8F84D2B217E9600A9834D /* RevealRecoveryPhrasePresenter.swift in Sources */,
 				C6C8F8E92B21836400A9834D /* ParkedDomainsFoundInAppViewPresenter.swift in Sources */,
 				C6D646762B1ED11B00D724AC /* CryptoEditingGroupedRecord.swift in Sources */,
-				C6D646AC2B1ED16900D724AC /* DomainProfileTutorialViewController.swift in Sources */,
 				C6D6467A2B1ED12100D724AC /* DomainProfileGenericChangeDescription.swift in Sources */,
 				C671CD172BC68070005DA2FB /* PurchaseDomainsServiceProtocol.swift in Sources */,
 				C630E4BA2B7F5BAC008F3269 /* Padding.swift in Sources */,
@@ -10912,7 +10816,6 @@
 				C6D645A92B1DBB2700D724AC /* UICollectionView.swift in Sources */,
 				C630C7332BD779E800AC1662 /* OnboardingStartOptionsView.swift in Sources */,
 				C61808282B19AB550032E543 /* PreviewMessagingService.swift in Sources */,
-				C6D6479B2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift in Sources */,
 				C6D6464D2B1ED0F300D724AC /* DomainProfileWeb3WebsiteLoadingCell.swift in Sources */,
 				C64939F62B6373C700457363 /* UIWindow.swift in Sources */,
 				C6D645CE2B1DBD4100D724AC /* DashesProgressNavBarPushAnimation.swift in Sources */,
@@ -10977,7 +10880,6 @@
 				C676813E2BECB47C0093AFA0 /* ListItemView.swift in Sources */,
 				C6D6460A2B1DC06300D724AC /* UserDefaults.swift in Sources */,
 				C6B65F912B565C70006D1812 /* HomeWalletSortingSelectorView.swift in Sources */,
-				C6C8F8D62B21834200A9834D /* UpgradeToPolygonTutorial.swift in Sources */,
 				C6FAED842B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift in Sources */,
 				C61807BF2B19A2CC0032E543 /* AppContextProtocol.swift in Sources */,
 				C61807D62B19A4580032E543 /* ExternalEventsServiceProtocol.swift in Sources */,
@@ -11051,7 +10953,6 @@
 				C62900FC2BAACCD2008B35A2 /* UDNumberPadView.swift in Sources */,
 				C6C8F82A2B217D7C00A9834D /* WCRegistryWalletProxy.swift in Sources */,
 				C6D647042B1ED7C300D724AC /* MessagingGroupChatDetails.swift in Sources */,
-				C6D646B92B1ED1A300D724AC /* UDDomainCardView.swift in Sources */,
 				C6C8F83A2B217E9600A9834D /* OnboardingRecoveryPhrasePresenter.swift in Sources */,
 				C6C8F81D2B217CC000A9834D /* OnboardingAddWalletPresenter.swift in Sources */,
 				C6C8F86A2B2181AE00A9834D /* WalletDisplayInfo.swift in Sources */,
@@ -11066,7 +10967,6 @@
 				C61807FD2B19A8470032E543 /* QRCodeServiceProtocol.swift in Sources */,
 				C6D646772B1ED12100D724AC /* DomainProfileSectionUIChangeType.swift in Sources */,
 				C6534AC42BBFBAF5008EEBB5 /* SelectedUserProfileInfoStorageProtocol.swift in Sources */,
-				C6C8F8CF2B21832F00A9834D /* ReverseResolutionTransactionInProgressViewPresenter.swift in Sources */,
 				C6C8F8232B217CC000A9834D /* CreateLocalWalletPresenter.swift in Sources */,
 				C617D0B12B9C334600607555 /* PublicProfileBadgesSectionView.swift in Sources */,
 				C6D6466D2B1ED11B00D724AC /* BadgeLeaderboardSelectionItem.swift in Sources */,
@@ -11143,7 +11043,6 @@
 				C6D6470E2B1ED7D000D724AC /* MessagingChatMessage.swift in Sources */,
 				C6D647722B1EE07700D724AC /* CollectionViewHeaderCell.swift in Sources */,
 				C6D647082B1ED7CA00D724AC /* MessagingNewsChannel.swift in Sources */,
-				C6D646AB2B1ED16900D724AC /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */,
 				C618081A2B19AAEF0032E543 /* FirebaseDomainsServiceProtocol.swift in Sources */,
 				C640F35D2C070718009EB0F9 /* MPCOnboardingPurchaseTakeoverRecoveryViewController.swift in Sources */,
 				C6203A5A2B883847000A1A8E /* MockEntitiesFabric+Messaging.swift in Sources */,
@@ -11206,7 +11105,6 @@
 				C6D646C72B1ED25300D724AC /* WebsiteURLValidator.swift in Sources */,
 				C61C332B2B90527200BD11F5 /* UDSegmentedControlView.swift in Sources */,
 				C6C8F8B62B2182CF00A9834D /* MintDomainsConfigurationViewController.swift in Sources */,
-				C6D647772B1EE09100D724AC /* ReverseResolutionTransactionInProgressCardCell.swift in Sources */,
 				C618080E2B19AA370032E543 /* PaymentError.swift in Sources */,
 				C6C8F8E72B21836400A9834D /* LoadingParkedDomainsViewController.swift in Sources */,
 				C6C8F8152B217CC000A9834D /* OnboardingConnectExternalWalletPresenter.swift in Sources */,
@@ -11327,6 +11225,9 @@
 				C6B65F7F2B55153E006D1812 /* HomeWalletView+Entities.swift in Sources */,
 				C6D011B62B9949520008BF40 /* WalletDomainProfileDetails.swift in Sources */,
 				C6B2E2082B96DF0B00CEA1F9 /* DomainProfilesService.swift in Sources */,
+				C644CC242C761CAF00553D21 /* DomainProfileTutorialItemViewController.swift in Sources */,
+				C644CC252C761CAF00553D21 /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */,
+				C644CC262C761CAF00553D21 /* DomainProfileTutorialViewController.swift in Sources */,
 				C61807B52B199DF50032E543 /* UIColor.swift in Sources */,
 				C6C8F9982B218DBB00A9834D /* WalletConnectExternalWalletConnectionWaiter.swift in Sources */,
 				C640F3562C06FC66009EB0F9 /* MPCWalletPasswordValidator.swift in Sources */,
@@ -11448,7 +11349,6 @@
 				C64F6C542C4FAF2200D89FEF /* FullMaintenanceModeView.swift in Sources */,
 				C6D647492B1EDAD000D724AC /* CopyWalletAddressPullUpHandler.swift in Sources */,
 				C6534AC82BBFBAF5008EEBB5 /* UserProfilesServiceProtocol.swift in Sources */,
-				C6D646AE2B1ED16900D724AC /* DomainProfileTutorialItemViewController.swift in Sources */,
 				C62900E62BAAB6E8008B35A2 /* SelectCryptoAssetToSendTokenView.swift in Sources */,
 				C6C8F8682B21817E00A9834D /* BorderedTableView.swift in Sources */,
 				C6D646092B1DC03200D724AC /* UIScrollView.swift in Sources */,

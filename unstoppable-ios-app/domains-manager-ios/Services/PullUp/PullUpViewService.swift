@@ -296,77 +296,10 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         showIfNotPresent(in: viewController, pullUp: .wcLoading, contentView: loadingView, isDismissAble: true, height: selectionViewHeight)
     }
     
-    func showWhatIsReverseResolutionInfoPullUp(in viewController: UIViewController) {
-        let selectionViewHeight: CGFloat = 412
-        let headerView = ReverseResolutionIllustrationView(frame: .zero)
-        headerView.translatesAutoresizingMaskIntoConstraints = false
-        let width: CGFloat = deviceSize == .i4Inch ? 288 : 326
-        headerView.widthAnchor.constraint(equalToConstant: width).isActive = true
-        headerView.heightAnchor.constraint(equalToConstant: 144).isActive = true
-        headerView.set(style: .small)
-        headerView.setInfoData()
-        
-        let selectionView = PullUpSelectionView(configuration: .init(customHeader: headerView,
-                                                                     title: .text(String.Constants.reverseResolutionInfoTitle.localized()),
-                                                                     contentAlignment: .center,
-                                                                     subtitle: .label(.text(String.Constants.reverseResolutionInfoSubtitle.localized())),
-                                                                     cancelButton: .secondary(content: .init(title: String.Constants.gotIt.localized(),
-                                                                                                             icon: nil,
-                                                                                                             analyticsName: .gotIt,
-                                                                                                             action: nil))),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        showOrUpdate(in: viewController, pullUp: .whatIsReverseResolutionInfo, contentView: selectionView, height: selectionViewHeight)
-    }
-    
-    func showSetupReverseResolutionPromptPullUp(walletInfo: WalletDisplayInfo,
-                                                domain: DomainDisplayInfo,
-                                                in viewController: UIViewController) async throws {
-        let selectionViewHeight: CGFloat = 512
-        let headerView = ReverseResolutionIllustrationView(frame: .zero)
-        headerView.translatesAutoresizingMaskIntoConstraints = false
-        let width: CGFloat = deviceSize == .i4Inch ? 288 : 326
-        headerView.widthAnchor.constraint(equalToConstant: width).isActive = true
-        headerView.heightAnchor.constraint(equalToConstant: 144).isActive = true
-        headerView.set(style: .small)
-        headerView.setWith(walletInfo: walletInfo, domain: domain)
-        
-        var icon: UIImage?
-        if User.instance.getSettings().touchIdActivated {
-            icon = authentificationService.biometricIcon
-        }
-        let walletAddress = walletInfo.address.walletAddressTruncated
-        let domainName = domain.name
-        
-        try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
-            let selectionView = PullUpSelectionView(configuration: .init(customHeader: headerView,
-                                                                         title: .text(String.Constants.setupReverseResolution.localized()),
-                                                                         contentAlignment: .center,
-                                                                         subtitle: .label(.highlightedText(.init(text: String.Constants.setupReverseResolutionDescription.localized(domainName, walletAddress),
-                                                                                                                 highlightedText: [.init(highlightedText: domainName,
-                                                                                                                                         highlightedColor: .foregroundDefault),
-                                                                                                                                   .init(highlightedText: walletAddress,
-                                                                                                                                         highlightedColor: .foregroundDefault)],
-                                                                                                                 analyticsActionName: nil,
-                                                                                                                 action: nil))),
-                                                                         actionButton: .main(content: .init(title: String.Constants.confirm.localized(),
-                                                                                                            icon: icon,
-                                                                                                            analyticsName: .confirm,
-                                                                                                            action: { completion(.success(Void())) })),
-                                                                         cancelButton: .secondary(content: .init(title: String.Constants.later.localized(),
-                                                                                                                 icon: nil,
-                                                                                                                 analyticsName: .later,
-                                                                                                                 action: { completion(.failure(PullUpError.dismissed)) }))),
-                                                    items: PullUpSelectionViewEmptyItem.allCases)
-            
-            showOrUpdate(in: viewController, pullUp: .setupReverseResolutionPrompt, additionalAnalyticParameters: [.domainName: domain.name], contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
-        }
-    }
-    
     func showDomainMintedOnChainDescriptionPullUp(in viewController: UIViewController,
                                                   chain: BlockchainType) {
         let selectionViewHeight: CGFloat
-        let icon = UIImage.getNetworkLargeIcon(by: chain)!
+        let icon = chain.icon
         let description: String
         switch chain {
         case .Ethereum:

@@ -1354,8 +1354,8 @@ extension String {
     }
     
     enum BlockChainIcons: String {
-        case ethereum = "smallEthereum"
-        case matic = "smallMatic"
+        case ethereum = "ETH"
+        case matic = "MATIC"
         case base = "BASE"
     }
     

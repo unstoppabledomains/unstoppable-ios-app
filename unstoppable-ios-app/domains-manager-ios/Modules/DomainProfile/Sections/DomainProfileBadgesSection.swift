@@ -67,7 +67,7 @@ extension DomainProfileBadgesSection: DomainProfileSection {
         snapshot.appendSections([.dashesSeparator()])
         let maxItems = Self.numberOfBadgesInTheRow() * 3
         switch state {
-        case .default, .updatingRecords, .loadingError, .updatingProfile, .purchaseNew:
+        case .default, .updatingRecords, .loadingError, .updatingProfile:
             let isRefreshBadgesButtonEnabled = state == .default || state == .updatingRecords
             let sectionHeaderDescription = sectionHeader(isLoading: false,
                                                          isButtonEnabled: isRefreshBadgesButtonEnabled)
