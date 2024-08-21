@@ -97,10 +97,10 @@ private extension AnalyticsService {
             if case .parking = domain.state {
                 numberOfParkedDomains += 1
             }
-            let tld = domain.name.getTldName()
+            let tld = domain.name.getTldName() ?? ""
             if tld == Constants.ensDomainTLD {
                 numberOfENSDomains += 1
-            } else if tld == Constants.comDomainTLD {
+            } else if Constants.dnsDomainTLDs.contains(tld) {
                 numberOfCOMDomains += 1
             } else {
                 numberOfUDDomains += 1

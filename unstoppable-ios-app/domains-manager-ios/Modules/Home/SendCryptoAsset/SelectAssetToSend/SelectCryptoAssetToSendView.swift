@@ -108,7 +108,8 @@ private extension SelectCryptoAssetToSendView {
     }
     
     func setDomainsData() {
-        domainsData.setDomains(filteredDomains)
+        domainsData.setDomains(filteredDomains,
+                               walletAddress: viewModel.sourceWallet.address)
         domainsData.sortDomains(.alphabeticalAZ)
         domainsData.isSearching = !searchDomainsKey.isEmpty
     }
@@ -260,7 +261,9 @@ private extension SelectCryptoAssetToSendView {
             domainsContentView()
         } else {
             SelectCryptoAssetToSendEmptyView(assetType: .domains,
-                                             actionCallback: tabRouter.runPurchaseFlow)
+                                             actionCallback: { [weak tabRouter] in
+                tabRouter?.runPurchaseFlow()
+            })
         }
     }
     
@@ -296,4 +299,5 @@ private extension SelectCryptoAssetToSendView {
 #Preview {
     SelectCryptoAssetToSendView(receiver: MockEntitiesFabric.SendCrypto.mockReceiver())
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
+        .environmentObject(MockEntitiesFabric.Home.createHomeTabRouter())
 }

@@ -225,6 +225,8 @@ private extension AppLaunchService {
             Constants.deprecatedTLDs = ["coin"]
         }
         Constants.newNonInteractableTLDs = [Constants.ensDomainTLD]
+        Constants.dnsDomainTLDs = Set(appVersion.dnsTlds ?? ["com", "ca", "pw"])
+        
         if !appVersion.mintingIsEnabled {
             appContext.toastMessageService.showToast(.mintingUnavailable, isSticky: true)
         } else {

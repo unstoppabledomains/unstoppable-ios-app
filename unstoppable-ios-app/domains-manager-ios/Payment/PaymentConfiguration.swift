@@ -24,7 +24,7 @@ public class PaymentConfiguration {
         formatter.currencyCode = PaymentConfiguration.usdCurrencyLabel
         formatter.currencySymbol = PaymentConfiguration.usdCurrencySymbol
         formatter.maximumFractionDigits = 2
-        formatter.minimumFractionDigits = 0
+        formatter.minimumFractionDigits = 2
         formatter.currencyDecimalSeparator = "."
         formatter.currencyGroupingSeparator = ","
         return formatter

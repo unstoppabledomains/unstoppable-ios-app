@@ -18,22 +18,28 @@ struct Storage {
 
 class SpecificStorage<T: Codable> {
     let fileName: String
+    private var data: T? = nil
+    private let queue = DispatchQueue(label: "preview.serial.storage")
     
     init(fileName: String) {
         self.fileName = fileName
     }
     
     func retrieve() -> T? {
-        nil
+        queue.sync { data }
     }
     
     @discardableResult
     func store(_ data: T) -> Bool {
-        
-        return true
+        queue.sync {
+            self.data = data
+            return true
+        }
     }
     
     func remove() {
-        
+        queue.sync {
+            self.data = nil
+        }
     }
 }

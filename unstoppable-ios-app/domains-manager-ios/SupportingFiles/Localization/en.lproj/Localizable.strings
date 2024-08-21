@@ -265,6 +265,8 @@
 "RECOVERY_PHRASE_HELP_TEXT" = "A recovery phrase is the human-readable form of your wallet private key — the unique, secret passcode used to authenticate and encrypt your wallet access. This phrase allows you to sign transactions, confirm ownership of your Web3 domains, and recover them in the event that your mobile device is lost, stolen, or becomes inaccessible.\n\nHowever you choose to store your recovery phrase, you should consider two things:\n\n•  Your 12 word recovery phrase should be safe from other people.\n•  Your 12 word recovery phrase should be in a reliable location that you’ll always have access to.\n\nNote: Unstoppable Domains cannot recover your 12 word recovery phrase for you.";
 "RECOVERY_PHRASE_HELP_TEXT_HIGHLIGHTED" = "Note: Unstoppable Domains cannot recover your 12 word recovery phrase for you.";
 "RECOVERY_PHRASE_HELP_TEXT_BULLETS" = "•  Your 12 word recovery phrase should be safe from other people.\n•  Your 12 word recovery phrase should be in a reliable location that you’ll always have access to.";
+"RECOVERY_PHRASE_NOT_AVAILABLE_TITLE" = "Wallet not available";
+"RECOVERY_PHRASE_NOT_AVAILABLE_MESSAGE" = "The app doesn't have access to the secure storage with private keys. If this is a new phone please remove this wallet and import it manually, using the private key or a recovery phrase from your old phone / manually recorded keys.";
 
 // Confirm words screen
 "CONFIRM_YOUR_WORDS" = "Confirm your words";
@@ -546,7 +548,9 @@
 "NETWORK_GAS_FEE_INFO_DESCRIPTION" = "A gas fee is required to conduct a transaction on the %@ network.";
 
 "SIGN_TRANSACTION_FAILED_ALERT_TITLE" = "Connection failed";
-"SIGN_TRANSACTION_FAILED_ALERT_DESCRIPTION" = "Something went wrong! Please try again later.";
+"SIGN_TRANSACTION_FAILED_ALERT_DESCRIPTION" = "Something went wrong. Please retry and If the issue persists, restart the app and clear browser site data.";
+"CLEAR_WALLET_CONNECT_CACHE" = "Clear WalletConnect cache";
+"CLEAR_WALLET_CONNECT_CACHE_DESCRIPTION" = "Tap this button if the above instructions don't resolve the issue. You will need to reconnect your dApps";
 
 "WALLET_CONNECT_INVALID_QR_CODE_ALERT_TITLE" = "Unrecognized QR Code";
 "WALLET_CONNECT_INVALID_QR_CODE_ALERT_DESCRIPTION" = "Sorry, this QR code could not be recognized.";
@@ -921,7 +925,7 @@
 "GET_DOMAIN_CARD_SUBTITLE" = "Own your identity in the digital world.\nGet started with a Web3 domain.";
 "FIND_A_NEW_DOMAIN" = "Find a new domain";
 "FIND_YOUR_DOMAIN" = "Find your domain";
-"SEARCH_FOR_A_NEW_DOMAIN" = "Search for a new\ndomain";
+"SEARCH_FOR_A_DOMAIN" = "Search for a domain";
 "TRENDING" = "Trending";
 "NO_AVAILABLE_DOMAINS" = "No available domains";
 "TRY_ENTER_DIFF_NAME" = "Try entering a different name.";
@@ -930,6 +934,7 @@
 "MINT_TO" = "Mint to";
 "APPLY_DISCOUNTS" = "Apply discounts";
 "ADD_DISCOUNT_CODE" = "Add discount code";
+"DISCOUNT_CODE_APPLIED" = "Discount code applied";
 "PROMO_CREDITS" = "Promo credits";
 "STORE_CREDITS" = "Store credits";
 "US_ZIP_CODE" = "US ZIP code";
@@ -973,12 +978,41 @@
 "PURCHASE_SEARCH_CANT_BUY_PULL_UP_TITLE" = "Coming soon";
 "PURCHASE_SEARCH_CANT_BUY_PULL_UP_SUBTITLE" = ".%@ domains are currently only for sale from our website.";
 "PAY_WITH_CREDITS" = "Pay with credits";
+"BUY_DOMAINS_SEARCH_TITLE" = "Buy Domains";
+"BUY_DOMAINS_CART_EMPTY_TITLE" = "Your cart is empty";
+"BUY_DOMAINS_CART_EMPTY_SUBTITLE" = "But it's easy to fix!";
+"BUY_DOMAINS_CART_TITLE" = "Your cart (%i)";
+"SEARCH_DOMAINS" = "Search domains";
+"CLEAR" = "Clear";
+"START_TYPING" = "Start typing";
+"BUY_DOMAINS_SEARCH_RESULT_SHOW_MORE_TITLE" = "Show more exact matches";
+"BUY_DOMAINS_SEARCH_RESULT_SHOW_LESS_TITLE" = "Show less exact matches";
+"PURCHASE_MINTING_WALLET_TITLE" = "Minting Wallet";
+"PURCHASE_MINTING_WALLET_PULL_UP_TITLE" = "Select Minting Wallet";
+"PURCHASE_MINTING_WALLET_PULL_UP_SUBTITLE" = "Where your domains will be minted.";
+"SUBTOTAL" = "Subtotal";
+"COUNTRY" = "Country";
+"USA" = "USA";
+"OTHER" = "Other";
+"ZIP_CODE_FOR_SALES_TAX" = "ZIP Code for Sales Tax";
+"DOMAIN_REMOVED" = "Domain removed";
+"UNDO" = "Undo";
+"CART_CLEARED" = "Cart cleared";
+"BUY_DOMAIN_FROM_WEB_PULL_UP_TITLE" = "Buy this domain from\nthe website";
+"BUY_DOMAIN_FROM_WEB_PULL_UP_SUBTITLE" = "For domains priced above $10,000, checkout is only possible using crypto. However, the app currently doesn’t support crypto checkout.";
+"CHECKOUT_FROM_WEB_PULL_UP_TITLE" = "Checkout from website";
+"CHECKOUT_FROM_WEB_PULL_UP_SUBTITLE" = "For purchases above $10,000 at once, checkout is only possible using crypto. However, the app currently doesn’t support crypto checkout.";
+"ENDINGS" = "Endings";
+"SUGGESTIONS" = "Suggestions";
+"DOMAINS_PURCHASED_SUMMARY_MESSAGE" = "Order total: %@\n\nMinting started, this can take up to 5 minutes.\nWill be minted to: %@";
 
 // Home
 "HOME_WALLET_TOKENS_COME_TITLE" = "No more tokens here yet";
 "HOME_WALLET_TOKENS_COME_SUBTITLE" = "We currently support Ethereum, Solana, Polygon and Base tokens";
 "HOME_WALLET_COLLECTIBLES_EMPTY_TITLE" = "No collectibles in your wallet";
 "HOME_WALLET_COLLECTIBLES_EMPTY_SUBTITLE" = "To receive collectibles and see them here, just copy your wallet address below.";
+"HOME_WALLET_DOMAINS_EMPTY_TITLE" = "No domains in your wallet";
+"HOME_WALLET_DOMAINS_EMPTY_SUBTITLE" = "To receive domains and see them here, just copy your wallet address below.";
 "NFT_DETAILS_ABOUT_COLLECTION_HEADER" = "About %@";
 "BUY_NEW_DOMAIN" = "Buy new domain";
 "SELECT_PRIMARY_DOMAIN_TITLE" = "Select primary domain for %@";
@@ -1196,3 +1230,11 @@ More tabs are coming in the next updates.";
 "SEND_CRYPTO_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.\nMeantime try to switch to another wallet.";
 "SIGN_MESSAGES_MAINTENANCE_MESSAGE_TITLE" = "Signing messages is currently unavailable";
 "SIGN_MESSAGES_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available soon.";
+"TRANSFER_DOMAINS_FROM_VAULT_MAINTENANCE_MESSAGE_TITLE" = "We'll be back soon";
+"TRANSFER_DOMAINS_FROM_VAULT_MAINTENANCE_MESSAGE_SUBTITLE" = "Transferring domains from the vault is temporarily unavailable. Please try again later.";
+"MPC_MAINTENANCE_MESSAGE_TITLE" = "%@ is currently being updated";
+"MPC_MAINTENANCE_MESSAGE_SUBTITLE" = "We're working to make it available as soon as possible.";
+
+// Connect Ledger with MM
+"CONNECT_LEDGER_WITH_MM_PULL_UP_TITLE" = "Use MetaMask rather than Ledger Live";
+"CONNECT_LEDGER_WITH_MM_PULL_UP_SUBTITLE" = "1. Connect your Ledger device to the MetaMask mobile wallet\n2. Connect MetaMask to this app";

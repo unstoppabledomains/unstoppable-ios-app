@@ -30,14 +30,12 @@ final class WCWebSocket: WebSocket, WebSocketConnecting {
             case .connected:
                 self?.isConnected = true
                 self?.onConnect?()
-            case .error:
-                return
+            case .error(let error):
+                self?.setDisconnectedWith(error: error)
             case .cancelled:
-                self?.isConnected = false
-                self?.onDisconnect?(nil)
+                self?.setDisconnectedWith(error: nil)
             case .disconnected:
-                self?.isConnected = false
-                self?.onDisconnect?(nil)
+                self?.setDisconnectedWith(error: nil)
             case .text(let msg):
                 self?.onText?(msg)
             case .binary:
@@ -46,6 +44,11 @@ final class WCWebSocket: WebSocket, WebSocketConnecting {
                 break
             }
         }
+    }
+    
+    private func setDisconnectedWith(error: Error?) {
+        isConnected = false
+        onDisconnect?(error)
     }
 }
 
@@ -163,10 +166,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         self.udWalletsService = udWalletsService
         
         configure()
-//
-//        try? Sign.instance.cleanup()
-//        try? Pair.instance.cleanup()
-//        clientConnectionsV2.removeAll()
+        
         let settledSessions = Sign.instance.getSessions()
         #if DEBUG
         Debugger.printInfo(topic: .WalletConnectV2, "Connected sessions:\n\(settledSessions)")
@@ -178,6 +178,29 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         #if DEBUG
         Debugger.printInfo(topic: .WalletConnectV2, "Settled pairings:\n\(pairings)")
         #endif
+        
+        DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+            self.checkAndRemoveConnectedAppsDuplicates()
+        }
+    }
+    
+    private func checkAndRemoveConnectedAppsDuplicates() {
+        let apps = getConnectedApps()
+        
+        let groupedApps = [Int : [UnifiedConnectAppInfo]].init(grouping: apps) { app in
+            app.hashValue
+        }
+        
+        for (_, apps) in groupedApps where apps.count > 1 {
+            let sortedByConnectionStartApps = apps.sorted(by: {
+                $0.connectionStartDate ?? Date() < $1.connectionStartDate ?? Date()
+            })
+            let appsToDrop = sortedByConnectionStartApps.prefix(apps.count - 1)
+            Debugger.printWarning("Disconnecting \(appsToDrop.count) dApps because they're duplicates")
+            appsToDrop.forEach { app in
+                Task { try? await disconnect(app: app) }
+            }
+        }
     }
     
     func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler) {
@@ -194,7 +217,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         
         // trim the list of connected dApps
         let validWallets = appContext.walletsDataService.wallets
-        let validAddresses = validWallets.map { $0.address }
+        let validAddresses = validWallets.map { $0.address.normalized }
         let validConnectedApps = unifiedApps.filter({ validAddresses.contains($0.walletAddress.normalized) })
 
         // disconnect those connected to gone domains
@@ -204,6 +227,20 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     
     public func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
         walletStorageV2.findSessions(by: walletAddress)
+    }
+    
+    func clearCache() {
+#if DEBUG
+        try? Sign.instance.cleanup()
+        try? Pair.instance.cleanup()
+#endif
+        let dapps = self.appsStorageV2.retrieveAll()
+        
+        dapps.forEach({ dapp in
+            Task {
+                try await disconnect(app: UnifiedConnectAppInfo(from: dapp))
+            }
+        })
     }
         
     func disconnectAppsForAbsentWallets(from validWallets: [WalletEntity]) {

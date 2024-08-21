@@ -61,8 +61,8 @@ extension HomeWalletView {
             switch self {
             case .send:
                 return "send"
-            case .buy:
-                return "buy"
+            case .buy(let enabled):
+                return "buy_\(enabled)"
             case .receive:
                 return "receive"
             case .profile(let enabled):
@@ -73,7 +73,7 @@ extension HomeWalletView {
         }
         
         case send
-        case buy
+        case buy(enabled: Bool)
         case receive
         case profile(enabled: Bool)
         case more
@@ -134,9 +134,9 @@ extension HomeWalletView {
         
         var isDimmed: Bool {
             switch self {
-            case .send, .buy, .receive, .more:
+            case .send, .receive, .more:
                 return false
-            case .profile(let enabled):
+            case .buy(let enabled), .profile(let enabled):
                 return !enabled
             }
         }
@@ -303,19 +303,24 @@ extension HomeWalletView {
 
 extension HomeWalletView {
     struct DomainsSectionData {
-        private(set) var domainsGroups: [DomainsTLDGroup]
-        private(set) var subdomains: [DomainDisplayInfo]
+        private(set) var walletAddress: String = ""
+        private(set) var domainsGroups: [DomainsTLDGroup] = []
+        private(set) var subdomains: [DomainDisplayInfo] = []
+        private(set) var mintingDomains: [DomainDisplayInfo] = []
         var isSubdomainsVisible: Bool = false
         var domainsTLDsExpandedList: Set<String> = []
         var isSearching: Bool = false
     
-        mutating func setDomains(_ domains: [DomainDisplayInfo]) {
+        mutating func setDomains(_ domains: [DomainDisplayInfo],
+                                 walletAddress: String) {
             domainsGroups = DomainsTLDGroup.createFrom(domains: domains.filter({ !$0.isSubdomain }))
             subdomains = domains.filter({ $0.isSubdomain })
+            mintingDomains = domains.filter { $0.isMinting }
         }
         
         mutating func setDomainsFrom(wallet: WalletEntity) {
-            setDomains(wallet.domains)
+            setDomains(wallet.domains,
+                       walletAddress: wallet.address)
         }
         
         mutating func sortDomains(_ sortOption: HomeWalletView.DomainsSortingOptions) {

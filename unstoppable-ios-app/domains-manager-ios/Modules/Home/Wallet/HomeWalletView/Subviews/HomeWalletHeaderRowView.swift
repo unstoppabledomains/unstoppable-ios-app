@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeWalletHeaderRowView: View, ViewAnalyticsLogger {
     
     @Environment(\.imageLoadingService) private var imageLoadingService
+    @Environment(\.udFeatureFlagsService) private var udFeatureFlagsService
     @Environment(\.analyticsViewName) var analyticsName
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
@@ -135,6 +136,10 @@ private extension HomeWalletHeaderRowView {
         .buttonStyle(.plain)
     }
     
+    var isBuyDomainsEnabled: Bool {
+        udFeatureFlagsService.valueFor(flag: .isBuyDomainEnabled)
+    }
+    
     @MainActor
     @ViewBuilder
     func getAvatarViewToGetDomain() -> some View {
@@ -147,19 +152,24 @@ private extension HomeWalletHeaderRowView {
                 Circle()
                     .foregroundStyle(Color.backgroundWarning)
                     .background(.ultraThinMaterial)
-                VStack(spacing: 4) {
-                    Image.plusIconNav
+                if isBuyDomainsEnabled {
+                    VStack(spacing: 4) {
+                        Image.plusIconNav
+                            .resizable()
+                            .squareFrame(20)
+                        Text(String.Constants.domain.localized())
+                            .font(.currentFont(size: 13, weight: .medium))
+                            .frame(height: 20)
+                    }
+                    .foregroundStyle(Color.foregroundWarning)
+                } else {
+                    Image.domainSharePlaceholder
                         .resizable()
-                        .squareFrame(20)
-                    Text(String.Constants.domain.localized())
-                        .font(.currentFont(size: 13, weight: .medium))
-                        .frame(height: 20)
                 }
-                .foregroundStyle(Color.foregroundWarning)
             }
-            
         }
         .buttonStyle(.plain)
+        .allowsHitTesting(isBuyDomainsEnabled)
     }
     
     func getProfileSelectionTitle() -> String {

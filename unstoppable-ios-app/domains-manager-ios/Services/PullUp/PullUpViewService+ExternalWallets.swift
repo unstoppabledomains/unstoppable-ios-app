@@ -168,12 +168,21 @@ extension PullUpViewService {
     
     func showWCConnectionFailedPullUp(in viewController: UIViewController) async {
         await withSafeCheckedMainActorContinuation(critical: false) { completion in
-            let selectionViewHeight: CGFloat = 280
+            let selectionViewHeight: CGFloat = 426
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.signTransactionFailedAlertTitle.localized()),
                                                                          contentAlignment: .center,
                                                                          icon: .init(icon: .grimaseIcon,
                                                                                      size: .small),
                                                                          subtitle: .label(.text(String.Constants.signTransactionFailedAlertDescription.localized())),
+                                                                         actionButton: .main(content: .init(title: String.Constants.clearWalletConnectCache.localized(), 
+                                                                                                            icon: nil,
+                                                                                                            analyticsName: .clear,
+                                                                                                            subtitle: String.Constants.clearWalletConnectCacheDescription.localized(),
+                                                                                                            action: { [weak viewController] in
+                viewController?.presentedViewController?.dismiss(animated: true)
+                appContext.walletConnectServiceV2.clearCache()
+                completion(Void())
+            })),
                                                                          cancelButton: .gotItButton()),
                                                     items: PullUpSelectionViewEmptyItem.allCases)
             
@@ -421,4 +430,18 @@ extension PullUpViewService {
         }
     }
     
+    func showConnectLedgerWithMMPullUp(in viewController: UIViewController) {
+        let selectionViewHeight: CGFloat = 372
+        let title = String.Constants.connectedLedgerWithMMPullUpTitle.localized()
+        let subtitle = String.Constants.connectedLedgerWithMMPullUpSubtitle.localized()
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(title),
+                                                                     contentAlignment: .center,
+                                                                     icon: .init(icon: .externalWalletIndicator,
+                                                                                 size: .small),
+                                                                     subtitle: .label(.text(subtitle)),
+                                                                     cancelButton: .gotItButton()),
+                                                items: PullUpSelectionViewEmptyItem.allCases)
+        
+        showOrUpdate(in: viewController, pullUp: .connectLedgerWithMM, contentView: selectionView, height: selectionViewHeight)
+    }
 }

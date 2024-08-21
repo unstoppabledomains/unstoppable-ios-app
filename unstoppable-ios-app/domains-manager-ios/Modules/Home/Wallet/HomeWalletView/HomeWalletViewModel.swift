@@ -98,13 +98,16 @@ extension HomeWalletView {
                     }))
                 }
             case .buy:
-                if appContext.udFeatureFlagsService.valueFor(flag: .isBuyCryptoEnabled) {
+                if appContext.udFeatureFlagsService.valueFor(flag: .isBuyCryptoEnabled),
+                   appContext.udFeatureFlagsService.valueFor(flag: .isBuyDomainEnabled) {
                     router.pullUp = .default(.homeWalletBuySelectionPullUp(selectionCallback: { [weak self] buyOption in
                         self?.router.pullUp = nil
                         self?.didSelectBuyOption(buyOption)
                     }))
-                } else {
+                } else if appContext.udFeatureFlagsService.valueFor(flag: .isBuyDomainEnabled) {
                     didSelectBuyOption(.domains)
+                } else {
+                    didSelectBuyOption(.crypto)
                 }
             case .more:
                 return
@@ -114,7 +117,7 @@ extension HomeWalletView {
         func didSelectBuyOption(_ buyOption: HomeWalletView.BuyOptions) {
             switch buyOption {
             case .domains:
-                router.runPurchaseFlow()
+                router.runPurchaseFlow(shouldResetNavigation: false)
             case .crypto:
                 router.runBuyCryptoFlowTo(wallet: selectedWallet)
             }
@@ -160,7 +163,7 @@ extension HomeWalletView {
         }
         
         func buyDomainPressed() {
-            router.runPurchaseFlow()
+            router.runPurchaseFlow(shouldResetNavigation: false)
         }
         
         func domainPurchased() {
@@ -174,6 +177,11 @@ extension HomeWalletView {
             case .noRRDomain:
                 return false
             }
+        }
+        
+        var isBuyButtonEnabled: Bool {
+            let featureFlagsService = appContext.udFeatureFlagsService
+            return featureFlagsService.valueFor(flag: .isBuyCryptoEnabled) || featureFlagsService.valueFor(flag: .isBuyDomainEnabled)
         }
     }
 }

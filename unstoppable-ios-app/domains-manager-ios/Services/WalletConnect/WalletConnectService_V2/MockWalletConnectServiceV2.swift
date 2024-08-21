@@ -61,6 +61,10 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
         return []
     }
     
+    func clearCache() {
+        
+    }
+    
     func disconnectAppsForAbsentWallets(from: [WalletEntity]) {
     }
     

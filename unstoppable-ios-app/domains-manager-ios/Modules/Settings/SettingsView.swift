@@ -334,7 +334,7 @@ private extension SettingsView {
     
     var settingsItemsToShow: [SettingsItems] {
         var items = SettingsItems.allCases
-        if webUser != nil || isEcommMaintenanceEnabled {
+        if webUser != nil {
             items.removeAll(where: { $0 == .viewVaulted })
         }
         return items
@@ -390,7 +390,11 @@ private extension SettingsView {
             case .legal:
                 pullUp = .default(.legalSelectionPullUp(selectionCallback: didSelectLegalType))
             case .viewVaulted:
-                pullUp = .default(.loginOptionsSelectionPullUp(selectionCallback: didSelectToAuthWith))
+                if isEcommMaintenanceEnabled {
+                    pullUp = .default(.transferDomainsFromVaultUnavailable())
+                } else {
+                    pullUp = .default(.loginOptionsSelectionPullUp(selectionCallback: didSelectToAuthWith))
+                }
             }
         }
     }
@@ -498,6 +502,10 @@ private extension SettingsView {
                 case .connect:
                     connectNewWallet()
                 case .mpc:
+                    guard !udFeatureFlagsService.valueFor(flag: .isMaintenanceMPCEnabled) else {
+                        self.error = MPCWalletError.maintenanceEnabled
+                        return
+                    }
                     activateMPCWallet(preFilledEmail: nil)
                 }
             }

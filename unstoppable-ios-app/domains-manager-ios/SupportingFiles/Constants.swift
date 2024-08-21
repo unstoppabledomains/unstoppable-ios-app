@@ -51,7 +51,7 @@ struct Constants {
     static let shouldHideBlockedUsersLocally = true
     static let isCommunitiesEnabled = true
     static let ensDomainTLD: String = "eth"
-    static let comDomainTLD: String = "com"
+    static var dnsDomainTLDs: Set<String> = ["com", "ca", "pw"]
     static let lensDomainTLD: String = "lens"
     static let coinbaseDomainTLD: String = "id"
     static let swiftUIPreviewDevices = ["iPhone 14 Pro", "iPhone 14 Pro Max", "iPhone SE (1st generation)", "iPhone SE (3rd generation)", "iPhone 13 mini"]
@@ -60,7 +60,8 @@ struct Constants {
     static let popularCoinsTickers: [String] = ["BTC", "ETH", "ZIL", "LTC", "XRP"] // This is not required order to be on the UI
     static let additionalSupportedTokens = ["crypto.SOL.address", "crypto.BTC.address"]
     static let ldApplicationIdentifier: String = "ud-ios-app" // Launch darkly id
-    
+    static let maxPurchaseDomainsSum: Int = 10_000_00 // 10.000$ 
+
     // Shake to find
     static let shakeToFindServiceId: String = "090DAE5A-0DD8-4327-B074-E1E09B259597"
     static let shakeToFindCharacteristicId: String = "3403C4D9-2C2C-4A6A-A9DB-115D10095771"

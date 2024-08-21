@@ -70,16 +70,24 @@ private extension SelectCryptoAssetToSendEmptyView {
         }
     }
     
+    var isActionButtonVisible: Bool {
+        switch assetType {
+        case .tokens:
+            return udFeatureFlagsService.valueFor(flag: .isBuyCryptoEnabled)
+        case .domains:
+            return udFeatureFlagsService.valueFor(flag: .isBuyDomainEnabled)
+        }
+    }
+    
     @ViewBuilder
     func actionButton() -> some View {
-        if case .tokens = assetType,
-           !udFeatureFlagsService.valueFor(flag: .isBuyCryptoEnabled) {
-            EmptyView()
-        } else {
+        if isActionButtonVisible {
             UDButtonView(text: actionButtonTitle,
                          icon: .plusIconNav,
                          style: .medium(.raisedTertiary),
                          callback: actionCallback)
+        } else {
+            EmptyView()
         }
     }
     
@@ -94,6 +102,6 @@ private extension SelectCryptoAssetToSendEmptyView {
 }
 
 #Preview {
-    SelectCryptoAssetToSendEmptyView(assetType: .tokens,
+    SelectCryptoAssetToSendEmptyView(assetType: .domains,
                                      actionCallback: { })
 }

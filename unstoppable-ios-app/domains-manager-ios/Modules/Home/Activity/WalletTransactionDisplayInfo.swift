@@ -81,7 +81,7 @@ extension WalletTransactionDisplayInfo {
         }
         self.nftName = serializedTransaction.method
         
-        if serializedTransaction.from.address == userWallet {
+        if serializedTransaction.from.address.normalized == userWallet {
             if serializedTransaction.type == "nft" {
                 self.type = .nftWithdrawal
             } else {

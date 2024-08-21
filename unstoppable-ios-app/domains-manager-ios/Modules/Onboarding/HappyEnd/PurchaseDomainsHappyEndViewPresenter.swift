@@ -11,7 +11,7 @@ final class PurchaseDomainsHappyEndViewPresenter: BaseHappyEndViewPresenter {
     
     override var analyticsName: Analytics.ViewName { .domainsPurchasedHappyEnd }
     
-    weak var purchaseDomainsFlowManager: PurchaseDomainsFlowManager?
+    weak var purchaseDomainsViewModel: PurchaseDomainsViewModel?
 
     override func viewDidLoad() {
         view?.setAgreement(visible: false)
@@ -20,7 +20,7 @@ final class PurchaseDomainsHappyEndViewPresenter: BaseHappyEndViewPresenter {
     
     override func actionButtonPressed() {
         Task {
-            try? await purchaseDomainsFlowManager?.handle(action: .goToDomains)
+            purchaseDomainsViewModel?.handleAction(.goToDomains)
         }
     }
 }

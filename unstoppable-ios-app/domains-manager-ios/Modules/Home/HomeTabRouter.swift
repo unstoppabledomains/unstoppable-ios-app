@@ -15,6 +15,8 @@ final class HomeTabRouter: ObservableObject {
     @Published var isSelectProfilePresented: Bool = false
     @Published var isConnectedAppsListPresented: Bool = false
     @Published var showingUpdatedToWalletGreetings: Bool = false
+    @Published var isShowingMintingWalletsList: Bool = false
+
     @Published var tabViewSelection: HomeTab = .wallets
     @Published var pullUp: ViewPullUpConfigurationType?
     @Published var walletViewNavPath: [HomeWalletNavigationDestination] = []
@@ -67,21 +69,18 @@ extension HomeTabRouter {
         tabViewSelection = .wallets
     }
     
-    func runPurchaseFlow() {
+    func runPurchaseFlow(shouldResetNavigation: Bool = true) {
         Task {
-            let currentTab = tabViewSelection
-            await showHomeScreenList()
-            await waitBeforeNextNavigationIfTabNot(currentTab)
-            
-            walletViewNavPath.append(HomeWalletNavigationDestination.purchaseDomains(domainsPurchasedCallback: { [weak self] result in
-                switch result {
-                case .cancel:
-                    return
-                case .purchased:
-                    self?.homeWalletViewCoordinator?.domainPurchased()
-                }
-            }))
+            if shouldResetNavigation {
+                await showHomeScreenList()
+            }
+            walletViewNavPath.append(.purchaseDomains(.root(self)))
         }
+    }
+    
+    func didPurchaseDomains() {
+        walletViewNavPath.removeAll()
+        homeWalletViewCoordinator?.domainPurchased()
     }
     
     func runBuyCryptoFlowTo(wallet: WalletEntity) {
@@ -134,8 +133,7 @@ extension HomeTabRouter {
                            shouldResetNavigation: Bool = true,
                            sourceScreen: DomainProfileViewPresenter.SourceScreen = .domainsCollection) async {
         if shouldResetNavigation {
-            await popToRootAndWait()
-            tabViewSelection = .wallets
+            await showHomeScreenList()
         }
         await askToFinishSetupPurchasedProfileIfNeeded(domains: wallet.domains)
         guard let topVC else { return }
@@ -299,6 +297,7 @@ extension HomeTabRouter {
         isSelectProfilePresented = false
         isConnectedAppsListPresented = false
         showingUpdatedToWalletGreetings = false
+        isShowingMintingWalletsList = false
         presentedNFT = nil
         presentedDomain = nil
         presentedPublicDomain = nil

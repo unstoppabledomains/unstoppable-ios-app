@@ -15,10 +15,10 @@ struct HomeWebAccountView: View, ViewAnalyticsLogger {
     
     let user: FirebaseUser
     @EnvironmentObject var tabRouter: HomeTabRouter
+    @EnvironmentObject var stateManagerWrapper: NavigationStateManagerWrapper
     @StateObject private var ecommFlagTracker = UDMaintenanceModeFeatureFlagTracker(featureFlag: .isMaintenanceEcommEnabled)
 
-    @Binding var navigationState: NavigationStateManager?
-    @Binding var isTabBarVisible: Bool
+    private var navigationState: NavigationStateManager? { stateManagerWrapper.navigationState }
     
     @State private var domains: [FirebaseDomainDisplayInfo] = []
     private let gridColumns = [
@@ -53,7 +53,7 @@ struct HomeWebAccountView: View, ViewAnalyticsLogger {
         }
         .onChange(of: tabRouter.walletViewNavPath) { _ in
             updateNavTitleVisibility()
-            isTabBarVisible = !isOtherScreenPushed
+            tabRouter.isTabBarVisible = !isOtherScreenPushed
         }
         .listStyle(.plain)
         .clearListBackground()
