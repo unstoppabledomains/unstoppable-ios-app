@@ -16,14 +16,14 @@ extension FB_UD_MPC {
             
             static var v1URL: String { baseURL.appendingURLPathComponents("wallet", "v1") }
             
-            static var authURL: String { v1URL.appendingURLPathComponents("auth") }
+            private static var authURL: String { v1URL.appendingURLPathComponents("auth") }
             static var getCodeOnEmailURL: String { authURL.appendingURLPathComponents("bootstrap", "email") }
             static var submitCodeURL: String { authURL.appendingURLPathComponents("bootstrap") }
             static var devicesBootstrapURL: String { authURL.appendingURLPathComponents("devices", "bootstrap") }
             
             static var rpcMessagesURL: String { v1URL.appendingURLPathComponents("rpc", "messages") }
             
-            static var tokensURL: String { v1URL.appendingURLPathComponents("auth", "tokens") }
+            private static var tokensURL: String { authURL.appendingURLPathComponents("tokens") }
             static var tokensSetupURL: String { tokensURL.appendingURLPathComponents("setup") }
             static var tokensConfirmURL: String { tokensURL.appendingURLPathComponents("confirm") }
             static var tokensVerifyURL: String { tokensURL.appendingURLPathComponents("verify") }
@@ -49,12 +49,12 @@ extension FB_UD_MPC {
                 assetURL(accountId: accountId, assetId: assetId).appendingURLPathComponents("transactions")
             }
             
-            static var estimatesURL: String { v1URL.appendingURLPathComponents("estimates") }
+            private static var estimatesURL: String { v1URL.appendingURLPathComponents("estimates") }
             static func assetTransfersEstimatesURL(accountId: String, assetId: String) -> String {
                 estimatesURL.appendingURLPathComponents("accounts", accountId, "assets", assetId, "transfers")
             }
             
-            static var operationsURL: String { v1URL.appendingURLPathComponents("operations") }
+            private static var operationsURL: String { v1URL.appendingURLPathComponents("operations") }
             static func operationURL(operationId: String) -> String {
                 operationsURL.appendingURLPathComponents(operationId)
             }

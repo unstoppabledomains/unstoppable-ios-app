@@ -375,8 +375,8 @@ private extension NetworkService {
     enum ProfileDomainURLSList {
         static var baseURL: String { NetworkConfig.baseAPIUrl }
         
-        static var profileAPIURL: String { baseURL.appendingURLPathComponents("profile") }
-        static var userAPIURL: String { profileAPIURL.appendingURLPathComponents("user") }
+        private static var profileAPIURL: String { baseURL.appendingURLPathComponents("profile") }
+        private static var userAPIURL: String { profileAPIURL.appendingURLPathComponents("user") }
         
         static func checkWalletSignUpStatusURL(domain: DomainName) -> String {
             userAPIURL.appendingURLPathComponents(domain, "wallet")

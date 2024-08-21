@@ -100,7 +100,6 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
             Task {
                 try? await withThrowingTaskGroup(of: Void.self) { group in
                     TLDCategory.allCases.forEach { tld in
-                        let start = Date()
                         group.addTask {
                             do {
                                 let searchResult = try await self.searchForEcommDomains(key: key,
