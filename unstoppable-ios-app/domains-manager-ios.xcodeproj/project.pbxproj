@@ -12396,7 +12396,7 @@
 			repositoryURL = "https://github.com/launchdarkly/ios-client-sdk.git";
 			requirement = {
 				kind = exactVersion;
-				version = 9.5.0;
+				version = 9.10.0;
 			};
 		};
 		C69698962ACBCC9B0000738C /* XCRemoteSwiftPackageReference "Starscream" */ = {

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeWalletView: View, ViewAnalyticsLogger {
     
+    @Environment(\.udFeatureFlagsService) var udFeatureFlagsService
     @Environment(\.analyticsViewName) var analyticsName
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
@@ -183,6 +184,16 @@ private extension HomeWalletView {
         }
     }
     
+    var additionalDomainsSectionAction: HomeWalletSortingSelectorView<DomainsSortingOptions>.ActionDescription? {
+        if udFeatureFlagsService.valueFor(flag: .isBuyDomainEnabled) {
+            return .init(title: String.Constants.buy.localized(),
+                  icon: .plusIconNav,
+                  analyticName: .buyDomainsSectionHeader,
+                  callback: viewModel.buyDomainPressed)
+        }
+        return nil
+    }
+    
     @ViewBuilder
     func sortingOptionsForSelectedType() -> some View {
         switch viewModel.selectedContentType {
@@ -195,10 +206,7 @@ private extension HomeWalletView {
         case .domains:
             HomeWalletSortingSelectorView(sortingOptions: DomainsSortingOptions.allCases, 
                                           selectedOption: $viewModel.selectedDomainsSortingOption,
-                                          additionalAction: .init(title: String.Constants.buy.localized(),
-                                                                  icon: .plusIconNav,
-                                                                  analyticName: .buyDomainsSectionHeader,
-                                                                  callback: viewModel.buyDomainPressed))
+                                          additionalAction: additionalDomainsSectionAction)
         }
     }
     

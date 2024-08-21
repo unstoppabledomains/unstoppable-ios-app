@@ -1011,6 +1011,8 @@
 "HOME_WALLET_TOKENS_COME_SUBTITLE" = "We currently support Ethereum, Solana, Polygon and Base tokens";
 "HOME_WALLET_COLLECTIBLES_EMPTY_TITLE" = "No collectibles in your wallet";
 "HOME_WALLET_COLLECTIBLES_EMPTY_SUBTITLE" = "To receive collectibles and see them here, just copy your wallet address below.";
+"HOME_WALLET_DOMAINS_EMPTY_TITLE" = "No domains in your wallet";
+"HOME_WALLET_DOMAINS_EMPTY_SUBTITLE" = "To receive domains and see them here, just copy your wallet address below.";
 "NFT_DETAILS_ABOUT_COLLECTION_HEADER" = "About %@";
 "BUY_NEW_DOMAIN" = "Buy new domain";
 "SELECT_PRIMARY_DOMAIN_TITLE" = "Select primary domain for %@";

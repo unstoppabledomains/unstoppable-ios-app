@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeWalletsDomainsSectionView: View, ViewAnalyticsLogger {
     
+    @Environment(\.udFeatureFlagsService) var udFeatureFlagsService
     @Environment(\.analyticsViewName) var analyticsName
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
@@ -98,7 +99,11 @@ private extension HomeWalletsDomainsSectionView {
     func domainsGroupsView() -> some View {
         if domainsGroups.isEmpty,
            !domainsData.isSearching {
-            buyDomainView()
+            if udFeatureFlagsService.valueFor(flag: .isBuyDomainEnabled) {
+                buyDomainView()
+            } else {
+                emptyView()
+            }
         } else {
             ForEach(domainsGroups) { domainsGroup in
                 Section {
@@ -151,6 +156,31 @@ private extension HomeWalletsDomainsSectionView {
             }
             .buttonStyle(.plain)
         }
+    }
+    
+    @ViewBuilder
+    func emptyView() -> some View {
+        VStack(spacing: 16) {
+            Image.layoutGridEmptyIcon
+                .resizable()
+                .renderingMode(.template)
+                .squareFrame(32)
+            VStack(spacing: 8) {
+                Text(String.Constants.homeWalletDomainsEmptyTitle.localized())
+                    .font(.currentFont(size: 20, weight: .bold))
+                Text(String.Constants.homeWalletDomainsEmptySubtitle.localized())
+                    .font(.currentFont(size: 14))
+            }
+            .multilineTextAlignment(.center)
+            
+            UDButtonView(text: String.Constants.copyAddress.localized(), icon: .squareBehindSquareIcon, style: .small(.raisedTertiary)) {
+                CopyWalletAddressPullUpHandler.copyToClipboard(address: domainsData.walletAddress,
+                                                               ticker: BlockchainType.Ethereum.shortCode)
+            }
+        }
+        .foregroundStyle(Color.foregroundSecondary)
+        .frame(maxWidth: .infinity)
+        .padding(.top, 36)
     }
 }
 

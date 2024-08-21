@@ -65,6 +65,15 @@
       }
     },
     {
+      "identity" : "datacompression",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mw99/DataCompression",
+      "state" : {
+        "revision" : "5ab15951321b08b74511601cbd0497667649d70b",
+        "version" : "3.8.0"
+      }
+    },
+    {
       "identity" : "generic-json-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iwill/generic-json-swift",
@@ -87,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/launchdarkly/ios-client-sdk.git",
       "state" : {
-        "revision" : "cf82f0687ee505b291f8e8f5fe978122892b74ab",
-        "version" : "9.5.0"
+        "revision" : "319735e7c4eb00f02b07402429bf19e02594b60e",
+        "version" : "9.10.0"
       }
     },
     {
@@ -212,8 +221,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/LaunchDarkly/swift-eventsource.git",
       "state" : {
-        "revision" : "3d45eacab476f9bb2c58662cfb2d35088140b25b",
-        "version" : "3.1.1"
+        "revision" : "57051701c58a93603ffa2051f8e9cf0c8cff7814",
+        "version" : "3.3.0"
       }
     },
     {
