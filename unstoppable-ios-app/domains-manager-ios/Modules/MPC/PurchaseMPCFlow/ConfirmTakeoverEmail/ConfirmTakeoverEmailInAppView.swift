@@ -7,9 +7,8 @@
 
 import SwiftUI
 
-struct ConfirmTakeoverEmailView: View {
+struct ConfirmTakeoverEmailInAppView: View {
     @EnvironmentObject var viewModel: PurchaseMPCWalletViewModel
-
     
     let email: String
     
@@ -22,12 +21,12 @@ struct ConfirmTakeoverEmailView: View {
 }
 
 // MARK: - Private methods
-private extension ConfirmTakeoverEmailView {
+private extension ConfirmTakeoverEmailInAppView {
     func didEnterCode(_ code: String) {
         viewModel.handleAction(.didConfirmTakeoverEmail(code: code))
     }
 }
 
 #Preview {
-    ConfirmTakeoverEmailView(email: "qq@qq.qq")
+    ConfirmTakeoverEmailInAppView(email: "qq@qq.qq")
 }

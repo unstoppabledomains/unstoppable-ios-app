@@ -81,7 +81,7 @@ extension Analytics {
         
         case didSendCrypto, didFailToSendCrypto
         
-        case sendMPCBootstrapCodeError
+        case sendMPCBootstrapCodeError, sendClaimMPCCodeError
         case willActivateMPCWallet, didActivateMPCWallet, didFailActivateMPCWalletPassword, didFailActivateMPCWalletPasscode, didFailActivateMPCWalletUnknown
         case mpcWalletPurchased, mpcWalletPurchaseCancelled, mpcWalletAlreadyPurchased, mpcWalletPurchaseError
         case mpcEmailInUseEntered

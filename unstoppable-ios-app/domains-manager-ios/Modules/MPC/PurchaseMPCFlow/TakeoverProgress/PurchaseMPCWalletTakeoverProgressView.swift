@@ -10,7 +10,7 @@ import SwiftUI
 struct PurchaseMPCWalletTakeoverProgressView: View, ViewAnalyticsLogger {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
-    @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
+    @Environment(\.claimMPCWalletService) private var claimMPCWalletService
 
     let analyticsName: Analytics.ViewName
     let credentials: MPCTakeoverCredentials
@@ -76,7 +76,7 @@ private extension PurchaseMPCWalletTakeoverProgressView {
                 if !didFinishTakeover {
                     logAnalytic(event: .mpcTakeoverStarted,
                                 parameters: [.sendRecoveryLink : String(credentials.sendRecoveryLink)])
-                    try await ecomPurchaseMPCWalletService.runTakeover(credentials: credentials)
+                    try await claimMPCWalletService.runTakeover(credentials: credentials)
                     logAnalytic(event: .mpcTakeoverFinished)
                 }
                 didFinishTakeover = true

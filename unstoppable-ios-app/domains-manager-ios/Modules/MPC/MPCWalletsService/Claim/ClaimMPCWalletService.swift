@@ -28,11 +28,21 @@ extension ClaimMPCWalletService: ClaimMPCWalletServiceProtocol {
     }
     
     func sendVerificationCodeTo(email: String) async throws {
-        
+        try await networkService.sendVerificationCodeTo(email: email)
     }
     
     func runTakeover(credentials: MPCTakeoverCredentials) async throws {
+        try await networkService.registerWalletWith(credentials: credentials)
         
+        for i in 0..<240 {
+            do {
+                try await validateUserExists(credentials: credentials)
+                return
+            } catch {  }
+            await Task.sleep(seconds: 0.5)
+        }
+        
+        throw ClaimMPCWalletServiceError.waitWalletClaimedTimeout
     }
 }
 
@@ -40,5 +50,13 @@ extension ClaimMPCWalletService: ClaimMPCWalletServiceProtocol {
 private extension ClaimMPCWalletService {
     func validateUserExists(credentials: MPCTakeoverCredentials) async throws {
         _ = try await networkService.getUserDetails(email: credentials.email)
+    }
+    
+    enum ClaimMPCWalletServiceError: String, LocalizedError {
+        case waitWalletClaimedTimeout
+        
+        public var errorDescription: String? {
+            return rawValue
+        }
     }
 }

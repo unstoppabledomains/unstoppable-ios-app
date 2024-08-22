@@ -20,6 +20,8 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWal
     @State private var passwordErrors: [MPCWalletPasswordValidationError] = []
     @State private var confirmPasswordInput: String = ""
     @State private var isEmailFocused = true
+    @State private var isLoading = true
+    @State private var error: Error?
     @State private var emailInUseState: EmailInUseVerificationState = .unverified
     @State private var didSetupPurchaseEmail = false
     @StateObject private var debounceObject = DebounceObject()
@@ -56,6 +58,7 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWal
         .animation(.default, value: UUID())
         .trackAppearanceAnalytics(analyticsLogger: self)
         .onAppear(perform: onAppear)
+        .displayError($error)
     }
     
     @ViewBuilder
@@ -327,12 +330,23 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     }
    
     func actionButtonPressed() {
-        logButtonPressedAnalyticEvents(button: .continue,
-                                       parameters: [.useDifferentEmail : String(shouldShowEmailConfirmation)])
-        let email = emailInput
-        let password = passwordInput
-        let credentials = MPCActivateCredentials(email: email, password: password)
-        credentialsCallback(credentials)
+        logButtonPressedAnalyticEvents(button: .continue)
+        Task {
+            isLoading = true
+            do {
+                // Send email action
+                let email = emailInput
+                try await claimMPCWalletService.sendVerificationCodeTo(email: email)
+                let password = passwordInput
+                let credentials = MPCActivateCredentials(email: email, password: password)
+                credentialsCallback(credentials)
+            } catch {
+                logAnalytic(event: .sendClaimMPCCodeError,
+                            parameters: [.error: error.localizedDescription])
+                self.error = error
+            }
+            isLoading = false
+        }
     }
     
     @ViewBuilder

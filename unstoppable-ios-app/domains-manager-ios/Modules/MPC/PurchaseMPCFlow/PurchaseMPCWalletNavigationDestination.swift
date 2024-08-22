@@ -23,7 +23,7 @@ extension PurchaseMPCWallet {
             case .enterTakeoverCredentials(let purchaseEmail):
                 PurchaseMPCWalletTakeoverCredentialsInAppView(purchaseEmail: purchaseEmail)
             case .confirmTakeoverEmail(let email):
-                ConfirmTakeoverEmailView(email: email)
+                ConfirmTakeoverEmailInAppView(email: email)
             case .takeover(let credentials):
                 PurchaseMPCWalletTakeoverProgressInAppView(credentials: credentials)
             }
