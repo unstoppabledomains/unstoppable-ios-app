@@ -14,8 +14,10 @@ extension PurchaseMPCWallet {
         case createNewWallet
         case createMPCWallet
         case didEnterTakeoverCredentials(MPCActivateCredentials)
-        case didConfirmTakeoverEmail(code: String)
+        case didEnterTakeover(code: String)
         case didFinishTakeover
+        case didEnterActivation(code: String)
+        case didActivate(UDWallet)
     }
     
     enum PurchaseResult {

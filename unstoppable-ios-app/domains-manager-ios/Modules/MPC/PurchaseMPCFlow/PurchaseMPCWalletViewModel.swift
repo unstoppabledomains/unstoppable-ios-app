@@ -11,7 +11,7 @@ typealias AddWalletResultCallback = (AddWalletResult)->()
 
 enum AddWalletResult {
     case createNew
-    case importMPC(email: String)
+    case createdMPC(UDWallet)
 }
 
 @MainActor
@@ -41,14 +41,23 @@ final class PurchaseMPCWalletViewModel: ObservableObject {
                 self.mpcTakeoverCredentials = MPCTakeoverCredentials(email: credentials.email,
                                                                      password: credentials.password,
                                                                      sendRecoveryLink: true)
-                navPath.append(.confirmTakeoverEmail(credentials.email))
-            case .didConfirmTakeoverEmail(let code):
+                navPath.append(.enterTakeoverCode(email: credentials.email))
+            case .didEnterTakeover(let code):
                 self.mpcTakeoverCredentials?.code = code
                 guard let mpcTakeoverCredentials else { return }
                 
                 navPath.append(.takeover(mpcTakeoverCredentials))
             case .didFinishTakeover:
-                finishWith(result: .importMPC(email: mpcTakeoverCredentials?.email ?? ""))
+                guard let mpcTakeoverCredentials else { return }
+
+                navPath.append(.enterActivationCode(email: mpcTakeoverCredentials.email))
+            case .didEnterActivation(let code):
+                self.mpcTakeoverCredentials?.code = code
+                guard let mpcTakeoverCredentials else { return }
+
+                navPath.append(.activate(credentials: mpcTakeoverCredentials))
+            case .didActivate(let wallet):
+                finishWith(result: .createdMPC(wallet))
             }
         }
     }

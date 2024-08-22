@@ -520,8 +520,8 @@ private extension SettingsView {
             switch result {
             case .createNew:
                 createNewWallet()
-            case .importMPC(let email):
-                activateMPCWallet(preFilledEmail: email)
+            case .createdMPC(let wallet):
+                addWalletAfterAdded(wallet)
             }
         })
     }
