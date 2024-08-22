@@ -35,40 +35,13 @@ final class PurchaseMPCWalletViewModel: ObservableObject {
             switch action {
             case .createNewWallet:
                 finishWith(result: .createNew)
-            case .buyMPCWallet:
-                navPath.append(.udAuth)
-            case .didEnterPurchaseCredentials(let credentials):
-                purchaseCredentials = credentials
-                Task {
-                    try? await appContext.ecomPurchaseMPCWalletService.guestAuthWith(credentials: credentials)
-                }
-                navPath.append(.checkout(credentials))
-            case .didPurchase(let result):
-                let purchaseEmail = purchaseCredentials?.email ?? ""
-                switch result {
-                case .purchased:
-                    navPath.append(.enterTakoverCredentials(purchaseEmail: purchaseEmail))
-                case .alreadyHaveWallet:
-                    navPath.append(.alreadyHaveWallet(email: purchaseEmail))
-                }
-            case .didSelectAlreadyHaveWalletAction(let action):
-                switch action {
-                case .useDifferentEmail:
-                    navPath.removeLast(2)
-                case .importMPC:
-                    finishWith(result: .importMPC(email: purchaseCredentials?.email ?? ""))
-                }
+            case .createMPCWallet:
+                navPath.append(.enterTakoverCredentials(purchaseEmail: ""))
             case .didEnterTakeoverCredentials(let credentials):
                 self.mpcTakeoverCredentials = MPCTakeoverCredentials(email: credentials.email,
-                                                                     password: credentials.password)
-                navPath.append(.enterTakoverRecovery(email: credentials.email))
-            case .didSelectTakeoverRecoveryTo(let sendRecoveryLink):
-                mpcTakeoverCredentials?.sendRecoveryLink = sendRecoveryLink
-                guard let mpcTakeoverCredentials else {
-                    Debugger.printFailure("Failed to locate takeover credentils", critical: true)
-                    return
-                }
-                navPath.append(.takeover(mpcTakeoverCredentials))
+                                                                     password: credentials.password,
+                                                                     sendRecoveryLink: true)
+                navPath.append(.takeover(mpcTakeoverCredentials!))
             case .didFinishTakeover:
                 finishWith(result: .importMPC(email: mpcTakeoverCredentials?.email ?? ""))
             }

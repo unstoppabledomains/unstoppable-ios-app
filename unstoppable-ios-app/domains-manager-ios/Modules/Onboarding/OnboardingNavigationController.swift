@@ -107,7 +107,7 @@ extension OnboardingNavigationController: OnboardingFlowManager {
             moveToStep(.mpcPurchaseAlreadyHaveWallet)
         case .alreadyPurchasedMPCWalletUseDifferentEmail:
             OnboardingData.mpcPurchaseCredentials = nil
-            popTo(MPCOnboardingPurchaseUDAuthViewController.self)
+            popTo(OnboardingAddWalletViewController.self)
         case .alreadyPurchasedMPCWalletImportMPC:
             if let email = OnboardingData.mpcPurchaseCredentials?.email {
                 OnboardingData.mpcCredentials = .init(email: email, password: "")                
@@ -218,8 +218,7 @@ private extension OnboardingNavigationController {
                     topViewController is NoParkedDomainsFoundViewController  ||
                     topViewController is MPCOnboardingPurchaseTakeoverCredentialsViewController  ||
                     topViewController is MPCOnboardingPurchaseTakeoverProgressViewController ||
-                    (topViewController is MPCOnboardingEnterCodeViewController && isPurchasingMPC) ||
-                    topViewController is MPCOnboardingPurchaseAlreadyHaveWalletViewController {
+                    (topViewController is MPCOnboardingEnterCodeViewController && isPurchasingMPC) {
             transitionHandler.isInteractionEnabled = false
             DispatchQueue.main.async {
                 self.navigationBar.setBackButton(hidden: true)
@@ -497,19 +496,19 @@ private extension OnboardingNavigationController {
             
             return vc
         case .mpcPurchaseAuth:
-            let vc = MPCOnboardingPurchaseUDAuthViewController()
+            let vc = OnboardingAddWalletViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             
             return vc
         case .mpcPurchaseCheckout:
-            let vc = MPCOnboardingPurchaseCheckoutViewController()
+            let vc = OnboardingAddWalletViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             
             return vc   
         case .mpcPurchaseAlreadyHaveWallet:
-            let vc = MPCOnboardingPurchaseAlreadyHaveWalletViewController()
+            let vc = OnboardingAddWalletViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             
@@ -521,7 +520,7 @@ private extension OnboardingNavigationController {
             
             return vc
         case .mpcPurchaseTakeoverRecovery:
-            let vc = MPCOnboardingPurchaseTakeoverRecoveryViewController()
+            let vc = OnboardingAddWalletViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             
