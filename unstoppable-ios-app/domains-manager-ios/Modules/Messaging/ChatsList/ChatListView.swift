@@ -202,7 +202,7 @@ private extension ChatListView {
                                subtitle: String.Constants.messagingNoWalletsSubtitle.localized(),
                                icon: .walletIcon,
                                actionButtonConfiguration: .init(buttonTitle: String.Constants.addWalletTitle.localized(),
-                                                                buttonIcon: .plusIcon18,
+                                                                buttonIcon: .plusIcon,
                                                                 buttonStyle: .medium(.raisedPrimary),
                                                                 buttonCallback: {
             logButtonPressedAnalyticEvents(button: .addWallet)

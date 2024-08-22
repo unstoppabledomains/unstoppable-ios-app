@@ -104,7 +104,7 @@ enum Toast: Hashable {
         case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .changesConfirmed, .mintingSuccessful, .domainCopied, .itemSaved, .itemCopied, .userLoggedOut, .communityProfileEnabled, .purchaseDomainsDiscountApplied, .followedProfileAs, .domainRemoved, .cartCleared:
             return .checkCircleWhite
         case .noInternetConnection:
-            return .connectionOffIcon
+            return .cloudOfflineIcon
         case .updatingRecords:
             return .refreshIcon
         case .mintingUnavailable:

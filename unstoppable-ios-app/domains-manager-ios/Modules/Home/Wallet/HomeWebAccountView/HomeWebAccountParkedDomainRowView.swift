@@ -47,7 +47,7 @@ private extension HomeWebAccountParkedDomainRowView {
 
     @ViewBuilder
     func cartLogoView() -> some View {
-        Image.udCartLogoRaster
+        Image.udCartLogo
             .resizable()
             .renderingMode(.template)
             .squareFrame(32)

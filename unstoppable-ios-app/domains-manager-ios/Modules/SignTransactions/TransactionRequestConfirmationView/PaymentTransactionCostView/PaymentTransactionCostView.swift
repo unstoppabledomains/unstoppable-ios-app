@@ -86,7 +86,7 @@ extension PaymentTransactionCostView: PaymentTransactionDisplayCostView {
                                                     textColor: .foregroundDefault,
                                                     alignment: .center)
         
-        transactionNetworkImageView.image = UIImage.getNetworkLargeIcon(by: blockchainType)
+        transactionNetworkImageView.image = blockchainType.icon
 
         currencyNumberFormatter.maximumFractionDigits = 2
         let gasFee = Double(cost.gasFee).ethValue
@@ -96,7 +96,7 @@ extension PaymentTransactionCostView: PaymentTransactionDisplayCostView {
                                             font: .currentFont(withSize: 14, weight: .medium),
                                             textColor: .foregroundDefault,
                                             alignment: .center)
-        feeNetworkImageView.image = UIImage.getNetworkLargeIcon(by: blockchainType)
+        feeNetworkImageView.image = blockchainType.icon
         
         let estimatedSecondsRemaining: TimeInterval = 120
         let formatter = DateComponentsFormatter()

@@ -199,7 +199,6 @@ extension Analytics {
         case importNewWallet, onboardingImportWallet, importExistingExternalWallet
         case home, homeDomainsSearch, domainsList, domainsSearch
         case scanning, wcConnectedAppsList, signWCTransactionDomainSelection
-        case upgradeToPolygonTutorial
         case webView, buyDomainsWebView
         case appUpdateRequired
         case mintingInProgressDomainsList

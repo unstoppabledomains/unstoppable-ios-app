@@ -88,7 +88,7 @@ private extension ConnectServerRequestConfirmationView {
         
         networkSelectorButton.setTitle(selectedChain.fullName, image: .chevronDown)
 
-        networkIndicator?.image = UIImage.getNetworkLargeIcon(by: selectedChain)
+        networkIndicator?.image = selectedChain.icon
     }
     
     func didSelectBlockchainType(_ blockchainType: BlockchainType) {

@@ -1,5 +1,5 @@
 //
-//  UDDomainCardView.swift
+//  UBTDDomainCardView.swift
 //  UBTSharing
 //
 //  Created by Oleg Kuplin on 18.08.2023.
@@ -101,7 +101,7 @@ private extension UBTDomainCardView {
                        height: innerImageSize)
                 .cornerRadius(8)
                 .clipped()
-            Image.udCartLogoRaster
+            Image.udCartLogo
                 .resizable()
                 .frame(width: udLogoSize,
                        height: udLogoSize)
@@ -137,7 +137,7 @@ private extension UBTDomainCardView {
     }
 }
 
-struct UDDomainCardView_Previews: PreviewProvider {
+struct UBTDDomainCardView_Previews: PreviewProvider {
     static var previews: some View {
         UBTDomainCardView(device: .mock)
             .frame(width: 160)

@@ -203,26 +203,16 @@ class UDRouter: DomainProfileSignatureValidator {
         viewController.present(vc, animated: true)
     }
     
-    func showConnectedAppsListScreen(in viewController: UIViewController) async {
-        await withSafeCheckedMainActorContinuation { completion in
-            let vc = buildConnectedAppsModule()
-            presentInEmptyCRootNavigation(vc, in: viewController, dismissCallback: { completion(Void()) })
-        }
+    func showConnectedAppsListScreen(in viewController: UIViewController) {
+        let vc = buildConnectedAppsModule()
+        viewController.present(vc, animated: true)
     }
     
     func buildConnectedAppsModule(scanCallback: EmptyCallback? = nil) -> UIViewController {
-        let vc = ConnectedAppsListViewController.nibInstance()
-        let presenter = ConnectedAppsListViewPresenter(view: vc,
-                                                       walletConnectServiceV2: appContext.walletConnectServiceV2)
-        presenter.scanCallback = scanCallback
-        vc.presenter = presenter
-        return vc
-    }
-    
-    func showUpgradeToPolygonTutorialScreen(in viewController: UIViewController) {
-        let vc = UpgradeToPolygonTutorial.nibInstance()
+        let view = ConnectedAppsListView(tabRouter: nil)
+        let vc = UIHostingController(rootView: view)
         
-        presentInEmptyRootNavigation(vc, in: viewController)
+        return vc
     }
     
     func showBuyDomainsWebView(in viewController: UIViewController,
@@ -252,17 +242,6 @@ class UDRouter: DomainProfileSignatureValidator {
         viewController.present(vc, animated: true)
     }
     
-    func showReverseResolutionInProgressScreen(in viewController: UIViewController,
-                                               domain: DomainItem,
-                                               domainDisplayInfo: DomainDisplayInfo,
-                                               walletInfo: WalletDisplayInfo) {
-        let vc = buildReverseResolutionInProgressModule(domain: domain,
-                                                        domainDisplayInfo: domainDisplayInfo,
-                                                        walletInfo: walletInfo)
-        
-        presentInEmptyCRootNavigation(vc, in: viewController)
-    }
-    
     func buildDomainProfileModule(domain: DomainDisplayInfo,
                                   wallet: WalletEntity,
                                   preRequestedAction: PreRequestedProfileAction?,
@@ -282,20 +261,6 @@ class UDRouter: DomainProfileSignatureValidator {
                                                    externalEventsService: appContext.externalEventsService)
         vc.presenter = presenter
         return vc
-    }
-    
-    private func prepareProfileScreen(in viewToPresent: UIViewController,
-                                      domain: DomainDisplayInfo,
-                                      walletInfo: WalletDisplayInfo) async -> Bool {
-        guard await isProfileSignatureAvailable(for: domain,
-                                                walletInfo: walletInfo,
-                                                in: viewToPresent) else { return false }
-        
-        if !UserDefaults.didShowDomainProfileInfoTutorial {
-            UserDefaults.didShowDomainProfileInfoTutorial = true
-            await UDRouter().showDomainProfileTutorial(in: viewToPresent)
-        }
-        return true
     }
     
     func showEnterEmailValueModule(in nav: UINavigationController,
@@ -366,17 +331,6 @@ class UDRouter: DomainProfileSignatureValidator {
         nav.modalPresentationStyle = .overFullScreen
         
         viewController.present(nav, animated: true)
-    }
-    
-    func showDomainProfileTutorial(in viewController: UIViewController) async {
-        await withSafeCheckedMainActorContinuation { completion in
-            let vc = DomainProfileTutorialViewController.nibInstance()
-            vc.completionCallback = {
-                completion(Void())
-            }
-            vc.isModalInPresentation = true
-            viewController.present(vc, animated: true)
-        }
     }
     
     func showDomainProfileParkedActionModule(in viewController: UIViewController,
@@ -579,20 +533,6 @@ private extension UDRouter {
                                                                         mintingDomainSelectedCallback: mintingDomainSelectedCallback,
                                                                         transactionsService: appContext.domainTransactionsService,
                                                                         notificationsService: appContext.notificationsService)
-        vc.presenter = presenter
-        return vc
-    }
-    
-    func buildReverseResolutionInProgressModule(domain: DomainItem,
-                                                domainDisplayInfo: DomainDisplayInfo,
-                                                walletInfo: WalletDisplayInfo) -> UIViewController {
-        let vc = TransactionInProgressViewController.nibInstance()
-        let presenter = ReverseResolutionTransactionInProgressViewPresenter(view: vc,
-                                                                            domain: domain,
-                                                                            domainDisplayInfo: domainDisplayInfo,
-                                                                            walletInfo: walletInfo,
-                                                                            transactionsService: appContext.domainTransactionsService,
-                                                                            notificationsService: appContext.notificationsService)
         vc.presenter = presenter
         return vc
     }

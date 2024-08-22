@@ -20,7 +20,7 @@ struct DomainProfileBadgeDisplayInfo: Hashable {
     func loadBadgeIcon() async -> UIImage? {
         if badge.code == "Web3DomainHolder" {
             // Hard code specifically for UD logo in mobile app. Request from designer.
-            return .udBadgeLogo
+            return .udCartLogo
         } else if let url = URL(string: badge.logo) {
             return await appContext.imageLoadingService.loadImage(from: .url(url, 
                                                                              maxSize: Constants.downloadedIconMaxSize),

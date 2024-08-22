@@ -68,7 +68,7 @@ enum MaintenanceServiceType {
     var icon: Image {
         switch self {
         case .full:
-            return .udCartLogoRaster
+            return .udCartLogo
         case .activity, .explore, .home, .vaultedDomains, .domainProfile, .signMessages:
             return .infoIcon
         case .purchaseDomains:
