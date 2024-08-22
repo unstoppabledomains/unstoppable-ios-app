@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWalletPasswordValidator, ViewAnalyticsLogger {
     
-    @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
+    @Environment(\.claimMPCWalletService) private var claimMPCWalletService
 
     let analyticsName: Analytics.ViewName
     var purchaseEmail: String?
@@ -380,7 +380,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
             let password = passwordInput
             let credentials = MPCTakeoverCredentials(email: email, password: password)
             do {
-                let isValid = try await ecomPurchaseMPCWalletService.validateCredentialsForTakeover(credentials: credentials)
+                let isValid = try await claimMPCWalletService.validateCredentialsForTakeover(credentials: credentials)
                 
                 if isValid {
                     emailInUseState = .verified(email)

@@ -14,6 +14,7 @@ extension PurchaseMPCWallet {
         case createNewWallet
         case createMPCWallet
         case didEnterTakeoverCredentials(MPCActivateCredentials)
+        case didConfirmTakeoverEmail(code: String)
         case didFinishTakeover
     }
     
