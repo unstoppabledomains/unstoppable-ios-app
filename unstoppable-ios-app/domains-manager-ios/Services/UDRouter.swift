@@ -203,19 +203,15 @@ class UDRouter: DomainProfileSignatureValidator {
         viewController.present(vc, animated: true)
     }
     
-    func showConnectedAppsListScreen(in viewController: UIViewController) async {
-        await withSafeCheckedMainActorContinuation { completion in
-            let vc = buildConnectedAppsModule()
-            presentInEmptyCRootNavigation(vc, in: viewController, dismissCallback: { completion(Void()) })
-        }
+    func showConnectedAppsListScreen(in viewController: UIViewController) {
+        let vc = buildConnectedAppsModule()
+        viewController.present(vc, animated: true)
     }
     
     func buildConnectedAppsModule(scanCallback: EmptyCallback? = nil) -> UIViewController {
-        let vc = ConnectedAppsListViewController.nibInstance()
-        let presenter = ConnectedAppsListViewPresenter(view: vc,
-                                                       walletConnectServiceV2: appContext.walletConnectServiceV2)
-        presenter.scanCallback = scanCallback
-        vc.presenter = presenter
+        let view = ConnectedAppsListView(tabRouter: nil)
+        let vc = UIHostingController(rootView: view)
+        
         return vc
     }
     

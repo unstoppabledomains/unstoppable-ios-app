@@ -123,6 +123,7 @@ extension Image {
     static let planetIcon20 = Image("planetIcon20")
     static let ticketIcon = Image("ticketIcon")
     static let starInCloudIcon = Image("starInCloudIcon")
+    static let widgetIcon = Image("widgetIcon")
     
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")

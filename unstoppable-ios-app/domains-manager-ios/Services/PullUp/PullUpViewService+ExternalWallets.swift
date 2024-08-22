@@ -317,7 +317,7 @@ extension PullUpViewService {
     }
     
     func showConnectedAppNetworksInfoPullUp(in viewController: UIViewController) {
-        let selectionViewHeight: CGFloat = 292
+        let selectionViewHeight: CGFloat = 322
         
         let illustration = buildImageViewWith(image: .connectedAppNetworksInfoIllustration,
                                               width: 358,

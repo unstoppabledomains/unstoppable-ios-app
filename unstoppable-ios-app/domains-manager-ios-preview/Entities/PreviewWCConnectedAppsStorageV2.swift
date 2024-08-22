@@ -37,6 +37,16 @@ struct WCConnectedAppsStorageV2 {
         }
     }
     
+    struct ConnectedApp: Codable, Equatable, Hashable, CustomStringConvertible {
+     
+        var walletAddress: HexAddress
+        var appName: String
+        
+        var description: String {
+            "ConnectedApp:"
+        }
+        
+    }
 }
 
 struct AppMetadata {
