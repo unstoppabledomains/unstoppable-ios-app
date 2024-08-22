@@ -7,10 +7,17 @@
 
 import Foundation
 
-enum MPCActivateWalletEnterDataType: String, Hashable, Identifiable {
-    var id: String { rawValue }
+enum MPCActivateWalletEnterDataType: Identifiable {
+    var id: String {
+        switch self {
+        case .passcode:
+            return "passcode"
+        case .password:
+            return "password"
+        }
+    }
     
-    case passcode
+    case passcode(ResendConfirmationCodeBlock)
     case password
     
     var analyticsName: Analytics.ViewName {

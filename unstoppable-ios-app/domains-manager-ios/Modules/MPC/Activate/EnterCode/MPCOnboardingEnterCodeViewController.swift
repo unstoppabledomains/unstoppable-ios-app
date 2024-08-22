@@ -47,7 +47,10 @@ private extension MPCOnboardingEnterCodeViewController {
             return
         }
         let mpcView = MPCEnterCodeView(analyticsName: .mpcEnterCodeOnboarding,
-                                       email: email) { [weak self] code in
+                                       email: email,
+                                       resendAction: { [weak self] email in
+            self?.resendCode(email: email)
+        }) { [weak self] code in
             DispatchQueue.main.async {
                 self?.didEnterCode(code)
             }
@@ -55,6 +58,12 @@ private extension MPCOnboardingEnterCodeViewController {
             .padding(.top, 40)
         let vc = UIHostingController(rootView: mpcView)
         addChildViewController(vc, andEmbedToView: view)
+    }
+    
+    private func resendCode(email: String) {
+        Task {
+            try await appContext.mpcWalletsService.sendBootstrapCodeTo(email: email)
+        }
     }
 }
 

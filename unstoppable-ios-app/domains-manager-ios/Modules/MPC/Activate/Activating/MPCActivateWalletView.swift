@@ -120,12 +120,16 @@ private extension MPCActivateWalletView {
         activationState = .failed(error)
         switch error {
         case .incorrectPasscode:
-            enterDataType = .passcode
+            enterDataType = .passcode(resendCode)
         case .incorrectPassword:
             enterDataType = .password
         case .unknown:
             return
         }
+    }
+    
+    func resendCode(email: String) async throws {
+        try await mpcWalletsService.sendBootstrapCodeTo(email: email)
     }
     
     @MainActor
@@ -219,7 +223,7 @@ private extension MPCActivateWalletView {
         switch error {
         case .incorrectPasscode:
             logButtonPressedAnalyticEvents(button: .reEnterPasscode)
-            enterDataType = .passcode
+            enterDataType = .passcode(resendCode)
         case .incorrectPassword:
             logButtonPressedAnalyticEvents(button: .reEnterPassword)
             enterDataType = .password

@@ -246,7 +246,7 @@ extension Analytics {
         case transferDomainSuccess, sendCryptoSuccess
         
         case mpcEnterCredentialsOnboarding, mpcEnterCredentialsInApp, mpcEnterCredentialsReconnect
-        case mpcEnterCodeOnboarding, mpcEnterCodeInApp
+        case mpcEnterCodeOnboarding, mpcEnterCodeInApp, mpcConfirmCodeInApp
         case mpcActivationOnboarding, mpcActivationInApp
         
         case mpcPurchaseUDAuthOnboarding, mpcPurchaseUDAuthInApp

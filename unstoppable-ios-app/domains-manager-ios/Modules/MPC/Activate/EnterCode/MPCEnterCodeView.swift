@@ -11,6 +11,7 @@ struct MPCEnterCodeView: View, ViewAnalyticsLogger {
         
     let analyticsName: Analytics.ViewName
     let email: String
+    let resendAction: ResendConfirmationCodeBlock
     let enterCodeCallback: (String)->()
     @State private var input: String = ""
 
@@ -83,14 +84,16 @@ private extension MPCEnterCodeView {
     
     @ViewBuilder
     func haventReceiveCodeButtonView() -> some View {
-        MPCResendCodeButton(email: email)
+        MPCResendCodeButton(email: email,
+                            resendAction: resendAction)
     }
 }
 
 #Preview {
     NavigationStack {
         MPCEnterCodeView(analyticsName: .mpcEnterCodeOnboarding,
-                         email: "",
+                         email: "", 
+                         resendAction: { _ in },
                          enterCodeCallback: { _ in })
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
