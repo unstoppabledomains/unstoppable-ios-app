@@ -331,7 +331,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.recentActivityInfoTitle.localized()),
                                                                          contentAlignment: .center,
-                                                                         icon: .init(icon: .timeIcon24,
+                                                                         icon: .init(icon: .clock,
                                                                                      size: .small),
                                                                          subtitle: .label(.text(String.Constants.recentActivityInfoSubtitle.localized())),
                                                                          actionButton: .main(content: .init(title: buttonTitle,

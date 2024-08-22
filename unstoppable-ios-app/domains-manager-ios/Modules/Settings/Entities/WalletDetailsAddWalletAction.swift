@@ -41,7 +41,7 @@ enum WalletDetailsAddWalletAction: String, CaseIterable, PullUpCollectionViewCel
     var icon: UIImage {
         switch self {
         case .create:
-            return .plusIconSmall
+            return .plusIcon
         case .recoveryOrKey:
             return .pageText
         case .connect:

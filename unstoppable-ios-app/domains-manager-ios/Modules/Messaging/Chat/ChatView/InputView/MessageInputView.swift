@@ -103,7 +103,7 @@ private extension MessageInputView {
                 }
             }
         } label: {
-            Image.plusIcon18
+            Image.plusIcon
                 .resizable()
                 .squareFrame(20)
                 .padding(EdgeInsets(10))
