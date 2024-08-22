@@ -18,10 +18,10 @@ extension ClaimMPCWalletService: ClaimMPCWalletServiceProtocol {
     }
     
     func sendVerificationCodeTo(email: String) async throws {
-        
+        await Task.sleep(seconds: 0.5)        
     }
     
     func runTakeover(credentials: MPCTakeoverCredentials) async throws {
-        
+        await Task.sleep(seconds: 5)
     }
 }

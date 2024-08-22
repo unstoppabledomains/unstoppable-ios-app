@@ -891,8 +891,8 @@
 		C64F9D8A2C77113200262F1B /* ConnectedAppRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F9D882C77113200262F1B /* ConnectedAppRowView.swift */; };
 		C64F9D8F2C7711C500262F1B /* MockEntitiesFabric+WC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F9D8E2C7711C500262F1B /* MockEntitiesFabric+WC.swift */; };
 		C64F9D902C7711C500262F1B /* MockEntitiesFabric+WC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F9D8E2C7711C500262F1B /* MockEntitiesFabric+WC.swift */; };
-		C64F9D932C77312B00262F1B /* ConfirmTakeoverEmailInAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F9D922C77312B00262F1B /* ConfirmTakeoverEmailInAppView.swift */; };
-		C64F9D942C77312B00262F1B /* ConfirmTakeoverEmailInAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F9D922C77312B00262F1B /* ConfirmTakeoverEmailInAppView.swift */; };
+		C64F9D932C77312B00262F1B /* MPCEnterTakeoverCodeInAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F9D922C77312B00262F1B /* MPCEnterTakeoverCodeInAppView.swift */; };
+		C64F9D942C77312B00262F1B /* MPCEnterTakeoverCodeInAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F9D922C77312B00262F1B /* MPCEnterTakeoverCodeInAppView.swift */; };
 		C64F9D972C77348D00262F1B /* ClaimMPCWalletServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F9D962C77348D00262F1B /* ClaimMPCWalletServiceProtocol.swift */; };
 		C64F9D982C77348D00262F1B /* ClaimMPCWalletServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F9D962C77348D00262F1B /* ClaimMPCWalletServiceProtocol.swift */; };
 		C64F9D9A2C77349400262F1B /* ClaimMPCWalletService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F9D992C77349400262F1B /* ClaimMPCWalletService.swift */; };
@@ -3328,7 +3328,7 @@
 		C64F9D852C770E7E00262F1B /* ConnectedAppsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedAppsListView.swift; sourceTree = "<group>"; };
 		C64F9D882C77113200262F1B /* ConnectedAppRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedAppRowView.swift; sourceTree = "<group>"; };
 		C64F9D8E2C7711C500262F1B /* MockEntitiesFabric+WC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockEntitiesFabric+WC.swift"; sourceTree = "<group>"; };
-		C64F9D922C77312B00262F1B /* ConfirmTakeoverEmailInAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmTakeoverEmailInAppView.swift; sourceTree = "<group>"; };
+		C64F9D922C77312B00262F1B /* MPCEnterTakeoverCodeInAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterTakeoverCodeInAppView.swift; sourceTree = "<group>"; };
 		C64F9D962C77348D00262F1B /* ClaimMPCWalletServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimMPCWalletServiceProtocol.swift; sourceTree = "<group>"; };
 		C64F9D992C77349400262F1B /* ClaimMPCWalletService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimMPCWalletService.swift; sourceTree = "<group>"; };
 		C64F9D9C2C77355100262F1B /* PreviewClaimMPCWalletService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewClaimMPCWalletService.swift; sourceTree = "<group>"; };
@@ -5844,7 +5844,7 @@
 		C64F9D912C7730E200262F1B /* EnterTakeoverCode */ = {
 			isa = PBXGroup;
 			children = (
-				C64F9D922C77312B00262F1B /* ConfirmTakeoverEmailInAppView.swift */,
+				C64F9D922C77312B00262F1B /* MPCEnterTakeoverCodeInAppView.swift */,
 			);
 			path = EnterTakeoverCode;
 			sourceTree = "<group>";
@@ -9829,7 +9829,7 @@
 				C617FDA12B58E75B00B93433 /* WalletEntity.swift in Sources */,
 				C630E4AC2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift in Sources */,
 				C671CD0E2BC674E2005DA2FB /* PurchaseDomainCartStatus.swift in Sources */,
-				C64F9D932C77312B00262F1B /* ConfirmTakeoverEmailInAppView.swift in Sources */,
+				C64F9D932C77312B00262F1B /* MPCEnterTakeoverCodeInAppView.swift in Sources */,
 				306486832527253700388026 /* SceneDelegate.swift in Sources */,
 				C6952A532BC64F8400F4B475 /* MPCWalletError.swift in Sources */,
 				C617FD972B58BB7600B93433 /* WalletsDataService.swift in Sources */,
@@ -10382,7 +10382,7 @@
 				C6B2E2102B97042100CEA1F9 /* DomainsGlobalSearchService.swift in Sources */,
 				C6D645BA2B1DBC6F00D724AC /* DomainParkingStatus.swift in Sources */,
 				C6D645D82B1DBD4900D724AC /* CNavigationControllerDefaultPushAnimation.swift in Sources */,
-				C64F9D942C77312B00262F1B /* ConfirmTakeoverEmailInAppView.swift in Sources */,
+				C64F9D942C77312B00262F1B /* MPCEnterTakeoverCodeInAppView.swift in Sources */,
 				C6B65F632B55015F006D1812 /* HomeWalletHeaderRowView.swift in Sources */,
 				C6D646702B1ED11B00D724AC /* CryptoEditingGroupedRecordsChangesCalculator.swift in Sources */,
 				C618085C2B19BBFE0032E543 /* UDCollectionSectionBackgroundView.swift in Sources */,

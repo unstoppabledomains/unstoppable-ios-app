@@ -87,8 +87,7 @@ private extension PurchaseMPCWalletTakeoverProgressView {
             takeoverState = .inProgress
             do {
                 if !didFinishTakeover {
-                    logAnalytic(event: .mpcTakeoverStarted,
-                                parameters: [.sendRecoveryLink : String(credentials.sendRecoveryLink)])
+                    logAnalytic(event: .mpcTakeoverStarted)
                     try await claimMPCWalletService.runTakeover(credentials: credentials)
                     logAnalytic(event: .mpcTakeoverFinished)
                 }

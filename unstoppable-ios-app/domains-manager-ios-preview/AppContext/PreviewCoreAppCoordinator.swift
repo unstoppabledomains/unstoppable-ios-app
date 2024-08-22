@@ -9,6 +9,8 @@ import UIKit
 
 
 final class CoreAppCoordinator: CoreAppCoordinatorProtocol {
+    private var window: UIWindow?
+
     func askToReconnectMPCWallet(_ reconnectData: MPCWalletReconnectData) async {
         
     }
@@ -17,10 +19,10 @@ final class CoreAppCoordinator: CoreAppCoordinatorProtocol {
     
    
     
-    var topVC: UIViewController? { nil }
-    
+    var topVC: UIViewController? { window?.rootViewController?.topVisibleViewController() }
+
     func startWith(window: UIWindow) {
-        
+        self.window = window
     }
     
     func showOnboarding(_ flow: OnboardingNavigationController.OnboardingFlow) {

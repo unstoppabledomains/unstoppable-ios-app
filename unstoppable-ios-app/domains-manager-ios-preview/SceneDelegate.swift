@@ -31,6 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, SceneDelegateProtocol {
         
         
         window.overrideUserInterfaceStyle = .dark
+        appContext.coreAppCoordinator.startWith(window: window)
 //        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController()!
 //        let nav = CNavigationController(rootViewController: vc)
 //        window.rootViewController = nav
