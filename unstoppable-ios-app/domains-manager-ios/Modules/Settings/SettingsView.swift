@@ -701,7 +701,7 @@ private extension SettingsView {
             case .learn:
                 return .settingsIconLearn
             case .twitter:
-                return .settingsIconTwitter
+                return .twitterIcon24
             case .support:
                 return .settingsIconFeedback
             case .legal:

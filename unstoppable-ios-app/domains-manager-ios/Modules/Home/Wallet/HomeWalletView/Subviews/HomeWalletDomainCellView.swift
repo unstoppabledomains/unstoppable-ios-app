@@ -162,7 +162,7 @@ private extension HomeWalletDomainCellView {
     
     @ViewBuilder
     func cartLogoView() -> some View {
-        Image.udCartLogoRaster
+        Image.udCartLogo
             .resizable()
             .renderingMode(.template)
             .squareFrame(40)

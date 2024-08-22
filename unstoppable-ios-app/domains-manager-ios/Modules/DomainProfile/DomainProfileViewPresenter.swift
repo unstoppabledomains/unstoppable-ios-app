@@ -1068,7 +1068,7 @@ private extension DomainProfileViewPresenter {
                 case .default:
                     let isEnabled = wallet.isReverseResolutionChangeAllowed()
                     topActionsGroup.append(.setReverseResolution(isEnabled: isEnabled))
-                case .loading, .updatingRecords, .loadingError, .updatingProfile, .purchaseNew:
+                case .loading, .updatingRecords, .loadingError, .updatingProfile:
                     topActionsGroup.append(.setReverseResolution(isEnabled: false))
                 }
             }

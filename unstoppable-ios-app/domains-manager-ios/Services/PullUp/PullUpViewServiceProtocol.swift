@@ -30,10 +30,6 @@ protocol PullUpViewServiceProtocol {
                                        in viewController: UIViewController) async throws
     func showMintingNotAvailablePullUp(in viewController: UIViewController) async
     func showLoadingIndicator(in viewController: UIViewController)
-    func showWhatIsReverseResolutionInfoPullUp(in viewController: UIViewController)
-    func showSetupReverseResolutionPromptPullUp(walletInfo: WalletDisplayInfo,
-                                                domain: DomainDisplayInfo,
-                                                in viewController: UIViewController) async throws
     func showDomainMintedOnChainDescriptionPullUp(in viewController: UIViewController,
                                                   chain: BlockchainType)
     func showRecentActivitiesInfoPullUp(in viewController: UIViewController, isGetNewDomain: Bool) async throws
@@ -65,17 +61,12 @@ protocol PullUpViewServiceProtocol {
     func showExternalWalletDisconnected(from walletDisplayInfo: WalletDisplayInfo, in viewController: UIViewController) async -> Bool
     func showSwitchExternalWalletConfirmation(from walletDisplayInfo: WalletDisplayInfo, in viewController: UIViewController) async throws
     func showConnectedAppNetworksInfoPullUp(in viewController: UIViewController)
-    func showConnectedAppDomainInfoPullUp(for domain: DomainDisplayInfo,
-                                          connectedApp: any UnifiedConnectAppInfoProtocol,
-                                          in viewController: UIViewController) async
     func showExternalWalletConnectionHintPullUp(for walletRecord: WCWalletsProvider.WalletRecord,
                                                 in viewController: UIViewController) async
     func showExternalWalletFailedToSignPullUp(in viewController: UIViewController) async
     func showConnectLedgerWithMMPullUp(in viewController: UIViewController)
     
     // MARK: - Domain profile
-    func showManageDomainRouteCryptoPullUp(in viewController: UIViewController,
-                                           numberOfCrypto: Int)
     func showDomainProfileChangesConfirmationPullUp(in viewController: UIViewController,
                                                     changes: [DomainProfileSectionUIChangeType]) async throws
     func showDiscardRecordChangesConfirmationPullUp(in viewController: UIViewController) async throws
@@ -98,8 +89,6 @@ protocol PullUpViewServiceProtocol {
     func showTryUpdateDomainProfileLaterPullUp(in viewController: UIViewController) async throws
     func showUpdateDomainProfileSomeChangesFailedPullUp(in viewController: UIViewController,
                                                         changes: [DomainProfileSectionUIChangeFailedItem]) async throws
-    func showShowcaseYourProfilePullUp(for domain: DomainDisplayInfo,
-                                       in viewController: UIViewController) async throws
     func showUserProfilePullUp(with email: String,
                                domainsCount: Int,
                                in viewController: UIViewController) async throws -> UserProfileAction

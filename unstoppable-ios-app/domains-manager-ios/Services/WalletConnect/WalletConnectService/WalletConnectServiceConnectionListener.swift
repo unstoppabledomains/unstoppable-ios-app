@@ -19,3 +19,10 @@ extension WalletConnectServiceConnectionListener {
     func didCompleteConnectionAttempt() { }
     func didHandleExternalWCRequestWith(result: WCExternalRequestResult) { }
 }
+
+enum WalletConnectServiceEvent {
+    case didConnect(UnifiedConnectAppInfo)
+    case didDisconnect(UnifiedConnectAppInfo)
+    case didCompleteConnectionAttempt
+    case didHandleExternalWCRequestWith(WCExternalRequestResult)
+}

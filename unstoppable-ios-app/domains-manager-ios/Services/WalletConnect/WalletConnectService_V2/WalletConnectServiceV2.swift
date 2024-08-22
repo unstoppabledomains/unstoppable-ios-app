@@ -267,7 +267,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         }
         
         await self.appsStorageV2.remove(byTopic: toDisconnect.sessionProxy.topic)
-        try await self.disconnect(topic: toDisconnect.sessionProxy.topic)
+        try? await self.disconnect(topic: toDisconnect.sessionProxy.topic)
         appDisconnectedCallback?(UnifiedConnectAppInfo(from: toDisconnect))
     }
     
