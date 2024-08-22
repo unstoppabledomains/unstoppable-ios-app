@@ -63,7 +63,14 @@ extension ClaimMPCWalletNetworkService {
         let apiRequest = try APIRequest(urlString: url,
                                         body: requestBody,
                                         method: .post)
-        try await NetworkService().makeAPIRequest(apiRequest)
+        do {
+            try await NetworkService().makeAPIRequest(apiRequest)
+        } catch {
+            if error.isNetworkError(withCode: 403) {
+                throw MPCWalletError.incorrectCode
+            }
+            throw error
+        }
     }
     
     struct ProfilesMPCUser: Codable {

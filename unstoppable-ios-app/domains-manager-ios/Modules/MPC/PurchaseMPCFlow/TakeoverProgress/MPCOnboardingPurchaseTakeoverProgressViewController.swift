@@ -50,7 +50,6 @@ private extension MPCOnboardingPurchaseTakeoverProgressViewController {
         
         let mpcView = PurchaseMPCWalletTakeoverProgressView(analyticsName: analyticsName,
                                                             credentials: credentials,
-                                                            shouldSendBootstrapCode: true,
                                                             finishCallback: { [weak self] in
             DispatchQueue.main.async {
                 self?.didTakeoverWithCredentials(credentials)
