@@ -33,13 +33,17 @@ extension ClaimMPCWalletService: ClaimMPCWalletServiceProtocol {
     
     func runTakeover(credentials: MPCTakeoverCredentials) async throws {
         try await networkService.registerWalletWith(credentials: credentials)
+        let secondsInMinutes: Double = 60.0
+        let minutesToWait: Double = 3.0
+        let checkStatusFrequency: Double = 0.5
+        let checkStatusCyclesCount = Int((secondsInMinutes * minutesToWait) / checkStatusFrequency)
         
-        for i in 0..<240 {
+        for i in 0..<checkStatusCyclesCount {
             do {
                 try await validateUserExists(credentials: credentials)
                 return
             } catch {  }
-            await Task.sleep(seconds: 0.5)
+            await Task.sleep(seconds: checkStatusFrequency)
         }
         
         throw ClaimMPCWalletServiceError.waitWalletClaimedTimeout

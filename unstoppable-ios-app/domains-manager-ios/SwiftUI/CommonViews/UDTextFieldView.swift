@@ -21,6 +21,7 @@ struct UDTextFieldView: View, ViewAnalyticsLogger {
     var focusBehaviour: FocusBehaviour = .default
     var keyboardType: UIKeyboardType = .default
     var autocapitalization: TextInputAutocapitalization = .sentences
+    var textContentType: UITextContentType? = nil
     var autocorrectionDisabled: Bool = false
     var isSecureInput: Bool = false
     var isErrorState: Bool = false
@@ -144,6 +145,7 @@ private extension UDTextFieldView {
                 .keyboardType(keyboardType)
                 .textInputAutocapitalization(autocapitalization)
                 .autocorrectionDisabled(autocorrectionDisabled)
+                .textContentType(textContentType)
                 .onChange(of: isTextFieldFocused) { isFocused in
                     focusedStateChangedCallback?(isFocused)
                     setState()

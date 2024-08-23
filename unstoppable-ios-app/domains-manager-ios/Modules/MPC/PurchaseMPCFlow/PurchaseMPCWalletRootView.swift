@@ -39,10 +39,7 @@ struct PurchaseMPCWalletRootView: View {
 // MARK: - Private methods
 private extension PurchaseMPCWalletRootView {
     func updateTitleView() {
-//        viewModel.navigationState?.yOffset = -2
-//        withAnimation {
-//            viewModel.navigationState?.isTitleVisible = viewModel.navPath.last?.isWithCustomTitle == true
-//        }
+        
     }
 }
 

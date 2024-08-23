@@ -23,11 +23,11 @@ struct MPCEnterCodeView: View, ViewAnalyticsLogger {
                 actionButtonsView()
                 Spacer()
             }
+            .padding()
         }
         .passViewAnalyticsDetails(logger: self)
         .trackAppearanceAnalytics(analyticsLogger: self)
         .scrollDisabled(true)
-        .padding()
         .animation(.default, value: UUID())
     }
 }
@@ -57,7 +57,9 @@ private extension MPCEnterCodeView {
                         rightViewType: .paste,
                         rightViewMode: .always,
                         focusBehaviour: .activateOnAppear,
+                        keyboardType: .alphabet,
                         autocapitalization: .characters,
+                        textContentType: .oneTimeCode,
                         autocorrectionDisabled: true)
     }
     
