@@ -18,7 +18,6 @@ struct MPCEnterTakeoverCodeInAppView: View {
                          email: email, 
                          resendAction: resendCode,
                          enterCodeCallback: didEnterCode)
-        .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
     }
 }
 

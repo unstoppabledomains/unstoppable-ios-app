@@ -18,8 +18,10 @@ struct MPCActivateWalletInAppAfterClaimView: View {
         MPCActivateWalletView(analyticsName: .mpcActivationInApp,
                               credentials: credentials,
                               code: code,
+                              canGoBack: false,
                               mpcWalletCreatedCallback: didCreateMPCWallet,
                               changeEmailCallback: nil)
+        .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
     }
 }
 

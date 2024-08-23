@@ -27,7 +27,6 @@ struct PurchaseMPCWalletRootView: View {
         }, navigationStateProvider: { navigationState in
             self.viewModel.navigationState = navigationState
         }, path: $viewModel.navPath)
-//        .interactiveDismissDisabled(!viewModel.navPath.isEmpty)
         .displayError($viewModel.error)
         .allowsHitTesting(!viewModel.isLoading)
     }

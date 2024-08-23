@@ -41,10 +41,10 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWal
                     }
                     Spacer()
                 }
+                .padding()
                 .padding(.bottom, 58)
             }
             .scrollIndicators(.hidden)
-            .padding()
             
             actionButtonContainerView()
             .edgesIgnoringSafeArea(.bottom)

@@ -21,6 +21,8 @@ struct MPCEnterCodeInAppAfterClaimView: View {
                          enterCodeCallback: didEnterCode)
         .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
         .onAppear(perform: onAppear)
+        .interactiveDismissDisabled(true)
+        .navigationBarBackButtonHidden(true)
     }
 }
 
