@@ -32,21 +32,17 @@ extension ClaimMPCWalletService: ClaimMPCWalletServiceProtocol {
     }
     
     func runTakeover(credentials: MPCTakeoverCredentials) async throws {
-        try await networkService.registerWalletWith(credentials: credentials)
-        let secondsInMinutes: Double = 60.0
-        let minutesToWait: Double = 3.0
-        let checkStatusFrequency: Double = 0.5
-        let checkStatusCyclesCount = Int((secondsInMinutes * minutesToWait) / checkStatusFrequency)
-        
-        for i in 0..<checkStatusCyclesCount {
-            do {
-                try await validateUserExists(credentials: credentials)
+        do {
+            try await networkService.registerWalletWith(credentials: credentials)
+            try await waitForNewWalletIsReady(credentials: credentials)
+        } catch {
+            if error.isNetworkError(withCode: 429) {
+                // Request to create wallet already sent, need to wait for it to be ready
+                try await waitForNewWalletIsReady(credentials: credentials)
                 return
-            } catch {  }
-            await Task.sleep(seconds: checkStatusFrequency)
+            }
+            throw error
         }
-        
-        throw ClaimMPCWalletServiceError.waitWalletClaimedTimeout
     }
 }
 
@@ -62,5 +58,22 @@ private extension ClaimMPCWalletService {
         public var errorDescription: String? {
             return rawValue
         }
+    }
+    
+    func waitForNewWalletIsReady(credentials: MPCTakeoverCredentials) async throws {
+        let secondsInMinutes: Double = 60.0
+        let minutesToWait: Double = 3.0
+        let checkStatusFrequency: Double = 0.5
+        let checkStatusCyclesCount = Int((secondsInMinutes * minutesToWait) / checkStatusFrequency)
+        
+        for i in 0..<checkStatusCyclesCount {
+            do {
+                try await validateUserExists(credentials: credentials)
+                return
+            } catch {  }
+            await Task.sleep(seconds: checkStatusFrequency)
+        }
+        
+        throw ClaimMPCWalletServiceError.waitWalletClaimedTimeout
     }
 }

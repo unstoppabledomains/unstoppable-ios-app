@@ -20,7 +20,7 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWal
     @State private var passwordErrors: [MPCWalletPasswordValidationError] = []
     @State private var confirmPasswordInput: String = ""
     @State private var isEmailFocused = true
-    @State private var isLoading = true
+    @State private var isLoading = false
     @State private var error: Error?
     @State private var emailInUseState: EmailInUseVerificationState = .unverified
     @State private var didSetupPurchaseEmail = false
@@ -325,6 +325,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     func continueButton() -> some View {
         UDButtonView(text: String.Constants.continue.localized(),
                      style: .large(.raisedPrimary),
+                     isLoading: isLoading,
                      callback: actionButtonPressed)
         .disabled(isActionButtonDisabled)
     }
