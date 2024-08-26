@@ -14,7 +14,7 @@ final class MPCOnboardingPurchaseTakeoverPasswordViewController: BaseViewControl
     
     weak var onboardingFlowManager: OnboardingFlowManager?
     var dashesProgressConfiguration: DashesProgressView.Configuration { .init(numberOfDashes: 3) }
-    var progress: Double? { 2 / 3 }
+    var progress: Double? { 3 / 6 }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,11 +25,10 @@ final class MPCOnboardingPurchaseTakeoverPasswordViewController: BaseViewControl
 
 // MARK: - Private methods
 private extension MPCOnboardingPurchaseTakeoverPasswordViewController {
-    func didEnterTakeoverCredentials(_ credentials: MPCActivateCredentials) {
-        OnboardingData.mpcTakeoverCredentials = .init(email: credentials.email,
-                                                      password: credentials.password)
+    func didEnterTakeoverPassword(_ password: String) {
+        OnboardingData.mpcTakeoverCredentials?.password = password
         Task {
-            try? await onboardingFlowManager?.handle(action: .didEnterTakeoverCredentials)
+            try? await onboardingFlowManager?.handle(action: .didEnterTakeoverPassword)
         }
     }
 }
@@ -45,11 +44,11 @@ private extension MPCOnboardingPurchaseTakeoverPasswordViewController {
     }
     
     func addChildView() {
-        let email = OnboardingData.mpcPurchaseCredentials?.email
-        let mpcView = PurchaseMPCWalletTakeoverEmailView(analyticsName: analyticsName,
-                                                         emailCallback: { [weak self] credentials in
+        let email = OnboardingData.mpcTakeoverCredentials?.email
+        let mpcView = PurchaseMPCWalletTakeoverPasswordView(analyticsName: analyticsName,
+                                                            passwordCallback: { [weak self] password in
             DispatchQueue.main.async {
-                //                self?.didEnterTakeoverCredentials(credentials)
+                self?.didEnterTakeoverPassword(password)
             }
         })
             .padding(.top, 40)
@@ -61,7 +60,7 @@ private extension MPCOnboardingPurchaseTakeoverPasswordViewController {
 // MARK: - OnboardingNavigationHandler
 extension MPCOnboardingPurchaseTakeoverPasswordViewController: OnboardingNavigationHandler {
     var viewController: UIViewController? { self }
-    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverCredentials }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverPassword }
 }
 
 // MARK: - OnboardingDataHandling

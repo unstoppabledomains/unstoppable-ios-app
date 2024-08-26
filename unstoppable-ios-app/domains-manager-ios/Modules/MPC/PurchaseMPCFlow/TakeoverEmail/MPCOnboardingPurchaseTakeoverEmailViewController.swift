@@ -14,7 +14,7 @@ final class MPCOnboardingPurchaseTakeoverEmailViewController: BaseViewController
     
     weak var onboardingFlowManager: OnboardingFlowManager?
     var dashesProgressConfiguration: DashesProgressView.Configuration { .init(numberOfDashes: 3) }
-    var progress: Double? { 2 / 3 }
+    var progress: Double? { 1 / 6 }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,11 +25,11 @@ final class MPCOnboardingPurchaseTakeoverEmailViewController: BaseViewController
 
 // MARK: - Private methods
 private extension MPCOnboardingPurchaseTakeoverEmailViewController {
-    func didEnterTakeoverCredentials(_ credentials: MPCActivateCredentials) {
-        OnboardingData.mpcTakeoverCredentials = .init(email: credentials.email,
-                                                      password: credentials.password)
+    func didEnterTakeoverEmail(_ email: String) {
+        OnboardingData.mpcCredentials = .init(email: email,
+                                              password: "")
         Task {
-            try? await onboardingFlowManager?.handle(action: .didEnterTakeoverCredentials)
+            try? await onboardingFlowManager?.handle(action: .didEnterTakeoverEmail)
         }
     }
 }
@@ -45,11 +45,10 @@ private extension MPCOnboardingPurchaseTakeoverEmailViewController {
     }
     
     func addChildView() {
-        let email = OnboardingData.mpcPurchaseCredentials?.email
         let mpcView = PurchaseMPCWalletTakeoverEmailView(analyticsName: analyticsName,
-                                                         emailCallback: { [weak self] credentials in
+                                                         emailCallback: { [weak self] email in
             DispatchQueue.main.async {
-//                self?.didEnterTakeoverCredentials(credentials)                
+                self?.didEnterTakeoverEmail(email)
             }
         })
             .padding(.top, 40)
@@ -61,7 +60,7 @@ private extension MPCOnboardingPurchaseTakeoverEmailViewController {
 // MARK: - OnboardingNavigationHandler
 extension MPCOnboardingPurchaseTakeoverEmailViewController: OnboardingNavigationHandler {
     var viewController: UIViewController? { self }
-    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverCredentials }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverEmail }
 }
 
 // MARK: - OnboardingDataHandling

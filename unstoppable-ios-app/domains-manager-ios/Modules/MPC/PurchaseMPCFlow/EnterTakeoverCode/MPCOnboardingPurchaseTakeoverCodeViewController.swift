@@ -25,11 +25,10 @@ final class MPCOnboardingPurchaseTakeoverCodeViewController: BaseViewController,
 
 // MARK: - Private methods
 private extension MPCOnboardingPurchaseTakeoverCodeViewController {
-    func didEnterTakeoverCredentials(_ credentials: MPCActivateCredentials) {
-        OnboardingData.mpcTakeoverCredentials = .init(email: credentials.email,
-                                                      password: credentials.password)
+    func didEnterCode(_ code: String) {
+        OnboardingData.mpcTakeoverCredentials?.code = code
         Task {
-            try? await onboardingFlowManager?.handle(action: .didEnterTakeoverCredentials)
+            try? await onboardingFlowManager?.handle(action: .didEnterTakeoverCode)
         }
     }
 }
@@ -45,23 +44,32 @@ private extension MPCOnboardingPurchaseTakeoverCodeViewController {
     }
     
     func addChildView() {
-        let email = OnboardingData.mpcPurchaseCredentials?.email
-        let mpcView = PurchaseMPCWalletTakeoverEmailView(analyticsName: analyticsName,
-                                                         emailCallback: { [weak self] credentials in
+        let email = OnboardingData.mpcTakeoverCredentials?.email ?? ""
+        let mpcView = MPCEnterCodeView(analyticsName: analyticsName,
+                                       email: email,
+                                       resendAction: { [weak self] email in
+            self?.resendCode(email: email)
+        }) { [weak self] code in
             DispatchQueue.main.async {
-                //                self?.didEnterTakeoverCredentials(credentials)
+                self?.didEnterCode(code)
             }
-        })
+        }
             .padding(.top, 40)
         let vc = UIHostingController(rootView: mpcView)
         addChildViewController(vc, andEmbedToView: view)
+    }
+    
+    func resendCode(email: String) {
+        Task {
+            try await appContext.claimMPCWalletService.sendVerificationCodeTo(email: email)
+        }
     }
 }
 
 // MARK: - OnboardingNavigationHandler
 extension MPCOnboardingPurchaseTakeoverCodeViewController: OnboardingNavigationHandler {
     var viewController: UIViewController? { self }
-    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverCredentials }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverCode }
 }
 
 // MARK: - OnboardingDataHandling

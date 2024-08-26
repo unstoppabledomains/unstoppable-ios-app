@@ -25,8 +25,11 @@ final class MPCOnboardingPurchaseTakeoverProgressViewController: BaseViewControl
 // MARK: - Private methods
 private extension MPCOnboardingPurchaseTakeoverProgressViewController {
     func didTakeoverWithCredentials(_ credentials: MPCTakeoverCredentials) {
+        OnboardingData.mpcCredentials = MPCActivateCredentials(email: credentials.email,
+                                                               password: credentials.password)
+        
         Task {
-            try? await onboardingFlowManager?.handle(action: .didTakeoverMPCWallet(credentials))
+            try? await onboardingFlowManager?.handle(action: .didFinishTakeover)
         }
     }
 }

@@ -24,9 +24,9 @@ final class MPCOnboardingPurchaseActivateAfterClaimViewController: BaseViewContr
 
 // MARK: - Private methods
 private extension MPCOnboardingPurchaseActivateAfterClaimViewController {
-    func didTakeoverWithCredentials(_ credentials: MPCTakeoverCredentials) {
+    func didActivateWallet(_ wallet: UDWallet) {
         Task {
-            try? await onboardingFlowManager?.handle(action: .didTakeoverMPCWallet(credentials))
+            try? await onboardingFlowManager?.handle(action: .didImportWallet(wallet))
         }
     }
 }
@@ -42,19 +42,21 @@ private extension MPCOnboardingPurchaseActivateAfterClaimViewController {
     }
     
     func addChildView() {
-        guard let credentials = OnboardingData.mpcTakeoverCredentials else {
+        guard let credentials = OnboardingData.mpcCredentials,
+              let code = onboardingFlowManager?.onboardingData.mpcCode else {
             cNavigationController?.popViewController(animated: true)
-            Debugger.printFailure("No Credentials passed", critical: true)
+            Debugger.printFailure("No MPC Code passed", critical: true)
             return
         }
         
-        let mpcView = PurchaseMPCWalletTakeoverProgressView(analyticsName: analyticsName,
-                                                            credentials: credentials,
-                                                            finishCallback: { [weak self] in
+        let mpcView = MPCActivateWalletView(analyticsName: .mpcActivationOnboarding,
+                                            credentials: credentials,
+                                            code: code, 
+                                            mpcWalletCreatedCallback: { [weak self] wallet in
             DispatchQueue.main.async {
-                self?.didTakeoverWithCredentials(credentials)
+                self?.didActivateWallet(wallet)
             }
-        })
+        }, changeEmailCallback: nil)
             .padding(.top, 40)
         let vc = UIHostingController(rootView: mpcView)
         addChildViewController(vc, andEmbedToView: view)
@@ -64,7 +66,7 @@ private extension MPCOnboardingPurchaseActivateAfterClaimViewController {
 // MARK: - OnboardingNavigationHandler
 extension MPCOnboardingPurchaseActivateAfterClaimViewController: OnboardingNavigationHandler {
     var viewController: UIViewController? { self }
-    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverProgress }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverActivateAfterClaim }
 }
 
 // MARK: - OnboardingDataHandling

@@ -46,7 +46,7 @@ private extension MPCOnboardingEnterCodeViewController {
             Debugger.printFailure("No Email passed", critical: true)
             return
         }
-        let mpcView = MPCEnterCodeView(analyticsName: .mpcEnterCodeOnboarding,
+        let mpcView = MPCEnterCodeView(analyticsName: analyticsName,
                                        email: email,
                                        resendAction: { [weak self] email in
             self?.resendCode(email: email)

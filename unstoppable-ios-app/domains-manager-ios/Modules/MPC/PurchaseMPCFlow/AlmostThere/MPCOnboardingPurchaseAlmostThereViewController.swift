@@ -24,9 +24,9 @@ final class MPCOnboardingPurchaseAlmostThereViewController: BaseViewController, 
 
 // MARK: - Private methods
 private extension MPCOnboardingPurchaseAlmostThereViewController {
-    func didTakeoverWithCredentials(_ credentials: MPCTakeoverCredentials) {
+    func didPressContinue() {
         Task {
-            try? await onboardingFlowManager?.handle(action: .didTakeoverMPCWallet(credentials))
+            try? await onboardingFlowManager?.handle(action: .didTapContinueAfterTakeover)
         }
     }
 }
@@ -48,11 +48,10 @@ private extension MPCOnboardingPurchaseAlmostThereViewController {
             return
         }
         
-        let mpcView = PurchaseMPCWalletTakeoverProgressView(analyticsName: analyticsName,
-                                                            credentials: credentials,
-                                                            finishCallback: { [weak self] in
+        let mpcView = PurchaseMPCWalletAlmostThereView(analyticsName: analyticsName,
+                                                       continueCallback: { [weak self] in
             DispatchQueue.main.async {
-                self?.didTakeoverWithCredentials(credentials)
+                self?.didPressContinue()
             }
         })
             .padding(.top, 40)
@@ -64,7 +63,7 @@ private extension MPCOnboardingPurchaseAlmostThereViewController {
 // MARK: - OnboardingNavigationHandler
 extension MPCOnboardingPurchaseAlmostThereViewController: OnboardingNavigationHandler {
     var viewController: UIViewController? { self }
-    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverProgress }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverAlmostThere }
 }
 
 // MARK: - OnboardingDataHandling
