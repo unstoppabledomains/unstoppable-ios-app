@@ -14,11 +14,23 @@ final class MPCOnboardingPurchaseEnterCodeAfterClaimViewController: BaseViewCont
     
     weak var onboardingFlowManager: OnboardingFlowManager?
     var progress: Double? { nil }
+    private var didSendCode = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setup()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        guard !didSendCode,
+        let credentials = OnboardingData.mpcCredentials else { return }
+        
+        didSendCode = true
+        
+        resendCode(email: credentials.email)
     }
 }
 
