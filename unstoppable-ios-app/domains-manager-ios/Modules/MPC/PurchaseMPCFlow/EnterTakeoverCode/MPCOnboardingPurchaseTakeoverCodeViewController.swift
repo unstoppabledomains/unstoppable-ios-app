@@ -14,7 +14,7 @@ final class MPCOnboardingPurchaseTakeoverCodeViewController: BaseViewController,
     
     weak var onboardingFlowManager: OnboardingFlowManager?
     var dashesProgressConfiguration: DashesProgressView.Configuration { .init(numberOfDashes: 3) }
-    var progress: Double? { 2 / 3 }
+    var progress: Double? { 5 / 6 }
     
     override func viewDidLoad() {
         super.viewDidLoad()

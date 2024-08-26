@@ -199,9 +199,10 @@ private extension OnboardingNavigationController {
                     topViewController is LoadingParkedDomainsViewController ||
                     topViewController is ParkedDomainsFoundViewController ||
                     topViewController is NoParkedDomainsFoundViewController  ||
-                    topViewController is MPCOnboardingPurchaseTakeoverEmailViewController  ||
                     topViewController is MPCOnboardingPurchaseTakeoverProgressViewController ||
-                    (topViewController is MPCOnboardingEnterCodeViewController && isPurchasingMPC) {
+                    topViewController is MPCOnboardingPurchaseAlmostThereViewController  ||
+                    topViewController is MPCOnboardingPurchaseEnterCodeAfterClaimViewController  ||
+                    topViewController is MPCOnboardingPurchaseActivateAfterClaimViewController {
             transitionHandler.isInteractionEnabled = false
             DispatchQueue.main.async {
                 self.navigationBar.setBackButton(hidden: true)

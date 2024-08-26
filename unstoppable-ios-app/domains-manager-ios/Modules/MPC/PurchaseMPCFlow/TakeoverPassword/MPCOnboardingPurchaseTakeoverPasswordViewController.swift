@@ -44,7 +44,6 @@ private extension MPCOnboardingPurchaseTakeoverPasswordViewController {
     }
     
     func addChildView() {
-        let email = OnboardingData.mpcTakeoverCredentials?.email
         let mpcView = PurchaseMPCWalletTakeoverPasswordView(analyticsName: analyticsName,
                                                             passwordCallback: { [weak self] password in
             DispatchQueue.main.async {

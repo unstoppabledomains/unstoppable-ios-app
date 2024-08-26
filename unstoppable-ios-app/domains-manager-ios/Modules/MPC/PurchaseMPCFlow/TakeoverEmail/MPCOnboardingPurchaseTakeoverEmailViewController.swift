@@ -26,8 +26,8 @@ final class MPCOnboardingPurchaseTakeoverEmailViewController: BaseViewController
 // MARK: - Private methods
 private extension MPCOnboardingPurchaseTakeoverEmailViewController {
     func didEnterTakeoverEmail(_ email: String) {
-        OnboardingData.mpcCredentials = .init(email: email,
-                                              password: "")
+        OnboardingData.mpcTakeoverCredentials = .init(email: email,
+                                                      password: "")
         Task {
             try? await onboardingFlowManager?.handle(action: .didEnterTakeoverEmail)
         }
