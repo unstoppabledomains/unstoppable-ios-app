@@ -9,7 +9,8 @@ import SwiftUI
 
 extension PurchaseMPCWallet {
     enum NavigationDestination: Hashable {
-        case enterTakeoverCredentials(purchaseEmail: String?)
+        case enterTakeoverCredentials
+        case enterTakeoverPassword
         case enterTakeoverCode(email: String)
         case takeover(MPCTakeoverCredentials)
         case enterActivationCode(email: String)
@@ -22,8 +23,10 @@ extension PurchaseMPCWallet {
         @ViewBuilder
         static func viewFor(navigationDestination: NavigationDestination) -> some View {
             switch navigationDestination {
-            case .enterTakeoverCredentials(let purchaseEmail):
-                PurchaseMPCWalletTakeoverCredentialsInAppView(purchaseEmail: purchaseEmail)
+            case .enterTakeoverCredentials:
+                PurchaseMPCWalletTakeoverEmailInAppView()
+            case .enterTakeoverPassword:
+                PurchaseMPCWalletTakeoverPasswordInAppView()
             case .enterTakeoverCode(let email):
                 MPCEnterTakeoverCodeInAppView(email: email)
             case .takeover(let credentials):

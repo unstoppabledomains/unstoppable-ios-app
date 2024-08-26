@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-final class MPCOnboardingPurchaseTakeoverCredentialsViewController: BaseViewController, ViewWithDashesProgress {
+final class MPCOnboardingPurchaseTakeoverEmailViewController: BaseViewController, ViewWithDashesProgress {
     
     override var analyticsName: Analytics.ViewName { .mpcPurchaseTakeoverCredentialsOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
@@ -24,7 +24,7 @@ final class MPCOnboardingPurchaseTakeoverCredentialsViewController: BaseViewCont
 }
 
 // MARK: - Private methods
-private extension MPCOnboardingPurchaseTakeoverCredentialsViewController {
+private extension MPCOnboardingPurchaseTakeoverEmailViewController {
     func didEnterTakeoverCredentials(_ credentials: MPCActivateCredentials) {
         OnboardingData.mpcTakeoverCredentials = .init(email: credentials.email,
                                                       password: credentials.password)
@@ -35,7 +35,7 @@ private extension MPCOnboardingPurchaseTakeoverCredentialsViewController {
 }
 
 // MARK: - Setup methods
-private extension MPCOnboardingPurchaseTakeoverCredentialsViewController {
+private extension MPCOnboardingPurchaseTakeoverEmailViewController {
     func setup() {
         addProgressDashesView(configuration: dashesProgressConfiguration)
         addChildView()
@@ -46,10 +46,10 @@ private extension MPCOnboardingPurchaseTakeoverCredentialsViewController {
     
     func addChildView() {
         let email = OnboardingData.mpcPurchaseCredentials?.email
-        let mpcView = PurchaseMPCWalletTakeoverCredentialsView(analyticsName: analyticsName,
-                                                               purchaseEmail: email, credentialsCallback: { [weak self] credentials in
+        let mpcView = PurchaseMPCWalletTakeoverEmailView(analyticsName: analyticsName,
+                                                         emailCallback: { [weak self] credentials in
             DispatchQueue.main.async {
-                self?.didEnterTakeoverCredentials(credentials)                
+//                self?.didEnterTakeoverCredentials(credentials)                
             }
         })
             .padding(.top, 40)
@@ -59,13 +59,13 @@ private extension MPCOnboardingPurchaseTakeoverCredentialsViewController {
 }
 
 // MARK: - OnboardingNavigationHandler
-extension MPCOnboardingPurchaseTakeoverCredentialsViewController: OnboardingNavigationHandler {
+extension MPCOnboardingPurchaseTakeoverEmailViewController: OnboardingNavigationHandler {
     var viewController: UIViewController? { self }
     var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverCredentials }
 }
 
 // MARK: - OnboardingDataHandling
-extension MPCOnboardingPurchaseTakeoverCredentialsViewController: OnboardingDataHandling {
+extension MPCOnboardingPurchaseTakeoverEmailViewController: OnboardingDataHandling {
     func willNavigateBack() { }
 }
 

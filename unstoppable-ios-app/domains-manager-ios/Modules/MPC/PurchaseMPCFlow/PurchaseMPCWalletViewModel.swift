@@ -21,7 +21,6 @@ final class PurchaseMPCWalletViewModel: ObservableObject {
     
     @Published var navPath: [PurchaseMPCWallet.NavigationDestination] = []
     @Published var navigationState: NavigationStateManager?
-    private var purchaseCredentials: MPCPurchaseUDCredentials?
     private var mpcTakeoverCredentials: MPCTakeoverCredentials?
     @Published var isLoading = false
     @Published var error: Error?
@@ -36,12 +35,17 @@ final class PurchaseMPCWalletViewModel: ObservableObject {
             case .createNewWallet:
                 finishWith(result: .createNew)
             case .createMPCWallet:
-                navPath.append(.enterTakeoverCredentials(purchaseEmail: ""))
-            case .didEnterTakeoverCredentials(let credentials):
-                self.mpcTakeoverCredentials = MPCTakeoverCredentials(email: credentials.email,
-                                                                     password: credentials.password,
+                navPath.append(.enterTakeoverCredentials)
+            case .didEnterTakeoverEmail(let email):
+                self.mpcTakeoverCredentials = MPCTakeoverCredentials(email: email,
+                                                                     password: "",
                                                                      sendRecoveryLink: true)
-                navPath.append(.enterTakeoverCode(email: credentials.email))
+                navPath.append(.enterTakeoverPassword)
+            case .didEnterTakeoverPassword(let password):
+                self.mpcTakeoverCredentials?.password = password
+                guard let mpcTakeoverCredentials else { return }
+
+                navPath.append(.enterTakeoverCode(email: mpcTakeoverCredentials.email))
             case .didEnterTakeover(let code):
                 self.mpcTakeoverCredentials?.code = code
                 guard let mpcTakeoverCredentials else { return }

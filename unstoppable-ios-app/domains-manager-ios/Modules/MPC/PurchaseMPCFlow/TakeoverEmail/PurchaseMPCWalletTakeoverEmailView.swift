@@ -7,23 +7,18 @@
 
 import SwiftUI
 
-struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWalletPasswordValidator, ViewAnalyticsLogger {
+struct PurchaseMPCWalletTakeoverEmailView: View, UserDataValidator, MPCWalletPasswordValidator, ViewAnalyticsLogger {
     
     @Environment(\.claimMPCWalletService) private var claimMPCWalletService
 
     let analyticsName: Analytics.ViewName
-    var purchaseEmail: String?
-    let credentialsCallback: (MPCActivateCredentials)->()
+    let emailCallback: (String)->()
     @State private var emailInput: String = ""
     @State private var emailConfirmationInput: String = ""
-    @State private var passwordInput: String = ""
-    @State private var passwordErrors: [MPCWalletPasswordValidationError] = []
-    @State private var confirmPasswordInput: String = ""
     @State private var isEmailFocused = true
     @State private var isLoading = false
     @State private var error: Error?
     @State private var emailInUseState: EmailInUseVerificationState = .unverified
-    @State private var didSetupPurchaseEmail = false
     @StateObject private var debounceObject = DebounceObject()
     @State private var keyboardHeight: CGFloat = 0
 
@@ -32,16 +27,13 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWal
             ScrollView {
                 VStack(spacing: isIPSE ? 16 : 32) {
                     headerView()
-                    VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: isIPSE ? 8 : 24) {
                         emailInputView()
                         emailConfirmationInputView()
-                        inputSeparatorView()
-                        passwordInputView()
-                        confirmPasswordInputView()
                     }
                     Spacer()
                 }
-                .padding()
+                .padding(.horizontal)
                 .padding(.bottom, 58)
             }
             .scrollIndicators(.hidden)
@@ -49,9 +41,6 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWal
             actionButtonContainerView()
             .edgesIgnoringSafeArea(.bottom)
         }
-        .onChange(of: passwordInput, perform: { newValue in
-            validatePasswordInput()
-        })
         .onReceive(KeyboardService.shared.keyboardFramePublisher.receive(on: DispatchQueue.main)) { keyboardFrame in
             keyboardHeight = keyboardFrame.height
         }
@@ -77,29 +66,16 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWal
 }
 
 // MARK: - Private methods
-private extension PurchaseMPCWalletTakeoverCredentialsView {
+private extension PurchaseMPCWalletTakeoverEmailView {
     func onAppear() {
-        validatePasswordInput()
-        setupPurchaseEmail()
-        checkIfEmailAlreadyInUseIfNeeded()
-    }
-    
-    func setupPurchaseEmail() {
-        guard !didSetupPurchaseEmail else { return }
-        
-        didSetupPurchaseEmail = true
-        emailInput = purchaseEmail ?? ""
         debounceObject.text = emailInput
-    }
-    
-    func validatePasswordInput() {
-        passwordErrors = validateWalletPassword(passwordInput)
+        checkIfEmailAlreadyInUseIfNeeded()
     }
     
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text(String.Constants.setup.localized())
+            Text(String.Constants.enterEmailTitle.localized())
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
                 .multilineTextAlignment(.center)
@@ -116,7 +92,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
         VStack(spacing: 8) {
             UDTextFieldView(text: $debounceObject.text,
                             placeholder: "name@mail.com",
-                            hint: String.Constants.emailAssociatedWithWallet.localized(),
+                            hint: String.Constants.email.localized(),
                             focusBehaviour: .activateOnAppear,
                             keyboardType: .emailAddress,
                             autocapitalization: .never,
@@ -140,25 +116,12 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     
     @ViewBuilder
     func emailConfirmationInputView() -> some View {
-        if shouldShowEmailConfirmation {
-            UDTextFieldView(text: $emailConfirmationInput,
-                            placeholder: String.Constants.confirmEmail.localized(),
-                            focusBehaviour: .default,
-                            keyboardType: .emailAddress,
-                            autocapitalization: .never,
-                            autocorrectionDisabled: true)
-        }
-    }
-    
-    @ViewBuilder
-    func inputSeparatorView() -> some View {
-        if shouldShowEmailConfirmation {
-            HomeExploreSeparatorView()
-        }
-    }
-    
-    var shouldShowEmailConfirmation: Bool {
-        purchaseEmail != emailInput
+        UDTextFieldView(text: $emailConfirmationInput,
+                        placeholder: String.Constants.confirmEmail.localized(),
+                        focusBehaviour: .default,
+                        keyboardType: .emailAddress,
+                        autocapitalization: .never,
+                        autocorrectionDisabled: true)
     }
     
     var emailVerificationError: EmailVerificationError? {
@@ -186,115 +149,12 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
         .padding(.leading, 16)
     }
     
-    @ViewBuilder
-    func passwordInputView() -> some View {
-        VStack(spacing: 8) {
-            UDTextFieldView(text: $passwordInput,
-                            placeholder: String.Constants.createPassword.localized(),
-                            focusBehaviour: .default,
-                            autocapitalization: .never,
-                            autocorrectionDisabled: true,
-                            isSecureInput: true,
-                            isErrorState: isPasswordInErrorState,
-                            focusedStateChangedCallback: { isFocused in
-                if !isFocused {
-                    checkIfEmailAlreadyInUseIfNeeded()
-                }
-            })
-            passwordRequirementsView()
-        }
-    }
-    
-    var isPasswordInErrorState: Bool {
-        passwordErrors.contains(.tooLong)
-    }
-    
-    @ViewBuilder
-    func passwordRequirementsView() -> some View {
-        VStack(spacing: 3) {
-            ForEach(PasswordRequirements.allCases, id: \.self) { requirement in
-                passwordRequirementView(requirement)
-            }
-        }
-    }
-    
-    @ViewBuilder
-    func passwordRequirementView(_ requirement: PasswordRequirements) -> some View {
-        HStack(spacing: 8) {
-            Circle()
-                .squareFrame(4)
-            Text(titleFor(requirement: requirement))
-                .font(.currentFont(size: 13))
-            Spacer()
-        }
-        .foregroundStyle(foregroundStyleFor(requirement: requirement))
-        .frame(minHeight: 20)
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, 4)
-    }
-    
-    func foregroundStyleFor(requirement: PasswordRequirements) -> Color {
-        if isPasswordRequirementMet(requirement) {
-            .foregroundSuccess
-        } else if isPasswordInErrorState && requirement == .length {
-            .foregroundDanger
-        } else {
-            .foregroundSecondary
-        }
-    }
-    
-    func isPasswordRequirementMet(_ requirement: PasswordRequirements) -> Bool {
-        switch requirement {
-        case .length:
-            !passwordErrors.contains(.tooShort) && !passwordErrors.contains(.tooLong)
-        case .oneNumber:
-            !passwordErrors.contains(.missingNumber)
-        case .specialChar:
-            !passwordErrors.contains(.missingSpecialCharacter)
-        }
-    }
-    
-    enum PasswordRequirements: CaseIterable {
-        case length
-        case oneNumber
-        case specialChar
-    }
-    
-    func titleFor(requirement: PasswordRequirements) -> String {
-        switch requirement {
-        case .length:
-            if passwordErrors.contains(.tooLong) {
-                String.Constants.mpcPasswordValidationTooLongTitle.localized(minMPCWalletPasswordLength, maxMPCWalletPasswordLength)
-            } else {
-                String.Constants.mpcPasswordValidationLengthTitle.localized(minMPCWalletPasswordLength)
-            }
-        case .oneNumber:
-            String.Constants.mpcPasswordValidationNumberTitle.localized()
-        case .specialChar:
-            String.Constants.mpcPasswordValidationSpecialCharTitle.localized()
-        }
-    }
-    
-    @ViewBuilder
-    func confirmPasswordInputView() -> some View {
-        UDTextFieldView(text: $confirmPasswordInput,
-                        placeholder: String.Constants.confirmPassword.localized(),
-                        focusBehaviour: .default,
-                        autocapitalization: .never,
-                        autocorrectionDisabled: true,
-                        isSecureInput: true)
-    }
-    
     var isActionButtonDisabled: Bool {
-        !isValidEmailEntered || !isValidPasswordEntered || passwordInput != confirmPasswordInput || !isEmailConfirmed || !isVerifiedEmailEntered
+        !isValidEmailEntered || !isEmailConfirmed || !isVerifiedEmailEntered
     }
     
     var isValidEmailEntered: Bool {
         isEmailValid(emailInput)
-    }
-    
-    var isValidPasswordEntered: Bool {
-        passwordErrors.isEmpty
     }
     
     var isVerifiedEmailEntered: Bool {
@@ -305,11 +165,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     }
     
     var isEmailConfirmed: Bool {
-        if let purchaseEmail,
-           purchaseEmail == emailInput {
-            return true
-        }
-        return emailInput == emailConfirmationInput
+        emailInput == emailConfirmationInput
     }
     
     @ViewBuilder
@@ -338,9 +194,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
                 // Send email action
                 let email = emailInput
                 try await claimMPCWalletService.sendVerificationCodeTo(email: email)
-                let password = passwordInput
-                let credentials = MPCActivateCredentials(email: email, password: password)
-                credentialsCallback(credentials)
+                emailCallback(email)
             } catch {
                 logAnalytic(event: .sendClaimMPCCodeError,
                             parameters: [.error: error.localizedDescription])
@@ -380,8 +234,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     }
     
     func checkIfEmailAlreadyInUseIfNeeded() {
-        guard !isVerifiedEmailEntered, 
-            isValidPasswordEntered else { return }
+        guard !isVerifiedEmailEntered else { return }
         
         switch emailInUseState {
         case .inUse, .failed:
@@ -392,10 +245,8 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
         
         Task {
             let email = emailInput
-            let password = passwordInput
-            let credentials = MPCTakeoverCredentials(email: email, password: password)
             do {
-                let isValid = try await claimMPCWalletService.validateCredentialsForTakeover(credentials: credentials)
+                let isValid = try await claimMPCWalletService.validateEmailIsAvailable(email: email)
                 
                 if isValid {
                     emailInUseState = .verified(email)
@@ -418,7 +269,6 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
 }
 
 #Preview {
-    PurchaseMPCWalletTakeoverCredentialsView(analyticsName: .unspecified,
-                                             purchaseEmail: "qq@qq.qq",
-                                             credentialsCallback: { _ in })
+    PurchaseMPCWalletTakeoverEmailView(analyticsName: .unspecified,
+                                             emailCallback: { _ in })
 }

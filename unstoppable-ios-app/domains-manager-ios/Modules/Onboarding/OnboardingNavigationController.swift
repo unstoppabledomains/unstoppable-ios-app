@@ -216,7 +216,7 @@ private extension OnboardingNavigationController {
                     topViewController is LoadingParkedDomainsViewController ||
                     topViewController is ParkedDomainsFoundViewController ||
                     topViewController is NoParkedDomainsFoundViewController  ||
-                    topViewController is MPCOnboardingPurchaseTakeoverCredentialsViewController  ||
+                    topViewController is MPCOnboardingPurchaseTakeoverEmailViewController  ||
                     topViewController is MPCOnboardingPurchaseTakeoverProgressViewController ||
                     (topViewController is MPCOnboardingEnterCodeViewController && isPurchasingMPC) {
             transitionHandler.isInteractionEnabled = false
@@ -514,7 +514,7 @@ private extension OnboardingNavigationController {
             
             return vc
         case .mpcPurchaseTakeoverCredentials:
-            let vc = MPCOnboardingPurchaseTakeoverCredentialsViewController()
+            let vc = MPCOnboardingPurchaseTakeoverEmailViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             

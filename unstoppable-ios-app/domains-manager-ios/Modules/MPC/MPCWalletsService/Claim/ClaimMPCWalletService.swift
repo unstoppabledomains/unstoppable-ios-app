@@ -15,10 +15,10 @@ final class ClaimMPCWalletService {
 
 // MARK: - ClaimMPCWalletServiceProtocol
 extension ClaimMPCWalletService: ClaimMPCWalletServiceProtocol {
-    func validateCredentialsForTakeover(credentials: MPCTakeoverCredentials) async throws -> Bool {
+    func validateEmailIsAvailable(email: String) async throws -> Bool {
         do {
-            try await validateUserExists(credentials: credentials)
-            // There's already existing user with given email. 
+            try await validateUserExists(email: email)
+            // There's already existing user with given email.
             return false
         } catch NetworkLayerError.badResponseOrStatusCode(let code, _, _) where code == 404 { // 404 returned when email not in use hence available
             return true
@@ -48,8 +48,8 @@ extension ClaimMPCWalletService: ClaimMPCWalletServiceProtocol {
 
 // MARK: - Private methods
 private extension ClaimMPCWalletService {
-    func validateUserExists(credentials: MPCTakeoverCredentials) async throws {
-        _ = try await networkService.getUserDetails(email: credentials.email)
+    func validateUserExists(email: String) async throws {
+        _ = try await networkService.getUserDetails(email: email)
     }
     
     enum ClaimMPCWalletServiceError: String, LocalizedError {
@@ -68,7 +68,7 @@ private extension ClaimMPCWalletService {
         
         for i in 0..<checkStatusCyclesCount {
             do {
-                try await validateUserExists(credentials: credentials)
+                try await validateUserExists(email: credentials.email)
                 return
             } catch {  }
             await Task.sleep(seconds: checkStatusFrequency)

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol ClaimMPCWalletServiceProtocol {
-    func validateCredentialsForTakeover(credentials: MPCTakeoverCredentials) async throws -> Bool
+    func validateEmailIsAvailable(email: String) async throws -> Bool
     func sendVerificationCodeTo(email: String) async throws
     func runTakeover(credentials: MPCTakeoverCredentials) async throws
 }

@@ -13,7 +13,7 @@ final class ClaimMPCWalletService {
 
 // MARK: - ClaimMPCWalletServiceProtocol
 extension ClaimMPCWalletService: ClaimMPCWalletServiceProtocol {
-    func validateCredentialsForTakeover(credentials: MPCTakeoverCredentials) async throws -> Bool {
+    func validateEmailIsAvailable(email: String) async throws -> Bool {
         true
     }
     
