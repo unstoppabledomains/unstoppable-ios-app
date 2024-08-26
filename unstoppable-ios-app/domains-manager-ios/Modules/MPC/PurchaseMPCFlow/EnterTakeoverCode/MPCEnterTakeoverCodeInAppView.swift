@@ -35,3 +35,4 @@ private extension MPCEnterTakeoverCodeInAppView {
 #Preview {
     MPCEnterTakeoverCodeInAppView(email: "qq@qq.qq")
 }
+
