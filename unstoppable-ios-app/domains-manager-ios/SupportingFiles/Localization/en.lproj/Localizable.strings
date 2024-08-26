@@ -1139,7 +1139,7 @@ More tabs are coming in the next updates.";
 "IMPORT_MPC_WALLET_TITLE" = "Import %@";
 "IMPORT_MPC_WALLET_SUBTITLE" = "Enter the credentials you added when you created your %@";
 "EMAIL_ASSOCIATED_WITH_WALLET" = "Email associated with a wallet";
-"ENTER_MPC_WALLET_VERIFICATION_CODE_TITLE" = "Enter verification code\nsent to your email";
+"ENTER_MPC_WALLET_VERIFICATION_CODE_TITLE" = "Enter verification code";
 "ENTER_MPC_WALLET_VERIFICATION_CODE_SUBTITLE" = "Code sent to: %@";
 "VERIFICATION_CODE" = "Verification code";
 "HAVENT_RECEIVED_THE_CODE" = "Haven’t received the code?";

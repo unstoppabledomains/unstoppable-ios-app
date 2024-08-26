@@ -93,7 +93,7 @@ private extension PurchaseMPCWalletTakeoverPasswordView {
         VStack(spacing: 8) {
             UDTextFieldView(text: $passwordInput,
                             placeholder: String.Constants.createPassword.localized(),
-                            focusBehaviour: .default,
+                            focusBehaviour: .activateOnAppear,
                             autocapitalization: .never,
                             autocorrectionDisabled: true,
                             isSecureInput: true,

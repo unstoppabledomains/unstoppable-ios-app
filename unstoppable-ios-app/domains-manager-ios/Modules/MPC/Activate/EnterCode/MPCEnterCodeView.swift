@@ -42,9 +42,13 @@ private extension MPCEnterCodeView {
             Text(String.Constants.enterMPCWalletVerificationCodeTitle.localized())
                 .font(.currentFont(size: isIPSE ? 26 : 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
-            Text(String.Constants.enterMPCWalletVerificationCodeSubtitle.localized(email))
-                .font(.currentFont(size: 16))
-                .foregroundStyle(Color.foregroundSecondary)
+            AttributedText(attributesList: .init(text: String.Constants.enterMPCWalletVerificationCodeSubtitle.localized(email),
+                                                 font: .currentFont(withSize: 16),
+                                                 textColor: .foregroundSecondary,
+                                                 alignment: .center,
+                                                 lineBreakMode: .byTruncatingMiddle),
+                           updatedAttributesList: [.init(text: email, textColor: .foregroundDefault)])
+            .frame(maxHeight: 24)
         }
         .multilineTextAlignment(.center)
     }
@@ -94,7 +98,7 @@ private extension MPCEnterCodeView {
 #Preview {
     NavigationStack {
         MPCEnterCodeView(analyticsName: .mpcEnterCodeOnboarding,
-                         email: "", 
+                         email: "qqqwdhgsasdsdadncdgckjashxasjkdhaskjchaksjhxasjhx@qq.qq",
                          resendAction: { _ in },
                          enterCodeCallback: { _ in })
         .toolbar {
