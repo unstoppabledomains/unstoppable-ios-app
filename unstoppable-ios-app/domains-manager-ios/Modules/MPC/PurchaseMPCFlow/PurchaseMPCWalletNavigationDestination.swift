@@ -13,6 +13,7 @@ extension PurchaseMPCWallet {
         case enterTakeoverPassword
         case enterTakeoverCode(email: String)
         case takeover(MPCTakeoverCredentials)
+        case almostThere
         case enterActivationCode(email: String)
         case activate(credentials: MPCTakeoverCredentials)
 
@@ -31,6 +32,8 @@ extension PurchaseMPCWallet {
                 MPCEnterTakeoverCodeInAppView(email: email)
             case .takeover(let credentials):
                 PurchaseMPCWalletTakeoverProgressInAppView(credentials: credentials)
+            case .almostThere:
+                PurchaseMPCWalletAlmostThereInAppView()
             case .enterActivationCode(let email):
                 MPCEnterCodeInAppAfterClaimView(email: email)
             case .activate(let credentials):

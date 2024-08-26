@@ -17,6 +17,7 @@ extension PurchaseMPCWallet {
         case didEnterTakeoverPassword(String)
         case didEnterTakeover(code: String)
         case didFinishTakeover
+        case didTapContinueAfterTakeover
         case didEnterActivation(code: String)
         case didActivate(UDWallet)
     }

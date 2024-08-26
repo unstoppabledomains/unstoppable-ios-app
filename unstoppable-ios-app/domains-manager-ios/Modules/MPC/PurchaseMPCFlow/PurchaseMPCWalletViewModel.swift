@@ -52,8 +52,10 @@ final class PurchaseMPCWalletViewModel: ObservableObject {
                 
                 navPath.append(.takeover(mpcTakeoverCredentials))
             case .didFinishTakeover:
+                navPath.append(.almostThere)
+            case .didTapContinueAfterTakeover:
                 guard let mpcTakeoverCredentials else { return }
-
+                
                 navPath.append(.enterActivationCode(email: mpcTakeoverCredentials.email))
             case .didEnterActivation(let code):
                 self.mpcTakeoverCredentials?.code = code
