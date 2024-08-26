@@ -14,7 +14,7 @@ struct MPCEnterTakeoverCodeInAppView: View {
     let email: String
     
     var body: some View {
-        MPCEnterCodeView(analyticsName: .mpcConfirmCodeInApp,
+        MPCEnterCodeView(analyticsName: .mpcPurchaseTakeoverCodeInApp,
                          email: email, 
                          resendAction: resendCode,
                          enterCodeCallback: didEnterCode)

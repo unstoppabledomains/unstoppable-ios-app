@@ -15,7 +15,7 @@ struct MPCEnterCodeInAppAfterClaimView: View {
     @State private var didSendCode = false
     
     var body: some View {
-        MPCEnterCodeView(analyticsName: .mpcEnterCodeInApp,
+        MPCEnterCodeView(analyticsName: .mpcPurchaseTakeoverCodeAfterClaimInApp,
                          email: email,
                          resendAction: resendCode,
                          enterCodeCallback: didEnterCode)

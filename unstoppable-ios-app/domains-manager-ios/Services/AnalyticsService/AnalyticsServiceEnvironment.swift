@@ -253,8 +253,13 @@ extension Analytics {
         case mpcPurchaseCheckoutOnboarding, mpcPurchaseCheckoutInApp
         case mpcPurchaseAlreadyHaveWalletOnboarding, mpcPurchaseAlreadyHaveWalletInApp
         case mpcPurchaseTakeoverCredentialsOnboarding, mpcPurchaseTakeoverCredentialsInApp
-        case mpcPurchaseTakeoverRecoveryOnboarding, mpcPurchaseTakeoverRecoveryInApp
+        case mpcPurchaseTakeoverEmailOnboarding, mpcPurchaseTakeoverEmailInApp
+        case mpcPurchaseTakeoverPasswordOnboarding, mpcPurchaseTakeoverPasswordInApp
+        case mpcPurchaseTakeoverCodeOnboarding, mpcPurchaseTakeoverCodeInApp
         case mpcPurchaseTakeoverProgressOnboarding, mpcPurchaseTakeoverProgressInApp
+        case mpcPurchaseTakeoverAlmostThereOnboarding, mpcPurchaseTakeoverAlmostThereInApp
+        case mpcPurchaseTakeoverCodeAfterClaimOnboarding, mpcPurchaseTakeoverCodeAfterClaimInApp
+        case mpcPurchaseTakeoverActivateAfterClaimOnboarding, mpcPurchaseTakeoverActivateAfterClaimInApp
         
         case inAppAddWallet
         case mpcActivateEnterCode, mpcActivateEnterPassword

@@ -15,7 +15,7 @@ struct MPCActivateWalletInAppAfterClaimView: View {
     let code: String
     
     var body: some View {
-        MPCActivateWalletView(analyticsName: .mpcActivationInApp,
+        MPCActivateWalletView(analyticsName: .mpcPurchaseTakeoverActivateAfterClaimInApp,
                               credentials: credentials,
                               code: code,
                               canGoBack: false,

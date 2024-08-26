@@ -12,7 +12,7 @@ struct PurchaseMPCWalletTakeoverPasswordInAppView: View {
     @EnvironmentObject var viewModel: PurchaseMPCWalletViewModel
     
     var body: some View {
-        PurchaseMPCWalletTakeoverPasswordView(analyticsName: .mpcPurchaseTakeoverCredentialsInApp,
+        PurchaseMPCWalletTakeoverPasswordView(analyticsName: .mpcPurchaseTakeoverPasswordInApp,
                                               passwordCallback: didEnterTakeoverPassword)
     }
     

@@ -12,7 +12,7 @@ struct PurchaseMPCWalletAlmostThereInAppView: View {
     @EnvironmentObject var viewModel: PurchaseMPCWalletViewModel
 
     var body: some View {
-        PurchaseMPCWalletAlmostThereView(analyticsName: .mpcPurchaseTakeoverCredentialsInApp,
+        PurchaseMPCWalletAlmostThereView(analyticsName: .mpcPurchaseTakeoverAlmostThereInApp,
                                               continueCallback: didTapContinue)
         .navigationBarBackButtonHidden(true)
     }

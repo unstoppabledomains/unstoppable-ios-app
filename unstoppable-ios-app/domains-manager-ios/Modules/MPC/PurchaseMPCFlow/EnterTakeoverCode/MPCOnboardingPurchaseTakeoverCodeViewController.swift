@@ -9,7 +9,7 @@ import SwiftUI
 
 final class MPCOnboardingPurchaseTakeoverCodeViewController: BaseViewController, ViewWithDashesProgress {
     
-    override var analyticsName: Analytics.ViewName { .mpcPurchaseTakeoverCredentialsOnboarding }
+    override var analyticsName: Analytics.ViewName { .mpcPurchaseTakeoverCodeOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?

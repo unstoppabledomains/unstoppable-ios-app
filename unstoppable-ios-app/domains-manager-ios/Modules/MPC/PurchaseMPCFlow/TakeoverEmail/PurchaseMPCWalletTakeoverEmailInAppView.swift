@@ -12,7 +12,8 @@ struct PurchaseMPCWalletTakeoverEmailInAppView: View {
     @EnvironmentObject var viewModel: PurchaseMPCWalletViewModel
     
     var body: some View {
-        PurchaseMPCWalletTakeoverEmailView(analyticsName: .mpcPurchaseTakeoverCredentialsInApp, emailCallback: didEnterTakeoverEmail)
+        PurchaseMPCWalletTakeoverEmailView(analyticsName: .mpcPurchaseTakeoverEmailInApp,
+                                           emailCallback: didEnterTakeoverEmail)
     }
     
 }
