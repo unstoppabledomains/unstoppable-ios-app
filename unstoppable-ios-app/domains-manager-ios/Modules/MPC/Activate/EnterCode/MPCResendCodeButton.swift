@@ -7,12 +7,14 @@
 
 import SwiftUI
 
+typealias ResendConfirmationCodeBlock = (String) async throws -> ()
+
 struct MPCResendCodeButton: View, ViewAnalyticsLogger {
     
-    @Environment(\.mpcWalletsService) private var mpcWalletsService
     @Environment(\.analyticsViewName) var analyticsName
 
     let email: String
+    let resendAction: ResendConfirmationCodeBlock
     @State private var isRefreshingCode = false
     @State private var resendCodeCounter: Int?
     @State private var error: Error?
@@ -55,7 +57,7 @@ private extension MPCResendCodeButton {
         Task {
             isRefreshingCode = true
             do {
-                try await mpcWalletsService.sendBootstrapCodeTo(email: email)
+                try await resendAction(email)
             } catch {
                 self.error = error
             }
@@ -66,5 +68,6 @@ private extension MPCResendCodeButton {
 }
 
 #Preview {
-    MPCResendCodeButton(email: "")
+    MPCResendCodeButton(email: "",
+                        resendAction: { _ in })
 }

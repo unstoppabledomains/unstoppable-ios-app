@@ -8,7 +8,7 @@
 import SwiftUI
  
 struct MPCEnterCodeInAppView: View {
-    
+    @Environment(\.mpcWalletsService) private var mpcWalletsService
     @EnvironmentObject var viewModel: ActivateMPCWalletViewModel
 
     let email: String
@@ -16,6 +16,7 @@ struct MPCEnterCodeInAppView: View {
     var body: some View {
         MPCEnterCodeView(analyticsName: .mpcEnterCodeInApp,
                          email: email,
+                         resendAction: resendCode,
                          enterCodeCallback: didEnterCode)
         .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
     }
@@ -25,6 +26,10 @@ struct MPCEnterCodeInAppView: View {
 private extension MPCEnterCodeInAppView {
     func didEnterCode(_ code: String) {
         viewModel.handleAction(.didEnterCode(code))
+    }
+    
+    func resendCode(email: String) async throws {
+        try await mpcWalletsService.sendBootstrapCodeTo(email: email)
     }
 }
 

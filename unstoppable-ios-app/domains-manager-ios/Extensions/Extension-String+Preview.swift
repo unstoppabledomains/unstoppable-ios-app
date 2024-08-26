@@ -1302,6 +1302,8 @@ extension String {
         static let mpcWalletEmailInUseCantVerifyMessage = "MPC_WALLET_EMAIL_IN_USE_CANT_VERIFY_MESSAGE"
         static let mpcTakeoverInProgressTitle = "MPC_TAKEOVER_IN_PROGRESS_TITLE"
         static let mpcTakeoverInProgressSubtitle = "MPC_TAKEOVER_IN_PROGRESS_SUBTITLE"
+        static let mpcTakeoverAlmostThereTitle = "MPC_TAKEOVER_ALMOST_THERE_TITLE"
+        static let mpcTakeoverAlmostThereSubtitle = "MPC_TAKEOVER_ALMOST_THERE_SUBTITLE"
         static let contactSupport = "CONTACT_SUPPORT"
         static let mpcWalletDefaultName = "MPC_WALLET_DEFAULT_NAME"
         static let sendCrypto = "SEND_CRYPTO"

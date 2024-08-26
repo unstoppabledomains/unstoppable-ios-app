@@ -445,12 +445,7 @@ extension FB_UD_MPC {
         }
         
         private func isNetworkError(_ error: Error, withCode code: Int) -> Bool {
-            if let networkError = error as? NetworkLayerError,
-               case .badResponseOrStatusCode(let errorCode, _, _) = networkError,
-               errorCode == code {
-                return true
-            }
-            return false
+            error.isNetworkError(withCode: code)
         }
         
         private enum MPCNetworkServiceError: String, LocalizedError {

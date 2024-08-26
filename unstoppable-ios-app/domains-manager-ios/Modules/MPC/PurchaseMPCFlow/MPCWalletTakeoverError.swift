@@ -8,5 +8,6 @@
 import Foundation
 
 enum MPCWalletTakeoverError: Error {
+    case incorrectPasscode
     case unknown
 }

@@ -36,7 +36,7 @@ private extension InAppAddWalletView {
     func didSelectAddWalletType(_ type: OnboardingAddWalletType) {
         switch type {
         case .mpcWallet:
-            viewModel.handleAction(.buyMPCWallet)
+            viewModel.handleAction(.createMPCWallet)
         case .selfCustody:
             viewModel.handleAction(.createNewWallet)
         }

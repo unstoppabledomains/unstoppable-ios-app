@@ -79,6 +79,7 @@ final class AppContext: AppContextProtocol {
     var walletTransactionsService: WalletTransactionsServiceProtocol
     var mpcWalletsService: MPCWalletsServiceProtocol
     var ipVerificationService: IPVerificationServiceProtocol = IPVerificationService()
+    var claimMPCWalletService: ClaimMPCWalletServiceProtocol = ClaimMPCWalletService()
     
     func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
         StripeService(paymentDetails: .init(amount: amount, paymentSecret: secret))

@@ -60,6 +60,7 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
     private(set) lazy var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: DefaultHotFeaturesSuggestionsFetcher())
     private(set) lazy var ipVerificationService: IPVerificationServiceProtocol = IPVerificationService()
+    private(set) lazy var claimMPCWalletService: ClaimMPCWalletServiceProtocol = ClaimMPCWalletService()
     
     init() {
         authentificationService = AuthentificationService()

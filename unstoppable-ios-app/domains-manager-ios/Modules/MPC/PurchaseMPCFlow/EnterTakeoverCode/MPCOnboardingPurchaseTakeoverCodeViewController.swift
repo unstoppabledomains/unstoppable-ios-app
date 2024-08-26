@@ -1,19 +1,20 @@
 //
-//  MPCEnterPassphraseViewController.swift
+//  MPCOnboardingPurchaseTakeoverCodeViewController.swift
 //  domains-manager-ios
 //
-//  Created by Oleg Kuplin on 14.03.2024.
+//  Created by Oleg Kuplin on 26.08.2024.
 //
 
 import SwiftUI
 
-final class MPCOnboardingEnterCodeViewController: BaseViewController, ViewWithDashesProgress {
+final class MPCOnboardingPurchaseTakeoverCodeViewController: BaseViewController, ViewWithDashesProgress {
     
-    override var analyticsName: Analytics.ViewName { .mpcEnterCodeOnboarding }
+    override var analyticsName: Analytics.ViewName { .mpcPurchaseTakeoverCodeOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
-    var progress: Double? { 3 / 4 }
+    var dashesProgressConfiguration: DashesProgressView.Configuration { .init(numberOfDashes: 3) }
+    var progress: Double? { 5 / 6 }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,17 +24,19 @@ final class MPCOnboardingEnterCodeViewController: BaseViewController, ViewWithDa
 }
 
 // MARK: - Private methods
-private extension MPCOnboardingEnterCodeViewController {
+private extension MPCOnboardingPurchaseTakeoverCodeViewController {
     func didEnterCode(_ code: String) {
-        onboardingFlowManager?.modifyOnboardingData(modifyingBlock: { $0.mpcCode = code })
-        onboardingFlowManager?.moveToStep(.mpcActivate)
+        OnboardingData.mpcTakeoverCredentials?.code = code
+        Task {
+            try? await onboardingFlowManager?.handle(action: .didEnterTakeoverCode)
+        }
     }
 }
 
 // MARK: - Setup methods
-private extension MPCOnboardingEnterCodeViewController {
+private extension MPCOnboardingPurchaseTakeoverCodeViewController {
     func setup() {
-        addProgressDashesView()
+        addProgressDashesView(configuration: dashesProgressConfiguration)
         addChildView()
         DispatchQueue.main.async {
             self.setDashesProgress(self.progress)
@@ -41,11 +44,7 @@ private extension MPCOnboardingEnterCodeViewController {
     }
     
     func addChildView() {
-        guard let email = OnboardingData.mpcCredentials?.email else {
-            cNavigationController?.popViewController(animated: true)
-            Debugger.printFailure("No Email passed", critical: true)
-            return
-        }
+        let email = OnboardingData.mpcTakeoverCredentials?.email ?? ""
         let mpcView = MPCEnterCodeView(analyticsName: analyticsName,
                                        email: email,
                                        resendAction: { [weak self] email in
@@ -60,21 +59,21 @@ private extension MPCOnboardingEnterCodeViewController {
         addChildViewController(vc, andEmbedToView: view)
     }
     
-    private func resendCode(email: String) {
+    func resendCode(email: String) {
         Task {
-            try await appContext.mpcWalletsService.sendBootstrapCodeTo(email: email)
+            try await appContext.claimMPCWalletService.sendVerificationCodeTo(email: email)
         }
     }
 }
 
 // MARK: - OnboardingNavigationHandler
-extension MPCOnboardingEnterCodeViewController: OnboardingNavigationHandler {
+extension MPCOnboardingPurchaseTakeoverCodeViewController: OnboardingNavigationHandler {
     var viewController: UIViewController? { self }
-    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcCode }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverCode }
 }
 
 // MARK: - OnboardingDataHandling
-extension MPCOnboardingEnterCodeViewController: OnboardingDataHandling {
+extension MPCOnboardingPurchaseTakeoverCodeViewController: OnboardingDataHandling {
     func willNavigateBack() { }
 }
 

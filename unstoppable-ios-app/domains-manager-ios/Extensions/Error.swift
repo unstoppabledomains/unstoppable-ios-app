@@ -50,4 +50,14 @@ extension Error {
         
         return (title, message)
     }
+    
+    func isNetworkError(withCode code: Int) -> Bool {
+        if let networkError = self as? NetworkLayerError,
+           case .badResponseOrStatusCode(let errorCode, _, _) = networkError,
+           errorCode == code {
+            return true
+        }
+        return false
+    }
+    
 }
