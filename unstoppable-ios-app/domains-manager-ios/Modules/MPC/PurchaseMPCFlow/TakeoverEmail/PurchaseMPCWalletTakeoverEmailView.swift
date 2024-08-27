@@ -96,6 +96,7 @@ private extension PurchaseMPCWalletTakeoverEmailView {
                             focusBehaviour: .activateOnAppear,
                             keyboardType: .emailAddress,
                             autocapitalization: .never,
+                            textContentType: .username,
                             autocorrectionDisabled: true,
                             isErrorState: emailVerificationError != nil,
                             focusedStateChangedCallback: { isFocused in
@@ -121,6 +122,7 @@ private extension PurchaseMPCWalletTakeoverEmailView {
                         focusBehaviour: .default,
                         keyboardType: .emailAddress,
                         autocapitalization: .never,
+                        textContentType: .username,
                         autocorrectionDisabled: true)
     }
     

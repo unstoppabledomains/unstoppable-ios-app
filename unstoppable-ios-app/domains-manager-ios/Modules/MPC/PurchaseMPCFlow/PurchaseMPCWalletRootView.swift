@@ -29,6 +29,7 @@ struct PurchaseMPCWalletRootView: View {
         }, path: $viewModel.navPath)
         .displayError($viewModel.error)
         .allowsHitTesting(!viewModel.isLoading)
+        .interactiveDismissDisabled(!viewModel.navPath.isEmpty)
     }
     
     init(createWalletCallback: @escaping AddWalletResultCallback) {
