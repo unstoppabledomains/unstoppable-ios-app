@@ -76,11 +76,11 @@ private extension PurchaseMPCWalletTakeoverPasswordView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text(String.Constants.setup.localized())
+            Text(String.Constants.createPassword.localized())
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
                 .multilineTextAlignment(.center)
-            Text(String.Constants.mpcTakeoverCredentialsSubtitle.localizedMPCProduct())
+            Text(String.Constants.mpcTakeoverPasswordSubtitle.localized())
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
                 .minimumScaleFactor(0.6)
