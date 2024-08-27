@@ -1294,6 +1294,7 @@ extension String {
         static let mpcPasswordValidationNumberTitle = "MPC_PASSWORD_VALIDATION_NUMBER_TITLE"
         static let mpcPasswordValidationSpecialCharTitle = "MPC_PASSWORD_VALIDATION_SPECIAL_CHAR_TITLE"
         static let mpcTakeoverCredentialsSubtitle = "MPC_TAKEOVER_CREDENTIALS_SUBTITLE"
+        static let mpcTakeoverPasswordSubtitle = "MPC_TAKEOVER_PASSWORD_SUBTITLE"
         static let mpcTakeoverRecoveryTitle = "MPC_TAKEOVER_RECOVERY_TITLE"
         static let mpcTakeoverRecoverySubtitle = "MPC_TAKEOVER_RECOVERY_SUBTITLE"
         static let sendMeRecoveryLink = "SEND_ME_RECOVERY_LINK"

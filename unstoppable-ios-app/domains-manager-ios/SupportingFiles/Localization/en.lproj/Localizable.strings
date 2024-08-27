@@ -235,7 +235,7 @@
 "BACK_UP_MANUALLY" = "Back up manually";
 
 // Create password screen
-"CREATE_PASSWORD" = "Create a password";
+"CREATE_PASSWORD" = "Create password";
 "CREATE_PASSWORD_DESCRIPTION" = "This password protects your iCloud backups. Store this password somewhere safe.  Unstoppable Domains cannot recover your password for you. Learn more";
 "CREATE_PASSWORD_DESCRIPTION_HIGHLIGHTED" = "Store this password somewhere safe.";
 "LEARN_MORE" = "Learn more";
@@ -1187,7 +1187,8 @@ More tabs are coming in the next updates.";
 "MPC_PASSWORD_VALIDATION_TOO_LONG_TITLE" = "Minimum %i characters, maximum %i characters";
 "MPC_PASSWORD_VALIDATION_NUMBER_TITLE" = "At least one number";
 "MPC_PASSWORD_VALIDATION_SPECIAL_CHAR_TITLE" = "At least one special character (e.g. -!&*)";
-"MPC_TAKEOVER_CREDENTIALS_SUBTITLE" = "Each %@ requires a unique email address. Make sure you have access to an email. It can be the one used in the previous step or a different one.";
+"MPC_TAKEOVER_CREDENTIALS_SUBTITLE" = "Each %@ requires a unique email address. Make sure you have access to an email.";
+"MPC_TAKEOVER_PASSWORD_SUBTITLE" = "Do note share your password with anyone, including Unstoppable Domains staff.";
 "MPC_TAKEOVER_RECOVERY_TITLE" = "Get recovery link";
 "MPC_TAKEOVER_RECOVERY_SUBTITLE" = "This is the only way to restore access to wallet if you forget your password. Obtain a recovery link to ensure you don't lose access to your assets. The recovery link will be sent to:";
 "SEND_ME_RECOVERY_LINK" = "Send me a recovery link";
