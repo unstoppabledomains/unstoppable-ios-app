@@ -56,12 +56,33 @@ private extension CoinRecordsService {
     func setCurrencies(_ currencies: [CoinRecord]) {
         self.currencies = currencies
     }
-    
-    
+
     func fetchCurrenciesData(version: String) async throws -> Data {
-        let data = try await NetworkService().fetchData(for: URL(string: NetworkConfig.coinsResolverURL(version: version))!,
-                                                        method: .get)
-        return data
+        var cursor: String? = ""
+        var records: [TokenRecord] = []
+        var counter = 0
+        while cursor != nil {
+            counter += 1
+            let recordsResponse = try await loadNewRecords(cursor: cursor)
+            records.append(contentsOf: recordsResponse.items)
+            cursor = recordsResponse.next?.cursor
+        }
+        
+        return try records.jsonDataThrowing()
+    }
+    
+    func loadNewRecords(cursor: String?) async throws -> TokenRecordsResponse {
+        var url = NetworkConfig.pav3BaseUrl.appendingURLPathComponents("resolution", "keys")
+        var parameters = ["subType" : "CRYPTO_TOKEN",
+                          "$expand" : "validation"]
+        if let cursor {
+            parameters["$cursor"] = cursor
+        }
+        url = url.appendingURLQueryComponents(parameters)
+        let headers = NetworkBearerAuthorisationHeaderBuilderImpl.instance.buildPav3BearerHeader()
+        let apiRequest = try APIRequest(urlString: url, method: .get, headers: headers)
+        let response: TokenRecordsResponse = try await NetworkService().makeDecodableAPIRequest(apiRequest)
+        return response
     }
     
     func getEmbeddedCurrencies() async -> [CoinRecord]? {
@@ -87,38 +108,16 @@ private extension CoinRecordsService {
     }
 
     func parseCurrencies(from data: Data) -> [CoinRecord]? {
-        guard let info = CurrenciesEntry.objectFromData(data) else { return nil }
-        
-        let currencyEntries = info.keys
-        let records: [CoinRecord] = currencyEntries.compactMap { expandedTicker, value in
-            guard let ticker = getShortTicker(from: expandedTicker) else { return nil }
-            
-            let version = getVersion(from: expandedTicker)
-            let regex = value.validationRegex
-            return CoinRecord(ticker: ticker,
-                              version: version,
-                              expandedTicker: expandedTicker,
-                              regexPattern: regex,
-                              isDeprecated: value.deprecated)
+        var coinRecords: [CoinRecord]? = nil
+        if let info = CurrenciesEntry.objectFromData(data) {
+            let currencyEntries = info.keys
+            coinRecords = currencyEntries.compactMap { mapLegacyCurrency(expandedTicker: $0.key, currencyDetails: $0.value) }
+        } else if let records = [TokenRecord].objectFromData(data) {
+            coinRecords = records.compactMap { mapToken($0) }
         }
-        
-        return records.sorted(by: { $0.ticker < $1.ticker })
+        return coinRecords?.sorted(by: { $0.ticker < $1.ticker })
     }
-    
-    func getShortTicker(from expandedTicker: String) -> String? {
-        guard expandedTicker.prefix(6) == "crypto" else { return nil }
-        let components = expandedTicker.split(separator: Character.dotSeparator)
-        return String(components[1])
-    }
-    
-    func getVersion(from expandedTicker: String) -> String? {
-        guard expandedTicker.prefix(6) == "crypto" else { return nil }
-        let components = expandedTicker.split(separator: Character.dotSeparator)
-        guard components.count == 5 else { return nil }
-        
-        return String(components[3])
-    }
-    
+  
     func checkCoinRecordsDirectory() {
         if !fileManager.fileExists(atPath: coinRecordsFolderPath.path) {
             do {
@@ -155,6 +154,42 @@ private extension CoinRecordsService {
     }
 }
 
+// MARK: - Legacy
+extension CoinRecordsService {
+    struct TokenRecord: Codable {
+        let key: String
+        let type: String
+        let validation: Regexes?
+        
+        struct Regexes: Codable {
+            let regexes: [Regex]
+            
+            struct Regex: Codable {
+                let name: String
+                let pattern: String
+            }
+        }
+    }
+    
+    struct TokenRecordsResponse: Codable {
+        let items: [TokenRecord]
+        let next: Cursor?
+        
+        struct Cursor: Codable {
+            let cursor: String?
+            
+            enum CodingKeys: String, CodingKey {
+                case cursor = "$cursor"
+            }
+        }
+    }
+    
+    func mapToken(_ token: TokenRecord) -> CoinRecord? {
+        return nil
+    }
+}
+
+// MARK: - Legacy
 extension CoinRecordsService {
     struct CurrenciesEntry: Decodable {
         let version: String
@@ -165,5 +200,32 @@ extension CoinRecordsService {
         let deprecatedKeyName: String
         let deprecated: Bool
         let validationRegex: String?
+    }
+    
+    func mapLegacyCurrency(expandedTicker: String,
+                           currencyDetails: CurrencyDetailsEntry) -> CoinRecord? {
+        guard let ticker = getShortTicker(from: expandedTicker) else { return nil }
+        
+        let version = getVersion(from: expandedTicker)
+        let regex = currencyDetails.validationRegex
+        return CoinRecord(ticker: ticker,
+                          version: version,
+                          expandedTicker: expandedTicker,
+                          regexPattern: regex,
+                          isDeprecated: currencyDetails.deprecated)
+    }
+    
+    func getShortTicker(from expandedTicker: String) -> String? {
+        guard expandedTicker.prefix(6) == "crypto" else { return nil }
+        let components = expandedTicker.split(separator: Character.dotSeparator)
+        return String(components[1])
+    }
+    
+    func getVersion(from expandedTicker: String) -> String? {
+        guard expandedTicker.prefix(6) == "crypto" else { return nil }
+        let components = expandedTicker.split(separator: Character.dotSeparator)
+        guard components.count == 5 else { return nil }
+        
+        return String(components[3])
     }
 }

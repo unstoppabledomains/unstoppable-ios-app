@@ -29,6 +29,16 @@ struct CoinRecord: Hashable, Comparable, CustomStringConvertible, Codable {
         self.isDeprecated = isDeprecated
     }
     
+    static func < (lhs: CoinRecord, rhs: CoinRecord) -> Bool {
+        lhs.expandedTicker < rhs.expandedTicker
+    }
+    
+    var description: String {
+        let versionSuffix = self.version == nil ? "" : " (\(self.version!))"
+        return "\(self.ticker)\(versionSuffix)"
+    }
+    
+    // TODO: - Duplicate, should be removed. Keep implementation only in CoinRecordsService.
     init?(expandedTicker: String, regexPattern: String?, isDeprecated: Bool) {
         guard let ticker = Self.getShortTicker(from: expandedTicker) else { return nil }
         let version = Self.getVersion(from: expandedTicker)
@@ -38,15 +48,6 @@ struct CoinRecord: Hashable, Comparable, CustomStringConvertible, Codable {
                   expandedTicker: expandedTicker,
                   regexPattern: regexPattern,
                   isDeprecated: isDeprecated)
-    }
-    
-    static func < (lhs: CoinRecord, rhs: CoinRecord) -> Bool {
-        lhs.expandedTicker < rhs.expandedTicker
-    }
-    
-    var description: String {
-        let versionSuffix = self.version == nil ? "" : " (\(self.version!))"
-        return "\(self.ticker)\(versionSuffix)"
     }
     
     static func getShortTicker (from expandedTicker: String) -> String? {
