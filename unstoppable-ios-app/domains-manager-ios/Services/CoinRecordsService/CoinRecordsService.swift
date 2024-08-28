@@ -185,7 +185,20 @@ extension CoinRecordsService {
     }
     
     func mapToken(_ token: TokenRecord) -> CoinRecord? {
-        return nil
+        let expandedTicker = token.key
+        let components = expandedTicker.components(separatedBy: String.dotSeparator)
+        guard components.count == 5 else { return nil }
+        
+        let network = components[2]
+        let ticker = components[3]
+        let regexPattern = token.validation?.regexes.first?.pattern
+        let isPrimaryChain = network == ticker
+        
+        return CoinRecord(ticker: ticker,
+                          version: network,
+                          expandedTicker: expandedTicker,
+                          regexPattern: regexPattern,
+                          isDeprecated: false)
     }
 }
 
