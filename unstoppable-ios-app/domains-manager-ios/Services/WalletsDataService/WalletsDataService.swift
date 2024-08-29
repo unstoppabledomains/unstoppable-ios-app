@@ -617,7 +617,14 @@ private extension WalletsDataService {
         
         storage.cacheWallets(wallets)
         self.wallets = wallets
-        newWallets.forEach { refreshDataForWalletAsync($0) }
+        newWallets.forEach { wallet in
+            refreshDataForWalletAsync(wallet)
+            if wallet.udWallet.type == .mpc {
+                Task.detached {
+                    _ = try? await appContext.messagingService.createUserMessagingProfile(for: wallet)
+                }
+            }
+        }
     }
     
     func createNewWalletEntityFor(udWallet: UDWallet) -> WalletEntity? {
