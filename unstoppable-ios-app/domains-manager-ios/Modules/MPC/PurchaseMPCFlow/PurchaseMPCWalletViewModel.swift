@@ -40,7 +40,7 @@ final class PurchaseMPCWalletViewModel: ObservableObject {
                 self.mpcTakeoverCredentials = MPCTakeoverCredentials(email: email,
                                                                      password: "",
                                                                      sendRecoveryLink: true)
-                navPath.append(.enterTakeoverPassword)
+                navPath.append(.enterTakeoverPassword(email: email))
             case .didEnterTakeoverPassword(let password):
                 self.mpcTakeoverCredentials?.password = password
                 guard let mpcTakeoverCredentials else { return }

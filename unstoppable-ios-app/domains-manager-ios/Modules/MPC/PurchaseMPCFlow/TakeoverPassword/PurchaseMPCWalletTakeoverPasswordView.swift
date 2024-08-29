@@ -12,7 +12,9 @@ struct PurchaseMPCWalletTakeoverPasswordView: View, UserDataValidator, MPCWallet
     @Environment(\.claimMPCWalletService) private var claimMPCWalletService
     
     let analyticsName: Analytics.ViewName
+    let email: String // Required to ask to save password into keychain
     let passwordCallback: (String)->()
+    @State private var emailInput: String = ""
     @State private var passwordInput: String = ""
     @State private var passwordErrors: [MPCWalletPasswordValidationError] = []
     @State private var confirmPasswordInput: String = ""
@@ -24,7 +26,10 @@ struct PurchaseMPCWalletTakeoverPasswordView: View, UserDataValidator, MPCWallet
                 VStack(spacing: isIPSE ? 16 : 32) {
                     headerView()
                     VStack(alignment: .leading, spacing: isIPSE ? 8 : 24) {
-                        passwordInputView()
+                        ZStack(alignment: .top) {
+                            hiddenEmailView()
+                            passwordInputView()
+                        }
                         confirmPasswordInputView()
                     }
                     Spacer()
@@ -66,6 +71,7 @@ struct PurchaseMPCWalletTakeoverPasswordView: View, UserDataValidator, MPCWallet
 // MARK: - Private methods
 private extension PurchaseMPCWalletTakeoverPasswordView {
     func onAppear() {
+        emailInput = email
         validatePasswordInput()
     }
     
@@ -86,6 +92,20 @@ private extension PurchaseMPCWalletTakeoverPasswordView {
                 .minimumScaleFactor(0.6)
                 .multilineTextAlignment(.center)
         }
+    }
+    
+    @ViewBuilder
+    func hiddenEmailView() -> some View {
+        UDTextFieldView(text: $emailInput,
+                        placeholder: "",
+                        hint: String.Constants.emailAssociatedWithWallet.localized(),
+                        focusBehaviour: .default,
+                        keyboardType: .emailAddress,
+                        autocapitalization: .never,
+                        autocorrectionDisabled: true,
+                        isErrorState: false)
+        .opacity(0.01)
+        .allowsHitTesting(false)
     }
     
     @ViewBuilder
@@ -212,5 +232,6 @@ private extension PurchaseMPCWalletTakeoverPasswordView {
 
 #Preview {
     PurchaseMPCWalletTakeoverPasswordView(analyticsName: .unspecified,
+                                          email: "qq@qq.qq",
                                           passwordCallback: { _ in })
 }
