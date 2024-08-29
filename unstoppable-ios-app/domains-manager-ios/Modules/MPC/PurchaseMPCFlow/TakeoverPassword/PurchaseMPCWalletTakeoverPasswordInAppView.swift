@@ -11,8 +11,11 @@ struct PurchaseMPCWalletTakeoverPasswordInAppView: View {
     
     @EnvironmentObject var viewModel: PurchaseMPCWalletViewModel
     
+    let email: String
+    
     var body: some View {
         PurchaseMPCWalletTakeoverPasswordView(analyticsName: .mpcPurchaseTakeoverPasswordInApp,
+                                              email: email,
                                               passwordCallback: didEnterTakeoverPassword)
     }
     
@@ -27,6 +30,6 @@ private extension PurchaseMPCWalletTakeoverPasswordInAppView {
 
 #Preview {
     PresentAsModalPreviewView {
-        PurchaseMPCWalletTakeoverPasswordInAppView()
+        PurchaseMPCWalletTakeoverPasswordInAppView(email: "qq@qq.qq")
     }
 }
