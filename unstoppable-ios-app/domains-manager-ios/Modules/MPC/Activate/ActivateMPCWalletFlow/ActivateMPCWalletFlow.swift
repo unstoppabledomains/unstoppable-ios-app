@@ -12,6 +12,7 @@ enum ActivateMPCWalletFlow { }
 extension ActivateMPCWalletFlow {
     enum FlowAction {
         case didEnterCredentials(MPCActivateCredentials)
+        case didPressForgotPassword
         case didEnterCode(String)
         case didActivate(UDWallet)
         case didRequestToChangeEmail

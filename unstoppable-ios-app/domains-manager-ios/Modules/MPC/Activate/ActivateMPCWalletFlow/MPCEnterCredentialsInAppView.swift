@@ -16,7 +16,8 @@ struct MPCEnterCredentialsInAppView: View {
     var body: some View {
         MPCEnterCredentialsView(mode: preFilledEmail == nil ? .freeInput() : .strictEmail(preFilledEmail!),
                                 analyticsName: .mpcEnterCredentialsInApp,
-                                credentialsCallback: didEnterCredentials)
+                                credentialsCallback: didEnterCredentials,
+                                forgotPasswordCallback: didPressForgotPassword)
             .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
     }
 }
@@ -25,6 +26,10 @@ struct MPCEnterCredentialsInAppView: View {
 private extension MPCEnterCredentialsInAppView {
     func didEnterCredentials(_ credentials: MPCActivateCredentials) {
         viewModel.handleAction(.didEnterCredentials(credentials))
+    }
+    
+    func didPressForgotPassword() {
+        viewModel.handleAction(.didPressForgotPassword)
     }
 }
 

@@ -472,7 +472,7 @@
 "ENTER_VERIFICATION_CODE_SUBTITLE" = "Please enter the 6-digit verificiation code sent to your email: %@";
 "RESEND_CODE" = "Resend code";
 "RESEND_CODE_IN" = "Resend code in %@";
-"OPEN_EMAIL_APP" = "Open email app";
+"OPEN_EMAIL_APP" = "Open Email Client";
 
 // No Domains to mint
 "NO_DOMAINS_TO_MINT_MESSAGE" = "Sorry, you don’t have any domains to import";
@@ -1202,6 +1202,8 @@ More tabs are coming in the next updates.";
 "CONTACT_SUPPORT" = "Contact Support";
 "MPC_WALLET_DEFAULT_NAME" = "Lite Wallet";
 "SEND_CRYPTO" = "Send Crypto";
+"MPC_FORGOT_PASSWORD_TITLE" = "Reset password\nusing the recover link";
+"MPC_FORGOT_PASSWORD_SUBTITLE" = "Find the email with the recovery link we sent you, when you created your wallet. This is the only way to restore access to wallet if you forget your password.";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";

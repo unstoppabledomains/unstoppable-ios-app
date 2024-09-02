@@ -2028,6 +2028,10 @@
 		C6C9DEA42834B56200BAC36F /* ManageDomainLoadingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C9DE9F2834B56200BAC36F /* ManageDomainLoadingCell.xib */; };
 		C6C9DEA92834B84A00BAC36F /* BlinkingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9DEA82834B84A00BAC36F /* BlinkingView.swift */; };
 		C6C9DEAE2834BD9300BAC36F /* CopyWalletAddressPullUpHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9DEAD2834BD9300BAC36F /* CopyWalletAddressPullUpHandler.swift */; };
+		C6CF2A612C85951700AD0721 /* MPCForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CF2A602C85951700AD0721 /* MPCForgotPasswordView.swift */; };
+		C6CF2A622C85951700AD0721 /* MPCForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CF2A602C85951700AD0721 /* MPCForgotPasswordView.swift */; };
+		C6CF2A642C859FD300AD0721 /* MPCOnboardingForgotPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CF2A632C859FD300AD0721 /* MPCOnboardingForgotPasswordViewController.swift */; };
+		C6CF2A652C859FD300AD0721 /* MPCOnboardingForgotPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CF2A632C859FD300AD0721 /* MPCOnboardingForgotPasswordViewController.swift */; };
 		C6D011B52B9949520008BF40 /* WalletDomainProfileDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011B42B9949520008BF40 /* WalletDomainProfileDetails.swift */; };
 		C6D011B62B9949520008BF40 /* WalletDomainProfileDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011B42B9949520008BF40 /* WalletDomainProfileDetails.swift */; };
 		C6D011C22B9967A30008BF40 /* UDPageControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011C12B9967A30008BF40 /* UDPageControlView.swift */; };
@@ -3980,6 +3984,8 @@
 		C6C9DE9F2834B56200BAC36F /* ManageDomainLoadingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ManageDomainLoadingCell.xib; sourceTree = "<group>"; };
 		C6C9DEA82834B84A00BAC36F /* BlinkingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlinkingView.swift; sourceTree = "<group>"; };
 		C6C9DEAD2834BD9300BAC36F /* CopyWalletAddressPullUpHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyWalletAddressPullUpHandler.swift; sourceTree = "<group>"; };
+		C6CF2A602C85951700AD0721 /* MPCForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCForgotPasswordView.swift; sourceTree = "<group>"; };
+		C6CF2A632C859FD300AD0721 /* MPCOnboardingForgotPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCOnboardingForgotPasswordViewController.swift; sourceTree = "<group>"; };
 		C6D011B42B9949520008BF40 /* WalletDomainProfileDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDomainProfileDetails.swift; sourceTree = "<group>"; };
 		C6D011C12B9967A30008BF40 /* UDPageControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDPageControlView.swift; sourceTree = "<group>"; };
 		C6D011C42B996A5C0008BF40 /* DomainProfileSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSuggestion.swift; sourceTree = "<group>"; };
@@ -5762,6 +5768,7 @@
 		C640F3712C082C2E009EB0F9 /* Activate */ = {
 			isa = PBXGroup;
 			children = (
+				C6CF2A5F2C8594EC00AD0721 /* ForgotPassword */,
 				C67B1DD62BFEF58F00C2A4DA /* ReconnectMPCWalletFlow */,
 				C6DEA1622BD8D1E000838215 /* ActivateMPCWalletFlow */,
 				C6BF80222BA2BB2300CC4CB3 /* EnterCredentials */,
@@ -7945,6 +7952,15 @@
 			path = AddCurrency;
 			sourceTree = "<group>";
 		};
+		C6CF2A5F2C8594EC00AD0721 /* ForgotPassword */ = {
+			isa = PBXGroup;
+			children = (
+				C6CF2A632C859FD300AD0721 /* MPCOnboardingForgotPasswordViewController.swift */,
+				C6CF2A602C85951700AD0721 /* MPCForgotPasswordView.swift */,
+			);
+			path = ForgotPassword;
+			sourceTree = "<group>";
+		};
 		C6D011B72B9949600008BF40 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
@@ -9530,6 +9546,7 @@
 				C663D1AE2AFCA022003C54E0 /* DomainProfileLinkValidator.swift in Sources */,
 				C6A474D029D150A40073415F /* NoParkedDomainsFoundViewPresenter.swift in Sources */,
 				C669C39E291280C900837F21 /* DomainProfileBadgesSection.swift in Sources */,
+				C6CF2A642C859FD300AD0721 /* MPCOnboardingForgotPasswordViewController.swift in Sources */,
 				C6952A4E2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift in Sources */,
 				C63095E82B0DA66400205054 /* UDFirebaseSigner.swift in Sources */,
 				C6B65F622B55015F006D1812 /* HomeWalletHeaderRowView.swift in Sources */,
@@ -10151,6 +10168,7 @@
 				29AEA04B292F7D60003BB5B4 /* SecurePersistedStorage.swift in Sources */,
 				C643129B2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift in Sources */,
 				C6B65F5C2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift in Sources */,
+				C6CF2A612C85951700AD0721 /* MPCForgotPasswordView.swift in Sources */,
 				C650F8C82BA41C3300BDA099 /* FireblocksRPCMessageHandler.swift in Sources */,
 				29150FBB2975DA4D00169A1A /* PushSubscriberInfo.swift in Sources */,
 				C666894B28116073002062B4 /* BorderedTableView.swift in Sources */,
@@ -10471,6 +10489,7 @@
 				C6D6468B2B1ED12D00D724AC /* DomainProfileCryptoSection.swift in Sources */,
 				C62900F62BAAC83A008B35A2 /* SelectTokenAssetAmountToSendView.swift in Sources */,
 				C64F8E022B60F2590075D37F /* ViewPullUpConfigurationType.swift in Sources */,
+				C6CF2A622C85951700AD0721 /* MPCForgotPasswordView.swift in Sources */,
 				C6D646EC2B1ED55F00D724AC /* NFCService+Entities.swift in Sources */,
 				C6D647252B1ED91F00D724AC /* PullUpViewService+Messaging.swift in Sources */,
 				C639F3942C32B467008CC1CB /* TransactionDetailsPullUpView.swift in Sources */,
@@ -10930,6 +10949,7 @@
 				C6D646342B1DC43D00D724AC /* TextTertiaryButton.swift in Sources */,
 				C61808322B19ADF10032E543 /* PreviewCoreAppCoordinator.swift in Sources */,
 				C6B2E2002B96C51B00CEA1F9 /* MessagingChatMessageUnsupportedTypeDisplayInfo.swift in Sources */,
+				C6CF2A652C859FD300AD0721 /* MPCOnboardingForgotPasswordViewController.swift in Sources */,
 				C640D6132C48087C006B21C3 /* AnimatedMPCWalletGridMask.swift in Sources */,
 				C6D645AA2B1DBB3800D724AC /* UICollectionViewLayout.swift in Sources */,
 				C6C8F9372B2183D100A9834D /* DomainImageDetailsViewPresenter.swift in Sources */,

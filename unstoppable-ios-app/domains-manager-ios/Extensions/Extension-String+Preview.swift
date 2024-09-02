@@ -1308,6 +1308,8 @@ extension String {
         static let contactSupport = "CONTACT_SUPPORT"
         static let mpcWalletDefaultName = "MPC_WALLET_DEFAULT_NAME"
         static let sendCrypto = "SEND_CRYPTO"
+        static let mpcForgotPasswordTitle = "MPC_FORGOT_PASSWORD_TITLE"
+        static let mpcForgotPasswordSubtitle = "MPC_FORGOT_PASSWORD_SUBTITLE"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"
