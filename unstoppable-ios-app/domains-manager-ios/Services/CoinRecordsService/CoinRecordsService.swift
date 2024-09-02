@@ -73,12 +73,12 @@ private extension CoinRecordsService {
     
     func loadNewRecords(cursor: String?) async throws -> TokenRecordsResponse {
         var url = NetworkConfig.pav3BaseUrl.appendingURLPathComponents("resolution", "keys")
-        var parameters = ["subType" : "CRYPTO_TOKEN",
-                          "$expand" : "validation"]
-        if let cursor {
-            parameters["$cursor"] = cursor
-        }
-        url = url.appendingURLQueryComponents(parameters)
+        let queryItems: [URLQueryItem] = [.init(name: "$cursor", value: cursor),
+                                          .init(name: "subType", value: "CRYPTO_TOKEN"),
+                                          .init(name: "$expand", value: "validation"),
+                                          .init(name: "$expand", value: "parents"),
+                                          .init(name: "$expand", value: "mapping")]
+        url = url.appendingURLQueryItems(queryItems)
         let headers = NetworkBearerAuthorisationHeaderBuilderImpl.instance.buildPav3BearerHeader()
         let apiRequest = try APIRequest(urlString: url, method: .get, headers: headers)
         let response: TokenRecordsResponse = try await NetworkService().makeDecodableAPIRequest(apiRequest)
@@ -158,8 +158,12 @@ private extension CoinRecordsService {
 extension CoinRecordsService {
     struct TokenRecord: Codable {
         let key: String
-        let type: String
+        let name: String
+        let shortName: String
+        let subType: String
         let validation: Regexes?
+        let mapping: Mapping?
+        let parents: [Parent]
         
         struct Regexes: Codable {
             let regexes: [Regex]
@@ -168,6 +172,19 @@ extension CoinRecordsService {
                 let name: String
                 let pattern: String
             }
+        }
+        
+        struct Mapping: Codable {
+            let isPreferred: Bool
+            let from: [String]
+            let to: String
+        }
+        
+        struct Parent: Codable {
+            let key: String
+            let name: String
+            let shortName: String
+            let subType: String
         }
     }
     
