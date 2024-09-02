@@ -521,6 +521,12 @@ private extension OnboardingNavigationController {
             addStepHandler(vc)
             
             return vc
+        case .mpcForgotPassword:
+            let vc = MPCOnboardingForgotPasswordViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
         }
     }
  
@@ -591,10 +597,11 @@ extension OnboardingNavigationController {
         case mpcPurchaseTakeoverAlmostThere = 31
         case mpcPurchaseTakeoverCodeAfterClaim = 32
         case mpcPurchaseTakeoverActivateAfterClaim = 33
+        case mpcForgotPassword = 34
         
         var isStorable: Bool {
             switch self {
-            case .mpcCode, .mpcActivate, .mpcPurchaseTakeoverPassword, .mpcPurchaseTakeoverCode, .mpcPurchaseTakeoverProgress, .mpcPurchaseTakeoverAlmostThere, .mpcPurchaseTakeoverCodeAfterClaim, .mpcPurchaseTakeoverActivateAfterClaim:
+            case .mpcCode, .mpcActivate, .mpcPurchaseTakeoverPassword, .mpcPurchaseTakeoverCode, .mpcPurchaseTakeoverProgress, .mpcPurchaseTakeoverAlmostThere, .mpcPurchaseTakeoverCodeAfterClaim, .mpcPurchaseTakeoverActivateAfterClaim, .mpcForgotPassword:
                 return false
             default:
                 return true

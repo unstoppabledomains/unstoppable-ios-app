@@ -260,6 +260,7 @@ extension Analytics {
         case mpcPurchaseTakeoverAlmostThereOnboarding, mpcPurchaseTakeoverAlmostThereInApp
         case mpcPurchaseTakeoverCodeAfterClaimOnboarding, mpcPurchaseTakeoverCodeAfterClaimInApp
         case mpcPurchaseTakeoverActivateAfterClaimOnboarding, mpcPurchaseTakeoverActivateAfterClaimInApp
+        case mpcForgotPassword
         
         case inAppAddWallet
         case mpcActivateEnterCode, mpcActivateEnterPassword

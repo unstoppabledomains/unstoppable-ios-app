@@ -10,6 +10,7 @@ import SwiftUI
 extension ReconnectMPCWalletFlow {
     enum NavigationDestination: Hashable {
         case enterCredentials(email: String)
+        case forgotPassword
         case enterCode(email: String)
         case activate(credentials: MPCActivateCredentials, code: String)
         
@@ -22,6 +23,8 @@ extension ReconnectMPCWalletFlow {
             switch navigationDestination {
             case .enterCredentials(let email):
                 MPCEnterCredentialsReconnectView(email: email)
+            case .forgotPassword:
+                MPCForgotPasswordView()
             case .enterCode(let email):
                 MPCEnterCodeReconnectView(email: email)
             case .activate(let credentials, let code):

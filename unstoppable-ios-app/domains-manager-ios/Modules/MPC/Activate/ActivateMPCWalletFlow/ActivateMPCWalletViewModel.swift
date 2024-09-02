@@ -31,6 +31,8 @@ final class ActivateMPCWalletViewModel: ObservableObject {
                 case .didEnterCredentials(let credentials):
                     self.credentials = credentials
                     navPath.append(.enterCode(email: credentials.email))
+                case .didPressForgotPassword:
+                    navPath.append(.forgotPassword)
                 case .didEnterCode(let code):
                     guard let credentials else { return }
                     

@@ -15,7 +15,8 @@ struct MPCEnterCredentialsReconnectView: View {
     var body: some View {
         MPCEnterCredentialsView(mode: .strictEmail(email),
                                 analyticsName: .mpcEnterCredentialsReconnect,
-                                credentialsCallback: didEnterCredentials)
+                                credentialsCallback: didEnterCredentials,
+                                forgotPasswordCallback: didPressForgotPassword)
         .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
     }
 }
@@ -24,6 +25,10 @@ struct MPCEnterCredentialsReconnectView: View {
 private extension MPCEnterCredentialsReconnectView {
     func didEnterCredentials(_ credentials: MPCActivateCredentials) {
         viewModel.handleAction(.didEnterCredentials(credentials))
+    }
+    
+    func didPressForgotPassword() {
+        viewModel.handleAction(.didPressForgotPassword)
     }
 }
 
