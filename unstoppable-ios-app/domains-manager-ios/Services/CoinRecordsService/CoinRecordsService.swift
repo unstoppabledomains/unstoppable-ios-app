@@ -154,6 +154,16 @@ private extension CoinRecordsService {
             }
         }
     }
+    
+    @MainActor
+    func shareTokens(_ coinRecords: [TokenRecord]) {
+        #if DEBUG
+        guard let data = coinRecords.jsonString(),
+              let topVC = appContext.coreAppCoordinator.topVC else { return }
+        
+        topVC.shareItems([data]) { _ in  }
+        #endif
+    }
 }
 
 // MARK: - Legacy
