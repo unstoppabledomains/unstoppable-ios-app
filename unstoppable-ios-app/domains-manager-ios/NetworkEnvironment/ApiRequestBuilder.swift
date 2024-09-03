@@ -421,7 +421,7 @@ extension APIRequestBuilder {
             
             struct DynamicKey: CodingKey {
                 var stringValue: String
-                init?(stringValue: String) {
+                init(stringValue: String) {
                     self.stringValue = stringValue
                 }
                 
@@ -439,10 +439,12 @@ extension APIRequestBuilder {
             case .updateRecords(let records):
                 var nested = container.nestedContainer(keyedBy: DynamicKey.self, forKey: .records)
                 try records.forEach {
-                    guard let key = DynamicKey(stringValue: $0.resolveKey()) else {
-                        throw APIRequestError.invalidKeyForEncoding
+                    let keys = $0.resolveKeys()
+                    let value = $0.resolveValue()
+                    try keys.forEach { key in
+                        let encodedKey = DynamicKey(stringValue: key)
+                        try nested.encode(value, forKey: encodedKey)
                     }
-                    try nested.encode($0.resolveValue(), forKey: key)
                 }
             }
         }
@@ -462,7 +464,7 @@ extension APIRequestBuilder {
     }
     
     func actionPostReverseResolution(for domain: DomainItem,
-                    remove: Bool) throws -> APIRequestBuilder {
+                                     remove: Bool) throws -> APIRequestBuilder {
         self.type = .actions
         
         let jsonData = try JSONEncoder().encode(ActionRequest(domain: domain.name,

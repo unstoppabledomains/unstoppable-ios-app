@@ -15,11 +15,11 @@ enum RecordToUpdate: Hashable {
     case web3 (String)
     case pictureValue (String)
     
-    func resolveKey() -> String {
+    func resolveKeys() -> [String] {
         switch self {
-        case .crypto(let cryptoRecord): return cryptoRecord.coin.expandedTicker
-        case .pictureValue: return Self.socialPictureKey
-        case .web3: return Self.ipfsKey
+        case .crypto(let cryptoRecord): return cryptoRecord.coin.getNewAndLegacyTickers()
+        case .pictureValue: return [Self.socialPictureKey]
+        case .web3: return [Self.ipfsKey]
         }
     }
     

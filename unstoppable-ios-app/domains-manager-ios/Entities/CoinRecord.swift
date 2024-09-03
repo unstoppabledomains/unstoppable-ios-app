@@ -75,6 +75,14 @@ extension CoinRecord {
         /// Check record key is in old format
         return mapping?.from.first(where: { $0 == recordKey }) != nil
     }
+    
+    func getNewAndLegacyTickers() -> [String] {
+        var tickers = [expandedTicker]
+        if let legacyTicker = mapping?.to {
+            tickers.append(legacyTicker)
+        }
+        return tickers
+    }
 }
 
 // MARK: - Open methods
