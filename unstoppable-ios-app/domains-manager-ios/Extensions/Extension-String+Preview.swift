@@ -757,6 +757,7 @@ extension String {
         static let mintedOnChain = "MINTED_ON_CHAIN"
         static let mintedOnPolygonDescription = "MINTED_ON_POLYGON_DESCRIPTION"
         static let mintedOnEthereumDescription = "MINTED_ON_ETHEREUM_DESCRIPTION"
+        static let mintedOnBaseDescription = "MINTED_ON_BASE_DESCRIPTION"
         static let domainProfileInfoTitle = "DOMAIN_PROFILE_INFO_TITLE"
         static let domainProfileCreateInfoTitle = "DOMAIN_PROFILE_CREATE_INFO_TITLE"
         static let domainProfileInfoDescription = "DOMAIN_PROFILE_INFO_DESCRIPTION"

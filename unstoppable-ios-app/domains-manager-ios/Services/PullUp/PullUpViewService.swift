@@ -308,9 +308,12 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         case .Matic:
             description = String.Constants.mintedOnPolygonDescription.localized()
             selectionViewHeight = 304
-        case .Base, .Bitcoin, .Solana:
+        case .Base:
+            description = String.Constants.mintedOnBaseDescription.localized()
+            selectionViewHeight = 304
+        case .Bitcoin, .Solana:
             Debugger.printFailure("Minting can be only on Ethereum and Polygon", critical: true)
-            description = "\(chain.fullName) should not be used for minting"
+            description = "\(chain.fullName)"
             selectionViewHeight = 304
         }
         
