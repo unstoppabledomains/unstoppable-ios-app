@@ -127,7 +127,7 @@ extension DomainProfileSectionHeader {
         var iconBehaviour: ((UIImageView)->())? = nil
         
         static func add(isEnabled: Bool, callback: @escaping EmptyCallback) -> HeaderButton {
-            HeaderButton(title: String.Constants.add.localized(), icon: .plusIconSmall, isEnabled: isEnabled, action: callback)
+            HeaderButton(title: String.Constants.add.localized(), icon: .plusIcon, isEnabled: isEnabled, action: callback)
         }
         
         static func refresh(isEnabled: Bool,

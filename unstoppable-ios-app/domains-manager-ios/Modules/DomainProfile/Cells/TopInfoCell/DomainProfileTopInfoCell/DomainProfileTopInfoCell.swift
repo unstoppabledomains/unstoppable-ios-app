@@ -27,7 +27,7 @@ final class DomainProfileTopInfoCell: BaseDomainProfileTopInfoCell {
         
         avatarButton.setTitle(nil, image: .avatarsIcon32)
         bannerButton.setTitle(String.Constants.addCover.localized(), image: .framesIcon20)
-        qrCodeButton.setTitle(String.Constants.qrCode.localized(), image: .scanQRIcon16)
+        qrCodeButton.setTitle(String.Constants.qrCode.localized(), image: .scanQRIcon)
         followersButton.isHidden = true
         domainNameLabel.numberOfLines = 2
         domainNameLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapDomainNameLabel)))

@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import Combine
 
 final class WCRequestsHandlingService: WCRequestsHandlingServiceProtocol, WalletConnectExternalWalletHandlerProtocol {
+    private(set) var eventsPublisher = PassthroughSubject<WalletConnectServiceEvent, Never>()
+
     func handleWCRequest(_ request: WCRequest, target: UDWallet) async throws {
         
     }
@@ -27,7 +30,7 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol {
     
     var walletAddress: HexAddress
     var appName: String
-    var displayName: String
+    var displayName: String { appName }
     
     var appIconUrls: [String] = []
     var appUrlString: String = ""
@@ -37,10 +40,14 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol {
     var chainIds: [Int] = []
 
     init(name: String = "Uniswap",
-              walletAddress: String = "") {
+         walletAddress: String = "") {
         self.walletAddress = walletAddress
         self.appName = name
-        self.displayName = name
+    }
+    
+    init(from appV2: WCConnectedAppsStorageV2.ConnectedApp) {
+        self.walletAddress = appV2.walletAddress
+        self.appName = appV2.appName
     }
     
 }

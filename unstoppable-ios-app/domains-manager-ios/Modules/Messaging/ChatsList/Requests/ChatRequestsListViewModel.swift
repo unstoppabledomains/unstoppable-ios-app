@@ -110,7 +110,7 @@ extension ChatRequestsListViewModel: MessagingServiceListener {
                 case .channelsSpam:
                     return
                 }
-            case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded, .refreshOfUserProfile, .totalUnreadMessagesCountUpdated, .userInfoRefreshed:
+            case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded, .refreshOfUserProfile, .totalUnreadMessagesCountUpdated, .userInfoRefreshed, .profileCreated:
                 return
             }
         }

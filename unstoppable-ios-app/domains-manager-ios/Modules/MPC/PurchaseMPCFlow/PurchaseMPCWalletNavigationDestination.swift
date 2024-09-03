@@ -9,13 +9,14 @@ import SwiftUI
 
 extension PurchaseMPCWallet {
     enum NavigationDestination: Hashable {
-        case udAuth
-        case checkout(MPCPurchaseUDCredentials)
-        case alreadyHaveWallet(email: String)
-        case enterTakoverCredentials(purchaseEmail: String?)
-        case enterTakoverRecovery(email: String)
+        case enterTakeoverCredentials
+        case enterTakeoverPassword(email: String)
+        case enterTakeoverCode(email: String)
         case takeover(MPCTakeoverCredentials)
-        
+        case almostThere
+        case enterActivationCode(email: String)
+        case activate(credentials: MPCTakeoverCredentials)
+
         var isWithCustomTitle: Bool { false }
     }
     
@@ -23,18 +24,22 @@ extension PurchaseMPCWallet {
         @ViewBuilder
         static func viewFor(navigationDestination: NavigationDestination) -> some View {
             switch navigationDestination {
-            case .udAuth:
-                PurchaseMPCWalletUDAuthInAppView()
-            case .checkout(let credentials):
-                PurchaseMPCWalletCheckoutInAppView(credentials: credentials)
-            case .alreadyHaveWallet(let email):
-                PurchaseMPCWalletAlreadyHaveWalletInAppView(email: email)
-            case .enterTakoverCredentials(let purchaseEmail):
-                PurchaseMPCWalletTakeoverCredentialsInAppView(purchaseEmail: purchaseEmail)
-            case .enterTakoverRecovery(let email):
-                PurchaseMPCWalletTakeoverRecoveryInAppView(email: email)
+            case .enterTakeoverCredentials:
+                PurchaseMPCWalletTakeoverEmailInAppView()
+            case .enterTakeoverPassword(let email):
+                PurchaseMPCWalletTakeoverPasswordInAppView(email: email)
+            case .enterTakeoverCode(let email):
+                MPCEnterTakeoverCodeInAppView(email: email)
             case .takeover(let credentials):
                 PurchaseMPCWalletTakeoverProgressInAppView(credentials: credentials)
+            case .almostThere:
+                PurchaseMPCWalletAlmostThereInAppView()
+            case .enterActivationCode(let email):
+                MPCEnterCodeInAppAfterClaimView(email: email)
+            case .activate(let credentials):
+                MPCActivateWalletInAppAfterClaimView(credentials: MPCActivateCredentials(email: credentials.email,
+                                                                                         password: credentials.password),
+                                                     code: credentials.code)
             }
         }
     }

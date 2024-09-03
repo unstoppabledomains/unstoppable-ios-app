@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import Combine
 
 protocol WCRequestsHandlingServiceProtocol {
+    var eventsPublisher: PassthroughSubject<WalletConnectServiceEvent, Never> { get }
+    
     func handleWCRequest(_ request: WCRequest, target: UDWallet) async throws
     func setUIHandler(_ uiHandler: WalletConnectUIErrorHandler)
     func addListener(_ listener: WalletConnectServiceConnectionListener)

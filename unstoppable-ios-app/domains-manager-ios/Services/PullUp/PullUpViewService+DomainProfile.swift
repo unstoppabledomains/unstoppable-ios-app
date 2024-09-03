@@ -8,20 +8,6 @@
 import UIKit
 
 extension PullUpViewService {
-    func showManageDomainRouteCryptoPullUp(in viewController: UIViewController,
-                                           numberOfCrypto: Int) {
-        let selectionViewHeight: CGFloat = 304
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.manageDomainRouteCryptoHeader.localized()),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .walletBTCIcon,
-                                                                                 size: .small),
-                                                                     subtitle: .label(.text(String.Constants.manageDomainRouteCryptoDescription.localized())),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        showOrUpdate(in: viewController, pullUp: .routeCryptoInfo, contentView: selectionView, height: selectionViewHeight)
-    }
-    
     func showDomainProfileChangesConfirmationPullUp(in viewController: UIViewController,
                                                     changes: [DomainProfileSectionUIChangeType]) async throws {
         let selectionViewHeight: CGFloat = 268 + (CGFloat(changes.count) * PullUpCollectionViewCell.Height)
@@ -307,30 +293,6 @@ extension PullUpViewService {
                                                     items: changes)
             
             showOrUpdate(in: viewController, pullUp: .updateDomainProfileSomeChangesFailed, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
-        }
-    }
-    
-    func showShowcaseYourProfilePullUp(for domain: DomainDisplayInfo,
-                                       in viewController: UIViewController) async throws {
-        let selectionViewHeight: CGFloat = 388
-        
-        let illustration = buildImageViewWith(image: .showcaseDomainProfileIllustration,
-                                              width: 358,
-                                              height: 56)
-        
-        try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
-            let selectionView = PullUpSelectionView(configuration: .init(customHeader: illustration,
-                                                                         title: .text(String.Constants.profileShowcaseProfileTitle.localized(domain.name)),
-                                                                         contentAlignment: .center,
-                                                                         subtitle: .label(.text(String.Constants.profileShowcaseProfileDescription.localized())),
-                                                                         actionButton: .main(content: .init(title: String.Constants.shareProfile.localized(),
-                                                                                                            icon: nil,
-                                                                                                            analyticsName: .share,
-                                                                                                            action: { completion(.success(Void())) })),
-                                                                         cancelButton: .cancelButton),
-                                                    items: PullUpSelectionViewEmptyItem.allCases)
-            
-            presentPullUpView(in: viewController, pullUp: .showcaseYourProfile, additionalAnalyticParameters: [.domainName: domain.name], contentView: selectionView, isDismissAble: true, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
         }
     }
     

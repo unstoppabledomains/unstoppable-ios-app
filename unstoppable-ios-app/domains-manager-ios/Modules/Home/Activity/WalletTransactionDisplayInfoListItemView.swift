@@ -127,7 +127,7 @@ private extension WalletTransactionDisplayInfoListItemView {
     }
     
     var transactionValue: String {
-        "\(transaction.value.formatted(toMaxNumberAfterComa: 4)) \(transaction.symbol)"
+        "\(transaction.value.formatted(toMaxNumberAfterComa: 6)) \(transaction.symbol)"
     }
     
     @ViewBuilder
@@ -148,7 +148,7 @@ private extension WalletTransactionDisplayInfoListItemView {
     func gasFeeLabel() -> some View {
         if transaction.gas > 0,
            !transaction.type.isDeposit {
-            Text("-\(transaction.gas.formatted(toMaxNumberAfterComa: 4)) " + String.Constants.txFee.localized())
+            Text("-\(transaction.gas.formatted(toMaxNumberAfterComa: 6)) " + String.Constants.txFee.localized())
                 .font(.currentFont(size: 14))
                 .foregroundStyle(Color.foregroundSecondary)
         }

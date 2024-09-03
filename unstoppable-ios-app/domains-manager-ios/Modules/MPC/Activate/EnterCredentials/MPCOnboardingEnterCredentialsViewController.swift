@@ -29,6 +29,10 @@ private extension MPCOnboardingEnterCredentialsViewController {
         OnboardingData.mpcCredentials = credentials
         onboardingFlowManager?.moveToStep(.mpcCode)
     }
+    
+    func didPressForgotPassword() {
+        onboardingFlowManager?.moveToStep(.mpcForgotPassword)
+    }
 }
 
 // MARK: - Setup methods
@@ -43,11 +47,14 @@ private extension MPCOnboardingEnterCredentialsViewController {
     
     func addChildView() {
         let mpcView = MPCEnterCredentialsView(mode: .freeInput(OnboardingData.mpcCredentials?.email),
-                                              analyticsName: .mpcEnterCredentialsOnboarding) { [weak self] credentials in
+                                              analyticsName: .mpcEnterCredentialsOnboarding,
+                                              credentialsCallback: { [weak self] credentials in
             DispatchQueue.main.async {
                 self?.didEnterCredentials(credentials)
             }
-        }
+        }, forgotPasswordCallback: { [weak self] in
+            self?.didPressForgotPassword()
+        })
             .padding(.top, 40)
 
         let vc = UIHostingController(rootView: mpcView)

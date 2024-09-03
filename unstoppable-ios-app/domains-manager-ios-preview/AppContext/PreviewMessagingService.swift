@@ -31,6 +31,8 @@ final class MessagingService: MessagingServiceProtocol {
         return .init(id: "1", wallet: wallet.address, serviceIdentifier: .xmtp)
     }
     
+    func isCreatingProfileInProgressFor(wallet: WalletEntity) async -> Bool { true }
+    
     func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool {
         false
     }

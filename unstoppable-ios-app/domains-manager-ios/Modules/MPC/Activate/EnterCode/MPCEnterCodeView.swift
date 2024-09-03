@@ -11,6 +11,7 @@ struct MPCEnterCodeView: View, ViewAnalyticsLogger {
         
     let analyticsName: Analytics.ViewName
     let email: String
+    let resendAction: ResendConfirmationCodeBlock
     let enterCodeCallback: (String)->()
     @State private var input: String = ""
 
@@ -22,11 +23,11 @@ struct MPCEnterCodeView: View, ViewAnalyticsLogger {
                 actionButtonsView()
                 Spacer()
             }
+            .padding()
         }
         .passViewAnalyticsDetails(logger: self)
         .trackAppearanceAnalytics(analyticsLogger: self)
         .scrollDisabled(true)
-        .padding()
         .animation(.default, value: UUID())
     }
 }
@@ -41,9 +42,13 @@ private extension MPCEnterCodeView {
             Text(String.Constants.enterMPCWalletVerificationCodeTitle.localized())
                 .font(.currentFont(size: isIPSE ? 26 : 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
-            Text(String.Constants.enterMPCWalletVerificationCodeSubtitle.localized(email))
-                .font(.currentFont(size: 16))
-                .foregroundStyle(Color.foregroundSecondary)
+            AttributedText(attributesList: .init(text: String.Constants.enterMPCWalletVerificationCodeSubtitle.localized(email),
+                                                 font: .currentFont(withSize: 16),
+                                                 textColor: .foregroundSecondary,
+                                                 alignment: .center,
+                                                 lineBreakMode: .byTruncatingMiddle),
+                           updatedAttributesList: [.init(text: email, textColor: .foregroundDefault)])
+            .frame(maxHeight: 24)
         }
         .multilineTextAlignment(.center)
     }
@@ -56,7 +61,9 @@ private extension MPCEnterCodeView {
                         rightViewType: .paste,
                         rightViewMode: .always,
                         focusBehaviour: .activateOnAppear,
+                        keyboardType: .alphabet,
                         autocapitalization: .characters,
+                        textContentType: .oneTimeCode,
                         autocorrectionDisabled: true)
     }
     
@@ -83,14 +90,16 @@ private extension MPCEnterCodeView {
     
     @ViewBuilder
     func haventReceiveCodeButtonView() -> some View {
-        MPCResendCodeButton(email: email)
+        MPCResendCodeButton(email: email,
+                            resendAction: resendAction)
     }
 }
 
 #Preview {
     NavigationStack {
         MPCEnterCodeView(analyticsName: .mpcEnterCodeOnboarding,
-                         email: "",
+                         email: "qqqwdhgsasdsdadncdgckjashxasjkdhaskjchaksjhxasjhx@qq.qq",
+                         resendAction: { _ in },
                          enterCodeCallback: { _ in })
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

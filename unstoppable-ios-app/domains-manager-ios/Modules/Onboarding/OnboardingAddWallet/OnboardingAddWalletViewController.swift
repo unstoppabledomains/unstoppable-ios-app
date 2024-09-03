@@ -59,7 +59,7 @@ private extension OnboardingAddWalletViewController {
     func didSelectRestoreOption(_ restoreOption: OnboardingAddWalletType) {
         switch restoreOption {
         case .mpcWallet:
-            onboardingFlowManager.moveToStep(.mpcPurchaseAuth)
+            onboardingFlowManager.moveToStep(.mpcPurchaseTakeoverEmail)
         case .selfCustody:
             onboardingFlowManager.moveToStep(.createWallet)
         }

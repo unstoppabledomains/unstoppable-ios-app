@@ -24,13 +24,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, SceneDelegateProtocol {
         window.makeKeyAndVisible()
         self.window = window
         
-        let view = HomeTabView(tabRouter: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!)))
-        let vc = UIHostingController(rootView: view)
-        
-        window.rootViewController = vc
-        
+//        setHomeViewAsRoot(in: window)
+        setOnboardingAsRoot(in: window)
         
         window.overrideUserInterfaceStyle = .dark
+        appContext.coreAppCoordinator.startWith(window: window)
 //        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController()!
 //        let nav = CNavigationController(rootViewController: vc)
 //        window.rootViewController = nav
@@ -92,7 +90,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, SceneDelegateProtocol {
         false
     }
     
-    
-
 }
 
+// MARK: - Private methods
+private extension SceneDelegate {
+    func setHomeViewAsRoot(in window: UIWindow) {
+        let view = HomeTabView(tabRouter: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!)))
+        let vc = UIHostingController(rootView: view)
+        window.rootViewController = vc
+    }
+    
+    func setOnboardingAsRoot(in window: UIWindow) {
+        let vc = OnboardingNavigationController.instantiate(flow: .newUser(subFlow: nil))
+        window.rootViewController = vc
+    }
+}

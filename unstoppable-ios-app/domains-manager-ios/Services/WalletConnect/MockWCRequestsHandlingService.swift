@@ -6,8 +6,12 @@
 //
 
 import Foundation
+import Combine
 
 final class MockWCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
+    
+    private(set) var eventsPublisher = PassthroughSubject<WalletConnectServiceEvent, Never>()
+
     func expectConnection() {
         
     }

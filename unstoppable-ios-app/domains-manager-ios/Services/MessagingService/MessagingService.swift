@@ -66,7 +66,7 @@ extension MessagingService: MessagingServiceProtocol {
     // Capabilities
     func canContactWithoutProfileIn(newConversation newConversationDescription: MessagingChatNewConversationDescription) -> Bool {
         guard let apiService = try? getAPIServiceWith(identifier: newConversationDescription.messagingService) else { return false }
-
+        
         return apiService.capabilities.canContactWithoutProfile
     }
     
@@ -80,7 +80,7 @@ extension MessagingService: MessagingServiceProtocol {
         let serviceIdentifier = newConversationDescription.messagingService
         let address = newConversationDescription.userInfo.wallet
         let profile = try await getUserProfileWith(wallet: user.wallet, serviceIdentifier: serviceIdentifier)
-
+        
         let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
         return try await apiService.isAbleToContactAddress(address, by: profile)
     }
@@ -116,7 +116,7 @@ extension MessagingService: MessagingServiceProtocol {
     func getUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo {
         try await getUserProfile(for: wallet, serviceIdentifier: defaultServiceIdentifier)
     }
- 
+    
     func createUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo {
         let profile = try await createUserProfile(for: wallet, serviceIdentifier: defaultServiceIdentifier)
         if wallet.udWallet.type != .mpc,
@@ -124,6 +124,10 @@ extension MessagingService: MessagingServiceProtocol {
             _ = try? await createUserProfile(for: wallet, serviceIdentifier: communitiesServiceIdentifier)
         }
         return profile
+    }
+    
+    func isCreatingProfileInProgressFor(wallet: WalletEntity) async -> Bool {
+        await stateHolder.getOngoingCreateProfileTask(for: wallet, serviceIdentifier: defaultServiceIdentifier) != nil
     }
     
     func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool {
@@ -749,9 +753,11 @@ extension MessagingService {
 
 // MARK: - StateHolder
 extension MessagingService {
+    typealias CreateProfileTask = Task<MessagingChatUserProfileDisplayInfo, Error>
     actor StateHolder {
         
         private var sendingMessagesCounter: Int = 0
+        private var creatingProfilesProcess = [MessagingProfileDetails : CreateProfileTask]()
         
         var isSendingMessage: Bool { sendingMessagesCounter > 0 }
         
@@ -768,5 +774,22 @@ extension MessagingService {
             }
         }
         
+        func getOngoingCreateProfileTask(for wallet: WalletEntity,
+                                         serviceIdentifier: MessagingServiceIdentifier) -> CreateProfileTask? {
+            let details = MessagingProfileDetails(walletAddress: wallet.address, serviceIdentifier: serviceIdentifier)
+            return creatingProfilesProcess[details]
+        }
+        
+        func setOngoingCreateProfileTask(_ task: CreateProfileTask?,
+                                         for wallet: WalletEntity,
+                                         serviceIdentifier: MessagingServiceIdentifier) {
+            let details = MessagingProfileDetails(walletAddress: wallet.address, serviceIdentifier: serviceIdentifier)
+            creatingProfilesProcess[details] = task
+        }
+        
+        private struct MessagingProfileDetails: Hashable {
+            let walletAddress: String
+            let serviceIdentifier: MessagingServiceIdentifier
+        }
     }
 }

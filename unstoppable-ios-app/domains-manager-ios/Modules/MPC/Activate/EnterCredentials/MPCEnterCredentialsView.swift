@@ -14,6 +14,7 @@ struct MPCEnterCredentialsView: View, UserDataValidator, ViewAnalyticsLogger {
     var mode: InputMode = .freeInput()
     let analyticsName: Analytics.ViewName
     let credentialsCallback: (MPCActivateCredentials)->()
+    var forgotPasswordCallback: EmptyCallback? = nil
     @State private var emailInput: String = ""
     @State private var passwordInput: String = ""
     @State private var isLoading = false
@@ -122,12 +123,34 @@ private extension MPCEnterCredentialsView {
     
     @ViewBuilder
     func passwordInputView() -> some View {
-        UDTextFieldView(text: $passwordInput,
-                        placeholder: String.Constants.password.localized(),
-                        focusBehaviour: emailInputDisabled ? .activateOnAppear : .default,
-                        autocapitalization: .never,
-                        autocorrectionDisabled: true,
-                        isSecureInput: true)
+        VStack(alignment: .leading,
+               spacing: 8) {
+            UDTextFieldView(text: $passwordInput,
+                            placeholder: String.Constants.password.localized(),
+                            focusBehaviour: emailInputDisabled ? .activateOnAppear : .default,
+                            autocapitalization: .never,
+                            autocorrectionDisabled: true,
+                            isSecureInput: true)
+            forgotPasswordView()
+        }
+    }
+    
+    @ViewBuilder
+    func forgotPasswordView() -> some View {
+        if let forgotPasswordCallback {
+            Button {
+                UDVibration.buttonTap.vibrate()
+                logButtonPressedAnalyticEvents(button: .forgotPassword)
+                forgotPasswordCallback()
+            } label: {
+                Text("Forgot password?")
+                    .textAttributes(color: .foregroundAccent,
+                                    fontSize: 13,
+                                    fontWeight: .medium)
+                    .underline()
+                    .padding(.leading, 16)
+            }
+        }
     }
     
     var isActionButtonDisabled: Bool {
@@ -177,8 +200,10 @@ extension MPCEnterCredentialsView {
 
 @available(iOS 17.0, *)
 #Preview {
-    let vc = MPCOnboardingEnterCredentialsViewController()
-    let nav = CNavigationController(rootViewController: vc)
+//    let vc = MPCOnboardingEnterCredentialsViewController()
+//    let nav = CNavigationController(rootViewController: vc)
+//    
+//    return nav
     
-    return nav
+    MPCEnterCredentialsView(analyticsName: .addEmail, credentialsCallback: { _ in })
 }

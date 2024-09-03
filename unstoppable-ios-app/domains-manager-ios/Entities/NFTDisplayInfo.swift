@@ -137,10 +137,8 @@ extension NFTDisplayInfo {
                 return Image(systemName: "number")
             case .chain:
                 return Image(systemName: "link")
-//                return .chainLinkIcon
             case .lastSaleDate:
                 return Image(systemName: "clock")
-//                return .timeIcon
             case .rarity:
                 return Image(systemName: "sparkles")
             case .holdDays:

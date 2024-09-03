@@ -25,6 +25,7 @@ final class WCRequestsHandlingService {
     private var isHandlingRequest = false
     private var publishers = [AnyCancellable]() // For WC2
     private var timeoutWorkItem: DispatchWorkItem?
+    private(set) var eventsPublisher = PassthroughSubject<WalletConnectServiceEvent, Never>()
 
     init(walletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol,
          walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol) {
@@ -247,24 +248,28 @@ private extension WCRequestsHandlingService {
 // MARK: - Notifications methods
 private extension WCRequestsHandlingService {
     func notifyDidConnect(to app: UnifiedConnectAppInfo) {
+        eventsPublisher.send(.didConnect(app))
         listeners.forEach { holder in
             holder.listener?.didConnect(to: app)
         }
     }
     
     func notifyCompleteConnectionAttempt() {
+        eventsPublisher.send(.didCompleteConnectionAttempt)
         listeners.forEach { holder in
             holder.listener?.didCompleteConnectionAttempt()
         }
     }
     
     func notifyDidDisconnect(from app: UnifiedConnectAppInfo) {
+        eventsPublisher.send(.didDisconnect(app))
         listeners.forEach { holder in
             holder.listener?.didDisconnect(from: app)
         }
     }
     
     func notifyDidHandleExternalWCRequestWith(result: WCExternalRequestResult) {
+        eventsPublisher.send(.didHandleExternalWCRequestWith(result))
         listeners.forEach { holder in
             holder.listener?.didHandleExternalWCRequestWith(result: result)
         }

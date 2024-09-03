@@ -9,8 +9,6 @@ import SwiftUI
 
 struct OnboardingBuyMPCOptionView: View {
     
-    @State private var mpcWalletPrice: Int?
-    
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
             HStack(alignment: .top, spacing: 16) {
@@ -22,9 +20,6 @@ struct OnboardingBuyMPCOptionView: View {
             }
             Spacer()
             rightView()
-        }
-        .task {
-            mpcWalletPrice = try? await EcomMPCPriceFetcher.shared.fetchPrice()
         }
     }
 }
@@ -82,10 +77,7 @@ private extension OnboardingBuyMPCOptionView {
     
     @ViewBuilder
     func subtitleView() -> some View {
-        VStack(alignment: .leading, spacing: 20) {
-            subtitleText()
-            priceView()
-        }
+        subtitleText()
     }
     
     @ViewBuilder
@@ -93,16 +85,6 @@ private extension OnboardingBuyMPCOptionView {
         Text(String.Constants.createMPCOnboardingSubtitle.localized())
             .textAttributes(color: .foregroundSecondary, fontSize: 14)
             .frame(minHeight: 20)
-    }
-    
-    @ViewBuilder
-    func priceView() -> some View {
-        if let mpcWalletPrice {
-            Text(String.Constants.nPricePerYear.localized(formatCartPrice(mpcWalletPrice)))
-                .textAttributes(color: .foregroundDefault, fontSize: 14, fontWeight: .medium)
-        } else {
-            ProgressView()
-        }
     }
     
     @ViewBuilder

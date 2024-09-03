@@ -10,5 +10,6 @@ import Foundation
 struct MPCTakeoverCredentials: Hashable {
     let email: String
     var password: String
+    var code: String = ""
     var sendRecoveryLink: Bool = true
 }

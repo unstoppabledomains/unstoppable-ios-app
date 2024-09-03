@@ -56,12 +56,7 @@ extension DomainProfileTopInfoSection: DomainProfileSection {
         }, bannerDropCallback: { [weak self] image in
             self?.didPickImage(image, ofType: .banner)
         })
-        switch state {
-        case .purchaseNew:
-            snapshot.appendItems([.purchaseTopInfo(data: itemData)])
-        default:
-            snapshot.appendItems([.topInfo(data: itemData)])
-        }
+        snapshot.appendItems([.topInfo(data: itemData)])
     }
  
     func areAllFieldsValid() -> Bool {
@@ -166,18 +161,8 @@ private extension DomainProfileTopInfoSection {
         logProfileSectionButtonPressedAnalyticEvent(button: button.analyticName,
                                                     parameters: [:])
         switch button {
-        case .avatar:
-            if state == .purchaseNew {
-                logProfileSectionButtonPressedAnalyticEvent(button: .changePhoto,
-                                                            parameters: [.fieldName : DomainImageType.avatar.analyticsName])
-                setImageOf(type: .avatar)
-            }
-        case .banner:
-            if state == .purchaseNew {
-                logProfileSectionButtonPressedAnalyticEvent(button: .changePhoto,
-                                                            parameters: [.fieldName : DomainImageType.banner.analyticsName])
-                setImageOf(type: .banner)
-            }
+        case .banner, .avatar:
+            return
         case .qrCode:
             UDRouter().showDomainDetails(controller.generalData.domain,
                                          in: viewController)

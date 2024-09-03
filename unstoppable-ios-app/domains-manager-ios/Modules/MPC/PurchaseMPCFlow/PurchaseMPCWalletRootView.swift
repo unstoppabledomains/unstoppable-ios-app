@@ -27,9 +27,9 @@ struct PurchaseMPCWalletRootView: View {
         }, navigationStateProvider: { navigationState in
             self.viewModel.navigationState = navigationState
         }, path: $viewModel.navPath)
-        .interactiveDismissDisabled(!viewModel.navPath.isEmpty)
         .displayError($viewModel.error)
         .allowsHitTesting(!viewModel.isLoading)
+        .interactiveDismissDisabled(!viewModel.navPath.isEmpty)
     }
     
     init(createWalletCallback: @escaping AddWalletResultCallback) {
@@ -40,10 +40,7 @@ struct PurchaseMPCWalletRootView: View {
 // MARK: - Private methods
 private extension PurchaseMPCWalletRootView {
     func updateTitleView() {
-        viewModel.navigationState?.yOffset = -2
-        withAnimation {
-            viewModel.navigationState?.isTitleVisible = viewModel.navPath.last?.isWithCustomTitle == true
-        }
+        
     }
 }
 

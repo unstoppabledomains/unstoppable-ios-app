@@ -36,11 +36,7 @@ struct HomeTabView: View {
         .viewPullUp(router.currentPullUp(id: id))
         .modifier(ShowingWalletSelectionModifier(isSelectWalletPresented: $router.isSelectProfilePresented))
         .sheet(isPresented: $router.isConnectedAppsListPresented, content: {
-            ConnectedAppsListViewControllerWrapper(scanCallback: {
-                router.showQRScanner()
-            })
-                .ignoresSafeArea()
-                .pullUpHandler(router)
+            ConnectedAppsListView(tabRouter: router)
         })
         .sheet(item: $router.presentedNFT, content: { nft in
             NFTDetailsView(nft: nft)

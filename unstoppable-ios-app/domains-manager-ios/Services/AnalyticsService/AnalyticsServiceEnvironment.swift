@@ -81,7 +81,7 @@ extension Analytics {
         
         case didSendCrypto, didFailToSendCrypto
         
-        case sendMPCBootstrapCodeError
+        case sendMPCBootstrapCodeError, sendClaimMPCCodeError
         case willActivateMPCWallet, didActivateMPCWallet, didFailActivateMPCWalletPassword, didFailActivateMPCWalletPasscode, didFailActivateMPCWalletUnknown
         case mpcWalletPurchased, mpcWalletPurchaseCancelled, mpcWalletAlreadyPurchased, mpcWalletPurchaseError
         case mpcEmailInUseEntered
@@ -199,7 +199,6 @@ extension Analytics {
         case importNewWallet, onboardingImportWallet, importExistingExternalWallet
         case home, homeDomainsSearch, domainsList, domainsSearch
         case scanning, wcConnectedAppsList, signWCTransactionDomainSelection
-        case upgradeToPolygonTutorial
         case webView, buyDomainsWebView
         case appUpdateRequired
         case mintingInProgressDomainsList
@@ -247,15 +246,21 @@ extension Analytics {
         case transferDomainSuccess, sendCryptoSuccess
         
         case mpcEnterCredentialsOnboarding, mpcEnterCredentialsInApp, mpcEnterCredentialsReconnect
-        case mpcEnterCodeOnboarding, mpcEnterCodeInApp
+        case mpcEnterCodeOnboarding, mpcEnterCodeInApp, mpcConfirmCodeInApp
         case mpcActivationOnboarding, mpcActivationInApp
         
         case mpcPurchaseUDAuthOnboarding, mpcPurchaseUDAuthInApp
         case mpcPurchaseCheckoutOnboarding, mpcPurchaseCheckoutInApp
         case mpcPurchaseAlreadyHaveWalletOnboarding, mpcPurchaseAlreadyHaveWalletInApp
         case mpcPurchaseTakeoverCredentialsOnboarding, mpcPurchaseTakeoverCredentialsInApp
-        case mpcPurchaseTakeoverRecoveryOnboarding, mpcPurchaseTakeoverRecoveryInApp
+        case mpcPurchaseTakeoverEmailOnboarding, mpcPurchaseTakeoverEmailInApp
+        case mpcPurchaseTakeoverPasswordOnboarding, mpcPurchaseTakeoverPasswordInApp
+        case mpcPurchaseTakeoverCodeOnboarding, mpcPurchaseTakeoverCodeInApp
         case mpcPurchaseTakeoverProgressOnboarding, mpcPurchaseTakeoverProgressInApp
+        case mpcPurchaseTakeoverAlmostThereOnboarding, mpcPurchaseTakeoverAlmostThereInApp
+        case mpcPurchaseTakeoverCodeAfterClaimOnboarding, mpcPurchaseTakeoverCodeAfterClaimInApp
+        case mpcPurchaseTakeoverActivateAfterClaimOnboarding, mpcPurchaseTakeoverActivateAfterClaimInApp
+        case mpcForgotPassword
         
         case inAppAddWallet
         case mpcActivateEnterCode, mpcActivateEnterPassword

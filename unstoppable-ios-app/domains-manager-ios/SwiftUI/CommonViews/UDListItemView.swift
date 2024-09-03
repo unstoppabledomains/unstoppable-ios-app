@@ -326,7 +326,7 @@ private extension UDListItemView {
     UDListItemView(title: "US ZIP code",
                    subtitle: "Taxes: $10.00",
                    value: "14736 (NY)",
-                   imageType: .uiImage(.udWalletListIcon),
+                   imageType: .uiImage(.domainSharePlaceholder),
                    imageStyle: .full,
                    rightViewStyle: .checkmark)
 }
