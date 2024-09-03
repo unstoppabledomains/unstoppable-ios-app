@@ -37,7 +37,7 @@ struct CoinRecord: Hashable, Codable {
             self.regexPatterns = [BlockchainType.Ethereum.regexPattern]
         }
         
-        self.isPrimaryChain = version == ticker
+        self.isPrimaryChain = Self.primaryNetworksMap[ticker] == version
         self.fullName = fullName ?? ticker
     }
     
@@ -93,3 +93,72 @@ extension CoinRecord {
     }
 }
 
+// MARK: - Private methods
+private extension CoinRecord {
+    private static let primaryNetworksMap: [String : String] = ["ELA" : "ELA",
+                                                                "FTM" : "FTM",
+                                                                "FUSE" : "FUSE",
+                                                                "MATIC" : "MATIC",
+                                                                "ETH" : "ETH",
+                                                                "UNI" : "ETH",
+                                                                "BUSD" : "BSC",
+                                                                "USDT" : "ETH",
+                                                                "WBTC" : "ETH",
+                                                                "AAVE" : "ETH",
+                                                                "SHIB" : "ETH",
+                                                                "CEL" : "ETH",
+                                                                "GALA" : "ETH",
+                                                                "B2M" : "ETH",
+                                                                "CAKE" : "BSC",
+                                                                "SAFEMOON" : "BSC",
+                                                                "TEL" : "ETH",
+                                                                "SUSHI" : "ETH",
+                                                                "TUSD" : "ETH",
+                                                                "HBTC" : "ETH",
+                                                                "SNX" : "ETH",
+                                                                "HOT" : "ETH",
+                                                                "NEXO" : "ETH",
+                                                                "MANA" : "ETH",
+                                                                "MDX" : "BSC",
+                                                                "LUSD" : "ETH",
+                                                                "GRT" : "ETH",
+                                                                "HUSD" : "ETH",
+                                                                "CRV" : "ETH",
+                                                                "WRX" : "BNB",
+                                                                "LPT" : "ETH",
+                                                                "BAKE" : "BSC",
+                                                                "1INCH" : "ETH",
+                                                                "WOO" : "ETH",
+                                                                "OXY" : "SOL",
+                                                                "REN" : "ETH",
+                                                                "RENBTC" : "ETH",
+                                                                "FEG" : "ETH",
+                                                                "MIR" : "ETH",
+                                                                "PAXG" : "ETH",
+                                                                "REEF" : "ETH",
+                                                                "BAND" : "ETH",
+                                                                "INJ" : "ETH",
+                                                                "SAND" : "ETH",
+                                                                "CTSI" : "ETH",
+                                                                "ANC" : "LUNA",
+                                                                "IQ" : "ETH",
+                                                                "SUSD" : "ETH",
+                                                                "SRM" : "SOL",
+                                                                "KEEP" : "ETH",
+                                                                "ALPHA" : "BSC",
+                                                                "DODO" : "BSC",
+                                                                "KNCL" : "ETH",
+                                                                "SXP" : "ETH",
+                                                                "UBT" : "ETH",
+                                                                "STORJ" : "ETH",
+                                                                "DPI" : "ETH",
+                                                                "DOG" : "ETH",
+                                                                "0ZK" : "0ZK",
+                                                                "SWEAT" : "NEAR",
+                                                                "FET" : "FET",
+                                                                "BNB" : "BSC",
+                                                                "USDC" : "ETH",
+                                                                "MCONTENT" : "BSC",
+                                                                "HI" : "ETH",
+                                                                "WETH" : "ETH"]
+}

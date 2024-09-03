@@ -144,7 +144,7 @@ private extension CoinRecordsService {
         for (ticker, coins) in groupedCoins {
             if coins.count > 1,
                coins.first(where: { $0.isPrimaryChain }) == nil {
-                Debugger.printFailure("[CALL TO ACTION]: Need to add primary chain for \(ticker)", critical: false)
+                Debugger.printFailure("[CALL TO ACTION]: Need to add primary chain for \(ticker). Options: \(coins.map { $0.network })", critical: false)
             }
         }
     }
