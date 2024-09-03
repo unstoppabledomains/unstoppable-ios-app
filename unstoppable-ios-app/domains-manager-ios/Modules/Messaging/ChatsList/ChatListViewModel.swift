@@ -337,6 +337,8 @@ extension ChatListViewModel: MessagingServiceListener {
                         prepareData()
                     }
                 }
+            case .profileCreated(let profile):
+                loadAndShowData()
             case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded, .totalUnreadMessagesCountUpdated, .refreshOfUserProfile, .userInfoRefreshed:
                 return
             }
@@ -539,9 +541,14 @@ private extension ChatListViewModel {
                         parameters: [.state : state.rawValue,
                                      .wallet: chatProfile.wallet.address])
             await awaitForUIReady()
-            chatState = .createProfile
-            prepareData()
-            return
+            if await messagingService.isCreatingProfileInProgressFor(wallet: chatProfile.wallet) {
+                runLoadingState()
+                return
+            } else {
+                chatState = .createProfile
+                prepareData()
+                return
+            }
         }
         
         logAnalytic(event: .willShowMessagingProfile, parameters: [.state : MessagingProfileStateAnalytics.created.rawValue,

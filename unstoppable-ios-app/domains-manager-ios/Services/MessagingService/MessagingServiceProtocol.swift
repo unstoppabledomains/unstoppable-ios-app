@@ -21,6 +21,7 @@ protocol MessagingServiceProtocol {
     // User
     func getUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo
     func createUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo
+    func isCreatingProfileInProgressFor(wallet: WalletEntity) async -> Bool
     func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool
     func createCommunityProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?)
@@ -125,6 +126,7 @@ enum MessagingDataType {
     case refreshOfUserProfile(_ userProfile: MessagingChatUserProfileDisplayInfo, isInProgress: Bool)
     case totalUnreadMessagesCountUpdated(_ havingUnreadMessages: Bool)
     case userInfoRefreshed(_ userInfo: MessagingChatUserDisplayInfo)
+    case profileCreated(_ userProfile: MessagingChatUserProfileDisplayInfo)
     
     var debugDescription: String {
         switch self {
@@ -148,6 +150,8 @@ enum MessagingDataType {
             return "TotalUnreadMessagesCountUpdated to havingUnreadMessages: \(havingUnreadMessages)"
         case .userInfoRefreshed(let user):
             return "User Info Refreshed to \(user)"
+        case .profileCreated(let profile):
+            return "Profile \(profile.id) has been created"
         }
     }
 }
