@@ -13,15 +13,15 @@ final class CoinRecordsService: CoinRecordsServiceProtocol {
 
     func getCurrencies() async -> [CoinRecord] {
         [.init(ticker: "ETH",
-               version: "",
+               network: "",
                expandedTicker: "crypto.ETH",
                regexPattern: BlockchainType.Ethereum.regexPattern),
          .init(ticker: "MATIC",
-               version: "",
+               network: "",
                expandedTicker: "crypto.MATIC",
                regexPattern: BlockchainType.Matic.regexPattern),
          .init(ticker: "BTC",
-               version: "",
+               network: "",
                expandedTicker: "crypto.BTC.address",
                regexPattern: BlockchainType.Bitcoin.regexPattern)]
     }

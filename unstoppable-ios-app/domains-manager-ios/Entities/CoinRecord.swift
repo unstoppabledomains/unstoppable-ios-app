@@ -22,7 +22,7 @@ struct CoinRecord: Hashable, Codable {
          network: String,
          expandedTicker: String,
          regexPattern: String?,
-         fullName: String? = nil,
+         fullName: String = "",
          mapping: Mapping? = nil,
          parents: [Parent] = []) {
         self.ticker = ticker
@@ -38,7 +38,11 @@ struct CoinRecord: Hashable, Codable {
         }
         
         self.isPrimaryChain = Self.primaryNetworksMap[ticker] == network
-        self.fullName = fullName ?? ticker
+        if fullName.isEmpty {
+            self.fullName = ticker
+        } else {
+            self.fullName = fullName            
+        }
     }
     
 }
