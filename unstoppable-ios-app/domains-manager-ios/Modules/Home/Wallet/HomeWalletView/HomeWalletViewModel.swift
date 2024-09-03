@@ -76,6 +76,9 @@ extension HomeWalletView {
                     self?.setSelectedWallet(selectedWallet)
                 }
             }.store(in: &cancellables)
+            appContext.coinRecordsService.eventsPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
+                self?.ensureRRDomainRecordsMatchOwnerWallet()
+            }.store(in: &cancellables)
         }
         
         func onAppear() {

@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import Combine
 
 final class CoinRecordsService {
     
     let coinsFileName = "resolver-keys"
+    private(set) var eventsPublisher = PassthroughSubject<CoinRecordsEvent, Never>()
     
     private var currencies: [CoinRecord] = []
     private let fileManager = FileManager.default
@@ -54,7 +56,11 @@ extension CoinRecordsService: CoinRecordsServiceProtocol {
 // MARK: - Private methods
 private extension CoinRecordsService {
     func setCurrencies(_ currencies: [CoinRecord]) {
+        let didUpdateCoinsList = self.currencies.count != currencies.count
         self.currencies = currencies
+        if didUpdateCoinsList {
+            eventsPublisher.send(.didUpdateCoinsList)
+        }
     }
 
     func fetchCurrenciesData(version: String) async throws -> Data {

@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import Combine
 
 final class CoinRecordsService: CoinRecordsServiceProtocol {
-    
+    private(set) var eventsPublisher = PassthroughSubject<CoinRecordsEvent, Never>()
+
     func getCurrencies() async -> [CoinRecord] {
         [.init(ticker: "ETH",
                version: "",
