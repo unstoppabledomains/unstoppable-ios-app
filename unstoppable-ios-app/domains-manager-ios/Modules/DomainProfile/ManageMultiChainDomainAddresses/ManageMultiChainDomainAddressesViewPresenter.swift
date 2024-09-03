@@ -54,7 +54,7 @@ extension ManageMultiChainDomainAddressesViewPresenter: ManageMultiChainDomainAd
         case .record(let coin, let address, let error, _):
             if !address.isEmpty,
                error == nil {
-                CopyWalletAddressPullUpHandler.copyToClipboard(address: address, ticker: coin.ticker + " (\(coin.network ?? ""))")
+                CopyWalletAddressPullUpHandler.copyToClipboard(address: address, ticker: coin.ticker + " (\(coin.network))")
             }
         }
     }
@@ -168,7 +168,7 @@ private extension ManageMultiChainDomainAddressesViewPresenter {
         var records: [CryptoRecord]
         
         init(records: [CryptoRecord]) {
-            self.records = records.filter({ !$0.coin.isPrimaryChain }).sorted(by: { $0.coin.network ?? "" < $1.coin.network ?? "" })
+            self.records = records.filter({ !$0.coin.isPrimaryChain }).sorted(by: { $0.coin.network < $1.coin.network })
             self.primaryRecord = records.first(where: { $0.coin.isPrimaryChain })
         }
         

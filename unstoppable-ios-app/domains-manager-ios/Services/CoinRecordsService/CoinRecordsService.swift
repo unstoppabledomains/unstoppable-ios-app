@@ -108,14 +108,10 @@ private extension CoinRecordsService {
     }
 
     func parseCurrencies(from data: Data) -> [CoinRecord]? {
-        var coinRecords: [CoinRecord]? = nil
-        if let info = CurrenciesEntry.objectFromData(data) {
-            let currencyEntries = info.keys
-            coinRecords = currencyEntries.compactMap { mapLegacyCurrency(expandedTicker: $0.key, currencyDetails: $0.value) }
-        } else if let records = [TokenRecord].objectFromData(data) {
-            coinRecords = records.compactMap { mapToken($0) }
-        }
-        return coinRecords?.sorted(by: { $0.ticker < $1.ticker })
+        guard let records = [TokenRecord].objectFromData(data) else { return nil }
+           
+        let coinRecords = records.compactMap { mapToken($0) }
+        return coinRecords.sorted(by: { $0.ticker < $1.ticker })
     }
   
     func checkCoinRecordsDirectory() {
@@ -162,8 +158,8 @@ extension CoinRecordsService {
         let shortName: String
         let subType: String
         let validation: Regexes?
-        let mapping: Mapping?
-        let parents: [Parent]
+        let mapping: CoinRecord.Mapping?
+        let parents: [CoinRecord.Parent]
         
         struct Regexes: Codable {
             let regexes: [Regex]
@@ -172,19 +168,6 @@ extension CoinRecordsService {
                 let name: String
                 let pattern: String
             }
-        }
-        
-        struct Mapping: Codable {
-            let isPreferred: Bool
-            let from: [String]
-            let to: String
-        }
-        
-        struct Parent: Codable {
-            let key: String
-            let name: String
-            let shortName: String
-            let subType: String
         }
     }
     
@@ -209,50 +192,14 @@ extension CoinRecordsService {
         let network = components[2]
         let ticker = components[3]
         let regexPattern = token.validation?.regexes.first?.pattern
+        let fullName = token.name
         
         return CoinRecord(ticker: ticker,
                           version: network,
                           expandedTicker: expandedTicker,
-                          regexPattern: regexPattern)
-    }
-}
-
-// MARK: - Legacy
-extension CoinRecordsService {
-    struct CurrenciesEntry: Decodable {
-        let version: String
-        let keys: [String: CurrencyDetailsEntry]
-    }
-    
-    struct CurrencyDetailsEntry: Decodable {
-        let deprecatedKeyName: String
-        let deprecated: Bool
-        let validationRegex: String?
-    }
-    
-    func mapLegacyCurrency(expandedTicker: String,
-                           currencyDetails: CurrencyDetailsEntry) -> CoinRecord? {
-        guard let ticker = getShortTicker(from: expandedTicker) else { return nil }
-        
-        let version = getVersion(from: expandedTicker) ?? ""
-        let regex = currencyDetails.validationRegex
-        return CoinRecord(ticker: ticker,
-                          version: version,
-                          expandedTicker: expandedTicker,
-                          regexPattern: regex)
-    }
-    
-    func getShortTicker(from expandedTicker: String) -> String? {
-        guard expandedTicker.prefix(6) == "crypto" else { return nil }
-        let components = expandedTicker.split(separator: Character.dotSeparator)
-        return String(components[1])
-    }
-    
-    func getVersion(from expandedTicker: String) -> String? {
-        guard expandedTicker.prefix(6) == "crypto" else { return nil }
-        let components = expandedTicker.split(separator: Character.dotSeparator)
-        guard components.count == 5 else { return nil }
-        
-        return String(components[3])
+                          regexPattern: regexPattern,
+                          fullName: fullName,
+                          mapping: token.mapping,
+                          parents: token.parents)
     }
 }

@@ -66,7 +66,7 @@ private extension ClaimMPCWalletService {
         let checkStatusFrequency: Double = 0.5
         let checkStatusCyclesCount = Int((secondsInMinutes * minutesToWait) / checkStatusFrequency)
         
-        for i in 0..<checkStatusCyclesCount {
+        for _ in 0..<checkStatusCyclesCount {
             do {
                 try await validateUserExists(email: credentials.email)
                 return

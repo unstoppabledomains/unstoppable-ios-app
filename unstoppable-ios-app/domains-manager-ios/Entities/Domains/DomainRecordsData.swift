@@ -21,7 +21,7 @@ struct DomainRecordsData: Equatable, Codable {
     init(from recordsDict: [String: String], coinRecords: [CoinRecord], resolver: String?) {
         let cryptoRecords: [CryptoRecord] = recordsDict.compactMap { dictElement in
             let expandedTicker = dictElement.key
-            guard let coinRecord = coinRecords.first(where: {$0.expandedTicker == expandedTicker}) else {
+            guard let coinRecord = coinRecords.first(where: { $0.isMatching(recordKey: expandedTicker) }) else {
                 Debugger.printWarning("Ignored record with key: \(expandedTicker)")
                 return nil
             }
@@ -29,7 +29,7 @@ struct DomainRecordsData: Equatable, Codable {
                                 address: dictElement.value)
         }
         
-        self.records = cryptoRecords.filter({!$0.address.isEmpty})
+        self.records = cryptoRecords.filter({ !$0.address.isEmpty })
         self.resolver = resolver
         self.ipfsRedirectUrl = recordsDict[NetworkService.ipfsRedirectKey]
     }
