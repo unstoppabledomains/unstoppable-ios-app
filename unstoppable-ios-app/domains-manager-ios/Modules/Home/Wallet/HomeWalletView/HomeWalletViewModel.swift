@@ -77,6 +77,7 @@ extension HomeWalletView {
                 }
             }.store(in: &cancellables)
             appContext.coinRecordsService.eventsPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
+                self?.lastVerifiedRecordsWalletAddress = nil
                 self?.ensureRRDomainRecordsMatchOwnerWallet()
             }.store(in: &cancellables)
         }
