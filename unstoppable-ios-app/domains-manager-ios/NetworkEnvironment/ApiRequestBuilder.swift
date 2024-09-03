@@ -487,9 +487,9 @@ extension APIRequestBuilder {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .sortedKeys
         let jsonData = try encoder.encode(ActionRequest(domain: domain.name,
-                                                              gasCompensationPolicy: .alwaysCompensate,
-                                                              action: .updateRecords,
-                                                              parameters: Params.updateRecords(records)))
+                                                        gasCompensationPolicy: .alwaysCompensate,
+                                                        action: .updateRecords,
+                                                        parameters: Params.updateRecords(records)))
         
         guard let body = String(data: jsonData, encoding: .utf8) else {
             Debugger.printFailure("Cannot stringify encoded JSON", critical: true)

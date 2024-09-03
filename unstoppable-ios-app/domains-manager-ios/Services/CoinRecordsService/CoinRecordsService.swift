@@ -195,7 +195,7 @@ extension CoinRecordsService {
         let fullName = token.name
         
         return CoinRecord(ticker: ticker,
-                          version: network,
+                          network: network,
                           expandedTicker: expandedTicker,
                           regexPattern: regexPattern,
                           fullName: fullName,

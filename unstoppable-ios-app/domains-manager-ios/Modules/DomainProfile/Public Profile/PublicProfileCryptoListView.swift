@@ -177,8 +177,8 @@ struct PublicProfileCryptoListView_Previews: PreviewProvider {
         ForEach(Constants.swiftUIPreviewDevices, id: \.self) { device in
             PublicProfileCryptoListView(domainName: "dans.crypto",
                                         records: [.init(coin: .init(ticker: "1INCH",
-                                                                    version: "ERC20",
-                                                                    expandedTicker: "crypto.1INCH.version.ERC20.address", 
+                                                                    network: "ETH",
+                                                                    expandedTicker: "token.EVM.ETH.1INCH.address",
                                                                     regexPattern: nil),
                                                         address: "0x557fc13812460e5414d9881cb3659902e9501041")])
                 .previewDevice(PreviewDevice(rawValue: device))

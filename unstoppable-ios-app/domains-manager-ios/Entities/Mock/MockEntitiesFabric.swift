@@ -331,7 +331,7 @@ extension MockEntitiesFabric {
     
     enum CoinRecords {
         static func mockRecords() -> [CoinRecord] {
-            [.init(ticker: "MATIC", version: "MATIC", expandedTicker: "crypto.MATIC.version.MATIC.address", regexPattern: nil)]
+            [.init(ticker: "MATIC", network: "MATIC", expandedTicker: "crypto.MATIC.version.MATIC.address", regexPattern: nil)]
         }
     }
 }

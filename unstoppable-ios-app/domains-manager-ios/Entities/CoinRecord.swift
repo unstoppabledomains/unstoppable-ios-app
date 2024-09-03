@@ -19,14 +19,14 @@ struct CoinRecord: Hashable, Codable {
     let parents: [Parent]
     
     init(ticker: String,
-         version: String,
+         network: String,
          expandedTicker: String,
          regexPattern: String?,
          fullName: String? = nil,
          mapping: Mapping? = nil,
          parents: [Parent] = []) {
         self.ticker = ticker
-        self.network = version
+        self.network = network
         self.expandedTicker = expandedTicker
         self.mapping = mapping
         self.parents = parents
@@ -37,7 +37,7 @@ struct CoinRecord: Hashable, Codable {
             self.regexPatterns = [BlockchainType.Ethereum.regexPattern]
         }
         
-        self.isPrimaryChain = Self.primaryNetworksMap[ticker] == version
+        self.isPrimaryChain = Self.primaryNetworksMap[ticker] == network
         self.fullName = fullName ?? ticker
     }
     
