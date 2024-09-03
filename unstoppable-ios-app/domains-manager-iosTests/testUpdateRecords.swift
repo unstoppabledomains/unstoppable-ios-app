@@ -14,9 +14,15 @@ extension CoinRecord {
         guard let ticker = Self.getShortTicker(from: expandedTicker) else { return nil }
         
         self.init(ticker: ticker,
-                  version: "",
+                  network: "",
                   expandedTicker: expandedTicker,
                   regexPattern: regexPattern)
+    }
+    
+    static func getShortTicker (from expandedTicker: String) -> String? {
+        guard expandedTicker.prefix(6) == "crypto" else { return nil }
+        let components = expandedTicker.split(separator: Character.dotSeparator)
+        return String(components[1])
     }
 }
 
