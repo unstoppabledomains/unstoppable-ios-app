@@ -9,19 +9,35 @@ import Foundation
 
 extension MessagingService {
     func createUserProfile(for wallet: WalletEntity, serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfileDisplayInfo {
-        let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
+        if let task = await stateHolder.getOngoingCreateProfileTask(for: wallet, serviceIdentifier: serviceIdentifier) {
+            return try await task.value
+        }
         
-        if let existingUser = try? await getUserProfile(for: wallet, serviceIdentifier: serviceIdentifier) {
-            return existingUser
-        }
-        let newUser = try await apiService.createUser(for: wallet)
-        if let domain = wallet.rrDomain {
-            Task.detached {
-                try? await apiService.updateUserProfile(newUser, name: domain.name, avatar: domain.pfpSource.value)
+        let task = CreateProfileTask {
+            let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
+            
+            if let existingUser = try? await getUserProfile(for: wallet, serviceIdentifier: serviceIdentifier) {
+                return existingUser
             }
+            let newUser = try await apiService.createUser(for: wallet)
+            if let domain = wallet.rrDomain {
+                Task.detached {
+                    try? await apiService.updateUserProfile(newUser, name: domain.name, avatar: domain.pfpSource.value)
+                }
+            }
+            await storageService.saveUserProfile(newUser)
+            return newUser.displayInfo
         }
-        await storageService.saveUserProfile(newUser)
-        return newUser.displayInfo
+        
+        await stateHolder.setOngoingCreateProfileTask(task,
+                                                      for: wallet,
+                                                      serviceIdentifier: serviceIdentifier)
+        let profile = try await task.value
+        await stateHolder.setOngoingCreateProfileTask(nil,
+                                                      for: wallet,
+                                                      serviceIdentifier: serviceIdentifier)
+        notifyListenersChangedDataType(.profileCreated(profile))
+        return profile
     }
     
     func getUserProfile(for wallet: WalletEntity, serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfileDisplayInfo {
