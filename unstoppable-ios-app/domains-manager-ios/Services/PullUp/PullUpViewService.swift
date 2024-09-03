@@ -310,7 +310,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             selectionViewHeight = 304
         case .Base, .Bitcoin, .Solana:
             Debugger.printFailure("Minting can be only on Ethereum and Polygon", critical: true)
-            description = "\(chain.fullName) should not be used for minting"
+            description = "\(chain.fullName)"
             selectionViewHeight = 304
         }
         
