@@ -651,7 +651,8 @@
 "ABOUT_PROFILES" = "About profiles";
 "MINTED_ON_CHAIN" = "Minted on %@";
 "MINTED_ON_POLYGON_DESCRIPTION" = "Your domain is managed on Polygon. Enjoy unlimited profile updates with no gas fees.";
-"MINTED_ON_ETHEREUM_DESCRIPTION" = "Your domain is managed on Ethereum. Bridge to Polygon to enjoy unlimited profile updates with no gas fees. ";
+"MINTED_ON_ETHEREUM_DESCRIPTION" = "Your domain is managed on Ethereum. Bridge to Polygon to enjoy unlimited profile updates with no gas fees.";
+"MINTED_ON_BASE_DESCRIPTION" = "Your domain is managed on the BASE chain. Enjoy unlimited profile updates with no gas fees.";
 "DOMAIN_PROFILE_INFO_TITLE" = "Web3 Profile";
 "DOMAIN_PROFILE_CREATE_INFO_TITLE" = "Create your Web3 profile";
 "DOMAIN_PROFILE_INFO_DESCRIPTION" = "Your domain is your self-sovereign identity. You control what information you share across apps, metaverse, and games.";
