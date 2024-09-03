@@ -35,7 +35,7 @@ enum RecordToUpdate: Hashable {
 struct CryptoRecord: Hashable, Comparable, Codable {
     let coin: CoinRecord
     var address: String
-    var isDeprecated: Bool { coin.isDeprecated }
+    private(set) var isDeprecated: Bool = false 
     
     init(coin: CoinRecord, address: String = "") {
         self.coin = coin

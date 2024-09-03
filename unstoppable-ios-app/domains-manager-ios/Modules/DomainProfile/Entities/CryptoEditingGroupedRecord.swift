@@ -109,7 +109,7 @@ struct CryptoEditingGroupedRecord: Hashable {
 
 extension CryptoEditingGroupedRecord {
     static func getGroupIdentifierFor(coin: CoinRecord) -> String {
-        if coin.version != nil {
+        if coin.network != nil {
             return coin.ticker + "_multichain"
         }
         return coin.ticker

@@ -83,14 +83,9 @@ extension ManageDomainRecordCell {
                                                                weight: .medium),
                                             textColor: .brandWhite)
         
-        if coin.isDeprecated {
-            coinVersionLabel.isHidden = false
-            coinVersionLabel.setAttributedTextWith(text: String.Constants.legacy.localized(),
-                                              font: .currentFont(withSize: 12, weight: .medium),
-                                              textColor: .brandWhite.withAlphaComponent(0.56))
-        } else if let multiChainAddressesCount = displayInfo.multiChainAddressesCount,
-           displayInfo.error == nil,
-           var version = coin.version {
+        if let multiChainAddressesCount = displayInfo.multiChainAddressesCount,
+                  displayInfo.error == nil {
+            var version = coin.network
             coinVersionLabel.isHidden = false
             if multiChainAddressesCount > 1 {
                 version += " +\(multiChainAddressesCount - 1)"
@@ -98,7 +93,7 @@ extension ManageDomainRecordCell {
             coinVersionLabel.setAttributedTextWith(text: version,
                                                    font: .currentFont(withSize: 12, weight: .medium),
                                                    textColor: displayInfo.isEnabled ? .brandWhite.withAlphaComponent(0.56) : foregroundColor)
-        } else {    
+        } else {
             coinVersionLabel.isHidden = true
         }
         

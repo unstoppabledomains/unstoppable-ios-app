@@ -459,10 +459,6 @@ extension NetworkService {
         try await fetchProfilesReverseResolution(for: identifier)
     }
     
-    private func getRegex(for expandedTicker: String, coins: [CoinRecord]) -> String? {
-        coins.first(where: {$0.expandedTicker == expandedTicker})?.regexPattern
-    }
-    
     static func getRequestForActionSign(id: UInt64,
                                         response: NetworkService.ActionsResponse,
                                         signatures: [String]) throws -> APIRequest {

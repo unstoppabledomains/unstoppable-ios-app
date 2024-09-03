@@ -57,13 +57,13 @@ extension ManageMultiChainDomainAddressCell {
         self.actionCallback = actionCallback
        
         walletAddressTF.text = address
-        coinVersionLabel.setAttributedTextWith(text: coin.version ?? "",
+        coinVersionLabel.setAttributedTextWith(text: coin.network,
                                                font: .currentFont(withSize: 16,
                                                                   weight: .medium),
                                                textColor: .foregroundDefault,
                                                lineBreakMode: .byTruncatingTail)
         setError(text: error?.title)
-        legacyLabel.isHidden = !coin.isDeprecated
+        legacyLabel.isHidden = true
         walletAddressTF.placeholder = String.Constants.nAddress.localized(coin.name)
         setupControlsForCurrentMode()
     }

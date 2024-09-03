@@ -11,20 +11,17 @@ final class CoinRecordsService: CoinRecordsServiceProtocol {
     
     func getCurrencies() async -> [CoinRecord] {
         [.init(ticker: "ETH",
-               version: nil,
-               expandedTicker: "crypto.ETH", 
-               regexPattern: BlockchainType.Ethereum.regexPattern,
-               isDeprecated: false),
+               version: "",
+               expandedTicker: "crypto.ETH",
+               regexPattern: BlockchainType.Ethereum.regexPattern),
          .init(ticker: "MATIC",
-               version: nil,
+               version: "",
                expandedTicker: "crypto.MATIC",
-               regexPattern: BlockchainType.Matic.regexPattern,
-               isDeprecated: false),
+               regexPattern: BlockchainType.Matic.regexPattern),
          .init(ticker: "BTC",
-               version: nil,
+               version: "",
                expandedTicker: "crypto.BTC.address",
-               regexPattern: BlockchainType.Bitcoin.regexPattern,
-               isDeprecated: false)]
+               regexPattern: BlockchainType.Bitcoin.regexPattern)]
     }
     
     func refreshCurrencies(version: String) {

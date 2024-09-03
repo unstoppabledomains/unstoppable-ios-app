@@ -147,7 +147,7 @@ private extension CoinRecordsService {
         
         for (ticker, coins) in groupedCoins {
             if coins.count > 1,
-               coins.first(where: { $0.isPrimaryChain && !$0.isDeprecated }) == nil {
+               coins.first(where: { $0.isPrimaryChain }) == nil {
                 Debugger.printFailure("[CALL TO ACTION]: Need to add primary chain for \(ticker)", critical: false)
             }
         }
@@ -209,13 +209,11 @@ extension CoinRecordsService {
         let network = components[2]
         let ticker = components[3]
         let regexPattern = token.validation?.regexes.first?.pattern
-        let isPrimaryChain = network == ticker
         
         return CoinRecord(ticker: ticker,
                           version: network,
                           expandedTicker: expandedTicker,
-                          regexPattern: regexPattern,
-                          isDeprecated: false)
+                          regexPattern: regexPattern)
     }
 }
 
@@ -236,13 +234,12 @@ extension CoinRecordsService {
                            currencyDetails: CurrencyDetailsEntry) -> CoinRecord? {
         guard let ticker = getShortTicker(from: expandedTicker) else { return nil }
         
-        let version = getVersion(from: expandedTicker)
+        let version = getVersion(from: expandedTicker) ?? ""
         let regex = currencyDetails.validationRegex
         return CoinRecord(ticker: ticker,
                           version: version,
                           expandedTicker: expandedTicker,
-                          regexPattern: regex,
-                          isDeprecated: currencyDetails.deprecated)
+                          regexPattern: regex)
     }
     
     func getShortTicker(from expandedTicker: String) -> String? {

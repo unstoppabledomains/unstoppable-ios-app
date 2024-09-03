@@ -179,8 +179,7 @@ struct PublicProfileCryptoListView_Previews: PreviewProvider {
                                         records: [.init(coin: .init(ticker: "1INCH",
                                                                     version: "ERC20",
                                                                     expandedTicker: "crypto.1INCH.version.ERC20.address", 
-                                                                    regexPattern: nil,
-                                                                    isDeprecated: false),
+                                                                    regexPattern: nil),
                                                         address: "0x557fc13812460e5414d9881cb3659902e9501041")])
                 .previewDevice(PreviewDevice(rawValue: device))
                 .previewDisplayName(device)

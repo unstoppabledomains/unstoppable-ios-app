@@ -53,11 +53,11 @@ extension DomainProfileCryptoSection: DomainProfileSection {
             if displayInfo.error == nil,
                !displayInfo.address.isEmpty {
                 logProfileSectionButtonPressedAnalyticEvent(button: .domainRecord,
-                                                            parameters: [.coin : displayInfo.coin.ticker + " (\(displayInfo.coin.version ?? ""))"])
+                                                            parameters: [.coin : displayInfo.coin.ticker + " (\(displayInfo.coin.network ?? ""))"])
                 if displayInfo.multiChainAddressesCount == nil {
                     handleCopyAction(for: displayInfo.address, ticker: displayInfo.coin.ticker)
                 } else {
-                    handleCopyAction(for: displayInfo.address, ticker: displayInfo.coin.ticker + " (\(displayInfo.coin.version ?? ""))")
+                    handleCopyAction(for: displayInfo.address, ticker: displayInfo.coin.ticker + " (\(displayInfo.coin.network ?? ""))")
                 }
             }
         default:
@@ -245,7 +245,7 @@ private extension DomainProfileCryptoSection {
             if let recordCurrencies = groupedCurrencies[CryptoEditingGroupedRecord.getGroupIdentifierFor(coin: record.primaryRecord.coin)],
                recordCurrencies.count > record.records.count {
                 let missedRecords = recordCurrencies.filter({ currency in
-                    record.records.first(where: { $0.coin.version == currency.version }) == nil
+                    record.records.first(where: { $0.coin.network == currency.network }) == nil
                 }).map({ CryptoRecord(coin: $0)})
                 
                 if !missedRecords.isEmpty {
@@ -289,10 +289,7 @@ private extension DomainProfileCryptoSection {
         let actions = availableActionsFor(record: record)
         let subRecordToUse = record.primaryMultiChainRecord
         let isEnabled = state == .default || state == .updatingRecords || state == .loadingError
-        var mode: DomainProfileViewController.RecordEditingMode = record.isEditing ? .editable : .viewOnly
-        if record.primaryRecord.coin.isDeprecated {
-            mode = record.isEditing ? .deprecatedEditing : .deprecated
-        }
+        let mode: DomainProfileViewController.RecordEditingMode = record.isEditing ? .editable : .viewOnly
         let multiChainAddressesCount = record.isMultiChain ? record.validAddresses.count : nil
         
         let displayInfo = DomainProfileViewController.ManageDomainRecordDisplayInfo(coin: subRecordToUse.coin,
@@ -335,7 +332,7 @@ private extension DomainProfileCryptoSection {
             }
         } else if validAddresses.count > 1 {
             let addressesActions = record.recordsWithValidAddresses.map({ record in
-                DomainProfileViewController.RecordAction.copy(title: record.coin.version, callback: { [weak self] in
+                DomainProfileViewController.RecordAction.copy(title: record.coin.network, callback: { [weak self] in
                     self?.handleCopyMultiChainAction(for: record)
                 })}
             )
@@ -353,7 +350,7 @@ private extension DomainProfileCryptoSection {
                     self?.handleEditAction(for: record)
                 }))
             }
-            actions.append(.editForAllChains(record.records.compactMap({ $0.coin.version }), callback: { [weak self] in
+            actions.append(.editForAllChains(record.records.compactMap({ $0.coin.network }), callback: { [weak self] in
                 self?.logProfileSectionButtonPressedAnalyticEvent(button: .editCoinMultiChainAddresses, parameters: [.coin: record.primaryRecord.coin.ticker])
                 UDVibration.buttonTap.vibrate()
                 self?.handleEditForAllChainsAction(for: record)
@@ -419,7 +416,7 @@ private extension DomainProfileCryptoSection {
     }
     
     func handleCopyMultiChainAction(for record: CryptoRecord) {
-        let ticker = record.coin.ticker + " (\(record.coin.version ?? ""))"
+        let ticker = record.coin.ticker + " (\(record.coin.network ?? ""))"
         logProfileSectionButtonPressedAnalyticEvent(button: .copyCoinAddress, parameters: [.coin : ticker])
         handleCopyAction(for: record.address,
                          ticker: ticker)
