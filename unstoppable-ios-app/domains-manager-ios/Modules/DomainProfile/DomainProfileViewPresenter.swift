@@ -1175,7 +1175,7 @@ private extension DomainProfileViewPresenter {
         var wallet: WalletEntity
         var domainWallet: WalletEntity? { wallet }
         var transactions: [TransactionItem] = []
-        var recordsData: DomainRecordsData = .init(records: [], resolver: nil, ipfsRedirectUrl: nil)
+        var recordsData: DomainRecordsData = .empty
         var currencies: [CoinRecord] = []
         var badgesInfo: BadgesInfo = .init(badges: [],
                                            refresh: .init(last: Date(), next: Date()))
@@ -1228,7 +1228,7 @@ private extension DomainProfileViewPresenter {
         
         func reset() {
             transactions = []
-            recordsData = .init(records: [], resolver: nil, ipfsRedirectUrl: nil)
+            recordsData = .empty
             badgesInfo = .init(badges: [], refresh: .init(last: Date(), next: Date()))
             profile = .newEmpty()
             domainImagesInfo = .init()
