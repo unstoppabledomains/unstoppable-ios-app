@@ -1458,6 +1458,12 @@ extension String {
         self + "?" + components.compactMap({ "\($0.key)=\($0.value)".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) }).joined(separator: "&")
     }
     
+    func appendingURLQueryItems(_ components: [URLQueryItem]) -> String {
+        self + "?" + components.compactMap({ "\($0.name)=\($0.value ?? "")"
+            .addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) })
+            .joined(separator: "&")
+    }
+    
     var encodingSpecialCharacters: String {
         addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? self
     }

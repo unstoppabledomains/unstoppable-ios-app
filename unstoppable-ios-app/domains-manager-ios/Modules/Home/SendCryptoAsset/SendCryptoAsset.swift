@@ -66,10 +66,10 @@ extension SendCryptoAsset {
             let coinRecords = currencies.filter { $0.ticker == token.symbol }
             let chain = resolveCoinRecordChainIdentifier(token.chain)
             guard let tokenRecord = coinRecords.first(where: { record in
-                if record.version == nil {
+                if record.network == nil {
                     return token.chain == token.symbol
                 }
-                return record.version == chain    
+                return record.network == chain    
             }) else { return nil }
             
             let recordsIdentifier = tokenRecord.expandedTicker

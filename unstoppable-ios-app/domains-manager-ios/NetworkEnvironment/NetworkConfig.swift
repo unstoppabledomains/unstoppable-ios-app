@@ -26,6 +26,19 @@ struct NetworkConfig {
         "https://\(Self.migratedEndpoint)"
     }
     
+    static var pav3BaseUrl: String {
+        migratedBaseUrl.appendingURLPathComponents("partner", "v3")
+    }
+    
+    static var pav3APIKey: String {
+        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+        if isTestnetUsed {
+            return NetworkService.pav3StagingKey
+        } else {
+            return NetworkService.pav3ProductionKey
+        }
+    }
+    
     static var websiteHost: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
