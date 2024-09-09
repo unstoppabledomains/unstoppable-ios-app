@@ -62,7 +62,6 @@
 		3026FA2127E77AFF00FE058B /* BackupWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3026FA2027E77AFF00FE058B /* BackupWalletViewController.swift */; };
 		3026FA2B27E885B600FE058B /* ConfirmWordsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3026FA2A27E885B600FE058B /* ConfirmWordsViewController.swift */; };
 		3034E2B6252DB02400A20477 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3034E2B5252DB02400A20477 /* NetworkService.swift */; };
-		303CB4B6273A894F0064495D /* resolver-keys.json in Resources */ = {isa = PBXBuildFile; fileRef = 303CB4B5273A894F0064495D /* resolver-keys.json */; };
 		3046D390255C63A10099B482 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3046D392255C63A10099B482 /* Localizable.strings */; };
 		30472D8C2672435200B0D7A7 /* Debugger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30472D8B2672435200B0D7A7 /* Debugger.swift */; };
 		3048B47727FA149C00253BB7 /* WalletConnectedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3048B47627FA149C00253BB7 /* WalletConnectedViewController.swift */; };
@@ -1500,6 +1499,8 @@
 		C69F997A2A9F2206004B1958 /* PublicProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99722A9F2206004B1958 /* PublicProfileView.swift */; };
 		C69F997B2A9F2206004B1958 /* PublicProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99732A9F2206004B1958 /* PublicProfileViewModel.swift */; };
 		C69F997C2A9F2206004B1958 /* PublicProfileSocialsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99742A9F2206004B1958 /* PublicProfileSocialsListView.swift */; };
+		C6A02BEB2C8750DA00F9CCC2 /* resolver-keys.json in Resources */ = {isa = PBXBuildFile; fileRef = C6A02BEA2C8750DA00F9CCC2 /* resolver-keys.json */; };
+		C6A02BEC2C8750E300F9CCC2 /* resolver-keys.json in Resources */ = {isa = PBXBuildFile; fileRef = C6A02BEA2C8750DA00F9CCC2 /* resolver-keys.json */; };
 		C6A223C32869FE1E005C3267 /* SocialsDomainImagePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A223C22869FE1E005C3267 /* SocialsDomainImagePreviewView.swift */; };
 		C6A223C82869FE24005C3267 /* SocialsDomainImagePreviewView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A223C72869FE24005C3267 /* SocialsDomainImagePreviewView.xib */; };
 		C6A231F52BEB22230037E093 /* TextAttributesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A231F42BEB22230037E093 /* TextAttributesModifier.swift */; };
@@ -2746,7 +2747,6 @@
 		3026FA2A27E885B600FE058B /* ConfirmWordsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmWordsViewController.swift; sourceTree = "<group>"; };
 		302EAF3126332DC200CAFE8B /* Debug-Tools-Dev.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Debug-Tools-Dev.swift"; sourceTree = "<group>"; };
 		3034E2B5252DB02400A20477 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
-		303CB4B5273A894F0064495D /* resolver-keys.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "resolver-keys.json"; sourceTree = "<group>"; };
 		3046D391255C63A10099B482 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		30472D8B2672435200B0D7A7 /* Debugger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debugger.swift; sourceTree = "<group>"; };
 		3048B47627FA149C00253BB7 /* WalletConnectedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectedViewController.swift; sourceTree = "<group>"; };
@@ -3755,6 +3755,7 @@
 		C69F99722A9F2206004B1958 /* PublicProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileView.swift; sourceTree = "<group>"; };
 		C69F99732A9F2206004B1958 /* PublicProfileViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileViewModel.swift; sourceTree = "<group>"; };
 		C69F99742A9F2206004B1958 /* PublicProfileSocialsListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileSocialsListView.swift; sourceTree = "<group>"; };
+		C6A02BEA2C8750DA00F9CCC2 /* resolver-keys.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "resolver-keys.json"; sourceTree = "<group>"; };
 		C6A223C22869FE1E005C3267 /* SocialsDomainImagePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialsDomainImagePreviewView.swift; sourceTree = "<group>"; };
 		C6A223C72869FE24005C3267 /* SocialsDomainImagePreviewView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SocialsDomainImagePreviewView.xib; sourceTree = "<group>"; };
 		C6A231F42BEB22230037E093 /* TextAttributesModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAttributesModifier.swift; sourceTree = "<group>"; };
@@ -4955,7 +4956,7 @@
 			children = (
 				306DB218268B2BFE009D95DE /* uns-config.json */,
 				C683EB542B3B0BFE0026CA41 /* hot-suggestions.json */,
-				303CB4B5273A894F0064495D /* resolver-keys.json */,
+				C6A02BEA2C8750DA00F9CCC2 /* resolver-keys.json */,
 				30A280362714217100FD3759 /* wallets-registry.json */,
 				29A42A562C4658CB00CAEA70 /* supported-tokens.json */,
 			);
@@ -8776,6 +8777,7 @@
 				C6A2D53F284E13A300327C47 /* QRScannerPermissionsView.xib in Resources */,
 				C671E3A928FEA2D400A2B3A0 /* ManageDomainTopInfoCell.xib in Resources */,
 				C66804C5280D9EC8007E6390 /* DigitalKeyboardViewController.xib in Resources */,
+				C6A02BEB2C8750DA00F9CCC2 /* resolver-keys.json in Resources */,
 				C6011AC128F4045000342666 /* DomainProfileTopInfoCell.xib in Resources */,
 				C6D5DAE328374B8400379C38 /* ManageMultiChainDomainAddressCell.xib in Resources */,
 				C6C57C472869C0A50093FD8C /* UDDomainSharingWatchCardView.xib in Resources */,
@@ -8787,7 +8789,6 @@
 				C603E8CD285859560028C21C /* CollectionViewHeaderCell.xib in Resources */,
 				C6A474E829D1756D0073415F /* LoadingParkedDomainsViewController.xib in Resources */,
 				C60982E8282A7CE000546392 /* ConfirmWordListCell.xib in Resources */,
-				303CB4B6273A894F0064495D /* resolver-keys.json in Resources */,
 				3064868D2527253C00388026 /* LaunchScreen.storyboard in Resources */,
 				C673D5A129FA588B001CC77C /* DomainTransactionInProgressCell.xib in Resources */,
 				C6FEA91B2BEB700F004FD740 /* SettingsCollectionViewCell.xib in Resources */,
@@ -8852,6 +8853,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6A02BEC2C8750E300F9CCC2 /* resolver-keys.json in Resources */,
 				C6D6462A2B1DC2AB00D724AC /* PullUpCollectionViewCell.xib in Resources */,
 				C6C8F8DA2B21835800A9834D /* ProtectWallet.storyboard in Resources */,
 				C6C8F9212B2183B700A9834D /* EnterPasscodeViewController.xib in Resources */,

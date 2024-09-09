@@ -6,25 +6,24 @@
 //
 
 import Foundation
+import Combine
 
 final class CoinRecordsService: CoinRecordsServiceProtocol {
-    
+    private(set) var eventsPublisher = PassthroughSubject<CoinRecordsEvent, Never>()
+
     func getCurrencies() async -> [CoinRecord] {
         [.init(ticker: "ETH",
-               version: nil,
-               expandedTicker: "crypto.ETH", 
-               regexPattern: BlockchainType.Ethereum.regexPattern,
-               isDeprecated: false),
+               network: "",
+               expandedTicker: "crypto.ETH",
+               regexPattern: BlockchainType.Ethereum.regexPattern),
          .init(ticker: "MATIC",
-               version: nil,
+               network: "",
                expandedTicker: "crypto.MATIC",
-               regexPattern: BlockchainType.Matic.regexPattern,
-               isDeprecated: false),
+               regexPattern: BlockchainType.Matic.regexPattern),
          .init(ticker: "BTC",
-               version: nil,
+               network: "",
                expandedTicker: "crypto.BTC.address",
-               regexPattern: BlockchainType.Bitcoin.regexPattern,
-               isDeprecated: false)]
+               regexPattern: BlockchainType.Bitcoin.regexPattern)]
     }
     
     func refreshCurrencies(version: String) {

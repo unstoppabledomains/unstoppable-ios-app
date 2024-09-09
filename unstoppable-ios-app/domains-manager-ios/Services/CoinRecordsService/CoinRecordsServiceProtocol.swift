@@ -6,8 +6,15 @@
 //
 
 import Foundation
+import Combine
 
 protocol CoinRecordsServiceProtocol {
+    var eventsPublisher: PassthroughSubject<CoinRecordsEvent, Never> { get }
+    
     func getCurrencies() async -> [CoinRecord]
     func refreshCurrencies(version: String)
+}
+
+enum CoinRecordsEvent {
+    case didUpdateCoinsList
 }

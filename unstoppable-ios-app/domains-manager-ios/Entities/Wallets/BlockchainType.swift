@@ -33,7 +33,6 @@ enum BlockchainType: BlockchainProtocol {
             return "MATIC"
         case .Base:
             return "BASE"
-            
         case .Bitcoin:
             return "BTC"
         case .Solana:
@@ -49,7 +48,6 @@ enum BlockchainType: BlockchainProtocol {
             return "Polygon"
         case .Base:
             return "Base"
-            
         case .Bitcoin:
             return "Bitcoin"
         case .Solana:
@@ -65,7 +63,6 @@ enum BlockchainType: BlockchainProtocol {
             self = .Matic
         case "BASE":
             self = .Base
-            
         case "BTC":
             self = .Bitcoin
         case "SOL":
@@ -82,7 +79,6 @@ enum BlockchainType: BlockchainProtocol {
             self = .Matic
         case "Base":
             self = .Base
-            
         case "Bitcoin":
             self = .Bitcoin
         case "Solana":

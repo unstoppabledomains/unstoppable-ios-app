@@ -12,13 +12,17 @@ import XCTest
 extension CoinRecord {
     init?(expandedTicker: String, regexPattern: String?) {
         guard let ticker = Self.getShortTicker(from: expandedTicker) else { return nil }
-        let version = Self.getVersion(from: expandedTicker)
         
         self.init(ticker: ticker,
-                  version: version,
+                  network: "",
                   expandedTicker: expandedTicker,
-                  regexPattern: regexPattern,
-                  isDeprecated: false)
+                  regexPattern: regexPattern)
+    }
+    
+    static func getShortTicker (from expandedTicker: String) -> String? {
+        guard expandedTicker.prefix(6) == "crypto" else { return nil }
+        let components = expandedTicker.split(separator: Character.dotSeparator)
+        return String(components[1])
     }
 }
 
