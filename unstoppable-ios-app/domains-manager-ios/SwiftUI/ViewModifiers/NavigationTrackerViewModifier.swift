@@ -12,15 +12,18 @@ struct NavigationTrackerViewModifier: ViewModifier {
     var onDidNotFinishNavigationBack: EmptyCallback? = nil
     var onDidStartBackGesture: EmptyCallback? = nil
     var onDidBackGestureProgress: ((Double)->())? = nil
+    @State private var didSetupHandler = false
     
     func body(content: Content) -> some View {
         content
             .onAppear {
+                guard !didSetupHandler else { return }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     if let topVC = appContext.coreAppCoordinator.topVC,
                        let nav = getNavigationController(from: topVC) {
                         UINavigationViewControllerTracker.shared.trackNavigationController(nav,
                                                                                            handler: self)
+                        didSetupHandler = true
                     }
                 }
             }
