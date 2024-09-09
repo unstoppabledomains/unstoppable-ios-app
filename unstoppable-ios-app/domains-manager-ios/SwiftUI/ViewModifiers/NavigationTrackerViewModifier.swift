@@ -113,6 +113,19 @@ final class UINavigationViewControllerTracker: NSObject {
     }
     
     private struct NavigationControllerHolder: Hashable {
+        let id = UUID()
         weak var nav: UINavigationController?
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            guard lhs.id == rhs.id else { return false }
+            guard lhs.nav == rhs.nav else { return false }
+            
+            return true
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+            hasher.combine(nav)
+        }
     }
 }
