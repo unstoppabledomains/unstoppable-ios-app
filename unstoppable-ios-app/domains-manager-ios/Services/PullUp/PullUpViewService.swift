@@ -310,10 +310,10 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             selectionViewHeight = 304
         case .Base:
             description = String.Constants.mintedOnBaseDescription.localized()
-            selectionViewHeight = 304
+            selectionViewHeight = 328
         case .Bitcoin, .Solana:
             Debugger.printFailure("Minting can be only on Ethereum and Polygon", critical: true)
-            description = "\(chain.fullName)"
+            description = "This domain is on \(chain.fullName)"
             selectionViewHeight = 304
         }
         
