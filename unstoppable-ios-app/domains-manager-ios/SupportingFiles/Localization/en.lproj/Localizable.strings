@@ -886,6 +886,7 @@
 "MESSAGING_COMMUNITIES_ENABLED" = "Groups enabled";
 "MESSAGING_NO_WALLETS_TITLE" = "Get access to Messaging\nwith a wallet";
 "MESSAGING_NO_WALLETS_SUBTITLE" = "To send and receive messages, a crypto wallet is required to ensure secure and encrypted communication.";
+"MESSAGING_CREATE_PROFILE_IN_PROGRESS_TITLE" = "Enabling chat...";
 
 // Public profile
 "FOLLOWERS" = "Followers";

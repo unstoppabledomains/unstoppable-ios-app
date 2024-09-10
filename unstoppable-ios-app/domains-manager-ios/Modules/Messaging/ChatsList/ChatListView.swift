@@ -191,6 +191,8 @@ private extension ChatListView {
             chatsListStateContentView()
         case .loading:
             loadingStateContentView()
+        case .creatingProfileInProgress:
+            creatingProfileInProgressStateContentView()
         case .mpcUnavailable:
             mpcUnavailableStateContentView()
         }
@@ -235,12 +237,27 @@ private extension ChatListView {
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
     }
-   
+    
+    @ViewBuilder
+    func creatingProfileInProgressStateContentView() -> some View {
+        VStack(spacing: 12) {
+            ProgressView()
+            Text(String.Constants.messagingCreateProfileInProgressTitle.localized())
+                .textAttributes(color: .foregroundDefault,
+                                fontSize: 17,
+                                fontWeight: .medium)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 400)
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
+    }
+    
     @ViewBuilder
     func chatDataTypePickerView() -> some View {
         if !viewModel.isSearchActive {
             switch viewModel.chatState {
-            case .noWallet, .createProfile, .loading, .mpcUnavailable:
+            case .noWallet, .createProfile, .loading, .mpcUnavailable, .creatingProfileInProgress:
                 EmptyView()
             case .chatsList:
                 ChatListDataTypeSelectorView()
@@ -549,6 +566,7 @@ extension ChatListView {
     enum ViewState {
         case noWallet
         case createProfile
+        case creatingProfileInProgress
         case chatsList
         case loading
         case mpcUnavailable
