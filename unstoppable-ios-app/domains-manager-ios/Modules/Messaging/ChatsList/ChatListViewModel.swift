@@ -358,7 +358,7 @@ private extension ChatListViewModel {
         guard wallet.address != selectedProfileWalletPair?.wallet.address else { return }
         
         self.selectedWallet = wallet
-        runLoadingState()
+        runLoadingState(isLoadingProfile: false)
         Task {
             if let cachedPair = profileWalletPairsCache.first(where: { $0.wallet.address == wallet.address }) {
                 try await self.selectProfileWalletPair(cachedPair)
@@ -372,10 +372,14 @@ private extension ChatListViewModel {
         }
     }
     
-    func runLoadingState() {
+    func runLoadingState(isLoadingProfile: Bool) {
         chatsList.removeAll()
         channels.removeAll()
-        chatState = .loading
+        if isLoadingProfile {
+            chatState = .creatingProfileInProgress
+        } else {
+            chatState = .loading
+        }
     }
     
     func loadAndShowData() {
@@ -542,7 +546,7 @@ private extension ChatListViewModel {
                                      .wallet: chatProfile.wallet.address])
             await awaitForUIReady()
             if await messagingService.isCreatingProfileInProgressFor(wallet: chatProfile.wallet) {
-                runLoadingState()
+                runLoadingState(isLoadingProfile: true)
                 return
             } else {
                 chatState = .createProfile
