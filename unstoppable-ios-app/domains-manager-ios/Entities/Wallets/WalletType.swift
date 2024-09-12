@@ -37,9 +37,3 @@ enum WalletType: String, Codable {
         }
     }
 }
-
-
-enum ExternalWalletConnectionState: String, Codable {
-    case noConnection
-    case activeWCConnection
-}

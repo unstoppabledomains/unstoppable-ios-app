@@ -11,16 +11,6 @@ import CryptoSwift
 import Boilertalk_Web3
 import UIKit
 
-struct WalletIconSpec {
-    let imageName: String
-    var hue: Float? = nil
-    var saturation: Float? = nil
-}
-
-protocol AddressContainer {
-    var address: String { get }
-}
-
 struct UDWallet: Codable, @unchecked Sendable {
     enum Error: String, Swift.Error, RawValueLocalizable {
         case failedToSignMessage = "Failed to Sign Message"
