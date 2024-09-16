@@ -24,7 +24,7 @@ struct UDWalletEthereumWithPrivateSeed {
     }
 }
 
-class UDWalletEthereum: AddressContainer, Codable {
+class UDWalletEthereum: Codable {
     enum SecurityType: Int, Codable {
         case normal
         case hd

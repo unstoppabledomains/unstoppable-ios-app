@@ -27,7 +27,8 @@ struct SendCryptoAssetSelectReceiverView: View, ViewAnalyticsLogger {
     @State private var isLoadingGlobalProfiles = false
 
     @State private var socialRelationshipDetailsPublisher: AnyCancellable?
-    private let searchService = DomainsGlobalSearchService(shouldResolveFullWalletAddress: false)
+    private let searchService = DomainsGlobalSearchService(shouldResolveFullWalletAddress: false,
+                                                           shouldReturnUserDomains: true)
     
     var body: some View {
         List {

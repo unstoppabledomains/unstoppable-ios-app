@@ -10,20 +10,27 @@ import Foundation
 final class DomainsGlobalSearchService {
     
     var shouldResolveFullWalletAddress = true
+    var shouldReturnUserDomains = false
     
     typealias SearchProfilesTask = Task<[SearchDomainProfile], Error>
     private var currentTask: SearchProfilesTask?
     
-    init(shouldResolveFullWalletAddress: Bool = true) {
+    init(shouldResolveFullWalletAddress: Bool = true,
+         shouldReturnUserDomains: Bool = false) {
         self.shouldResolveFullWalletAddress = shouldResolveFullWalletAddress
+        self.shouldReturnUserDomains = shouldReturnUserDomains
     }
     
     func searchForGlobalProfilesExcludingUsers(with searchKey: String,
                                                walletsDataService: WalletsDataServiceProtocol) async throws -> [SearchDomainProfile] {
         let profiles = try await searchForGlobalProfiles(with: searchKey)
-        let userDomains = walletsDataService.wallets.combinedDomains()
-        let userDomainsNames = Set(userDomains.map({ $0.name }))
-        return profiles.filter({ !userDomainsNames.contains($0.name) && $0.ownerAddress != nil })
+        if shouldReturnUserDomains {
+            return profiles.filter({ $0.ownerAddress != nil })
+        } else {
+            let userDomains = walletsDataService.wallets.combinedDomains()
+            let userDomainsNames = Set(userDomains.map({ $0.name }))
+            return profiles.filter({ !userDomainsNames.contains($0.name) && $0.ownerAddress != nil })
+        }
     }
     
     func searchForGlobalProfiles(with searchKey: String) async throws -> [SearchDomainProfile] {
