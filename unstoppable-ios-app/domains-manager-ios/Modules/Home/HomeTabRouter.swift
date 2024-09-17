@@ -19,10 +19,10 @@ final class HomeTabRouter: ObservableObject {
 
     @Published var tabViewSelection: HomeTab = .wallets
     @Published var pullUp: ViewPullUpConfigurationType?
-    @Published var walletViewNavPath: [HomeWalletNavigationDestination] = []
-    @Published var chatTabNavPath: [HomeChatNavigationDestination] = []
-    @Published var exploreTabNavPath: [HomeExploreNavigationDestination] = []
-    @Published var activityTabNavPath: [HomeActivityNavigationDestination] = []
+    @Published var walletViewNavPath: NavigationPathWrapper<HomeWalletNavigationDestination> = .init()
+    @Published var chatTabNavPath: NavigationPathWrapper<HomeChatNavigationDestination> = .init()
+    @Published var exploreTabNavPath: NavigationPathWrapper<HomeExploreNavigationDestination> = .init()
+    @Published var activityTabNavPath: NavigationPathWrapper<HomeActivityNavigationDestination> = .init()
     @Published var presentedNFT: NFTDisplayInfo?
     
     @Published var presentedDomain: DomainPresentationDetails?

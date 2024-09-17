@@ -12,7 +12,7 @@ final class ActivateMPCWalletViewModel: ObservableObject {
     
     let preFilledEmail: String?
     let activationResultCallback: ActivateMPCWalletFlow.FlowResultCallback
-    @Published var navPath: [ActivateMPCWalletFlow.NavigationDestination] = []
+    @Published var navPath: NavigationPathWrapper<ActivateMPCWalletFlow.NavigationDestination> = .init()
     @Published var navigationState: NavigationStateManager?
     @Published var isLoading = false
     @Published var error: Error?

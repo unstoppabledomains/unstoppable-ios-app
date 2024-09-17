@@ -7,20 +7,28 @@
 
 import SwiftUI
 
-typealias EmptyNavigationPath = Array<Int>
+typealias EmptyNavigationPath = NavigationPathWrapper<Int>
 
-struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : MutableCollection, Data : RandomAccessCollection, Data : RangeReplaceableCollection, Data.Element : Hashable {
+struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data: Hashable {
     
     @Environment(\.dismiss) var dismiss
     
     @ViewBuilder var content: () -> Content
     var navigationStateProvider: (NavigationStateManager)->()
-    @Binding var path: Data
+    @Binding var path: NavigationPathWrapper<Data>
+    private var navPath: Binding<NavigationPath> {
+        Binding {
+            path.navigationPath
+        } set: { navPath in
+            path.navigationPath = navPath
+        }
+        
+    }
     @StateObject private var navigationState = NavigationStateManager()
     @State private var viewPresentationStyle: ViewPresentationStyle = .fullScreen
-
+    
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack(path: navPath) {
             content()
                 .navigationPopGestureDisabled(navigationState.navigationBackDisabled)
                 .environmentObject(navigationState)
@@ -95,4 +103,57 @@ final class NavigationStateManagerWrapper: ObservableObject {
     
     @Published var navigationState: NavigationStateManager?
     
+}
+
+
+/// Navigation Path wrapper. Since iOS 18.0, If NavigationStack is used with array (like before) it now pushes two view controllers each time element appended to that error.
+/// Issue is not reproducible if NavigationPath is used. This wrapper allows to avoid this bug while preserving existing functionality.
+/// Navigation path should listen for didSet because user can swipe back manually and we need to adjust underlying array of typed elements.
+struct NavigationPathWrapper<Data> where Data : Hashable {
+    var navigationPath: NavigationPath = NavigationPath() {
+        didSet {
+            if navigationPath.count < navigationTypedPath.count {
+                navigationTypedPath = Array(navigationTypedPath.prefix(navigationPath.count))
+            } else if navigationPath.count > navigationTypedPath.count {
+                Debugger.printFailure("Should never use NavigationLink. Only NavigationPathWrapper.", critical: true)
+            }
+        }
+    }
+    private var navigationTypedPath: [Data] = []
+    
+    var last: Data? { navigationTypedPath.last }
+    var isEmpty: Bool { navigationPath.isEmpty }
+    var count: Int { navigationPath.count }
+    var indices: Range<Int> { navigationTypedPath.indices }
+    
+    mutating func append(_ item: Data) {
+        navigationTypedPath.append(item)
+        navigationPath.append(item)
+    }
+    
+    mutating func removeAll() {
+        navigationPath = NavigationPath()
+    }
+    
+    mutating func removeLast() {
+        navigationPath.removeLast()
+    }
+    
+    func first(where isIncluded: (Data) -> Bool) -> Data? {
+        navigationTypedPath.first(where: isIncluded)
+    }
+    
+    subscript(index: Int) -> Data {
+        navigationTypedPath[index]
+    }
+}
+
+extension NavigationPathWrapper: Hashable {
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.navigationTypedPath == rhs.navigationTypedPath
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(navigationTypedPath)
+    }
 }
