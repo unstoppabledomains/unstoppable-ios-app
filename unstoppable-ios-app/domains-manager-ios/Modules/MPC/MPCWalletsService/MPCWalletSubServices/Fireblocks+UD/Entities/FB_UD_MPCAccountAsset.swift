@@ -90,12 +90,12 @@ extension Array where Element == FB_UD_MPC.WalletAccountAsset {
     func findWith(symbol: String, chain: String) -> Element? {
         guard let id = FB_UD_MPC.WalletAccountAsset.mpcIDFor(symbol: chain) else { return nil }
         
-        var symbol = symbol
+        var symbols: Set<String> = [symbol]
         if let blockchainType = BlockchainType(chainShortCode: symbol) {
-            symbol = blockchainType.migratedShortCode
+            symbols.insert(blockchainType.migratedShortCode)
         }
         
         // TODO: - Check for $0.blockchainAsset.blockchain.symbol when BE ready
-        return first(where: { $0.blockchainAsset.symbol == symbol && $0.blockchainAsset.blockchain.id == id })
+        return first(where: { symbols.contains($0.blockchainAsset.symbol) && $0.blockchainAsset.blockchain.id == id })
     }
 }
