@@ -33,13 +33,13 @@ extension CoinRecordsService: CoinRecordsServiceProtocol {
         return currencies
     }
     
-    func refreshCurrencies(version: String) {
+    func refreshCurrencies() {
         Task.detached(priority: .background) {
             do {
-                let data = try await self.fetchCurrenciesData(version: version)
+                let data = try await self.fetchCurrenciesData()
                 
                 guard let coins = self.parseCurrencies(from: data) else {
-                    Debugger.printFailure("Failed to parse uns version: \(version)", critical: true)
+                    Debugger.printFailure("Failed to parse resolver-keys", critical: true)
                     return
                 }
                 
@@ -47,7 +47,7 @@ extension CoinRecordsService: CoinRecordsServiceProtocol {
                 self.storeCoinRecords(data: data)
                 self.detectAndReportRecordsWithoutPrimaryChain()
             } catch {
-                Debugger.printFailure("Failed to fetch uns version: \(version)", critical: false)
+                Debugger.printFailure("Failed to fetch resolver-keys with error \(error.localizedDescription)", critical: false)
             }
         }
     }
@@ -63,7 +63,7 @@ private extension CoinRecordsService {
         }
     }
 
-    func fetchCurrenciesData(version: String) async throws -> Data {
+    func fetchCurrenciesData() async throws -> Data {
         var cursor: String? = ""
         var records: [TokenRecord] = []
         var counter = 0

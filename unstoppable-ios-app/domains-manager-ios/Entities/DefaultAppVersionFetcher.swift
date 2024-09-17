@@ -23,7 +23,6 @@ struct DefaultAppVersionFetcher: AppVersionApi {
                                             polygonMintingReleased: response.polygonClaimingReleased,
                                             mintingZilTldOnPolygonReleased: response.mintingZilTldOnPolygonReleased,
                                             dotcoinDeprecationReleased: response.dotcoinDeprecationReleased,
-                                            mobileUnsReleaseVersion: response.mobileUnsReleaseVersion,
                                             tlds: response.tlds,
                                             tldsToPurchase: response.tldsToPurchase,
                                             dnsTlds: response.dnsTlds,

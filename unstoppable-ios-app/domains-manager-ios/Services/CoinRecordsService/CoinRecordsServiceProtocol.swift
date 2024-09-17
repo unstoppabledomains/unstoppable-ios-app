@@ -12,7 +12,7 @@ protocol CoinRecordsServiceProtocol {
     var eventsPublisher: PassthroughSubject<CoinRecordsEvent, Never> { get }
     
     func getCurrencies() async -> [CoinRecord]
-    func refreshCurrencies(version: String)
+    func refreshCurrencies()
 }
 
 enum CoinRecordsEvent {
