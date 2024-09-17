@@ -163,10 +163,6 @@ private extension AuthentificationService {
             return String.Constants.identifyYourself.localized(biometricsName ?? "")
         case .deviceOwnerAuthentication:
             return String.Constants.unlockWithPasscode.localized()
-        case .deviceOwnerAuthenticationWithWatch:
-            return ""
-        case .deviceOwnerAuthenticationWithBiometricsOrWatch:
-            return ""
         case .deviceOwnerAuthenticationWithWristDetection:
             return ""
         @unknown default:
