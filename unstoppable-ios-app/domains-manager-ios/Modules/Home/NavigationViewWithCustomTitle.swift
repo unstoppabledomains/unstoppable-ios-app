@@ -109,6 +109,7 @@ final class NavigationStateManagerWrapper: ObservableObject {
 /// Navigation Path wrapper. Since iOS 18.0, If NavigationStack is used with array (like before) it now pushes two view controllers each time element appended to that error.
 /// Issue is not reproducible if NavigationPath is used. This wrapper allows to avoid this bug while preserving existing functionality.
 /// Navigation path should listen for didSet because user can swipe back manually and we need to adjust underlying array of typed elements.
+/// Issue discussion on Apple Dev forum: https://forums.developer.apple.com/forums/thread/759542
 struct NavigationPathWrapper<Data> where Data : Hashable {
     var navigationPath: NavigationPath = NavigationPath() {
         didSet {
