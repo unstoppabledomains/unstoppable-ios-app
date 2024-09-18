@@ -88,7 +88,6 @@ struct AppVersionAPIResponse: Decodable {
     let tldsToPurchase: [String]
     let dnsTlds: [String]
     var dotcoinDeprecationReleased: Bool?
-    var mobileUnsReleaseVersion: String?
     var limits: AppConfigurationLimits?
 }
 
@@ -103,7 +102,6 @@ struct AppVersionInfo: Codable {
     var polygonMintingReleased: Bool = true
     var mintingZilTldOnPolygonReleased: Bool = false
     var dotcoinDeprecationReleased: Bool?
-    var mobileUnsReleaseVersion: String?
     var tlds: [String] = ["x",
                          "crypto",
                          "coin",
