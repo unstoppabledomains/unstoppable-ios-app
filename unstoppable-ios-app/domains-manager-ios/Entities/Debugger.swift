@@ -61,7 +61,7 @@ public struct Debugger {
             case .debugUI:
                 return [.Error, .Navigation, .UI, .Images, .Debug]
             case .debugNetwork:
-                return [.Network, .WebSockets, .Error, .Debug, .mpc]
+                return [.Network, .WebSockets, .Error, .Debug]
             case .custom(let topics):
                 return topics
             }
