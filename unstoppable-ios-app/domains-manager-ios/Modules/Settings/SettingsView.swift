@@ -19,6 +19,7 @@ struct SettingsView: View, ViewAnalyticsLogger {
     @State private var profiles: [UserProfile] = []
     @State private var pullUp: ViewPullUpConfigurationType?
     @State private var error: Error?
+    @State private var isAddingWallet = false
     private let ecommAuthenticator = EcommAuthenticator()
     var analyticsName: Analytics.ViewName { .settings }
 
@@ -35,6 +36,9 @@ struct SettingsView: View, ViewAnalyticsLogger {
             .navigationBarTitleDisplayMode(.large)
             .viewPullUp($pullUp)
             .onAppear(perform: onAppear)
+            .sheet(isPresented: $isAddingWallet) {
+                PurchaseMPCWalletRootView(createWalletCallback: handleAddWalletResult)
+            }
     }
     
 }
@@ -502,7 +506,9 @@ private extension SettingsView {
                 case .connect:
                     connectNewWallet()
                 case .mpc:
-                    guard !udFeatureFlagsService.valueFor(flag: .isMaintenanceMPCEnabled) else {
+                    let maintenanceData: MaintenanceModeData? = appContext.udFeatureFlagsService.entityValueFor(flag: .isMaintenanceMPCEnabled)
+
+                    guard maintenanceData?.isCurrentlyEnabled != true else {
                         self.error = MPCWalletError.maintenanceEnabled
                         return
                     }
@@ -513,17 +519,16 @@ private extension SettingsView {
     }
     
     func showAddWalletSelection() {
-        guard let view = appContext.coreAppCoordinator.topVC else { return }
-        
-        UDRouter().showAddWalletSelection(in: view,
-                                          createCallback: { result in
-            switch result {
-            case .createNew:
-                createNewWallet()
-            case .importMPC(let email):
-                activateMPCWallet(preFilledEmail: email)
-            }
-        })
+        isAddingWallet = true
+    }
+    
+    func handleAddWalletResult(_ result: AddWalletResult) {
+        switch result {
+        case .createNew:
+            createNewWallet()
+        case .createdMPC(let wallet):
+            addWalletAfterAdded(wallet)
+        }
     }
     
     func createNewWallet() {

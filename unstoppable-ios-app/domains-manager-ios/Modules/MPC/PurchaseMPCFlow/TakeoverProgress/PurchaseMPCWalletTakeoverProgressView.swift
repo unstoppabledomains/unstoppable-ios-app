@@ -9,17 +9,16 @@ import SwiftUI
 
 struct PurchaseMPCWalletTakeoverProgressView: View, ViewAnalyticsLogger {
     
-    @Environment(\.mpcWalletsService) private var mpcWalletsService
-    @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
+    @Environment(\.claimMPCWalletService) private var claimMPCWalletService
 
     let analyticsName: Analytics.ViewName
-    let credentials: MPCTakeoverCredentials
-    let shouldSendBootstrapCode: Bool
+    @State var credentials: MPCTakeoverCredentials
     let finishCallback: EmptyCallback
     @State private var takeoverState: MPCWalletTakeoverState = .readyForTakeover
     @State private var error: Error?
     @State private var didFinishTakeover = false
     @State private var numberOfFailedAttempts = 0
+    @State private var enterDataType: MPCActivateWalletEnterDataType?
 
     var body: some View {
         ZStack {
@@ -36,6 +35,20 @@ struct PurchaseMPCWalletTakeoverProgressView: View, ViewAnalyticsLogger {
         .animation(.default, value: UUID())
         .trackAppearanceAnalytics(analyticsLogger: self)
         .onAppear(perform: onAppear)
+        .sheet(item: $enterDataType) { dataType in
+            MPCActivateWalletEnterView(dataType: dataType,
+                                       email: credentials.email,
+                                       confirmationCallback: { value in
+                switch dataType {
+                case .passcode:
+                    self.credentials.code = value
+                case .password:
+                    return
+                }
+                runTakeover()
+            }, changeEmailCallback: nil)
+            .presentationDetents([.medium])
+        }
     }
 }
 
@@ -74,16 +87,15 @@ private extension PurchaseMPCWalletTakeoverProgressView {
             takeoverState = .inProgress
             do {
                 if !didFinishTakeover {
-                    logAnalytic(event: .mpcTakeoverStarted,
-                                parameters: [.sendRecoveryLink : String(credentials.sendRecoveryLink)])
-                    try await ecomPurchaseMPCWalletService.runTakeover(credentials: credentials)
+                    logAnalytic(event: .mpcTakeoverStarted)
+                    try await claimMPCWalletService.runTakeover(credentials: credentials)
                     logAnalytic(event: .mpcTakeoverFinished)
                 }
                 didFinishTakeover = true
-                if shouldSendBootstrapCode {
-                    try await mpcWalletsService.sendBootstrapCodeTo(email: credentials.email)
-                }
                 finishCallback()
+            } catch MPCWalletError.incorrectCode {
+                logAnalytic(event: .didFailActivateMPCWalletPasscode)
+                didFailWithError(.incorrectPasscode)
             } catch {
                 takeoverState = .failed(.unknown)
                 numberOfFailedAttempts += 1
@@ -98,6 +110,20 @@ private extension PurchaseMPCWalletTakeoverProgressView {
                 }
             }
         }
+    }
+    
+    func didFailWithError(_ error: MPCWalletTakeoverError) {
+        takeoverState = .failed(error)
+        switch error {
+        case .incorrectPasscode:
+            enterDataType = .passcode(resendCode)
+        case .unknown:
+            return
+        }
+    }
+    
+    func resendCode(email: String) async throws {
+        try await claimMPCWalletService.sendVerificationCodeTo(email: email)
     }
     
     @ViewBuilder
@@ -146,6 +172,5 @@ private extension PurchaseMPCWalletTakeoverProgressView {
 #Preview {
     PurchaseMPCWalletTakeoverProgressView(analyticsName: .unspecified,
                                           credentials: .init(email: "qq@qq.qq", password: ""),
-                                          shouldSendBootstrapCode: true,
                                           finishCallback: { })
 }

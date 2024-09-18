@@ -67,7 +67,8 @@ final class MockContext: AppContextProtocol {
                                                                                            udFeatureFlagsService: udFeatureFlagsService,
                                                                                            uiHandler: coreAppCoordinator)
     private(set) lazy var ecomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol = PreviewEcomPurchaseMPCWalletService()
-
+    private(set) lazy var claimMPCWalletService: ClaimMPCWalletServiceProtocol = ClaimMPCWalletService()
+    
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
     
     func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {

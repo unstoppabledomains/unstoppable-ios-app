@@ -230,7 +230,9 @@ extension NetworkService {
             case .updateRecords(let records):
                 var recordsDict: [String : String] = [:]
                 for record in records {
-                    recordsDict[record.resolveKey()] = record.resolveValue()
+                    for key in record.resolveKeys() {
+                        recordsDict[key] = record.resolveValue()
+                    }
                 }
                 return UpdateRecordsRequestBody(address: ownerWallet, 
                                                 records: recordsDict)

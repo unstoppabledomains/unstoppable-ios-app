@@ -757,6 +757,7 @@ extension String {
         static let mintedOnChain = "MINTED_ON_CHAIN"
         static let mintedOnPolygonDescription = "MINTED_ON_POLYGON_DESCRIPTION"
         static let mintedOnEthereumDescription = "MINTED_ON_ETHEREUM_DESCRIPTION"
+        static let mintedOnBaseDescription = "MINTED_ON_BASE_DESCRIPTION"
         static let domainProfileInfoTitle = "DOMAIN_PROFILE_INFO_TITLE"
         static let domainProfileCreateInfoTitle = "DOMAIN_PROFILE_CREATE_INFO_TITLE"
         static let domainProfileInfoDescription = "DOMAIN_PROFILE_INFO_DESCRIPTION"
@@ -991,6 +992,7 @@ extension String {
         static let messagingCommunitiesListEnabled = "MESSAGING_COMMUNITIES_ENABLED"
         static let messagingNoWalletsTitle = "MESSAGING_NO_WALLETS_TITLE"
         static let messagingNoWalletsSubtitle = "MESSAGING_NO_WALLETS_SUBTITLE"
+        static let messagingCreateProfileInProgressTitle = "MESSAGING_CREATE_PROFILE_IN_PROGRESS_TITLE"
         
         // Public profile
         static let followers = "FOLLOWERS"
@@ -1294,6 +1296,7 @@ extension String {
         static let mpcPasswordValidationNumberTitle = "MPC_PASSWORD_VALIDATION_NUMBER_TITLE"
         static let mpcPasswordValidationSpecialCharTitle = "MPC_PASSWORD_VALIDATION_SPECIAL_CHAR_TITLE"
         static let mpcTakeoverCredentialsSubtitle = "MPC_TAKEOVER_CREDENTIALS_SUBTITLE"
+        static let mpcTakeoverPasswordSubtitle = "MPC_TAKEOVER_PASSWORD_SUBTITLE"
         static let mpcTakeoverRecoveryTitle = "MPC_TAKEOVER_RECOVERY_TITLE"
         static let mpcTakeoverRecoverySubtitle = "MPC_TAKEOVER_RECOVERY_SUBTITLE"
         static let sendMeRecoveryLink = "SEND_ME_RECOVERY_LINK"
@@ -1302,9 +1305,13 @@ extension String {
         static let mpcWalletEmailInUseCantVerifyMessage = "MPC_WALLET_EMAIL_IN_USE_CANT_VERIFY_MESSAGE"
         static let mpcTakeoverInProgressTitle = "MPC_TAKEOVER_IN_PROGRESS_TITLE"
         static let mpcTakeoverInProgressSubtitle = "MPC_TAKEOVER_IN_PROGRESS_SUBTITLE"
+        static let mpcTakeoverAlmostThereTitle = "MPC_TAKEOVER_ALMOST_THERE_TITLE"
+        static let mpcTakeoverAlmostThereSubtitle = "MPC_TAKEOVER_ALMOST_THERE_SUBTITLE"
         static let contactSupport = "CONTACT_SUPPORT"
         static let mpcWalletDefaultName = "MPC_WALLET_DEFAULT_NAME"
         static let sendCrypto = "SEND_CRYPTO"
+        static let mpcForgotPasswordTitle = "MPC_FORGOT_PASSWORD_TITLE"
+        static let mpcForgotPasswordSubtitle = "MPC_FORGOT_PASSWORD_SUBTITLE"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"
@@ -1450,6 +1457,12 @@ extension String {
     
     func appendingURLQueryComponents(_ components: [String : String]) -> String {
         self + "?" + components.compactMap({ "\($0.key)=\($0.value)".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) }).joined(separator: "&")
+    }
+    
+    func appendingURLQueryItems(_ components: [URLQueryItem]) -> String {
+        self + "?" + components.compactMap({ "\($0.name)=\($0.value ?? "")"
+            .addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) })
+            .joined(separator: "&")
     }
     
     var encodingSpecialCharacters: String {

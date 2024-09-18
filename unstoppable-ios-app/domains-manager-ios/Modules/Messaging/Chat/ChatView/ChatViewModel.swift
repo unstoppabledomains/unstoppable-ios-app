@@ -1116,7 +1116,7 @@ extension ChatViewModel: MessagingServiceListener {
                 if let i = listOfGroupParticipants.firstIndex(where: { $0.wallet == user.wallet }) {
                     listOfGroupParticipants[i] = user
                 }
-            case .channels, .channelFeedAdded, .refreshOfUserProfile, .messageReadStatusUpdated, .totalUnreadMessagesCountUpdated:
+            case .channels, .channelFeedAdded, .refreshOfUserProfile, .messageReadStatusUpdated, .totalUnreadMessagesCountUpdated, .profileCreated:
                 return
             }
         }

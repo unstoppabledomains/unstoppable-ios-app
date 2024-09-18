@@ -14,6 +14,7 @@ struct MPCActivateWalletView: View, ViewAnalyticsLogger {
     let analyticsName: Analytics.ViewName
     @State var credentials: MPCActivateCredentials
     @State var code: String
+    var canGoBack: Bool = true
     let mpcWalletCreatedCallback: (UDWallet)->()
     var changeEmailCallback: EmptyCallback? = nil
 
@@ -66,6 +67,8 @@ struct MPCActivateWalletView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension MPCActivateWalletView {
     var isBackButtonHidden: Bool {
+        guard canGoBack else { return true }
+        
         switch activationState {
         case .readyToActivate, .activating:
             return true
@@ -120,12 +123,16 @@ private extension MPCActivateWalletView {
         activationState = .failed(error)
         switch error {
         case .incorrectPasscode:
-            enterDataType = .passcode
+            enterDataType = .passcode(resendCode)
         case .incorrectPassword:
             enterDataType = .password
         case .unknown:
             return
         }
+    }
+    
+    func resendCode(email: String) async throws {
+        try await mpcWalletsService.sendBootstrapCodeTo(email: email)
     }
     
     @MainActor
@@ -219,7 +226,7 @@ private extension MPCActivateWalletView {
         switch error {
         case .incorrectPasscode:
             logButtonPressedAnalyticEvents(button: .reEnterPasscode)
-            enterDataType = .passcode
+            enterDataType = .passcode(resendCode)
         case .incorrectPassword:
             logButtonPressedAnalyticEvents(button: .reEnterPassword)
             enterDataType = .password

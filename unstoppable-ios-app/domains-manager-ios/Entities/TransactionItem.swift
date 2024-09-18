@@ -11,6 +11,7 @@ import BigInt
 enum TxType: String, Codable {
     case ethTx = "EthTx"
     case maticTx = "MaticTx"
+    case baseTx = "BaseChainTx"
 }
 
 enum TxStatusGroup: String, Codable {

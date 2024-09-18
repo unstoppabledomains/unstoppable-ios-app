@@ -23,8 +23,8 @@ struct MPCActivateWalletEnterView: View, ViewAnalyticsLogger {
             DismissIndicatorView()
             headerView()
             inputView()
-            if case .passcode = dataType {
-                MPCResendCodeButton(email: email)
+            if case .passcode(let resendAction) = dataType {
+                MPCResendCodeButton(email: email, resendAction: resendAction)
             }
             actionButtonView()
             Spacer()

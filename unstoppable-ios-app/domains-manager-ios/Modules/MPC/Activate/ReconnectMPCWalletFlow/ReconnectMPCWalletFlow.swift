@@ -21,6 +21,7 @@ extension ReconnectMPCWalletFlow {
         case removeWallet
         case reImportWallet
         case didEnterCredentials(MPCActivateCredentials)
+        case didPressForgotPassword
         case didEnterCode(String)
         case didActivate(UDWallet)
         case didRequestToChangeEmail

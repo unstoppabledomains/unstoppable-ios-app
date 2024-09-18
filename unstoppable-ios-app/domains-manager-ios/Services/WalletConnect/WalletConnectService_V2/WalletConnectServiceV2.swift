@@ -728,13 +728,14 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             let chainIdInt = try request.getChainId()
             let completedTx = try await completeTx(transaction: tx, chainId: chainIdInt)
             
-            let (_, _) = try await getClientAfterConfirmationIfNeeded(address: walletAddress,
-                                                                      chainId: chainIdInt,
-                                                                      request: request,
-                                                                      transaction: completedTx)
             
             switch udWallet.type {
             case .externalLinked:
+                let (_, _) = try await getClientAfterConfirmationIfNeeded(address: walletAddress,
+                                                                          chainId: chainIdInt,
+                                                                          request: request,
+                                                                          transaction: completedTx)
+                
                 let sessionsWithExtWallet = findSessions(by: walletAddress)
                 let response = try await signTxViaWalletConnectV2(sessions: sessionsWithExtWallet,
                                                                   chainId: chainIdInt,

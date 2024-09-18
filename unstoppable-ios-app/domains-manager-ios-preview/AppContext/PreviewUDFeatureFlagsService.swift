@@ -20,7 +20,7 @@ final class UDFeatureFlagsService: UDFeatureFlagsServiceProtocol {
         case .isBuyDomainEnabled, .isBuyCryptoEnabled:
             return true
         default:
-        return true
+            return true
         }
     }
     

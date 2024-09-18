@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ReconnectMPCWalletPromptView: View, ViewAnalyticsLogger {
     
+    @Environment(\.walletsDataService) var walletsDataService
     @EnvironmentObject var viewModel: ReconnectMPCWalletViewModel
 
     let walletAddress: String
@@ -55,15 +56,22 @@ private extension ReconnectMPCWalletPromptView {
     }
     
     var walletAddressInBrackets: String {
-        "(\(walletAddress.walletAddressTruncated))"
+        if let rrDomain = walletsDataService.wallets.findWithAddress(walletAddress)?.rrDomain {
+            return "(\(rrDomain.name) \(walletAddress.walletAddressTruncated))"
+        } else {
+            return "(\(walletAddress.walletAddressTruncated))"
+        }
     }
     
     @ViewBuilder
     func titleText() -> some View {
-        AttributedText(attributesList: .init(text: String.Constants.reImportMPCWalletPromptTitle.localized(walletAddressInBrackets), font: .currentFont(withSize: 32, weight: .bold), textColor: .foregroundDefault, alignment: .center),
+        AttributedText(attributesList: .init(text: String.Constants.reImportMPCWalletPromptTitle.localized(walletAddressInBrackets),
+                                             font: .currentFont(withSize: 32, weight: .bold),
+                                             textColor: .foregroundDefault,
+                                             alignment: .center),
                        updatedAttributesList: [.init(text: walletAddressInBrackets, textColor: .foregroundSecondary)],
-                       flexibleHeight: false)
-            
+                       flexibleHeight: false,
+                       width: screenSize.width - 32)
     }
     
     @ViewBuilder

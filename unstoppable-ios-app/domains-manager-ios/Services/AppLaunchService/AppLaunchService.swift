@@ -147,8 +147,8 @@ private extension AppLaunchService {
             Task.detached(priority: .medium) { [weak self] in
                 guard let self else { return }
                 
+                appContext.coinRecordsService.refreshCurrencies()
                 let appVersion = await appContext.userDataService.getLatestAppVersion()
-                appContext.coinRecordsService.refreshCurrencies(version: appVersion.mobileUnsReleaseVersion ?? Constants.defaultUNSReleaseVersion)
                 await self.appVersionUpdated(appVersion)
                 await self.stateMachine.set(appVersionInfo: appVersion)
                 

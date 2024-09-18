@@ -79,7 +79,3 @@ final class UDWalletsListenerHolder: Equatable {
     }
     
 }
-
-enum WalletImportingError: String, RawValueLocalizable, Error {
-    case noWalletsToImport = "NO_WALLETS_TO_IMPORT"
-}

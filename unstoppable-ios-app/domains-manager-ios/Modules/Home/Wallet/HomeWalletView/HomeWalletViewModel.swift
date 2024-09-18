@@ -76,6 +76,10 @@ extension HomeWalletView {
                     self?.setSelectedWallet(selectedWallet)
                 }
             }.store(in: &cancellables)
+            appContext.coinRecordsService.eventsPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
+                self?.lastVerifiedRecordsWalletAddress = nil
+                self?.ensureRRDomainRecordsMatchOwnerWallet()
+            }.store(in: &cancellables)
         }
         
         func onAppear() {
@@ -304,10 +308,11 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
                 let chainsToVerify: [ChainToVerifyDesc]
                 switch selectedWallet.getAssetsType() {
                 case .singleChain(let balanceTokenUIDescription):
-                    chainsToVerify = BlockchainType.allCases.map { ChainToVerifyDesc(chain: $0.shortCode,
-                                                                                     fullName: $0.fullName,
-                                                                                     address: balanceTokenUIDescription.address,
-                                                                                     isCaseSensitive: false) }
+                    let blockchainTypes: [BlockchainType] = [.Ethereum, .Matic]
+                    chainsToVerify = blockchainTypes.map { ChainToVerifyDesc(chain: $0.shortCode,
+                                                                             fullName: $0.fullName,
+                                                                             address: balanceTokenUIDescription.address,
+                                                                             isCaseSensitive: false) }
                 case .multiChain(let tokens):
                     chainsToVerify = tokens
                         .filter({ token in

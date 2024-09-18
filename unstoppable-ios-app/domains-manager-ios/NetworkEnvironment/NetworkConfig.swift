@@ -78,6 +78,19 @@ struct NetworkConfig {
         }
     }
     
+    static var pav3BaseUrl: String {
+        baseAPIUrl.appendingURLPathComponents("partner", "v3")
+    }
+    
+    static var pav3APIKey: String {
+        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+        if isTestnetUsed {
+            return NetworkService.pav3StagingKey
+        } else {
+            return NetworkService.pav3ProductionKey
+        }
+    }
+    
     private static let okLinkBaseURL = "https://www.oklink.com"
     
     private static func okLinkChainIdentifierFor(chain: String) -> String? {

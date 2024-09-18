@@ -21,4 +21,8 @@ struct NetworkBearerAuthorisationHeaderBuilderImpl: NetworkBearerAuthorisationHe
     static let instance = NetworkBearerAuthorisationHeaderBuilderImpl()
     
     private init() { }
+    
+    func buildPav3BearerHeader() -> [String : String] {
+        buildAuthBearerHeader(token: NetworkConfig.pav3APIKey)
+    }
 }

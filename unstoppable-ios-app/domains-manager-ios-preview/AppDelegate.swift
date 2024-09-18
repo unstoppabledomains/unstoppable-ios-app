@@ -18,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        setup()
+
         return true
     }
 
@@ -37,3 +39,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+// MARK: - Private methods
+private extension AppDelegate {
+    func setup() {
+        configureNavBar()
+        setupAppearance()
+    }
+    
+    func configureNavBar() {
+        UINavigationBar.appearance().scrollEdgeAppearance = UINavigationBarAppearance.udAppearanceWith(isTransparent: true)
+        UINavigationBar.appearance().standardAppearance = UINavigationBarAppearance.udAppearanceWith(isTransparent: false)
+    }
+    
+    func setupAppearance() {
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = .backgroundSubtle
+    }
+}

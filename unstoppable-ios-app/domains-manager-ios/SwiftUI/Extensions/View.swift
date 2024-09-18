@@ -66,6 +66,12 @@ extension View {
         }
     }
     
+    func openMailApp() {
+        guard let url = URL(string: "message://") else { return }
+        
+        openURLExternally(url)
+    }
+    
     func shareItems(_ items: [Any], completion: ((Bool)->())?) {
         guard let topVC = appContext.coreAppCoordinator.topVC else { return }
         

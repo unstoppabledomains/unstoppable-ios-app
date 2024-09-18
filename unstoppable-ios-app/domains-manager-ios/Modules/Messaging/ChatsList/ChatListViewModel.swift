@@ -337,6 +337,8 @@ extension ChatListViewModel: MessagingServiceListener {
                         prepareData()
                     }
                 }
+            case .profileCreated(let profile):
+                loadAndShowData()
             case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded, .totalUnreadMessagesCountUpdated, .refreshOfUserProfile, .userInfoRefreshed:
                 return
             }
@@ -356,7 +358,7 @@ private extension ChatListViewModel {
         guard wallet.address != selectedProfileWalletPair?.wallet.address else { return }
         
         self.selectedWallet = wallet
-        runLoadingState()
+        runLoadingState(isLoadingProfile: false)
         Task {
             if let cachedPair = profileWalletPairsCache.first(where: { $0.wallet.address == wallet.address }) {
                 try await self.selectProfileWalletPair(cachedPair)
@@ -370,10 +372,14 @@ private extension ChatListViewModel {
         }
     }
     
-    func runLoadingState() {
+    func runLoadingState(isLoadingProfile: Bool) {
         chatsList.removeAll()
         channels.removeAll()
-        chatState = .loading
+        if isLoadingProfile {
+            chatState = .creatingProfileInProgress
+        } else {
+            chatState = .loading
+        }
     }
     
     func loadAndShowData() {
@@ -539,9 +545,14 @@ private extension ChatListViewModel {
                         parameters: [.state : state.rawValue,
                                      .wallet: chatProfile.wallet.address])
             await awaitForUIReady()
-            chatState = .createProfile
-            prepareData()
-            return
+            if await messagingService.isCreatingProfileInProgressFor(wallet: chatProfile.wallet) {
+                runLoadingState(isLoadingProfile: true)
+                return
+            } else {
+                chatState = .createProfile
+                prepareData()
+                return
+            }
         }
         
         logAnalytic(event: .willShowMessagingProfile, parameters: [.state : MessagingProfileStateAnalytics.created.rawValue,

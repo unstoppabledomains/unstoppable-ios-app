@@ -235,7 +235,7 @@
 "BACK_UP_MANUALLY" = "Back up manually";
 
 // Create password screen
-"CREATE_PASSWORD" = "Create a password";
+"CREATE_PASSWORD" = "Create password";
 "CREATE_PASSWORD_DESCRIPTION" = "This password protects your iCloud backups. Store this password somewhere safe.  Unstoppable Domains cannot recover your password for you. Learn more";
 "CREATE_PASSWORD_DESCRIPTION_HIGHLIGHTED" = "Store this password somewhere safe.";
 "LEARN_MORE" = "Learn more";
@@ -472,7 +472,7 @@
 "ENTER_VERIFICATION_CODE_SUBTITLE" = "Please enter the 6-digit verificiation code sent to your email: %@";
 "RESEND_CODE" = "Resend code";
 "RESEND_CODE_IN" = "Resend code in %@";
-"OPEN_EMAIL_APP" = "Open email app";
+"OPEN_EMAIL_APP" = "Open Email Client";
 
 // No Domains to mint
 "NO_DOMAINS_TO_MINT_MESSAGE" = "Sorry, you don’t have any domains to import";
@@ -651,7 +651,8 @@
 "ABOUT_PROFILES" = "About profiles";
 "MINTED_ON_CHAIN" = "Minted on %@";
 "MINTED_ON_POLYGON_DESCRIPTION" = "Your domain is managed on Polygon. Enjoy unlimited profile updates with no gas fees.";
-"MINTED_ON_ETHEREUM_DESCRIPTION" = "Your domain is managed on Ethereum. Bridge to Polygon to enjoy unlimited profile updates with no gas fees. ";
+"MINTED_ON_ETHEREUM_DESCRIPTION" = "Your domain is managed on Ethereum. Bridge to Polygon to enjoy unlimited profile updates with no gas fees.";
+"MINTED_ON_BASE_DESCRIPTION" = "Your domain is managed on the BASE chain. Enjoy unlimited profile updates with no gas fees.";
 "DOMAIN_PROFILE_INFO_TITLE" = "Web3 Profile";
 "DOMAIN_PROFILE_CREATE_INFO_TITLE" = "Create your Web3 profile";
 "DOMAIN_PROFILE_INFO_DESCRIPTION" = "Your domain is your self-sovereign identity. You control what information you share across apps, metaverse, and games.";
@@ -885,6 +886,7 @@
 "MESSAGING_COMMUNITIES_ENABLED" = "Groups enabled";
 "MESSAGING_NO_WALLETS_TITLE" = "Get access to Messaging\nwith a wallet";
 "MESSAGING_NO_WALLETS_SUBTITLE" = "To send and receive messages, a crypto wallet is required to ensure secure and encrypted communication.";
+"MESSAGING_CREATE_PROFILE_IN_PROGRESS_TITLE" = "Enabling chat...";
 
 // Public profile
 "FOLLOWERS" = "Followers";
@@ -1139,7 +1141,7 @@ More tabs are coming in the next updates.";
 "IMPORT_MPC_WALLET_TITLE" = "Import %@";
 "IMPORT_MPC_WALLET_SUBTITLE" = "Enter the credentials you added when you created your %@";
 "EMAIL_ASSOCIATED_WITH_WALLET" = "Email associated with a wallet";
-"ENTER_MPC_WALLET_VERIFICATION_CODE_TITLE" = "Enter verification code\nsent to your email";
+"ENTER_MPC_WALLET_VERIFICATION_CODE_TITLE" = "Enter verification code";
 "ENTER_MPC_WALLET_VERIFICATION_CODE_SUBTITLE" = "Code sent to: %@";
 "VERIFICATION_CODE" = "Verification code";
 "HAVENT_RECEIVED_THE_CODE" = "Haven’t received the code?";
@@ -1187,7 +1189,8 @@ More tabs are coming in the next updates.";
 "MPC_PASSWORD_VALIDATION_TOO_LONG_TITLE" = "Minimum %i characters, maximum %i characters";
 "MPC_PASSWORD_VALIDATION_NUMBER_TITLE" = "At least one number";
 "MPC_PASSWORD_VALIDATION_SPECIAL_CHAR_TITLE" = "At least one special character (e.g. -!&*)";
-"MPC_TAKEOVER_CREDENTIALS_SUBTITLE" = "Each %@ requires a UNIQUE email address. Make sure you have access to the email. It can be the one used in the previous step or a different one.";
+"MPC_TAKEOVER_CREDENTIALS_SUBTITLE" = "Each %@ requires a unique email address. Make sure you have access to an email.";
+"MPC_TAKEOVER_PASSWORD_SUBTITLE" = "Do note share your password with anyone, including Unstoppable Domains staff.";
 "MPC_TAKEOVER_RECOVERY_TITLE" = "Get recovery link";
 "MPC_TAKEOVER_RECOVERY_SUBTITLE" = "This is the only way to restore access to wallet if you forget your password. Obtain a recovery link to ensure you don't lose access to your assets. The recovery link will be sent to:";
 "SEND_ME_RECOVERY_LINK" = "Send me a recovery link";
@@ -1195,10 +1198,14 @@ More tabs are coming in the next updates.";
 "MPC_WALLET_EMAIL_IN_USE_MESSAGE" = "Email already in use, please use a different one";
 "MPC_WALLET_EMAIL_IN_USE_CANT_VERIFY_MESSAGE" = "We couldn't verify email address availability.\nPlease try again or use another email address.";
 "MPC_TAKEOVER_IN_PROGRESS_TITLE" = "Preparing Wallet...";
-"MPC_TAKEOVER_IN_PROGRESS_SUBTITLE" = "~ 01:00";
+"MPC_TAKEOVER_IN_PROGRESS_SUBTITLE" = "~ 1 minute to complete";
+"MPC_TAKEOVER_ALMOST_THERE_TITLE" = "You’re almost there";
+"MPC_TAKEOVER_ALMOST_THERE_SUBTITLE" = "We’ve just sent you an email with a link to recover your wallet in case you forgot the password. We do not store your password,\nso it’s the only way to restore it.";
 "CONTACT_SUPPORT" = "Contact Support";
 "MPC_WALLET_DEFAULT_NAME" = "Lite Wallet";
 "SEND_CRYPTO" = "Send Crypto";
+"MPC_FORGOT_PASSWORD_TITLE" = "Reset password\nusing the recovery link";
+"MPC_FORGOT_PASSWORD_SUBTITLE" = "Find the email with the recovery link we sent you, when you created your wallet. This is the only way to restore access to the wallet if you forgot your password.";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";

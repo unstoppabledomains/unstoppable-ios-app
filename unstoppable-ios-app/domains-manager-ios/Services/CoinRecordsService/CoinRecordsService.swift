@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import Combine
 
 final class CoinRecordsService {
     
     let coinsFileName = "resolver-keys"
+    private(set) var eventsPublisher = PassthroughSubject<CoinRecordsEvent, Never>()
     
     private var currencies: [CoinRecord] = []
     private let fileManager = FileManager.default
@@ -31,13 +33,13 @@ extension CoinRecordsService: CoinRecordsServiceProtocol {
         return currencies
     }
     
-    func refreshCurrencies(version: String) {
+    func refreshCurrencies() {
         Task.detached(priority: .background) {
             do {
-                let data = try await self.fetchCurrenciesData(version: version)
+                let data = try await self.fetchCurrenciesData()
                 
                 guard let coins = self.parseCurrencies(from: data) else {
-                    Debugger.printFailure("Failed to parse uns version: \(version)", critical: true)
+                    Debugger.printFailure("Failed to parse resolver-keys", critical: true)
                     return
                 }
                 
@@ -45,7 +47,7 @@ extension CoinRecordsService: CoinRecordsServiceProtocol {
                 self.storeCoinRecords(data: data)
                 self.detectAndReportRecordsWithoutPrimaryChain()
             } catch {
-                Debugger.printFailure("Failed to fetch uns version: \(version)", critical: false)
+                Debugger.printFailure("Failed to fetch resolver-keys with error \(error.localizedDescription)", critical: false)
             }
         }
     }
@@ -54,14 +56,39 @@ extension CoinRecordsService: CoinRecordsServiceProtocol {
 // MARK: - Private methods
 private extension CoinRecordsService {
     func setCurrencies(_ currencies: [CoinRecord]) {
+        let didUpdateCoinsList = self.currencies.count != currencies.count
         self.currencies = currencies
+        if didUpdateCoinsList {
+            eventsPublisher.send(.didUpdateCoinsList)
+        }
+    }
+
+    func fetchCurrenciesData() async throws -> Data {
+        var cursor: String? = ""
+        var records: [TokenRecord] = []
+        var counter = 0
+        while cursor != nil {
+            counter += 1
+            let recordsResponse = try await loadNewRecords(cursor: cursor)
+            records.append(contentsOf: recordsResponse.items)
+            cursor = recordsResponse.next?.cursor
+        }
+        
+        return try records.jsonDataThrowing()
     }
     
-    
-    func fetchCurrenciesData(version: String) async throws -> Data {
-        let data = try await NetworkService().fetchData(for: URL(string: NetworkConfig.coinsResolverURL(version: version))!,
-                                                        method: .get)
-        return data
+    func loadNewRecords(cursor: String?) async throws -> TokenRecordsResponse {
+        var url = NetworkConfig.pav3BaseUrl.appendingURLPathComponents("resolution", "keys")
+        let queryItems: [URLQueryItem] = [.init(name: "$cursor", value: cursor),
+                                          .init(name: "subType", value: "CRYPTO_TOKEN"),
+                                          .init(name: "$expand", value: "validation"),
+                                          .init(name: "$expand", value: "parents"),
+                                          .init(name: "$expand", value: "mapping")]
+        url = url.appendingURLQueryItems(queryItems)
+        let headers = NetworkBearerAuthorisationHeaderBuilderImpl.instance.buildPav3BearerHeader()
+        let apiRequest = try APIRequest(urlString: url, method: .get, headers: headers)
+        let response: TokenRecordsResponse = try await NetworkService().makeDecodableAPIRequest(apiRequest)
+        return response
     }
     
     func getEmbeddedCurrencies() async -> [CoinRecord]? {
@@ -87,38 +114,12 @@ private extension CoinRecordsService {
     }
 
     func parseCurrencies(from data: Data) -> [CoinRecord]? {
-        guard let info = CurrenciesEntry.objectFromData(data) else { return nil }
-        
-        let currencyEntries = info.keys
-        let records: [CoinRecord] = currencyEntries.compactMap { expandedTicker, value in
-            guard let ticker = getShortTicker(from: expandedTicker) else { return nil }
-            
-            let version = getVersion(from: expandedTicker)
-            let regex = value.validationRegex
-            return CoinRecord(ticker: ticker,
-                              version: version,
-                              expandedTicker: expandedTicker,
-                              regexPattern: regex,
-                              isDeprecated: value.deprecated)
-        }
-        
-        return records.sorted(by: { $0.ticker < $1.ticker })
+        guard let records = [TokenRecord].objectFromData(data) else { return nil }
+           
+        let coinRecords = records.compactMap { mapToken($0) }
+        return coinRecords.sorted(by: { $0.ticker < $1.ticker })
     }
-    
-    func getShortTicker(from expandedTicker: String) -> String? {
-        guard expandedTicker.prefix(6) == "crypto" else { return nil }
-        let components = expandedTicker.split(separator: Character.dotSeparator)
-        return String(components[1])
-    }
-    
-    func getVersion(from expandedTicker: String) -> String? {
-        guard expandedTicker.prefix(6) == "crypto" else { return nil }
-        let components = expandedTicker.split(separator: Character.dotSeparator)
-        guard components.count == 5 else { return nil }
-        
-        return String(components[3])
-    }
-    
+  
     func checkCoinRecordsDirectory() {
         if !fileManager.fileExists(atPath: coinRecordsFolderPath.path) {
             do {
@@ -148,22 +149,73 @@ private extension CoinRecordsService {
         
         for (ticker, coins) in groupedCoins {
             if coins.count > 1,
-               coins.first(where: { $0.isPrimaryChain && !$0.isDeprecated }) == nil {
-                Debugger.printFailure("[CALL TO ACTION]: Need to add primary chain for \(ticker)", critical: false)
+               coins.first(where: { $0.isPrimaryChain }) == nil {
+                Debugger.printFailure("[CALL TO ACTION]: Need to add primary chain for \(ticker). Options: \(coins.map { $0.network })", critical: false)
             }
         }
     }
+    
+    @MainActor
+    func shareTokens(_ coinRecords: [TokenRecord]) {
+        #if DEBUG
+        guard let data = coinRecords.jsonString(),
+              let topVC = appContext.coreAppCoordinator.topVC else { return }
+        
+        topVC.shareItems([data]) { _ in  }
+        #endif
+    }
 }
 
+// MARK: - Legacy
 extension CoinRecordsService {
-    struct CurrenciesEntry: Decodable {
-        let version: String
-        let keys: [String: CurrencyDetailsEntry]
+    struct TokenRecord: Codable {
+        let key: String
+        let name: String
+        let shortName: String
+        let subType: String
+        let validation: Regexes?
+        let mapping: CoinRecord.Mapping?
+        let parents: [CoinRecord.Parent]
+        
+        struct Regexes: Codable {
+            let regexes: [Regex]
+            
+            struct Regex: Codable {
+                let name: String
+                let pattern: String
+            }
+        }
     }
     
-    struct CurrencyDetailsEntry: Decodable {
-        let deprecatedKeyName: String
-        let deprecated: Bool
-        let validationRegex: String?
+    struct TokenRecordsResponse: Codable {
+        let items: [TokenRecord]
+        let next: Cursor?
+        
+        struct Cursor: Codable {
+            let cursor: String?
+            
+            enum CodingKeys: String, CodingKey {
+                case cursor = "$cursor"
+            }
+        }
+    }
+    
+    func mapToken(_ token: TokenRecord) -> CoinRecord? {
+        let expandedTicker = token.key
+        let components = expandedTicker.components(separatedBy: String.dotSeparator)
+        guard components.count == 5 else { return nil }
+        
+        let network = components[2]
+        let ticker = components[3]
+        let regexPattern = token.validation?.regexes.first?.pattern
+        let fullName = token.name
+        
+        return CoinRecord(ticker: ticker,
+                          network: network,
+                          expandedTicker: expandedTicker,
+                          regexPattern: regexPattern,
+                          fullName: fullName,
+                          mapping: token.mapping,
+                          parents: token.parents)
     }
 }

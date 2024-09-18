@@ -21,7 +21,7 @@ struct GroupedCoinRecord: Hashable, Identifiable {
     }
     
     var isDeprecated: Bool {
-        coins.filter({ !$0.isDeprecated }).isEmpty // If there's no NOT deprecated coins
+        false
     }
     
 }

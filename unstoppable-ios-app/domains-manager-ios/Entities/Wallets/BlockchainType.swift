@@ -33,11 +33,21 @@ enum BlockchainType: BlockchainProtocol {
             return "MATIC"
         case .Base:
             return "BASE"
-            
         case .Bitcoin:
             return "BTC"
         case .Solana:
             return "SOL"
+        }
+    }
+    
+    /// This is a temporary property to map MATIC->POL transition until all services are updated.
+    /// Eventually "POL" should be set as a shortCode for Matic and this property should be removed
+    var migratedShortCode: String {
+        switch self {
+        case .Matic:
+            return "POL"
+        default:
+            return shortCode
         }
     }
     
@@ -49,7 +59,6 @@ enum BlockchainType: BlockchainProtocol {
             return "Polygon"
         case .Base:
             return "Base"
-            
         case .Bitcoin:
             return "Bitcoin"
         case .Solana:
@@ -61,11 +70,10 @@ enum BlockchainType: BlockchainProtocol {
         switch chainShortCode.uppercased().trimmedSpaces {
         case "ETH":
             self = .Ethereum
-        case "MATIC":
+        case "MATIC", "POL":
             self = .Matic
         case "BASE":
             self = .Base
-            
         case "BTC":
             self = .Bitcoin
         case "SOL":
@@ -82,7 +90,6 @@ enum BlockchainType: BlockchainProtocol {
             self = .Matic
         case "Base":
             self = .Base
-            
         case "Bitcoin":
             self = .Bitcoin
         case "Solana":
