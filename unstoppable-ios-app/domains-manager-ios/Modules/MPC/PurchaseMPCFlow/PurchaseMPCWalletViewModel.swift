@@ -19,7 +19,7 @@ final class PurchaseMPCWalletViewModel: ObservableObject {
     
     let createWalletCallback: AddWalletResultCallback
     
-    @Published var navPath: [PurchaseMPCWallet.NavigationDestination] = []
+    @Published var navPath: NavigationPathWrapper<PurchaseMPCWallet.NavigationDestination> = .init()
     @Published var navigationState: NavigationStateManager?
     private var mpcTakeoverCredentials: MPCTakeoverCredentials?
     @Published var isLoading = false

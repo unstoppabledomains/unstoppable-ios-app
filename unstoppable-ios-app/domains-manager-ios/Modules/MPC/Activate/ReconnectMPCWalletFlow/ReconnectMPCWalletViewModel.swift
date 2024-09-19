@@ -12,7 +12,7 @@ final class ReconnectMPCWalletViewModel: ObservableObject {
     
     private let reconnectData: MPCWalletReconnectData
     let reconnectResultCallback: ReconnectMPCWalletFlow.FlowResultCallback
-    @Published var navPath: [ReconnectMPCWalletFlow.NavigationDestination] = []
+    @Published var navPath: NavigationPathWrapper<ReconnectMPCWalletFlow.NavigationDestination> = .init()
     @Published var navigationState: NavigationStateManager?
     @Published var isLoading = false
     @Published var error: Error?

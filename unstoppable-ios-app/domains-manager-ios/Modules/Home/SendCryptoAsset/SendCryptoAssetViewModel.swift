@@ -12,7 +12,7 @@ final class SendCryptoAssetViewModel: ObservableObject {
         
     @Published var sourceWallet: WalletEntity
     @Published var navigationState: NavigationStateManager?
-    @Published var navPath: [SendCryptoAsset.NavigationDestination] = []
+    @Published var navPath: NavigationPathWrapper<SendCryptoAsset.NavigationDestination> = .init()
     @Published var isLoading = false
     @Published var error: Error?
     private let cryptoSender: UniversalCryptoSenderProtocol?

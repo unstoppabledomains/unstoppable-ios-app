@@ -9,18 +9,19 @@ import SwiftUI
 
 struct HomeSettingsNavButtonView: View, ViewAnalyticsLogger {
     
+    @EnvironmentObject var tabRouter: HomeTabRouter
     @Environment(\.analyticsViewName) var analyticsName
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
     var body: some View {
-        NavigationLink(value: HomeWalletNavigationDestination.settings(.none)) {
+        Button {
+            logButtonPressedAnalyticEvents(button: .settings)
+            tabRouter.walletViewNavPath.append(HomeWalletNavigationDestination.settings(.none))
+        } label: {
             Image.settingsIcon
                 .resizable()
                 .squareFrame(24)
                 .foregroundStyle(Color.foregroundDefault)
-        }
-        .onButtonTap {
-            logButtonPressedAnalyticEvents(button: .settings)
         }
     }
 }
