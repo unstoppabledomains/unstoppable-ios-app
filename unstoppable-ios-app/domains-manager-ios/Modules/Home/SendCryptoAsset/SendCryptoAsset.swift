@@ -63,7 +63,14 @@ extension SendCryptoAsset {
         
         func addressFor(token: BalanceTokenUIDescription,
                         in currencies: [CoinRecord]) -> String? {
-            guard let tokenRecord = currencies.first(where: { $0.ticker == token.symbol && $0.network == token.chain }) else { return nil }
+            guard let tokenRecord = currencies.first(where: { coinRecord in
+                var symbols: Set<String> = [token.symbol]
+                if let migratedSymbol = token.blockchainType?.migratedShortCode {
+                    symbols.insert(migratedSymbol)
+                }
+                
+                return symbols.contains(coinRecord.ticker) && coinRecord.network == token.chain
+            }) else { return nil }
             
             for (recordKey, address) in records where tokenRecord.isMatching(recordKey: recordKey) {
                 return address
