@@ -50,6 +50,7 @@ private extension SettingsProfilesView {
             tabRouter.walletViewNavPath.append(.walletDetails(wallet))
         } label: {
             SettingsProfileTileView(profile: profile)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }
@@ -65,6 +66,7 @@ private extension SettingsProfilesView {
             }
         } label: {
             SettingsProfileTileView(profile: profile)
+                .contentShape(Rectangle())
         }
         .onButtonTap {
             logButtonPressedAnalyticEvents(button: .logOut)

@@ -87,6 +87,7 @@ private extension HomeWalletNFTsCollectionSectionView {
                                                         .nftName : nft.displayName])
         } label: {
             HomeWalletNFTCellView(nft: nft)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }
