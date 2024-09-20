@@ -127,6 +127,7 @@ private extension HomeWalletsDomainsSectionView {
                 domainSelectedCallback(domain)
             } label: {
                 HomeWalletDomainCellView(domain: domain)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
         }

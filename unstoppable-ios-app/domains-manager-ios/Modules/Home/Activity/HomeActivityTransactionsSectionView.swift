@@ -49,6 +49,7 @@ private extension HomeActivityTransactionsSectionView {
             viewModel.didSelectTx(tx: tx)
         } label: {
             WalletTransactionDisplayInfoListItemView(transaction: tx)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }

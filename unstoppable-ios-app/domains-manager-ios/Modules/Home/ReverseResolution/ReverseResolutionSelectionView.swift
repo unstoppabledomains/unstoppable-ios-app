@@ -11,6 +11,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
     
     @Environment(\.udWalletsService) private var udWalletsService
     @Environment(\.walletsDataService) private var walletsDataService
+    @Environment(\.udFeatureFlagsService) private var udFeatureFlagsService
     @Environment(\.presentationMode) private var presentationMode
 
     @EnvironmentObject var tabRouter: HomeTabRouter
@@ -43,7 +44,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
                         headerView()
                         selectedDomainView()
                         domainsListView()
-                        buyDomainView()
+                        buyDomainViewIfAvailable()
                     }
                 }
             }
@@ -218,6 +219,13 @@ private extension ReverseResolutionSelectionView {
             UDVibration.buttonTap.vibrate()
             selectedDomain = domain
         })
+    }
+    
+    @ViewBuilder
+    func buyDomainViewIfAvailable() -> some View {
+        if udFeatureFlagsService.valueFor(flag: .isBuyDomainEnabled) {
+            buyDomainView()
+        }
     }
     
     @ViewBuilder
