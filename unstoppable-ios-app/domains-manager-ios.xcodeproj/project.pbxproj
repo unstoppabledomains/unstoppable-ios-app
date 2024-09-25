@@ -4369,7 +4369,6 @@
 		306486742527253700388026 = {
 			isa = PBXGroup;
 			children = (
-				29A42A5A2C46727200CAEA70 /* SupportedTokensTests.swift */,
 				C60C59B32B47FACC00A2522C /* unstoppable-preview.entitlements */,
 				304C928D25752625007A9F01 /* apple-app-site-association */,
 				3064867F2527253700388026 /* domains-manager-ios */,
@@ -4443,6 +4442,7 @@
 				29EDB622290A94E700A0BD08 /* ProfilesTests.swift */,
 				C6BEC9502C004B0700F21FB6 /* RequestsLimitControllerTests.swift */,
 				30F526452785BB22004C7AB6 /* ResolutionInitTests.swift */,
+				29A42A5A2C46727200CAEA70 /* SupportedTokensTests.swift */,
 				308B1D4025B8A75D005FE726 /* testUpdateRecords.swift */,
 				C6D9E29D28537AC8002CDAC2 /* TransactionsDecodingTests.swift */,
 				C6B6B8722B91A4F900565ED2 /* TaskWithDeadlineTests.swift */,
@@ -11643,7 +11643,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosDebug.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "Dev-Env-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Unstoppable;
@@ -11653,7 +11653,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.3.5;
+				MARKETING_VERSION = 5.5.1;
 				MERGED_BINARY_TYPE = automatic;
 				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=50 -Xfrontend -warn-long-function-bodies=50";
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
@@ -11678,7 +11678,7 @@
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "domains-manager-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Unstoppable;
@@ -11688,7 +11688,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.3.5;
+				MARKETING_VERSION = 5.5.1;
 				MERGED_BINARY_TYPE = automatic;
 				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=50 -Xfrontend -warn-long-function-bodies=50";
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
@@ -11855,7 +11855,7 @@
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "domains-manager-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Unstoppable;
@@ -11865,7 +11865,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.3.5;
+				MARKETING_VERSION = 5.5.1;
 				MERGED_BINARY_TYPE = automatic;
 				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=50 -Xfrontend -warn-long-function-bodies=50";
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
