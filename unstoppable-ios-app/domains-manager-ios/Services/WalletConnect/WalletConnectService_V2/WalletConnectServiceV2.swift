@@ -1179,18 +1179,9 @@ extension WalletConnectServiceV2 {
     ] }
     
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> Wc2ConnectionType {
-        let activePairings = Pair.instance.getPairings().filter({$0.isAlive(for: wcWallet)})
-        if let pairing = activePairings.first {
-            try await Sign.instance.connect(requiredNamespaces: requiredNamespaces,
-                                            optionalNamespaces: optionalNamespaces,
-                                            topic: pairing.topic)
-            return .oldPairing
-        }
-        let uri = try await Pair.instance.create()
         try await Sign.instance.connect(requiredNamespaces: requiredNamespaces,
-                                        optionalNamespaces: optionalNamespaces,
-                                        topic: uri.topic)
-        return .newPairing(uri)
+                                        optionalNamespaces: optionalNamespaces)
+        return .newPairing
     }
     
     func disconnect(from wcWallet: HexAddress) async {
@@ -1398,12 +1389,6 @@ extension WalletConnectServiceV2 {
     }
 }
 
-extension Pairing {
-    func isAlive(for wcWallet: WCWalletsProvider.WalletRecord) -> Bool {
-        return self.peer?.name == wcWallet.name && self.peer?.url == wcWallet.homepage && expiryDate > Date().addingTimeInterval(60 * 20)
-    }
-}
-
 extension WalletConnectServiceV2 {
     func signTxViaWalletConnect_V2(udWallet: UDWallet,
                                    sessions: [SessionV2Proxy],
@@ -1514,7 +1499,7 @@ pairingTopic: \(self.pairingTopic.prefix6)>\n
 
 extension WalletConnectSign.Pairing: CustomStringConvertible {
     public var description: String {
-        "<\(self.peer?.name ?? "🚨no name") | topic: \(self.topic.prefix6)>\n"
+        "<topic: \(self.topic.prefix6)>\n"
     }
 }
 

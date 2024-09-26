@@ -12,7 +12,6 @@
 		29018C8D2BACB7BC0004545D /* JRPC_Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29018C8C2BACB7BC0004545D /* JRPC_Client.swift */; };
 		290A60422950A89900882109 /* WalletConnectServiceV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A60412950A89900882109 /* WalletConnectServiceV2.swift */; };
 		290A60482950AA1600882109 /* WalletConnect in Frameworks */ = {isa = PBXBuildFile; productRef = 290A60472950AA1600882109 /* WalletConnect */; };
-		290A604A2950AA1600882109 /* WalletConnectAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 290A60492950AA1600882109 /* WalletConnectAuth */; };
 		290A604C2950AA1600882109 /* WalletConnectNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = 290A604B2950AA1600882109 /* WalletConnectNetworking */; };
 		290A604E2950AA1600882109 /* WalletConnectPairing in Frameworks */ = {isa = PBXBuildFile; productRef = 290A604D2950AA1600882109 /* WalletConnectPairing */; };
 		290A60502950AA1600882109 /* WalletConnectPush in Frameworks */ = {isa = PBXBuildFile; productRef = 290A604F2950AA1600882109 /* WalletConnectPush */; };
@@ -4242,7 +4241,6 @@
 				C63812242993E009002590E7 /* Valet in Frameworks */,
 				2917EDDF2A6F25AB004EAB31 /* Web3PromiseKit in Frameworks */,
 				C607A5CD2B3288900088ECF3 /* Amplitude in Frameworks */,
-				290A604A2950AA1600882109 /* WalletConnectAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8545,7 +8543,6 @@
 				30D89F5A26A9EB5500251C2D /* Bugsnag */,
 				C63402872886547C00AB5D38 /* SVGKit */,
 				290A60472950AA1600882109 /* WalletConnect */,
-				290A60492950AA1600882109 /* WalletConnectAuth */,
 				290A604B2950AA1600882109 /* WalletConnectNetworking */,
 				290A604D2950AA1600882109 /* WalletConnectPairing */,
 				290A604F2950AA1600882109 /* WalletConnectPush */,
@@ -12214,7 +12211,7 @@
 			repositoryURL = "https://github.com/WalletConnect/WalletConnectSwiftV2";
 			requirement = {
 				kind = exactVersion;
-				version = 1.19.4;
+				version = 1.20.3;
 			};
 		};
 		29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */ = {
@@ -12336,11 +12333,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 290A60462950AA1500882109 /* XCRemoteSwiftPackageReference "WalletConnectSwiftV2" */;
 			productName = WalletConnect;
-		};
-		290A60492950AA1600882109 /* WalletConnectAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 290A60462950AA1500882109 /* XCRemoteSwiftPackageReference "WalletConnectSwiftV2" */;
-			productName = WalletConnectAuth;
 		};
 		290A604B2950AA1600882109 /* WalletConnectNetworking */ = {
 			isa = XCSwiftPackageProductDependency;
