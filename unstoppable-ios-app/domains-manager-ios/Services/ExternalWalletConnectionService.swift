@@ -127,7 +127,7 @@ private extension ExternalWalletConnectionService {
         }
         switch uri {
         case .oldPairing: connectionUrlString = nil
-        case .newPairing(let ur): connectionUrlString = ur.absoluteString
+        case .newPairing: connectionUrlString = nil
         }
 
         startExternalWallet(wcWallet: wcWallet, connectionUrlString: connectionUrlString)
