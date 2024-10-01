@@ -178,12 +178,14 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
         return userWallets.map { PurchasedDomainsWalletDescription(ecomWallet: $0) }
     }
     
-    func getPreferredWalletToMint() async throws -> PurchasedDomainsWalletDescription {
+    func getPreferredWalletToMint() async throws -> PurchasedDomainsWalletDescription? {
         guard firebaseAuthService.isAuthorised else { throw PurchaseDomainsError.unauthorized }
         
-        let mintingWallet = try await getEcommMintingWallet()
-        let wallet = PurchasedDomainsWalletDescription(ecomWallet: mintingWallet)
-        return wallet
+        if let mintingWallet = try await getEcommMintingWallet() {
+            let wallet = PurchasedDomainsWalletDescription(ecomWallet: mintingWallet)
+            return wallet
+        }
+        return nil
     }
     
     func refreshCart() async throws {
@@ -210,9 +212,9 @@ private extension FirebasePurchaseDomainsService {
         return searchResponse
     }
     
-    func getEcommMintingWallet() async throws -> Ecom.UDUserAccountCryptWallet {
+    func getEcommMintingWallet() async throws -> Ecom.UDUserAccountCryptWallet? {
         struct Response: Codable {
-            let cryptoWallet: Ecom.UDUserAccountCryptWallet
+            let cryptoWallet: Ecom.UDUserAccountCryptWallet?
         }
         
         let urlString = URLSList.USER_MINTING_WALLET_URL
