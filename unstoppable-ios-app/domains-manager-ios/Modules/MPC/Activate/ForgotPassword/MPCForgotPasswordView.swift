@@ -28,13 +28,29 @@ struct MPCForgotPasswordView: View, ViewAnalyticsLogger {
 
 // MARK: - Private methods
 private extension MPCForgotPasswordView {
+    var subtitleAttributesList: [AttributedText.AttributesList] {
+        let subtitleHighlights = String.Constants.mpcForgotPasswordSubtitleHighlights.localized()
+        let stringsToUpdate = subtitleHighlights.components(separatedBy: "\n")
+        let attributesList: [AttributedText.AttributesList] = stringsToUpdate.map {
+            .init(text: $0,
+                  font: .currentFont(withSize: 16,
+                                     weight: .medium),
+                  textColor: .foregroundDefault)
+        }
+        
+        return attributesList
+    }
+    
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
             Text(String.Constants.mpcForgotPasswordTitle.localized())
                 .titleText()
-            Text(String.Constants.mpcForgotPasswordSubtitle.localized())
-                .subtitleText()
+            AttributedText(attributesList: .init(text: String.Constants.mpcForgotPasswordSubtitle.localized(),
+                                                 font: .currentFont(withSize: 16),
+                                                 textColor: .foregroundSecondary,
+                                                 alignment: .center),
+                           updatedAttributesList: subtitleAttributesList)
         }
         .multilineTextAlignment(.center)
     }

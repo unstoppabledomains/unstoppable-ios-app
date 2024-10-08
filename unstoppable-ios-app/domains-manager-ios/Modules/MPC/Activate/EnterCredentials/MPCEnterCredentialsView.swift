@@ -205,5 +205,6 @@ extension MPCEnterCredentialsView {
 //    
 //    return nav
     
-    MPCEnterCredentialsView(analyticsName: .addEmail, credentialsCallback: { _ in })
+    MPCEnterCredentialsView(analyticsName: .addEmail, credentialsCallback: { _ in },
+                            forgotPasswordCallback: { })
 }

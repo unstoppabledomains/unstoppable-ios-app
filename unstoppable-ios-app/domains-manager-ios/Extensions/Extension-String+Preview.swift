@@ -1312,6 +1312,7 @@ extension String {
         static let sendCrypto = "SEND_CRYPTO"
         static let mpcForgotPasswordTitle = "MPC_FORGOT_PASSWORD_TITLE"
         static let mpcForgotPasswordSubtitle = "MPC_FORGOT_PASSWORD_SUBTITLE"
+        static let mpcForgotPasswordSubtitleHighlights = "MPC_FORGOT_PASSWORD_SUBTITLE_HIGHLIGHTS"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

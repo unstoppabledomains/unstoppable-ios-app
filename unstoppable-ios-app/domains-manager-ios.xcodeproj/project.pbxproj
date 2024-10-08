@@ -7190,6 +7190,13 @@
 			path = "domains-manager-ios-preview";
 			sourceTree = "<group>";
 		};
+		C69CA5CB2CB5140200C30DF7 /* Recovery */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Recovery;
+			sourceTree = "<group>";
+		};
 		C69F990E2A9F1264004B1958 /* CommonViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -7795,6 +7802,7 @@
 		C6BF801B2BA2B53F00CC4CB3 /* MPC */ = {
 			isa = PBXGroup;
 			children = (
+				C69CA5CB2CB5140200C30DF7 /* Recovery */,
 				C640F3712C082C2E009EB0F9 /* Activate */,
 				C6952A5B2BC6648900F4B475 /* PurchaseMPCFlow */,
 				C6952A322BC4EE2D00F4B475 /* MPCWalletsService */,
