@@ -90,11 +90,13 @@ extension FB_UD_MPC {
         
         func submitBootstrapCode(_ code: String) async throws -> BootstrapCodeSubmitResponse {
             await Task.sleep(seconds: 0.5)
+//            throw MPCWalletError.incorrectCode
             return .init(accessToken: "sd", deviceId: "1")
         }
         
         func authNewDeviceWith(requestId: String, recoveryPhrase: String, accessToken: String) async throws {
             await Task.sleep(seconds: 0.5)
+//            throw MPCWalletError.incorrectPassword
         }
         
         func initTransactionWithNewKeyMaterials(accessToken: String) async throws -> SetupTokenResponse {

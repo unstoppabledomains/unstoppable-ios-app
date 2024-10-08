@@ -143,7 +143,7 @@ private extension MPCEnterCredentialsView {
                 logButtonPressedAnalyticEvents(button: .forgotPassword)
                 forgotPasswordCallback()
             } label: {
-                Text("Forgot password?")
+                Text(String.Constants.forgotPasswordTitle.localized())
                     .textAttributes(color: .foregroundAccent,
                                     fontSize: 13,
                                     fontWeight: .medium)

@@ -1207,6 +1207,7 @@ More tabs are coming in the next updates.";
 "MPC_FORGOT_PASSWORD_TITLE" = "Reset password using\nthe recovery link";
 "MPC_FORGOT_PASSWORD_SUBTITLE" = "Check your email for a message:\n'Welcome to Unstoppable Lite Wallet.' from\nno-reply@ud.me. It contains the recovery link we sent when you created your wallet. This is the only way to restore access if you forget your password.";
 "MPC_FORGOT_PASSWORD_SUBTITLE_HIGHLIGHTS" = "'Welcome to Unstoppable Lite Wallet.'\nno-reply@ud.me";
+"FORGOT_PASSWORD_TITLE" = "Forgot password?";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";

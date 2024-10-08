@@ -17,19 +17,22 @@ struct MPCActivateWalletEnterView: View, ViewAnalyticsLogger {
     let confirmationCallback: (String)->()
     var changeEmailCallback: EmptyCallback? = nil
     @State private var input = ""
+    @State private var isPresentingForgotPasswordView = false
     
     var body: some View {
         VStack(spacing: isIPSE ? 16 : 24) {
             DismissIndicatorView()
             headerView()
             inputView()
-            if case .passcode(let resendAction) = dataType {
-                MPCResendCodeButton(email: email, resendAction: resendAction)
-            }
+            subActionView()
             actionButtonView()
             Spacer()
         }
         .padding()
+        .sheet(isPresented: $isPresentingForgotPasswordView) {
+            MPCForgotPasswordView()
+                .padding(.top, 32)
+        }
     }
 }
 
@@ -114,6 +117,28 @@ private extension MPCActivateWalletEnterView {
                             autocorrectionDisabled: true,
                             isSecureInput: true)
         }
+    }
+    
+    @ViewBuilder
+    func subActionView() -> some View {
+        switch dataType {
+        case .passcode(let resendAction):
+            MPCResendCodeButton(email: email, resendAction: resendAction)
+        case .password:
+            forgotPasswordButtonView()
+        }
+    }
+    
+    @ViewBuilder
+    func forgotPasswordButtonView() -> some View {
+        UDButtonView(text: String.Constants.forgotPasswordTitle.localized(),
+                     style: .large(.ghostPrimary),
+                     callback: forgotPasswordButtonPressed)
+    }
+    
+    func forgotPasswordButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .forgotPassword)
+        isPresentingForgotPasswordView = true
     }
     
     @ViewBuilder
