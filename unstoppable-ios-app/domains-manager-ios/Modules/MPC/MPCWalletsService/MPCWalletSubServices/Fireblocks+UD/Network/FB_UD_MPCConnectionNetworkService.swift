@@ -60,5 +60,7 @@ extension FB_UD_MPC {
                                          assetId: String,
                                          destinationAddress: String,
                                          amount: String) async throws -> NetworkFeeResponse
+        func requestRecovery(_ accessToken: String,
+                             password: String) async throws
     }
 }

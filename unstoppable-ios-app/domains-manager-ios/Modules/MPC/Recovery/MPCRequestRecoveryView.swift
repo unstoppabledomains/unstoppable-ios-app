@@ -10,7 +10,9 @@ import SwiftUI
 struct MPCRequestRecoveryView: View, ViewAnalyticsLogger {
     
     @Environment(\.dismiss) var dismiss
-    
+    @Environment(\.mpcWalletsService) private var mpcWalletsService
+
+    let mpcWalletMetadata: MPCWalletMetadata
     @State private var passwordInput: String = ""
     @State private var isLoading: Bool = false
     @State private var path: [String] = []
@@ -113,7 +115,8 @@ private extension MPCRequestRecoveryView {
         Task {
             isLoading = true
             await Task.sleep(seconds: 1)
-            let email = "qqq@qqq.qq" // Get from the response
+            let email = try await mpcWalletsService.requestRecovery(password: passwordInput,
+                                                                    by: mpcWalletMetadata)
             path.append(email)
             isLoading = false
         }
@@ -125,5 +128,6 @@ private extension MPCRequestRecoveryView {
 }
 
 #Preview {
-    MPCRequestRecoveryView()
+    MPCRequestRecoveryView(mpcWalletMetadata: MPCWalletMetadata(provider: MPCWalletProvider.fireblocksUD,
+                                                                metadata: nil))
 }

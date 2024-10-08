@@ -58,6 +58,8 @@ extension FB_UD_MPC {
             static func operationURL(operationId: String) -> String {
                 operationsURL.appendingURLPathComponents(operationId)
             }
+            
+            static var recoveryURL: String { v1URL.appendingURLPathComponents("recovery", "email") }
         }
     }
 }
