@@ -269,6 +269,8 @@ extension Analytics {
         case fullMaintenance
         case mintingDomainsList
         case purchaseDomainsCart, purchaseDomainsFilters, purchaseDomainsCompleted
+        
+        case mpcRequestRecovery
     }
 }
 
@@ -342,7 +344,7 @@ extension Analytics {
         case walletBackup, walletRecoveryPhrase, walletRename, walletDomainsList, walletRemove, showConnectedWalletInfo, walletReverseResolution, walletReconnect
         
         // Wallets list
-        case manageICloudBackups, walletInList, walletsMenu
+        case manageICloudBackups, walletInList, walletsMenu, mpcRecoveryKit
         
         // Web view
         case refreshPage, openBrowser, moveBack, moveForward

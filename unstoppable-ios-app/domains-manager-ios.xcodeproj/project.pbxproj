@@ -1477,6 +1477,10 @@
 		C69698982ACBCDDB0000738C /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69698972ACBCDDB0000738C /* PushWebSocketsService.swift */; };
 		C696989A2ACBCE640000738C /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69698992ACBCE640000738C /* PushMessagingWebSocketsService.swift */; };
 		C696989C2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C696989B2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift */; };
+		C69CA5D02CB5210D00C30DF7 /* MPCRequestRecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69CA5CF2CB5210D00C30DF7 /* MPCRequestRecoveryView.swift */; };
+		C69CA5D12CB5210D00C30DF7 /* MPCRequestRecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69CA5CF2CB5210D00C30DF7 /* MPCRequestRecoveryView.swift */; };
+		C69CA5D32CB5211C00C30DF7 /* MPCRecoveryRequestedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69CA5D22CB5211C00C30DF7 /* MPCRecoveryRequestedView.swift */; };
+		C69CA5D42CB5211C00C30DF7 /* MPCRecoveryRequestedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69CA5D22CB5211C00C30DF7 /* MPCRecoveryRequestedView.swift */; };
 		C69F99202A9F1264004B1958 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99102A9F1264004B1958 /* Line.swift */; };
 		C69F99212A9F1264004B1958 /* HexagonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99112A9F1264004B1958 /* HexagonShape.swift */; };
 		C69F99232A9F1264004B1958 /* AttributedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99142A9F1264004B1958 /* AttributedText.swift */; };
@@ -3733,6 +3737,8 @@
 		C69698972ACBCDDB0000738C /* PushWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushWebSocketsService.swift; sourceTree = "<group>"; };
 		C69698992ACBCE640000738C /* PushMessagingWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingWebSocketsService.swift; sourceTree = "<group>"; };
 		C696989B2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingCommunitiesChatDetails.swift; sourceTree = "<group>"; };
+		C69CA5CF2CB5210D00C30DF7 /* MPCRequestRecoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCRequestRecoveryView.swift; sourceTree = "<group>"; };
+		C69CA5D22CB5211C00C30DF7 /* MPCRecoveryRequestedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCRecoveryRequestedView.swift; sourceTree = "<group>"; };
 		C69F99102A9F1264004B1958 /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		C69F99112A9F1264004B1958 /* HexagonShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HexagonShape.swift; sourceTree = "<group>"; };
 		C69F99142A9F1264004B1958 /* AttributedText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributedText.swift; sourceTree = "<group>"; };
@@ -7193,6 +7199,8 @@
 		C69CA5CB2CB5140200C30DF7 /* Recovery */ = {
 			isa = PBXGroup;
 			children = (
+				C69CA5CF2CB5210D00C30DF7 /* MPCRequestRecoveryView.swift */,
+				C69CA5D22CB5211C00C30DF7 /* MPCRecoveryRequestedView.swift */,
 			);
 			path = Recovery;
 			sourceTree = "<group>";
@@ -9294,6 +9302,7 @@
 				C6F3FD632AAA11E700208679 /* PullUpNamespace.swift in Sources */,
 				C6C99582289D313D00367362 /* CNavigationBarContentView.swift in Sources */,
 				C6D5DAE928374C7300379C38 /* WalletAddressFieldCollectionCell.swift in Sources */,
+				C69CA5D42CB5211C00C30DF7 /* MPCRecoveryRequestedView.swift in Sources */,
 				C6B65F942B5665F0006D1812 /* HomeTabView.swift in Sources */,
 				C6BF80352BA2ED7100CC4CB3 /* FireblockJoinWalletHandlerImplementation.swift in Sources */,
 				C628E37227FDE1D60044E408 /* UDSubtitleLabel.swift in Sources */,
@@ -9527,6 +9536,7 @@
 				C6B65F7E2B55153E006D1812 /* HomeWalletView+Entities.swift in Sources */,
 				C6D5DAD428374B4600379C38 /* ManageMultiChainDomainAddressesViewController.swift in Sources */,
 				29BECD22297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift in Sources */,
+				C69CA5D02CB5210D00C30DF7 /* MPCRequestRecoveryView.swift in Sources */,
 				C60C298C2834E30000626851 /* GroupedCoinRecord.swift in Sources */,
 				C66430FD28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift in Sources */,
 				C6D868192BF3218100EEBCFC /* EnterDomainEmailView.swift in Sources */,
@@ -11111,6 +11121,7 @@
 				C68F15742BD69FC50049BFA2 /* MPCActivateWalletEnterDataType.swift in Sources */,
 				C6D645AC2B1DBB5700D724AC /* CollectionReusableRoundedBackground.swift in Sources */,
 				C6952A3B2BC5053800F4B475 /* FB_UD_MPCBlockchain.swift in Sources */,
+				C69CA5D32CB5211C00C30DF7 /* MPCRecoveryRequestedView.swift in Sources */,
 				C67213E32BAA967C0075B9C7 /* SendCryptoAssetRootView.swift in Sources */,
 				C6C8F8E52B21836400A9834D /* ParkedDomainsFoundViewPresenter.swift in Sources */,
 				C6C8F8662B21811000A9834D /* UDWalletBackUpError.swift in Sources */,
@@ -11317,6 +11328,7 @@
 				C6D646462B1E084F00D724AC /* ViewPullUp.swift in Sources */,
 				C67B1DE02BFEF7BA00C2A4DA /* ReconnectMPCWalletPromptView.swift in Sources */,
 				C671CD1B2BC6809D005DA2FB /* DomainToPurchaseSuggestion.swift in Sources */,
+				C69CA5D12CB5210D00C30DF7 /* MPCRequestRecoveryView.swift in Sources */,
 				C6C8F8E22B21836400A9834D /* ParkedDomainsFoundViewController.swift in Sources */,
 				C6D647022B1ED7C300D724AC /* MessagingChatConversationState.swift in Sources */,
 				C6D647542B1EDBAE00D724AC /* WalletInfoBadgeView.swift in Sources */,
