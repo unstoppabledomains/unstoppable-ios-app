@@ -139,6 +139,13 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
                                                    destinationAddress: destinationAddress,
                                                    by: walletMetadata)
     }
+    
+    func requestRecovery(password: String,
+                         by walletMetadata: MPCWalletMetadata) async throws -> String {
+        let subService = try getSubServiceFor(provider: walletMetadata.provider)
+        
+        return try await subService.requestRecovery(for: walletMetadata, password: password)
+    }
 }
 
 // MARK: - Private methods

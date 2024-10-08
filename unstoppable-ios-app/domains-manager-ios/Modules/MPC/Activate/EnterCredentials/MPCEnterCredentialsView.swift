@@ -143,7 +143,7 @@ private extension MPCEnterCredentialsView {
                 logButtonPressedAnalyticEvents(button: .forgotPassword)
                 forgotPasswordCallback()
             } label: {
-                Text("Forgot password?")
+                Text(String.Constants.forgotPasswordTitle.localized())
                     .textAttributes(color: .foregroundAccent,
                                     fontSize: 13,
                                     fontWeight: .medium)
@@ -205,5 +205,6 @@ extension MPCEnterCredentialsView {
 //    
 //    return nav
     
-    MPCEnterCredentialsView(analyticsName: .addEmail, credentialsCallback: { _ in })
+    MPCEnterCredentialsView(analyticsName: .addEmail, credentialsCallback: { _ in },
+                            forgotPasswordCallback: { })
 }

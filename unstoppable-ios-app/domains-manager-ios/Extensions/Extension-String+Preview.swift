@@ -1312,6 +1312,15 @@ extension String {
         static let sendCrypto = "SEND_CRYPTO"
         static let mpcForgotPasswordTitle = "MPC_FORGOT_PASSWORD_TITLE"
         static let mpcForgotPasswordSubtitle = "MPC_FORGOT_PASSWORD_SUBTITLE"
+        static let mpcForgotPasswordSubtitleHighlights = "MPC_FORGOT_PASSWORD_SUBTITLE_HIGHLIGHTS"
+        static let forgotPasswordTitle = "FORGOT_PASSWORD_TITLE"
+        static let mpcRequestRecoveryTitle = "MPC_REQUEST_RECOVERY_TITLE"
+        static let mpcRequestRecoverySubtitle = "MPC_REQUEST_RECOVERY_SUBTITLE"
+        static let mpcRecoveryRequestedTitle = "MPC_RECOVERY_REQUESTED_TITLE"
+        static let mpcRecoveryRequestedSubtitle = "MPC_RECOVERY_REQUESTED_SUBTITLE"
+        static let mpcRecoveryRequestedSubtitleHighlights = "MPC_RECOVERY_REQUESTED_SUBTITLE_HIGHLIGHTS"
+        static let mpcRecoveryRequestedHintNotShare = "MPC_RECOVERY_REQUESTED_HINT_NOT_SHARE"
+        static let mpcRecoveryRequestedHintPreviousInactive = "MPC_RECOVERY_REQUESTED_HINT_PREVIOUS_INACTIVE"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

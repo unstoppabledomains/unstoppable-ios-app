@@ -37,6 +37,10 @@ protocol MPCWalletsServiceProtocol {
                         chain: String,
                         destinationAddress: String,
                         by walletMetadata: MPCWalletMetadata) async throws -> Double
+    /// Request recovery kit for given wallet
+    /// - Returns: Email from attached to wallet account
+    func requestRecovery(password: String,
+                         by walletMetadata: MPCWalletMetadata) async throws -> String
 }
 
 @MainActor

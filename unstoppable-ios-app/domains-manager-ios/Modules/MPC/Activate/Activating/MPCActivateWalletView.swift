@@ -239,7 +239,7 @@ private extension MPCActivateWalletView {
 
 #Preview {
     MPCActivateWalletView(analyticsName: .mpcActivationOnboarding,
-                          credentials: .init(email: "",
+                          credentials: .init(email: "qq@qq.qq",
                                              password: ""),
                           code: "",
                           mpcWalletCreatedCallback: { _ in },

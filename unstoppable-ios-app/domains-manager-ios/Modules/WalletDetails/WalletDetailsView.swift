@@ -188,6 +188,9 @@ private extension WalletDetailsView {
                 }
             }
         }
+        if wallet.udWallet.type == .mpc {
+            subActions.append(.mpcRecoveryKit)
+        }
         
         if wallet.displayInfo.isConnected {
             subActions.append(.disconnectWallet)
@@ -256,6 +259,8 @@ private extension WalletDetailsView {
             revealRecoveryPhrase(recoveryType: .recoveryPhrase)
         case .removeWallet, .disconnectWallet:
             askToRemoveWallet()
+        case .mpcRecoveryKit:
+            requestMPCWalletRecoveryKit()
         }
     }
     
@@ -288,6 +293,15 @@ private extension WalletDetailsView {
         }
     }
     
+    func requestMPCWalletRecoveryKit() {
+        guard let mpcMetadata = wallet.udWallet.mpcMetadata else {
+            Debugger.printFailure("Failed to get MPC metadata in wallet details for wallet: \(wallet.udWallet.address)",
+                                  critical: true)
+            return
+        }
+        
+        tabRouter.requestingRecoveryMPC = MPCWalletMetadataDisplayInfo(walletMetadata: mpcMetadata)
+    }
 }
 
 // MARK: - Domains list
@@ -381,6 +395,8 @@ private extension WalletDetailsView {
 }
 
 #Preview {
-    WalletDetailsView(wallet: MockEntitiesFabric.Wallet.mockEntities()[0],
-                      source: .settings)
+    let wallets = MockEntitiesFabric.Wallet.mockEntities()
+    
+    return WalletDetailsView(wallet: wallets[0],
+                             source: .settings)
 }
