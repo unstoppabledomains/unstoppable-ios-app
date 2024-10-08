@@ -30,8 +30,7 @@ struct MPCActivateWalletEnterView: View, ViewAnalyticsLogger {
         }
         .padding()
         .sheet(isPresented: $isPresentingForgotPasswordView) {
-            MPCForgotPasswordView()
-                .padding(.top, 32)
+            MPCForgotPasswordView(isModallyPresented: true)
         }
     }
 }

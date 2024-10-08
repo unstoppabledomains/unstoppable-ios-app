@@ -50,7 +50,6 @@ private extension HomeWalletActionsView {
                             icon: { subAction.icon }
                         )
                     }
-                    
                 }
             } label: {
                 walletActionButtonView(title: action.title,

@@ -17,6 +17,7 @@ struct MPCRequestRecoveryView: View, ViewAnalyticsLogger {
     @State private var isLoading: Bool = false
     @State private var path: [String] = []
     @State private var isPresentingForgotPasswordView: Bool = false
+    @State private var error: Error?
 
     var analyticsName: Analytics.ViewName { .mpcRequestRecovery }
     
@@ -26,7 +27,6 @@ struct MPCRequestRecoveryView: View, ViewAnalyticsLogger {
                 VStack(spacing: 32) {
                     headerView()
                     passwordInputView()
-                    Spacer()
                     VStack(spacing: 16) {
                         forgotPasswordButtonView()
                         confirmButtonView()
@@ -40,9 +40,9 @@ struct MPCRequestRecoveryView: View, ViewAnalyticsLogger {
                 }
             }
             .sheet(isPresented: $isPresentingForgotPasswordView) {
-                MPCForgotPasswordView()
-                    .padding(.top, 32)
+                MPCForgotPasswordView(isModallyPresented: true)
             }
+            .displayError($error)
             .navigationDestination(for: String.self, destination: { email in
                 MPCRecoveryRequestedView(email: email,
                                          closeCallback: close)
@@ -114,10 +114,13 @@ private extension MPCRequestRecoveryView {
         
         Task {
             isLoading = true
-            await Task.sleep(seconds: 1)
-            let email = try await mpcWalletsService.requestRecovery(password: passwordInput,
-                                                                    by: mpcWalletMetadata)
-            path.append(email)
+            do {
+                let email = try await mpcWalletsService.requestRecovery(password: passwordInput,
+                                                                        by: mpcWalletMetadata)
+                path.append(email)
+            } catch {
+                self.error = error
+            }
             isLoading = false
         }
     }

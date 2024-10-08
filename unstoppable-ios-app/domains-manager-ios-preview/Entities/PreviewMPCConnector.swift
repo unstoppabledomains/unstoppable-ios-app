@@ -138,6 +138,10 @@ extension FB_UD_MPC {
             await Task.sleep(seconds: 0.5)
             return .init(items: [])
         }
+        
+        func requestRecovery(_ accessToken: String, password: String) async throws {
+            await Task.sleep(seconds: 0.5)
+        }
     }
     
     struct MPCWalletsDefaultDataStorage: MPCWalletsDataStorage {

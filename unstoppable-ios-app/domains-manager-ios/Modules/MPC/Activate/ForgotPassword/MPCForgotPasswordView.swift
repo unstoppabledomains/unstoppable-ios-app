@@ -10,6 +10,7 @@ import SwiftUI
 struct MPCForgotPasswordView: View, ViewAnalyticsLogger {
     
     var analyticsName: Analytics.ViewName { .mpcForgotPassword }
+    var isModallyPresented: Bool = false
     
     var body: some View {
         VStack(spacing: 32) {
@@ -19,7 +20,7 @@ struct MPCForgotPasswordView: View, ViewAnalyticsLogger {
             openMailButton()
         }
         .padding(.horizontal, 16)
-        .padding(.top, safeAreaInset.top)
+        .padding(.top, safeAreaInset.top + (isModallyPresented ? 32 : 0))
         .padding(.bottom, safeAreaInset.bottom)
         .background(Color.backgroundDefault)
         .trackAppearanceAnalytics(analyticsLogger: self)

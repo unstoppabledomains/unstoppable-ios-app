@@ -1372,6 +1372,8 @@
 		C68F157A2BD76A550049BFA2 /* MPCWalletActivationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15782BD76A550049BFA2 /* MPCWalletActivationState.swift */; };
 		C68F157C2BD76A650049BFA2 /* MPCWalletActivationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F157B2BD76A650049BFA2 /* MPCWalletActivationError.swift */; };
 		C68F157D2BD76A650049BFA2 /* MPCWalletActivationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F157B2BD76A650049BFA2 /* MPCWalletActivationError.swift */; };
+		C6918C692CB54EFD00036C63 /* MPCWalletMetadataDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6918C682CB54EFD00036C63 /* MPCWalletMetadataDisplayInfo.swift */; };
+		C6918C6A2CB54EFD00036C63 /* MPCWalletMetadataDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6918C682CB54EFD00036C63 /* MPCWalletMetadataDisplayInfo.swift */; };
 		C691CF6C28BE4DA80077C59F /* HelveticaNeue-Custom.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */; };
 		C692C304282E012900C31393 /* WalletDataValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C692C303282E012900C31393 /* WalletDataValidator.swift */; };
 		C692C309282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C692C308282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift */; };
@@ -3684,6 +3686,7 @@
 		C68F15752BD769830049BFA2 /* MPCWalletStateCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletStateCardView.swift; sourceTree = "<group>"; };
 		C68F15782BD76A550049BFA2 /* MPCWalletActivationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletActivationState.swift; sourceTree = "<group>"; };
 		C68F157B2BD76A650049BFA2 /* MPCWalletActivationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletActivationError.swift; sourceTree = "<group>"; };
+		C6918C682CB54EFD00036C63 /* MPCWalletMetadataDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletMetadataDisplayInfo.swift; sourceTree = "<group>"; };
 		C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "HelveticaNeue-Custom.ttf"; sourceTree = "<group>"; };
 		C692C303282E012900C31393 /* WalletDataValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDataValidator.swift; sourceTree = "<group>"; };
 		C692C308282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterBackupToBackupWalletPresenter.swift; sourceTree = "<group>"; };
@@ -4674,6 +4677,7 @@
 				C6A231FB2BEB494D0037E093 /* WalletDetailsDomainItemView.swift */,
 				C6A231FE2BEB52CB0037E093 /* WalletSourceImageView.swift */,
 				C6A232012BEB53310037E093 /* RenameWalletView.swift */,
+				C6918C682CB54EFD00036C63 /* MPCWalletMetadataDisplayInfo.swift */,
 			);
 			path = WalletDetails;
 			sourceTree = "<group>";
@@ -9076,6 +9080,7 @@
 				C6526DD929D2DF6E00D6F2EB /* LoginWithEmailInAppViewPresenter.swift in Sources */,
 				C63095D62B0DA61600205054 /* PublishingAppStorage.swift in Sources */,
 				C6B65F9E2B57876F006D1812 /* HomeWalletNFTCellView.swift in Sources */,
+				C6918C692CB54EFD00036C63 /* MPCWalletMetadataDisplayInfo.swift in Sources */,
 				29BECD182979BE4000662FC1 /* Date.swift in Sources */,
 				C61308922A7A22AD00E7CE21 /* SwiftUIZoomableContainer.swift in Sources */,
 				C679B605291A579500F543A7 /* DomainProfileUpdatingRecordsSection.swift in Sources */,
@@ -10398,6 +10403,7 @@
 				C61808302B19AD9D0032E543 /* PreviewStripeService.swift in Sources */,
 				C6C837A22B5FF307000A6AF5 /* TabBarVisibleModifier.swift in Sources */,
 				C6D645BC2B1DBCE400D724AC /* ScrollViewOffsetListener.swift in Sources */,
+				C6918C6A2CB54EFD00036C63 /* MPCWalletMetadataDisplayInfo.swift in Sources */,
 				C621A43D2BB10D2900CB5CB9 /* SendCryptoQRWalletAddressScannerView.swift in Sources */,
 				C6C8F8352B217E9600A9834D /* CreateLocalWalletRecoveryWordsPresenter.swift in Sources */,
 				C632BE4B2BA5984100C95B2D /* PreviewMPCConnector.swift in Sources */,

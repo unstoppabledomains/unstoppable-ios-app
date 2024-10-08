@@ -294,7 +294,13 @@ private extension WalletDetailsView {
     }
     
     func requestMPCWalletRecoveryKit() {
+        guard let mpcMetadata = wallet.udWallet.mpcMetadata else {
+            Debugger.printFailure("Failed to get MPC metadata in wallet details for wallet: \(wallet.udWallet.address)",
+                                  critical: true)
+            return
+        }
         
+        tabRouter.requestingRecoveryMPC = MPCWalletMetadataDisplayInfo(walletMetadata: mpcMetadata)
     }
 }
 
