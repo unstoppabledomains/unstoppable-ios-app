@@ -80,6 +80,7 @@ private extension MPCRecoveryRequestedView {
     @ViewBuilder
     func infoSection() -> some View {
         sectionWith(items: [.init(title: String.Constants.sentToN.localized(email),
+                                  titleLineLimit: 1,
                                   icon: .invite)])
     }
     
@@ -105,14 +106,9 @@ private extension MPCRecoveryRequestedView {
     
     @ViewBuilder
     func listItemWith(sectionItem: SectionItem) -> some View {
-        listItemWith(title: sectionItem.title,
-                     icon: sectionItem.icon)
-    }
-    
-    @ViewBuilder
-    func listItemWith(title: String, icon: Image) -> some View {
-        UDListItemView(title: title,
-                       imageType: .image(icon),
+        UDListItemView(title: sectionItem.title,
+                       titleLineLimit: sectionItem.titleLineLimit,
+                       imageType: .image(sectionItem.icon),
                        imageStyle: .centred())
         .padding(.vertical, 4)
         .udListItemInCollectionButtonPadding()
@@ -160,6 +156,7 @@ private extension MPCRecoveryRequestedView {
     struct SectionItem: Identifiable {
         let id = UUID()
         let title: String
+        var titleLineLimit: Int? = nil
         let icon: Image
     }
 }

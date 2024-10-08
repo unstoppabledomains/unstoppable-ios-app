@@ -15,6 +15,7 @@ struct UDListItemView: View {
     
     let title: String
     var titleColor: Color = .foregroundDefault
+    var titleLineLimit: Int? = nil
     var subtitle: String? = nil
     var subtitleIcon: ImageType? = nil
     var subtitleStyle: SubtitleStyle = .default
@@ -99,6 +100,7 @@ private extension UDListItemView {
         Text(title)
             .font(.currentFont(size: 16, weight: .medium))
             .foregroundStyle(titleColor)
+            .lineLimit(titleLineLimit)
             .frame(minHeight: 24)
     }
     
