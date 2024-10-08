@@ -9,6 +9,10 @@ import Foundation
 import Combine
 
 final class CoinRecordsService: CoinRecordsServiceProtocol {
+    func refreshCurrencies() {
+        
+    }
+    
     private(set) var eventsPublisher = PassthroughSubject<CoinRecordsEvent, Never>()
 
     func getCurrencies() async -> [CoinRecord] {
@@ -24,9 +28,5 @@ final class CoinRecordsService: CoinRecordsServiceProtocol {
                network: "",
                expandedTicker: "crypto.BTC.address",
                regexPattern: BlockchainType.Bitcoin.regexPattern)]
-    }
-    
-    func refreshCurrencies(version: String) {
-        
     }
 }
