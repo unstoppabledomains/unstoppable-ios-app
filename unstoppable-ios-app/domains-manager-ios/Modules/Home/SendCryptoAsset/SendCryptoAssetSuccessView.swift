@@ -142,8 +142,9 @@ private extension SendCryptoAssetSuccessView {
         
         let link: String.Links
         switch asset {
-        case .domain:
-            link = .polygonScanTransaction(txHash)
+        case .domain(let domain):
+            let chain = domain.blockchain ?? .Matic
+            link = .scanTransaction(chain: chain.shortCode, transaction: txHash)
         case .token(let token, _, _):
             link = .scanTransaction(chain: token.chain, transaction: txHash)
         }
