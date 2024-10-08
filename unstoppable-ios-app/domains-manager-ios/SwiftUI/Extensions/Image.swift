@@ -136,6 +136,8 @@ extension Image {
     static let twoCoinsIcon = Image("twoCoinsIcon")
     static let filter = Image("filter")
     static let folderIcon = Image("folderIcon")
+    static let brokenHeart = Image("brokenHeart")
+    static let invite = Image("invite")
     
     static let systemDocOnDoc = Image(systemName: "doc.on.doc")
     static let systemAppBadgeCheckmark = Image(systemName: "app.badge.checkmark")

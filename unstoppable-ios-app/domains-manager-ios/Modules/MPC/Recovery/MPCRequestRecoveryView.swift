@@ -13,13 +13,13 @@ struct MPCRequestRecoveryView: View, ViewAnalyticsLogger {
     
     @State private var passwordInput: String = ""
     @State private var isLoading: Bool = false
-    @State private var didRequestRecovery: Bool = false
+    @State private var path: [String] = []
     @State private var isPresentingForgotPasswordView: Bool = false
 
     var analyticsName: Analytics.ViewName { .mpcRequestRecovery }
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ScrollView {
                 VStack(spacing: 32) {
                     headerView()
@@ -41,9 +41,10 @@ struct MPCRequestRecoveryView: View, ViewAnalyticsLogger {
                 MPCForgotPasswordView()
                     .padding(.top, 32)
             }
-            .navigationDestination(isPresented: $didRequestRecovery) {
-                MPCRecoveryRequestedView()
-            }
+            .navigationDestination(for: String.self, destination: { email in
+                MPCRecoveryRequestedView(email: email,
+                                         closeCallback: close)
+            })
         }
     }
     
@@ -98,7 +99,7 @@ private extension MPCRequestRecoveryView {
 private extension MPCRequestRecoveryView {
     func closeButtonPressed() {
         logButtonPressedAnalyticEvents(button: .close)
-        dismiss()
+        close()
     }
     
     func forgotPasswordButtonPressed() {
@@ -112,9 +113,14 @@ private extension MPCRequestRecoveryView {
         Task {
             isLoading = true
             await Task.sleep(seconds: 1)
-            didRequestRecovery = true
+            let email = "qqq@qqq.qq" // Get from the response
+            path.append(email)
             isLoading = false
         }
+    }
+    
+    func close() {
+        dismiss()
     }
 }
 

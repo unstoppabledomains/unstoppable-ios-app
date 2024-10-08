@@ -270,7 +270,7 @@ extension Analytics {
         case mintingDomainsList
         case purchaseDomainsCart, purchaseDomainsFilters, purchaseDomainsCompleted
         
-        case mpcRequestRecovery
+        case mpcRequestRecovery, mpcRecoveryRequested
     }
 }
 
