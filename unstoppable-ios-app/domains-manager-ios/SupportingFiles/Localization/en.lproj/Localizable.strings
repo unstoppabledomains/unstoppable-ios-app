@@ -1205,9 +1205,8 @@ More tabs are coming in the next updates.";
 "MPC_WALLET_DEFAULT_NAME" = "Lite Wallet";
 "SEND_CRYPTO" = "Send Crypto";
 "MPC_FORGOT_PASSWORD_TITLE" = "Reset password using\nthe recovery link";
-"MPC_FORGOT_PASSWORD_SUBTITLE" = "Check your email for a message:\n'Welcome to Unstoppable Lite Wallet'.
-It contains the recovery link we sent when you created your wallet. This is the only way to restore access if you forget your password.";
-"MPC_FORGOT_PASSWORD_SUBTITLE_HIGHLIGHTS" = "'Welcome to Unstoppable Lite Wallet'";
+"MPC_FORGOT_PASSWORD_SUBTITLE" = "Check your emails for a message containing: 'Unstoppable Lite Wallet' and your latest Recovery Kit link. Your latest Recovery Kit link is the only way to restore access if you forget your password.";
+"MPC_FORGOT_PASSWORD_SUBTITLE_HIGHLIGHTS" = "'Unstoppable Lite Wallet'\nlatest";
 "FORGOT_PASSWORD_TITLE" = "Forgot password?";
 "MPC_REQUEST_RECOVERY_TITLE" = "Request recovery kit";
 "MPC_REQUEST_RECOVERY_SUBTITLE" = "Receive an email with the recovery kit after confirming your current password.";
