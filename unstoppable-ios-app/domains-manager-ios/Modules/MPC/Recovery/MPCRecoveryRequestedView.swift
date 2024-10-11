@@ -136,7 +136,7 @@ private extension MPCRecoveryRequestedView {
         close()
     }
     
-    func openMailButtonPressed() {
+    @MainActor func openMailButtonPressed() {
         logButtonPressedAnalyticEvents(button: .openEmailApp)
         openMailApp()
     }
