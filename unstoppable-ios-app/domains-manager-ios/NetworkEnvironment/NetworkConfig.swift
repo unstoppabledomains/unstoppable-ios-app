@@ -112,34 +112,35 @@ struct NetworkConfig {
     
     private static func okLinkChainIdentifierFor(chain: String) -> String? {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+        let blockchainType = BlockchainType(chainShortCode: chain)
 
-        switch chain {
-        case "ETH":
+        switch blockchainType {
+        case .Ethereum:
             if isTestnetUsed {
                 return "sepolia-test"
             }
             return "eth"
-        case "MATIC":
+        case .Matic:
             if isTestnetUsed {
                 return "amoy"
             }
             return "polygon"
-        case "SOL":
+        case .Solana:
             if isTestnetUsed {
                 return nil
             }
             return "sol"
-        case "BTC":
+        case .Bitcoin:
             if isTestnetUsed {
                 return nil
             }
             return "btc"
-        case "BASE":
+        case .Base:
             if isTestnetUsed {
                 return nil
             }
             return "base"
-        default:
+        case .none:
             return nil
         }
     }

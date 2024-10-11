@@ -19,7 +19,7 @@ protocol PurchaseDomainsServiceProtocol {
     func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws
     func setDomainsToPurchase(_ domains: [DomainToPurchase]) async throws
     func getSupportedWalletsToMint() async throws -> [PurchasedDomainsWalletDescription]
-    func getPreferredWalletToMint() async throws -> PurchasedDomainsWalletDescription
+    func getPreferredWalletToMint() async throws -> PurchasedDomainsWalletDescription?
     func reset() async
     
     func refreshCart() async throws 

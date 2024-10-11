@@ -376,6 +376,26 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         return account.createTokens()
     }
     
+    func requestRecovery(for walletMetadata: MPCWalletMetadata,
+                         password: String) async throws -> String {
+        let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+        
+        return try await performAuthErrorCatchingBlock(connectedWalletDetails: connectedWalletDetails) { token in
+            do {
+                try await networkService.requestRecovery(token, password: password)
+                return connectedWalletDetails.email
+                
+            } catch {
+                /// Temporary solution until clarified with the BE. 
+                if case NetworkLayerError.badResponseOrStatusCode(let code, _, _) = error,
+                   code == 500 {
+                    return connectedWalletDetails.email
+                }
+                throw error
+            }
+        }
+    }
+    
     private func convertMPCMessageTypeToFBUDEncoding(_ type: MPCMessage.MPCMessageType) -> FB_UD_MPC.SignMessageEncoding {
         switch type {
         case .hex:

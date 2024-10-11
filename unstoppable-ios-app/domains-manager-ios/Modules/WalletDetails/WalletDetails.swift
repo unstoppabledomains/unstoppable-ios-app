@@ -101,6 +101,7 @@ extension WalletDetails {
         case recoveryPhrase
         case removeWallet
         case disconnectWallet
+        case mpcRecoveryKit
         
         var title: String {
             switch self {
@@ -112,6 +113,8 @@ extension WalletDetails {
                 return String.Constants.removeWallet.localized()
             case .disconnectWallet:
                 return  String.Constants.disconnectWallet.localized()
+            case .mpcRecoveryKit:
+                return "Request recovery kit"
             }
         }
         
@@ -121,12 +124,14 @@ extension WalletDetails {
                 return Image.systemDocOnDoc
             case .removeWallet, .disconnectWallet:
                 return Image.trashIcon
+            case .mpcRecoveryKit:
+                return Image(systemName: "list.bullet.rectangle.portrait")
             }
         }
         
         var isDestructive: Bool {
             switch self {
-            case .recoveryPhrase, .privateKey:
+            case .recoveryPhrase, .privateKey, .mpcRecoveryKit:
                 return false
             case .removeWallet, .disconnectWallet:
                 return true
@@ -139,6 +144,8 @@ extension WalletDetails {
                 return .walletRecoveryPhrase
             case .removeWallet, .disconnectWallet:
                 return .walletRemove
+            case .mpcRecoveryKit:
+                return .mpcRecoveryKit
             }
         }
     }

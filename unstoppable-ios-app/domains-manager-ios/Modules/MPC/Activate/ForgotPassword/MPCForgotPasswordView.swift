@@ -10,6 +10,7 @@ import SwiftUI
 struct MPCForgotPasswordView: View, ViewAnalyticsLogger {
     
     var analyticsName: Analytics.ViewName { .mpcForgotPassword }
+    var isModallyPresented: Bool = false
     
     var body: some View {
         VStack(spacing: 32) {
@@ -19,7 +20,7 @@ struct MPCForgotPasswordView: View, ViewAnalyticsLogger {
             openMailButton()
         }
         .padding(.horizontal, 16)
-        .padding(.top, safeAreaInset.top)
+        .padding(.top, safeAreaInset.top + (isModallyPresented ? 32 : 0))
         .padding(.bottom, safeAreaInset.bottom)
         .background(Color.backgroundDefault)
         .trackAppearanceAnalytics(analyticsLogger: self)
@@ -28,13 +29,29 @@ struct MPCForgotPasswordView: View, ViewAnalyticsLogger {
 
 // MARK: - Private methods
 private extension MPCForgotPasswordView {
+    var subtitleAttributesList: [AttributedText.AttributesList] {
+        let subtitleHighlights = String.Constants.mpcForgotPasswordSubtitleHighlights.localized()
+        let stringsToUpdate = subtitleHighlights.components(separatedBy: "\n")
+        let attributesList: [AttributedText.AttributesList] = stringsToUpdate.map {
+            .init(text: $0,
+                  font: .currentFont(withSize: 16,
+                                     weight: .medium),
+                  textColor: .foregroundDefault)
+        }
+        
+        return attributesList
+    }
+    
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
             Text(String.Constants.mpcForgotPasswordTitle.localized())
                 .titleText()
-            Text(String.Constants.mpcForgotPasswordSubtitle.localized())
-                .subtitleText()
+            AttributedText(attributesList: .init(text: String.Constants.mpcForgotPasswordSubtitle.localized(),
+                                                 font: .currentFont(withSize: 16),
+                                                 textColor: .foregroundSecondary,
+                                                 alignment: .center),
+                           updatedAttributesList: subtitleAttributesList)
         }
         .multilineTextAlignment(.center)
     }

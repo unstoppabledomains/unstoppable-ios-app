@@ -154,7 +154,7 @@ extension DomainDisplayInfo {
     }
     var isInteractable: Bool { usageType == .normal }
     var isAbleToSetAsRR: Bool { usageType == .normal && blockchain == .Matic }
-    var isAbleToTransfer: Bool { usageType == .normal && blockchain == .Matic }
+    var isAbleToTransfer: Bool { usageType == .normal && (blockchain == .Matic || blockchain == .Base) }
     var isAvailableForMessaging: Bool {
         switch usageType {
         case .normal:

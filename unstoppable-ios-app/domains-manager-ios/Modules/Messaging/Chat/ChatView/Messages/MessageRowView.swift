@@ -179,6 +179,7 @@ private extension MessageRowView {
             .squareFrame(36)
             .clipShape(Circle())
             .onAppear(perform: loadAvatarForOtherUserInfo)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }

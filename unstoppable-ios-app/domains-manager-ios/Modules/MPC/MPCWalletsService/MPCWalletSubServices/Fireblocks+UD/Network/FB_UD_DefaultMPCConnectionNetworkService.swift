@@ -415,6 +415,22 @@ extension FB_UD_MPC {
             return response
         }
         
+        func requestRecovery(_ accessToken: String,
+                             password: String) async throws {
+            struct RequestBody: Codable {
+                let recoveryPassphrase: String
+            }
+            
+            let url = MPCNetwork.URLSList.recoveryURL
+            let body = RequestBody(recoveryPassphrase: password)
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let request = try APIRequest(urlString: url,
+                                         body: body,
+                                         method: .post,
+                                         headers: headers)
+            try await makeAPIRequest(request)
+        }
+        
         // MARK: - Private methods
         private func makeDecodableAPIRequest<T: Decodable>(_ apiRequest: APIRequest) async throws -> T {
             do {

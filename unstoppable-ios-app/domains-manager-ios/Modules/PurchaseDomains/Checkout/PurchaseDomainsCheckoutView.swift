@@ -159,9 +159,9 @@ private extension PurchaseDomainsCheckoutView {
     func setPreferredWalletToMint() {
         Task {
             do {
-                let preferredWalletToMint = try await purchaseDomainsService.getPreferredWalletToMint()
-                let preferredWalletAddress = preferredWalletToMint.address.lowercased()
-                if selectedWallet.address != preferredWalletAddress,
+                let preferredWalletToMint = try? await purchaseDomainsService.getPreferredWalletToMint()
+                if let preferredWalletAddress = preferredWalletToMint?.address.lowercased(),
+                   selectedWallet.address != preferredWalletAddress,
                    let preferredWallet = wallets.findWithAddress(preferredWalletAddress) {
                     logAnalytic(event: .willChangeWalletToWebPreferred)
                     selectedWallet = preferredWallet

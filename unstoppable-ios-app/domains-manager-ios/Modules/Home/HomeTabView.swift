@@ -42,6 +42,10 @@ struct HomeTabView: View {
             NFTDetailsView(nft: nft)
                 .pullUpHandler(router)
         })
+        .sheet(item: $router.requestingRecoveryMPC, content: { mpcWalletMetadataDisplayInfo in
+            MPCRequestRecoveryView(mpcWalletMetadata: mpcWalletMetadataDisplayInfo.walletMetadata)
+                .pullUpHandler(router)
+        })
         .sheet(isPresented: $router.showingUpdatedToWalletGreetings, content: {
             UpdateToWalletGreetingsView()
         })

@@ -72,7 +72,10 @@ extension MockEntitiesFabric {
                                                                type: .generatedLocally),
                                                          .init(aliasName: "UD",
                                                                address: "0xCeBF5440FE9C85e037A80fFB4dF0F6a9BAcb3d01",
-                                                               type: .generatedLocally)]
+                                                               type: .generatedLocally),
+                                                        .init(aliasName: "MPC",
+                                                              address: "0xCeBF5440FE9C85e037A80fFB4dF0F6a9BAcb3d02",
+                                                              type: .mpc)]
         
         static func mockExternalWallet(hasRRDomain: Bool = true) -> WalletEntity {
             let address = "0x84585360d34f6c72BE438fdde7147D27d2A85f9f"

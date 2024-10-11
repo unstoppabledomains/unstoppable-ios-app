@@ -24,6 +24,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var exploreTabNavPath: NavigationPathWrapper<HomeExploreNavigationDestination> = .init()
     @Published var activityTabNavPath: NavigationPathWrapper<HomeActivityNavigationDestination> = .init()
     @Published var presentedNFT: NFTDisplayInfo?
+    @Published var requestingRecoveryMPC: MPCWalletMetadataDisplayInfo?
     
     @Published var presentedDomain: DomainPresentationDetails?
     @Published var presentedPublicDomain: PublicProfileViewConfiguration?
@@ -304,6 +305,7 @@ extension HomeTabRouter {
         resolvingPrimaryDomainWallet = nil
         showingWalletInfo = nil
         sendCryptoInitialData = nil
+        requestingRecoveryMPC = nil
         walletViewNavPath.removeAll()
         chatTabNavPath.removeAll()
         exploreTabNavPath.removeAll()
