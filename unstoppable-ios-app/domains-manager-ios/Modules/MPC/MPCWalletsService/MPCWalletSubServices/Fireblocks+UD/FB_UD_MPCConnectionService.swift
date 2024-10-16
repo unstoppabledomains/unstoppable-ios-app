@@ -388,8 +388,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
             } catch {
                 /// Temporary solution until clarified with the BE. 
                 if case NetworkLayerError.badResponseOrStatusCode(let code, _, _) = error,
-                   code == 500 {
-                    return connectedWalletDetails.email
+                   code == 400 {
+                    throw MPCWalletError.wrongRecoveryPassword
                 }
                 throw error
             }

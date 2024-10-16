@@ -15,6 +15,7 @@ struct MPCRequestRecoveryView: View, ViewAnalyticsLogger {
     let mpcWalletMetadata: MPCWalletMetadata
     @State private var passwordInput: String = ""
     @State private var isLoading: Bool = false
+    @State private var isWrongPasswordEntered: Bool = false
     @State private var path: [String] = []
     @State private var isPresentingForgotPasswordView: Bool = false
     @State private var error: Error?
@@ -43,6 +44,7 @@ struct MPCRequestRecoveryView: View, ViewAnalyticsLogger {
                 MPCForgotPasswordView(isModallyPresented: true)
             }
             .displayError($error)
+            .animation(.default, value: isWrongPasswordEntered)
             .navigationDestination(for: String.self, destination: { email in
                 MPCRecoveryRequestedView(email: email,
                                          closeCallback: close)
@@ -73,12 +75,32 @@ private extension MPCRequestRecoveryView {
     
     @ViewBuilder
     func passwordInputView() -> some View {
-        UDTextFieldView(text: $passwordInput,
-                        placeholder: String.Constants.password.localized(),
-                        focusBehaviour: .activateOnAppear,
-                        autocapitalization: .never,
-                        autocorrectionDisabled: true,
-                        isSecureInput: true)
+        VStack(spacing: 8) {
+            UDTextFieldView(text: $passwordInput,
+                            placeholder: String.Constants.password.localized(),
+                            focusBehaviour: .activateOnAppear,
+                            autocapitalization: .never,
+                            autocorrectionDisabled: true,
+                            isSecureInput: true,
+                            isErrorState: isWrongPasswordEntered)
+            if isWrongPasswordEntered {
+                incorrectPasswordView()
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func incorrectPasswordView() -> some View {
+        HStack {
+            Image.alertCircle
+                .resizable()
+                .squareFrame(12)
+            Text(String.Constants.wrongPassword.localized())
+                .font(.currentFont(size: 12, weight: .medium))
+            Spacer()
+        }
+        .foregroundStyle(Color.foregroundDanger)
+        .padding(.leading, 16)
     }
     
     @ViewBuilder
@@ -111,6 +133,7 @@ private extension MPCRequestRecoveryView {
     
     func confirmButtonPressed() {
         logButtonPressedAnalyticEvents(button: .confirm)
+        isWrongPasswordEntered = false
         
         Task {
             isLoading = true
@@ -118,6 +141,8 @@ private extension MPCRequestRecoveryView {
                 let email = try await mpcWalletsService.requestRecovery(password: passwordInput,
                                                                         by: mpcWalletMetadata)
                 path.append(email)
+            } catch MPCWalletError.wrongRecoveryPassword {
+                self.isWrongPasswordEntered = true
             } catch {
                 self.error = error
             }
