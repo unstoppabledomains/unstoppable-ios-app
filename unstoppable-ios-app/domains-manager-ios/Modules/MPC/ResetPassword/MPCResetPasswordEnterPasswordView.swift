@@ -62,9 +62,9 @@ private extension MPCResetPasswordEnterPasswordView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text(String.Constants.mpcRequestRecoveryTitle.localized())
+            Text(String.Constants.mpcResetPasswordTitle.localized())
                 .titleText()
-            Text(String.Constants.mpcRequestRecoverySubtitle.localized())
+            Text(String.Constants.mpcResetPasswordSubtitle.localized())
                 .subtitleText()
         }
         .multilineTextAlignment(.center)

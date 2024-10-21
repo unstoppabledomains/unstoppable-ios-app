@@ -1215,6 +1215,8 @@ More tabs are coming in the next updates.";
 "MPC_RECOVERY_REQUESTED_SUBTITLE_HIGHLIGHTS" = "'Unstoppable Lite Wallet Recovery Kit'\nno-reply@unstoppabledomains.com";
 "MPC_RECOVERY_REQUESTED_HINT_NOT_SHARE" = "Do not share your recovery kit\nwith anyone";
 "MPC_RECOVERY_REQUESTED_HINT_PREVIOUS_INACTIVE" = "Previous recovery kits will become inactive when a new one is created";
+"MPC_RESET_PASSWORD_TITLE" = "Reset password";
+"MPC_RESET_PASSWORD_SUBTITLE" = "Do note share your password with anyone, including Unstoppable Domains staff.";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";
