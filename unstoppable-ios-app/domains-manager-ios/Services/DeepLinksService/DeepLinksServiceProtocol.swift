@@ -12,7 +12,7 @@ enum DeepLinkEvent: Equatable {
     case showUserDomainProfile(domain: DomainDisplayInfo, wallet: WalletEntity, action: PreRequestedProfileAction?)
     case showPublicDomainProfile(publicDomainDisplayInfo: PublicDomainDisplayInfo, wallet: WalletEntity, action: PreRequestedProfileAction?)
     case activateMPCWallet(email: String?)
-    case resetMPCWalletPassword(email: String, recoveryToken: String)
+    case resetMPCWalletPassword(data: MPCResetPasswordData)
 }
 
 protocol DeepLinksServiceProtocol {

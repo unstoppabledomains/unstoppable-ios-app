@@ -53,6 +53,10 @@ struct HomeTabView: View {
             ShareWalletInfoView(wallet: $0)
                 .presentationDetents([.large])
         })
+        .sheet(item: $router.mpcResetPasswordData, content: {
+            MPCResetPasswordEnterPasswordView(resetPasswordData: $0)
+                .interactiveDismissDisabled()
+        })
         .sheet(item: $router.sendCryptoInitialData, content: { initialData in
             SendCryptoAssetRootView(viewModel: SendCryptoAssetViewModel(initialData: initialData))
         })

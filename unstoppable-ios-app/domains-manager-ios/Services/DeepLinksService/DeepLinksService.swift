@@ -207,7 +207,8 @@ private extension DeepLinksService {
             
             if let recoveryToken = getValueIn(components: components, withName: "recoveryToken"),
                let email {
-                notifyWaitersWith(event: .resetMPCWalletPassword(email: email, recoveryToken: recoveryToken),
+                let data = MPCResetPasswordData(email: email, recoveryToken: recoveryToken)
+                notifyWaitersWith(event: .resetMPCWalletPassword(data: data),
                                   receivedState: receivedState)
             } else {
                 notifyWaitersWith(event: .activateMPCWallet(email: email),

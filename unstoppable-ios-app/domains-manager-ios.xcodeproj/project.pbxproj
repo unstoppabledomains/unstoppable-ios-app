@@ -474,6 +474,8 @@
 		C61C50002820E39600D1110A /* PullUpSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C4FFF2820E39600D1110A /* PullUpSelectionView.swift */; };
 		C61D0D722CC67D3B00B76BF5 /* MPCWalletPasswordRequirements.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61D0D712CC67D3B00B76BF5 /* MPCWalletPasswordRequirements.swift */; };
 		C61D0D732CC67D3B00B76BF5 /* MPCWalletPasswordRequirements.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61D0D712CC67D3B00B76BF5 /* MPCWalletPasswordRequirements.swift */; };
+		C61D0D752CC684B100B76BF5 /* MPCResetPasswordData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61D0D742CC684B100B76BF5 /* MPCResetPasswordData.swift */; };
+		C61D0D762CC684B100B76BF5 /* MPCResetPasswordData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61D0D742CC684B100B76BF5 /* MPCResetPasswordData.swift */; };
 		C61DB0FE2B95872500CDA243 /* PublicProfileLargeTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB0FD2B95872500CDA243 /* PublicProfileLargeTextView.swift */; };
 		C61DB0FF2B95872900CDA243 /* PublicProfileLargeTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB0FD2B95872500CDA243 /* PublicProfileLargeTextView.swift */; };
 		C61DB1052B95879200CDA243 /* PublicProfilePrimaryLargeTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB1042B95879200CDA243 /* PublicProfilePrimaryLargeTextView.swift */; };
@@ -3058,6 +3060,7 @@
 		C61C33392B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserDisplayInfoImageLoader.swift; sourceTree = "<group>"; };
 		C61C4FFF2820E39600D1110A /* PullUpSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpSelectionView.swift; sourceTree = "<group>"; };
 		C61D0D712CC67D3B00B76BF5 /* MPCWalletPasswordRequirements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletPasswordRequirements.swift; sourceTree = "<group>"; };
+		C61D0D742CC684B100B76BF5 /* MPCResetPasswordData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCResetPasswordData.swift; sourceTree = "<group>"; };
 		C61DB0FD2B95872500CDA243 /* PublicProfileLargeTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileLargeTextView.swift; sourceTree = "<group>"; };
 		C61DB1042B95879200CDA243 /* PublicProfilePrimaryLargeTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfilePrimaryLargeTextView.swift; sourceTree = "<group>"; };
 		C61DB1072B9587B600CDA243 /* PublicProfileSecondaryLargeTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileSecondaryLargeTextView.swift; sourceTree = "<group>"; };
@@ -8056,6 +8059,7 @@
 			isa = PBXGroup;
 			children = (
 				C6D396AE2CC6771100FED58A /* MPCResetPasswordEnterPasswordView.swift */,
+				C61D0D742CC684B100B76BF5 /* MPCResetPasswordData.swift */,
 			);
 			path = ResetPassword;
 			sourceTree = "<group>";
@@ -9854,6 +9858,7 @@
 				C68BA7592BBD10AF00FF524C /* WalletTransactionTypeIndicatorView.swift in Sources */,
 				C640D6122C48087C006B21C3 /* AnimatedMPCWalletGridMask.swift in Sources */,
 				C6C9DEAE2834BD9300BAC36F /* CopyWalletAddressPullUpHandler.swift in Sources */,
+				C61D0D752CC684B100B76BF5 /* MPCResetPasswordData.swift in Sources */,
 				C623967C2A288A8A00363F60 /* MessagingChatMessageDisplayType.swift in Sources */,
 				C6C57C3D2869C0890093FD8C /* UDDomainSharingWatchCardView.swift in Sources */,
 				C6B761EA2BB3EF5A00773943 /* InMemoryWalletTransactionsCache.swift in Sources */,
@@ -11039,6 +11044,7 @@
 				C62BDA422B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */,
 				C63AD0AB2B957D0900BF8C83 /* PublicProfileTokensSectionView.swift in Sources */,
 				C6D647822B1EE22D00D724AC /* UITableView.swift in Sources */,
+				C61D0D762CC684B100B76BF5 /* MPCResetPasswordData.swift in Sources */,
 				C6C8F9952B218BBB00A9834D /* Double.swift in Sources */,
 				C6D6463C2B1DC53700D724AC /* WebViewController.swift in Sources */,
 				C6D646A22B1ED15A00D724AC /* PublicProfileSocialsListView.swift in Sources */,
