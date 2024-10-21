@@ -332,6 +332,8 @@ private extension CoreAppCoordinator {
                 Task { await router.showPublicDomainProfileFromDeepLink(of: publicDomainDisplayInfo, by: wallet, preRequestedAction: action) }
             case .activateMPCWallet(let email):
                 router.runAddWalletFlow(initialAction: .activateMPC(preFilledEmail: email))
+            case .resetMPCWalletPassword(let email, let recoveryToken):
+                return 
             }
         default: return
         }
