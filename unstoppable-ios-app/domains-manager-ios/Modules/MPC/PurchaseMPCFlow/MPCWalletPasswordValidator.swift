@@ -41,6 +41,34 @@ extension MPCWalletPasswordValidator {
         
         return errors
     }
+    
+    func isPasswordRequirementMet(_ requirement: MPCWalletPasswordRequirements,
+                                  passwordErrors: [MPCWalletPasswordValidationError]) -> Bool {
+        switch requirement {
+        case .length:
+            return !passwordErrors.contains(.tooShort) && !passwordErrors.contains(.tooLong)
+        case .oneNumber:
+            return !passwordErrors.contains(.missingNumber)
+        case .specialChar:
+            return !passwordErrors.contains(.missingSpecialCharacter)
+        }
+    }
+    
+    func titleForRequirement(_ requirement: MPCWalletPasswordRequirements,
+                             passwordErrors: [MPCWalletPasswordValidationError]) -> String {
+        switch requirement {
+        case .length:
+            if passwordErrors.contains(.tooLong) {
+                String.Constants.mpcPasswordValidationTooLongTitle.localized(minMPCWalletPasswordLength, maxMPCWalletPasswordLength)
+            } else {
+                String.Constants.mpcPasswordValidationLengthTitle.localized(minMPCWalletPasswordLength)
+            }
+        case .oneNumber:
+            String.Constants.mpcPasswordValidationNumberTitle.localized()
+        case .specialChar:
+            String.Constants.mpcPasswordValidationSpecialCharTitle.localized()
+        }
+    }
 }
 
 enum MPCWalletPasswordValidationError: String, LocalizedError {

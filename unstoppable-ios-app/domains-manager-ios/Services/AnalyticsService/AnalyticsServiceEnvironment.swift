@@ -271,6 +271,7 @@ extension Analytics {
         case purchaseDomainsCart, purchaseDomainsFilters, purchaseDomainsCompleted
         
         case mpcRequestRecovery, mpcRecoveryRequested
+        case mpcResetPasswordEnterPassword
     }
 }
 
