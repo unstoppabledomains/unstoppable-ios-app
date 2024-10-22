@@ -322,10 +322,12 @@ extension FB_UD_MPC {
                 }
                 return .txReady(txId: transactionId)
             } else {
-                guard let signature = operation.result?.signature else {
-                    throw MPCNetworkServiceError.missingSignatureInSignTransactionOperation
+                if let signature = operation.result?.signature {
+                    return .signed(signature: signature)
+                } else if let txHash = operation.transaction?.id {
+                    return .finished(txHash: txHash)
                 }
-                return .signed(signature: signature)
+                throw MPCNetworkServiceError.completedTransactionMissingResultValue
             }
         }
         
@@ -345,10 +347,10 @@ extension FB_UD_MPC {
             let operation = try await waitForOperationStatuses(accessToken: accessToken,
                                                                operationId: operationId,
                                                                statuses: [.processing, .completed])
-            guard let signature = operation.transaction?.id else {
+            guard let txHash = operation.transaction?.id else {
                 throw MPCNetworkServiceError.missingTxIdInTransactionOperation
             }
-            return signature
+            return txHash
         }
         
         func fetchCryptoPortfolioForMPC(wallet: String, accessToken: String) async throws -> [WalletTokenPortfolio] {
@@ -469,6 +471,7 @@ extension FB_UD_MPC {
             case waitForKeyOperationStatusTimeout
             case missingVendorIdInSignTransactionOperation
             case missingSignatureInSignTransactionOperation
+            case completedTransactionMissingResultValue
             case missingTxIdInTransactionOperation
             case badRequestData
             case operationFailed

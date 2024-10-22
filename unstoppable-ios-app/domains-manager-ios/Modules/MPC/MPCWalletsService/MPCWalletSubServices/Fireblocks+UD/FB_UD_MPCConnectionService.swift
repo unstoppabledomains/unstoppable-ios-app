@@ -216,6 +216,9 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
             case .signed(let signature):
                 logMPC("It took \(Date().timeIntervalSince(start)) to sign message")
                 return signature
+            case .finished:
+                logMPC("It took \(Date().timeIntervalSince(start)) to sign message")
+                throw MPCConnectionServiceError.incorrectOperationState
             }
         }
     }
@@ -304,6 +307,9 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
             logMPC("It took \(Date().timeIntervalSince(start)) to sign by mpc connector")
             let txHash = try await networkService.waitForTxCompletedAndGetHash(accessToken: token,
                                                                                operationId: operationId)
+            logMPC("It took \(Date().timeIntervalSince(start)) to finish tx")
+            return txHash
+        case .finished(let txHash):
             logMPC("It took \(Date().timeIntervalSince(start)) to finish tx")
             return txHash
         case .signed:
