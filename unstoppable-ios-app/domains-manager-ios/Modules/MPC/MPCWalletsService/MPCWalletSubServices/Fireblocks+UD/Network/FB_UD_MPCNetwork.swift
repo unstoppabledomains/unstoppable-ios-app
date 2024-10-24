@@ -19,7 +19,10 @@ extension FB_UD_MPC {
             static var authURL: String { v1URL.appendingURLPathComponents("auth") }
             static var getCodeOnEmailURL: String { authURL.appendingURLPathComponents("bootstrap", "email") }
             static var submitCodeURL: String { authURL.appendingURLPathComponents("bootstrap") }
-            static var devicesBootstrapURL: String { authURL.appendingURLPathComponents("devices", "bootstrap") }
+            
+            static var devicesURL: String { authURL.appendingURLPathComponents("devices") }
+            static var devicesBootstrapURL: String { devicesURL.appendingURLPathComponents("bootstrap") }
+            static var devicesRecoverURL: String { devicesURL.appendingURLPathComponents("recover") }
             
             static var rpcMessagesURL: String { v1URL.appendingURLPathComponents("rpc", "messages") }
             
