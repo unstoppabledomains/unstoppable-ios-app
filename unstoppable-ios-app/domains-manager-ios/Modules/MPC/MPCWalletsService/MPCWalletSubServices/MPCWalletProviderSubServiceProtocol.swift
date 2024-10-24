@@ -12,7 +12,7 @@ protocol MPCWalletProviderSubServiceProtocol {
     
     func sendBootstrapCodeTo(email: String) async throws
     func setupMPCWalletWith(code: String,
-                            credentials: MPCActivateCredentials) -> AsyncThrowingStream<SetupMPCWalletStep, Error>
+                            flow: SetupMPCFlow) -> AsyncThrowingStream<SetupMPCWalletStep, Error>
     func signPersonalMessage(_ messageString: String,
                              chain: BlockchainType,
                              by walletMetadata: MPCWalletMetadata) async throws -> String

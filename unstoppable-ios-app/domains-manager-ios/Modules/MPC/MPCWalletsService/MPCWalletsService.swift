@@ -42,7 +42,7 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
                     let subService = try getSubServiceFor(provider: .fireblocksUD)
                     
                     for try await step in subService.setupMPCWalletWith(code: code,
-                                                                        credentials: credentials) {
+                                                                        flow: .activate(credentials)) {
                         continuation.yield(step)
                     }
                 } catch {

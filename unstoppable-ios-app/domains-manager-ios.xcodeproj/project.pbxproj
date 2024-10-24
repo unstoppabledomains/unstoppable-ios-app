@@ -1339,6 +1339,8 @@
 		C688C1AB2B84A4CF00BD233A /* UnencryptedMessageInfoPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */; };
 		C68953882834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953872834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift */; };
 		C68953922834CD280046CBA3 /* CollectionTextHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953912834CD280046CBA3 /* CollectionTextHeaderReusableView.swift */; };
+		C68980732CCA320700A4CFC0 /* SetupMPCFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980722CCA320700A4CFC0 /* SetupMPCFlow.swift */; };
+		C68980742CCA320700A4CFC0 /* SetupMPCFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980722CCA320700A4CFC0 /* SetupMPCFlow.swift */; };
 		C689C1732ADE484300AA0186 /* LaunchDarkly in Frameworks */ = {isa = PBXBuildFile; productRef = C689C1722ADE484300AA0186 /* LaunchDarkly */; };
 		C689C1752ADE56AF00AA0186 /* UDFeatureFlagsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */; };
 		C689C1772ADE693900AA0186 /* LaunchDarklyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */; };
@@ -3672,6 +3674,7 @@
 		C688C1A32B84946C00BD233A /* SelectableChatRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableChatRowView.swift; sourceTree = "<group>"; };
 		C68953872834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionGenericContentViewReusableView.swift; sourceTree = "<group>"; };
 		C68953912834CD280046CBA3 /* CollectionTextHeaderReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionTextHeaderReusableView.swift; sourceTree = "<group>"; };
+		C68980722CCA320700A4CFC0 /* SetupMPCFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupMPCFlow.swift; sourceTree = "<group>"; };
 		C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsService.swift; sourceTree = "<group>"; };
 		C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchDarklyService.swift; sourceTree = "<group>"; };
 		C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsServiceProtocol.swift; sourceTree = "<group>"; };
@@ -7130,6 +7133,7 @@
 				C6952A222BC4E33000F4B475 /* MPCWalletProvider.swift */,
 				C6952A4F2BC531E000F4B475 /* MPCWalletMetadata.swift */,
 				C632BE4F2BA59D8400C95B2D /* SetupMPCWalletStep.swift */,
+				C68980722CCA320700A4CFC0 /* SetupMPCFlow.swift */,
 				C6952A312BC4EDFA00F4B475 /* MPCWalletSubServices */,
 			);
 			path = MPCWalletsService;
@@ -9877,6 +9881,7 @@
 				C68F15672BD645CE0049BFA2 /* MPCActivateWalletView.swift in Sources */,
 				C6C99586289D313D00367362 /* CNavigationTransitionHandler.swift in Sources */,
 				C62C3FA1283F60720094FC93 /* DeepLinksServiceProtocol.swift in Sources */,
+				C68980742CCA320700A4CFC0 /* SetupMPCFlow.swift in Sources */,
 				C664B670291542E300A76154 /* DomainProfileWeb3WebsiteCell.swift in Sources */,
 				C65272212A14B32F001A084C /* MessagingServiceProtocol.swift in Sources */,
 				C688C17C2B8443CA00BD233A /* ChatListEmptyStateView.swift in Sources */,
@@ -10615,6 +10620,7 @@
 				C6631BCC2C6B4B7F0045186D /* HomeWalletMintingInProgressSectionView.swift in Sources */,
 				C6D646362B1DC44C00D724AC /* SecondaryDangerButton.swift in Sources */,
 				C6D6477C2B1EE0ED00D724AC /* CropImageViewController.swift in Sources */,
+				C68980732CCA320700A4CFC0 /* SetupMPCFlow.swift in Sources */,
 				C6D6460B2B1DC06B00D724AC /* OnboardingData.swift in Sources */,
 				C6D646CE2B1ED27900D724AC /* ViewWithDashesProgress.swift in Sources */,
 				C6D6471D2B1ED85C00D724AC /* WalletError.swift in Sources */,
