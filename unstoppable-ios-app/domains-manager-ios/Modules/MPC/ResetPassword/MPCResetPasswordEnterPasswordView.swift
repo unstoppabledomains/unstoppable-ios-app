@@ -10,31 +10,35 @@ import SwiftUI
 struct MPCResetPasswordEnterPasswordView: View, ViewAnalyticsLogger, MPCWalletPasswordValidator {
     
     @Environment(\.dismiss) var dismiss
+    @Environment(\.mpcWalletsService) private var mpcWalletsService
+    @EnvironmentObject var viewModel: MPCResetPasswordViewModel
     var analyticsName: Analytics.ViewName { .mpcResetPasswordEnterPassword }
-    
+
+    let email: String
     @State private var passwordInput: String = ""
     @State private var passwordErrors: [MPCWalletPasswordValidationError] = []
     @State private var confirmPasswordInput: String = ""
     @State private var keyboardHeight: CGFloat = 0
+    @State private var isLoading: Bool = false
+    @State private var error: Error?
 
     var body: some View {
-        NavigationStack {
-            contentView()
-                .onChange(of: passwordInput, perform: { newValue in
-                    validatePasswordInput()
-                })
-                .onReceive(KeyboardService.shared.keyboardFramePublisher.receive(on: DispatchQueue.main)) { keyboardFrame in
-                    keyboardHeight = keyboardFrame.height
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        CloseButtonView {
-                            logButtonPressedAnalyticEvents(button: .close)
-                            dismiss()
-                        }
+        contentView()
+            .displayError($error)
+            .onChange(of: passwordInput, perform: { newValue in
+                validatePasswordInput()
+            })
+            .onReceive(KeyboardService.shared.keyboardFramePublisher.receive(on: DispatchQueue.main)) { keyboardFrame in
+                keyboardHeight = keyboardFrame.height
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    CloseButtonView {
+                        logButtonPressedAnalyticEvents(button: .close)
+                        dismiss()
                     }
                 }
-        }
+            }
     }
 }
 
@@ -164,17 +168,27 @@ private extension MPCResetPasswordEnterPasswordView {
     func continueButton() -> some View {
         UDButtonView(text: String.Constants.continue.localized(),
                      style: .large(.raisedPrimary),
+                     isLoading: isLoading,
                      callback: actionButtonPressed)
         .disabled(isActionButtonDisabled)
     }
     
     func actionButtonPressed() {
         logButtonPressedAnalyticEvents(button: .continue)
-//        let password = passwordInput
-//        passwordCallback(password)
+        isLoading = true
+        Task {
+            do {
+                try await mpcWalletsService.sendBootstrapCodeTo(email: email)
+                viewModel.handleAction(.didEnterNewPassword(passwordInput))
+            } catch {
+                logAnalytic(event: .sendMPCBootstrapCodeError, parameters: [.error: error.localizedDescription])
+                self.error = error
+            }
+            isLoading = false
+        }
     }
 }
 
 #Preview {
-    MPCResetPasswordEnterPasswordView()
+    MPCResetPasswordEnterPasswordView(email: "test@example.com")
 }

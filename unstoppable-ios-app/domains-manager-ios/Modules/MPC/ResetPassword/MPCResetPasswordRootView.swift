@@ -15,7 +15,7 @@ struct MPCResetPasswordRootView: View {
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             ZStack {
-                MPCResetPasswordEnterPasswordView()
+                MPCResetPasswordEnterPasswordView(email: viewModel.resetPasswordData.email)
                     .environmentObject(viewModel)
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationDestination(for: MPCResetPasswordFlow.NavigationDestination.self) { destination in
