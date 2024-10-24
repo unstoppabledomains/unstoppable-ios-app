@@ -1341,6 +1341,14 @@
 		C68953922834CD280046CBA3 /* CollectionTextHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953912834CD280046CBA3 /* CollectionTextHeaderReusableView.swift */; };
 		C68980732CCA320700A4CFC0 /* SetupMPCFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980722CCA320700A4CFC0 /* SetupMPCFlow.swift */; };
 		C68980742CCA320700A4CFC0 /* SetupMPCFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980722CCA320700A4CFC0 /* SetupMPCFlow.swift */; };
+		C68980762CCA33B700A4CFC0 /* MPCResetPasswordFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980752CCA33B700A4CFC0 /* MPCResetPasswordFlow.swift */; };
+		C68980772CCA33B700A4CFC0 /* MPCResetPasswordFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980752CCA33B700A4CFC0 /* MPCResetPasswordFlow.swift */; };
+		C68980792CCA33D500A4CFC0 /* MPCResetPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980782CCA33D500A4CFC0 /* MPCResetPasswordViewModel.swift */; };
+		C689807A2CCA33D500A4CFC0 /* MPCResetPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980782CCA33D500A4CFC0 /* MPCResetPasswordViewModel.swift */; };
+		C689807C2CCA34B100A4CFC0 /* MPCResetPasswordNavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689807B2CCA34B100A4CFC0 /* MPCResetPasswordNavigationDestination.swift */; };
+		C689807D2CCA34B100A4CFC0 /* MPCResetPasswordNavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689807B2CCA34B100A4CFC0 /* MPCResetPasswordNavigationDestination.swift */; };
+		C689807F2CCA353C00A4CFC0 /* MPCResetPasswordRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689807E2CCA353C00A4CFC0 /* MPCResetPasswordRootView.swift */; };
+		C68980802CCA353C00A4CFC0 /* MPCResetPasswordRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689807E2CCA353C00A4CFC0 /* MPCResetPasswordRootView.swift */; };
 		C689C1732ADE484300AA0186 /* LaunchDarkly in Frameworks */ = {isa = PBXBuildFile; productRef = C689C1722ADE484300AA0186 /* LaunchDarkly */; };
 		C689C1752ADE56AF00AA0186 /* UDFeatureFlagsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */; };
 		C689C1772ADE693900AA0186 /* LaunchDarklyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */; };
@@ -3675,6 +3683,10 @@
 		C68953872834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionGenericContentViewReusableView.swift; sourceTree = "<group>"; };
 		C68953912834CD280046CBA3 /* CollectionTextHeaderReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionTextHeaderReusableView.swift; sourceTree = "<group>"; };
 		C68980722CCA320700A4CFC0 /* SetupMPCFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupMPCFlow.swift; sourceTree = "<group>"; };
+		C68980752CCA33B700A4CFC0 /* MPCResetPasswordFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCResetPasswordFlow.swift; sourceTree = "<group>"; };
+		C68980782CCA33D500A4CFC0 /* MPCResetPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCResetPasswordViewModel.swift; sourceTree = "<group>"; };
+		C689807B2CCA34B100A4CFC0 /* MPCResetPasswordNavigationDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCResetPasswordNavigationDestination.swift; sourceTree = "<group>"; };
+		C689807E2CCA353C00A4CFC0 /* MPCResetPasswordRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCResetPasswordRootView.swift; sourceTree = "<group>"; };
 		C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsService.swift; sourceTree = "<group>"; };
 		C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchDarklyService.swift; sourceTree = "<group>"; };
 		C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsServiceProtocol.swift; sourceTree = "<group>"; };
@@ -8062,6 +8074,10 @@
 		C6D396AD2CC6760400FED58A /* ResetPassword */ = {
 			isa = PBXGroup;
 			children = (
+				C68980752CCA33B700A4CFC0 /* MPCResetPasswordFlow.swift */,
+				C68980782CCA33D500A4CFC0 /* MPCResetPasswordViewModel.swift */,
+				C689807B2CCA34B100A4CFC0 /* MPCResetPasswordNavigationDestination.swift */,
+				C689807E2CCA353C00A4CFC0 /* MPCResetPasswordRootView.swift */,
 				C6D396AE2CC6771100FED58A /* MPCResetPasswordEnterPasswordView.swift */,
 				C61D0D742CC684B100B76BF5 /* MPCResetPasswordData.swift */,
 			);
@@ -9469,6 +9485,7 @@
 				C6AF12402A67C72200F89D2E /* MessagingServiceDataRefreshManager.swift in Sources */,
 				C6668946281151F6002062B4 /* TertiaryButton.swift in Sources */,
 				C60982462823F82000546392 /* CreateBackupPasswordBasePresenter.swift in Sources */,
+				C689807A2CCA33D500A4CFC0 /* MPCResetPasswordViewModel.swift in Sources */,
 				C6952A1F2BC4DD8500F4B475 /* FB_UD_MPC.swift in Sources */,
 				C65DEA7B29B5837600FF142B /* MockWalletConnectExternalWalletHandler.swift in Sources */,
 				C6170EC12B79E8E9008E9C93 /* UDListSectionView.swift in Sources */,
@@ -9492,6 +9509,7 @@
 				290136B72BFBFAAE00AB126D /* EIP712View.swift in Sources */,
 				C60C29912834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */,
 				C666E07629C9F1900003DECB /* LoginWithEmailViewController.swift in Sources */,
+				C68980802CCA353C00A4CFC0 /* MPCResetPasswordRootView.swift in Sources */,
 				C6ECBF9628D2E06800E94309 /* GenericBadgeView.swift in Sources */,
 				C6F433382BB257F7000C5E46 /* ConfirmTransferDomainView.swift in Sources */,
 				C63095F22B0DA66400205054 /* MockFirebaseInteractionsService.swift in Sources */,
@@ -9732,6 +9750,7 @@
 				C60610D929A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */,
 				C67213D62BAA8DB60075B9C7 /* SendCryptoAssetSelectReceiverFollowingRowView.swift in Sources */,
 				C669C3A52912AD4200837F21 /* DomainProfileBadgeCell.swift in Sources */,
+				C68980762CCA33B700A4CFC0 /* MPCResetPasswordFlow.swift in Sources */,
 				C61ECD742A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */,
 				C64F6C662C51086400D89FEF /* MaintenanceDetailsFullView.swift in Sources */,
 				C673BA3B2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift in Sources */,
@@ -9984,6 +10003,7 @@
 				C6EECEB12833BBE300978ED5 /* DomainRecordsData.swift in Sources */,
 				C62396772A288A5C00363F60 /* MessagingChatMessageTextTypeDisplayInfo.swift in Sources */,
 				3026FA1727E7678200FE058B /* CreateWalletViewController.swift in Sources */,
+				C689807D2CCA34B100A4CFC0 /* MPCResetPasswordNavigationDestination.swift in Sources */,
 				C609827628251FBA00546392 /* ImportNewWalletPresenter.swift in Sources */,
 				C630E4B62B7F58BC008F3269 /* MessageInputView.swift in Sources */,
 				C6D2DF122C4E4CEB00F08A6F /* IconTitleSelectionGridView.swift in Sources */,
@@ -10406,6 +10426,7 @@
 				C6A4400A2C0448530042FFCC /* UDFeatureFlagsServiceEnvironmentKey.swift in Sources */,
 				C688C1802B845FE500BD233A /* ChatListUserRowView.swift in Sources */,
 				C6A231FD2BEB494D0037E093 /* WalletDetailsDomainItemView.swift in Sources */,
+				C68980772CCA33B700A4CFC0 /* MPCResetPasswordFlow.swift in Sources */,
 				C6B761F12BB3F9D900773943 /* WalletTransactionsResponse.swift in Sources */,
 				C6960C3E2B19980200B79E28 /* MessagingServiceIdentifier.swift in Sources */,
 				C61808002B19A8B80032E543 /* MessagingChatUserDisplayInfo.swift in Sources */,
@@ -10531,6 +10552,7 @@
 				C688C1962B8483D700BD233A /* ChatMessagesEmptyView.swift in Sources */,
 				C6D645C32B1DBD3900D724AC /* CNavigationTransitionHandler.swift in Sources */,
 				C6C8F8B72B2182CF00A9834D /* MintDomainsConfigurationSelectionCell.swift in Sources */,
+				C68980792CCA33D500A4CFC0 /* MPCResetPasswordViewModel.swift in Sources */,
 				C61807C22B19A2E70032E543 /* PermissionsService.swift in Sources */,
 				C6D646B72B1ED18F00D724AC /* SaveDomainImageTypePullUpView.swift in Sources */,
 				C6BEC94B2C00382900F21FB6 /* EIP712View.swift in Sources */,
@@ -11310,6 +11332,7 @@
 				C671CD282BC6D3C4005DA2FB /* PurchaseMPCWalletCart.swift in Sources */,
 				C6D645E22B1DBD9000D724AC /* BasePresenterProtocol.swift in Sources */,
 				C6960C662B199B6F00B79E28 /* PreviewDomainItem.swift in Sources */,
+				C689807F2CCA353C00A4CFC0 /* MPCResetPasswordRootView.swift in Sources */,
 				C6B761D02BB3C11800773943 /* HomeTab.swift in Sources */,
 				C618087E2B19BC380032E543 /* DomainAvatarImageView.swift in Sources */,
 				C6D6464F2B1ED0F300D724AC /* ManageDomainLoadingCell.swift in Sources */,
@@ -11432,6 +11455,7 @@
 				C607A5D52B32A02A0088ECF3 /* CloseButtonView.swift in Sources */,
 				C61808522B19BA750032E543 /* Task.swift in Sources */,
 				C6B761FA2BB4011D00773943 /* HomeActivityNavigationDestination.swift in Sources */,
+				C689807C2CCA34B100A4CFC0 /* MPCResetPasswordNavigationDestination.swift in Sources */,
 				C6C8F87F2B21827700A9834D /* LoginFlowNavigationController.swift in Sources */,
 				C6D647052B1ED7C300D724AC /* MessagingCommunitiesChatDetails.swift in Sources */,
 				C6D647482B1EDA6E00D724AC /* PreviewSignPaymentTransactionUIConfiguration.swift in Sources */,

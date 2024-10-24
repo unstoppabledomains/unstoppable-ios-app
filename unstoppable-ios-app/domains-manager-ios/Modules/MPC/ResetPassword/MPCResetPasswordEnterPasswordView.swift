@@ -12,8 +12,6 @@ struct MPCResetPasswordEnterPasswordView: View, ViewAnalyticsLogger, MPCWalletPa
     @Environment(\.dismiss) var dismiss
     var analyticsName: Analytics.ViewName { .mpcResetPasswordEnterPassword }
     
-    let resetPasswordData: MPCResetPasswordData
-    
     @State private var passwordInput: String = ""
     @State private var passwordErrors: [MPCWalletPasswordValidationError] = []
     @State private var confirmPasswordInput: String = ""
@@ -178,5 +176,5 @@ private extension MPCResetPasswordEnterPasswordView {
 }
 
 #Preview {
-    MPCResetPasswordEnterPasswordView(resetPasswordData: .init(email: "", recoveryToken: ""))
+    MPCResetPasswordEnterPasswordView()
 }

@@ -354,6 +354,20 @@ extension HomeTabRouter {
     func runResetMPCWalletPasswordFlow(_ mpcResetPasswordData: MPCResetPasswordData) {
         self.mpcResetPasswordData = mpcResetPasswordData
     }
+    
+    func didAddNewWallet(_ wallet: UDWallet) {
+        let profiles = appContext.userProfilesService.profiles
+        for profile in profiles {
+            if case .wallet(let walletEntity) = profile,
+               walletEntity.address == wallet.address {
+                let walletName = walletEntity.displayInfo.walletSourceName
+                appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
+                walletViewNavPath.append(.walletDetails(walletEntity))
+                break
+            }
+        }
+        AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
+    }
 }
 
 // MARK: - Pull up related
