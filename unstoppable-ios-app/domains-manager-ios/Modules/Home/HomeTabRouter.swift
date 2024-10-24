@@ -362,7 +362,10 @@ extension HomeTabRouter {
                walletEntity.address == wallet.address {
                 let walletName = walletEntity.displayInfo.walletSourceName
                 appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
-                walletViewNavPath.append(.walletDetails(walletEntity))
+                Task {
+                    await popToRootAndWait()
+                    walletViewNavPath.append(.walletDetails(walletEntity))
+                }
                 break
             }
         }

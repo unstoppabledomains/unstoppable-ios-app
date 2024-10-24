@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MPCResetPasswordActivateView: View {
-    @EnvironmentObject var viewModel: ReconnectMPCWalletViewModel
+    @EnvironmentObject var viewModel: MPCResetPasswordViewModel
     
     let data: MPCResetPasswordFlow.ResetPasswordFullData
     

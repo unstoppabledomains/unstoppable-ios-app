@@ -47,21 +47,20 @@ struct MPCResetPasswordEnterPasswordView: View, ViewAnalyticsLogger, MPCWalletPa
 private extension MPCResetPasswordEnterPasswordView {
     @ViewBuilder
     func contentView() -> some View {
-        ZStack {
             ScrollView {
-                VStack(spacing: 32) {
-                    headerView()
-                    VStack(spacing: 24) {
-                        passwordInputView()
-                        confirmPasswordInputView()
+                VStack(spacing: 8) {
+                    VStack(spacing: 32) {
+                        headerView()
+                        VStack(spacing: 24) {
+                            passwordInputView()
+                            confirmPasswordInputView()
+                        }
                     }
+                    Spacer()
+                    actionButtonContainerView()
                 }
                 .padding(.horizontal, 16)
             }
-            
-            actionButtonContainerView()
-                .edgesIgnoringSafeArea(.bottom)
-        }
     }
     
     @ViewBuilder
@@ -153,16 +152,11 @@ private extension MPCResetPasswordEnterPasswordView {
     
     @ViewBuilder
     func actionButtonContainerView() -> some View {
-        VStack(spacing: 0) {
-            Spacer()
-            Rectangle()
-                .frame(height: 16)
-                .foregroundStyle(LinearGradient(colors: [.black, .clear], startPoint: .bottom, endPoint: .top))
+//        VStack(spacing: 0) {
             continueButton()
-                .padding(.bottom, keyboardHeight + 16)
-                .padding(.horizontal, 16)
+//                .padding(.bottom, keyboardHeight + 16)
                 .background(Color.black)
-        }
+//        }
     }
     
     @ViewBuilder

@@ -20,7 +20,7 @@ extension MPCResetPasswordFlow {
         static func viewFor(navigationDestination: NavigationDestination) -> some View {
             switch navigationDestination {
             case .enterCode(let email):
-                MPCEnterCodeInAppView(email: email)
+                MPCResetPasswordEnterCodeView(email: email)
             case .activate(let data):
                 MPCResetPasswordActivateView(data: data)
             }
