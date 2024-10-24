@@ -34,9 +34,10 @@ final class MPCResetPasswordViewModel: ObservableObject {
                 case .didEnterCode(let code):
                     guard let newPassword else { return }
                     
-                    navPath.append(.activate(resetPasswordData: resetPasswordData,
-                                             code: code,
-                                             newPassword: newPassword))
+                    let data = MPCResetPasswordFlow.ResetPasswordFullData(resetPasswordData: resetPasswordData,
+                                                                          newPassword: newPassword,
+                                                                          code: code)
+                    navPath.append(.activate(data))
                 case .didActivate(let wallet):
                     navigationState?.dismiss = true
                     resetResultCallback(.restored(wallet))

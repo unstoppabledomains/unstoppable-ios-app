@@ -21,4 +21,10 @@ extension MPCResetPasswordFlow {
     enum FlowResult {
         case restored(UDWallet)
     }
+    
+    struct ResetPasswordFullData: Hashable {
+        let resetPasswordData: MPCResetPasswordData
+        let newPassword: String
+        let code: String
+    }
 }

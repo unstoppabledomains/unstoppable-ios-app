@@ -10,7 +10,7 @@ import SwiftUI
 extension MPCResetPasswordFlow {
     enum NavigationDestination: Hashable {
         case enterCode(email: String)
-        case activate(resetPasswordData: MPCResetPasswordData, code: String, newPassword: String)
+        case activate(ResetPasswordFullData)
         
         var isWithCustomTitle: Bool { false }
     }
@@ -21,10 +21,8 @@ extension MPCResetPasswordFlow {
             switch navigationDestination {
             case .enterCode(let email):
                 MPCEnterCodeInAppView(email: email)
-            case .activate(let credentials, let code, let newPassword):
-                MPCForgotPasswordView()
-//                MPCActivateWalletInAppView(credentials: credentials,
-//                                           code: code)
+            case .activate(let data):
+                MPCResetPasswordActivateView(data: data)
             }
         }
     }

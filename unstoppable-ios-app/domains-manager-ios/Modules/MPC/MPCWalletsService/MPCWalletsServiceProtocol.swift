@@ -10,7 +10,7 @@ import Foundation
 protocol MPCWalletsServiceProtocol {
     func sendBootstrapCodeTo(email: String) async throws
     func setupMPCWalletWith(code: String,
-                            credentials: MPCActivateCredentials) -> AsyncThrowingStream<SetupMPCWalletStep, Error>
+                            flow: SetupMPCFlow) -> AsyncThrowingStream<SetupMPCWalletStep, Error>
     func signPersonalMessage(_ messageString: String,
                              by walletMetadata: MPCWalletMetadata) async throws -> String
     func signTypedDataMessage(_ message: String,

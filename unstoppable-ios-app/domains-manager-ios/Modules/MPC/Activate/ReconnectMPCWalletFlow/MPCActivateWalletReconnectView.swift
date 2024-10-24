@@ -15,7 +15,7 @@ struct MPCActivateWalletReconnectView: View {
     
     var body: some View {
         MPCActivateWalletView(analyticsName: .mpcActivationInApp,
-                              credentials: credentials,
+                              flow: .activate(credentials),
                               code: code,
                               mpcWalletCreatedCallback: didCreateMPCWallet)
         .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)

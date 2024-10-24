@@ -24,6 +24,7 @@ struct MPCResetPasswordEnterPasswordView: View, ViewAnalyticsLogger, MPCWalletPa
 
     var body: some View {
         contentView()
+            .animation(.default, value: keyboardHeight)
             .displayError($error)
             .onChange(of: passwordInput, perform: { newValue in
                 validatePasswordInput()

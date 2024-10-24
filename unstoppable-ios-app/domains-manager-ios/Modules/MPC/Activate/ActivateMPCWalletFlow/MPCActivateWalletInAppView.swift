@@ -16,7 +16,7 @@ struct MPCActivateWalletInAppView: View {
     
     var body: some View {
         MPCActivateWalletView(analyticsName: .mpcActivationInApp, 
-                              credentials: credentials,
+                              flow: .activate(credentials),
                               code: code,
                               mpcWalletCreatedCallback: didCreateMPCWallet,
                               changeEmailCallback: didRequestToChangeEmail)

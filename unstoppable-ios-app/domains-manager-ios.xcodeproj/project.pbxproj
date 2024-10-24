@@ -1351,6 +1351,8 @@
 		C68980802CCA353C00A4CFC0 /* MPCResetPasswordRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689807E2CCA353C00A4CFC0 /* MPCResetPasswordRootView.swift */; };
 		C68980822CCA39E300A4CFC0 /* MPCResetPasswordEnterCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980812CCA39E300A4CFC0 /* MPCResetPasswordEnterCodeView.swift */; };
 		C68980832CCA39E300A4CFC0 /* MPCResetPasswordEnterCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980812CCA39E300A4CFC0 /* MPCResetPasswordEnterCodeView.swift */; };
+		C68980852CCA3AAE00A4CFC0 /* MPCResetPasswordActivateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980842CCA3AAE00A4CFC0 /* MPCResetPasswordActivateView.swift */; };
+		C68980862CCA3AAE00A4CFC0 /* MPCResetPasswordActivateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980842CCA3AAE00A4CFC0 /* MPCResetPasswordActivateView.swift */; };
 		C689C1732ADE484300AA0186 /* LaunchDarkly in Frameworks */ = {isa = PBXBuildFile; productRef = C689C1722ADE484300AA0186 /* LaunchDarkly */; };
 		C689C1752ADE56AF00AA0186 /* UDFeatureFlagsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */; };
 		C689C1772ADE693900AA0186 /* LaunchDarklyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */; };
@@ -3690,6 +3692,7 @@
 		C689807B2CCA34B100A4CFC0 /* MPCResetPasswordNavigationDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCResetPasswordNavigationDestination.swift; sourceTree = "<group>"; };
 		C689807E2CCA353C00A4CFC0 /* MPCResetPasswordRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCResetPasswordRootView.swift; sourceTree = "<group>"; };
 		C68980812CCA39E300A4CFC0 /* MPCResetPasswordEnterCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCResetPasswordEnterCodeView.swift; sourceTree = "<group>"; };
+		C68980842CCA3AAE00A4CFC0 /* MPCResetPasswordActivateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCResetPasswordActivateView.swift; sourceTree = "<group>"; };
 		C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsService.swift; sourceTree = "<group>"; };
 		C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchDarklyService.swift; sourceTree = "<group>"; };
 		C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsServiceProtocol.swift; sourceTree = "<group>"; };
@@ -8084,6 +8087,7 @@
 				C689807E2CCA353C00A4CFC0 /* MPCResetPasswordRootView.swift */,
 				C6D396AE2CC6771100FED58A /* MPCResetPasswordEnterPasswordView.swift */,
 				C68980812CCA39E300A4CFC0 /* MPCResetPasswordEnterCodeView.swift */,
+				C68980842CCA3AAE00A4CFC0 /* MPCResetPasswordActivateView.swift */,
 			);
 			path = ResetPassword;
 			sourceTree = "<group>";
@@ -9480,6 +9484,7 @@
 				C6B65F652B550471006D1812 /* HomeWalletMoreTokensView.swift in Sources */,
 				C6C8F9582B2185F800A9834D /* KeychainKey.swift in Sources */,
 				C671E39F28FE974900A2B3A0 /* UDCarouselFeature.swift in Sources */,
+				C68980862CCA3AAE00A4CFC0 /* MPCResetPasswordActivateView.swift in Sources */,
 				C6C8F9552B2185A900A9834D /* MintingError.swift in Sources */,
 				C650F8BD2BA4182900BDA099 /* FB_UD_MPCConnectedWalletDetails.swift in Sources */,
 				C6B65F6C2B550E72006D1812 /* NFTModelChain.swift in Sources */,
@@ -11334,6 +11339,7 @@
 				C688C1A22B8490F700BD233A /* ChatRequestsListViewModel.swift in Sources */,
 				C6D6470B2B1ED7CA00D724AC /* MessagingChatSender.swift in Sources */,
 				C61807BB2B199FD10032E543 /* PreviewData.swift in Sources */,
+				C68980852CCA3AAE00A4CFC0 /* MPCResetPasswordActivateView.swift in Sources */,
 				C6D645772B1D721D00D724AC /* PurchaseDomainsEnterDiscountCodeView.swift in Sources */,
 				C671CD282BC6D3C4005DA2FB /* PurchaseMPCWalletCart.swift in Sources */,
 				C6D645E22B1DBD9000D724AC /* BasePresenterProtocol.swift in Sources */,

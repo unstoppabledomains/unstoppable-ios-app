@@ -247,7 +247,7 @@ extension Analytics {
         
         case mpcEnterCredentialsOnboarding, mpcEnterCredentialsInApp, mpcEnterCredentialsReconnect
         case mpcEnterCodeOnboarding, mpcEnterCodeInApp, mpcConfirmCodeInApp, mpcResetPasswordEnterCode
-        case mpcActivationOnboarding, mpcActivationInApp
+        case mpcActivationOnboarding, mpcActivationInApp, mpcActivationRestorePassword
         
         case mpcPurchaseUDAuthOnboarding, mpcPurchaseUDAuthInApp
         case mpcPurchaseCheckoutOnboarding, mpcPurchaseCheckoutInApp
