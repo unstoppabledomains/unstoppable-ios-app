@@ -78,7 +78,11 @@ final class OnboardingNavigationController: CNavigationController {
         switch result {
         case .restored(let wallet):
             if isAlreadyAddedWallet {
-                modifyOnboardingData { $0.wallets.append(wallet) }
+                modifyOnboardingData {
+                    if $0.wallets.first(where: { $0.address == wallet.address }) == nil {
+                        $0.wallets.append(wallet)
+                    }
+                }
             } else {
                 Task {
                     try? await handle(action: .didImportWallet(wallet))
