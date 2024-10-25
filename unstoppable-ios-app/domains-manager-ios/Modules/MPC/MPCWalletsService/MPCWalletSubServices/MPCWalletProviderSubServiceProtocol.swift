@@ -44,4 +44,7 @@ protocol MPCWalletProviderSubServiceProtocol {
     /// - Returns: Email from attached to wallet account
     func requestRecovery(for walletMetadata: MPCWalletMetadata,
                          password: String) async throws -> String
+
+    // 2FA
+    func is2FAEnabled(for walletMetadata: MPCWalletMetadata) throws -> Bool
 }

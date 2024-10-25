@@ -125,6 +125,8 @@ extension Image {
     static let starInCloudIcon = Image("starInCloudIcon")
     static let widgetIcon = Image("widgetIcon")
     static let resetULWPasswordIllustration = Image("resetULWPasswordIllustration")
+    static let shieldEmpty = Image("shieldEmpty")
+    static let shieldCheckmark = Image("shieldCheckmark")
     
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")

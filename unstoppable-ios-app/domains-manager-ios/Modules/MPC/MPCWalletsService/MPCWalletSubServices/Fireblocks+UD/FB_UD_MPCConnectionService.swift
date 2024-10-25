@@ -408,6 +408,11 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         return try await requestRecoveryFor(connectedWallet: connectedWalletDetails,
                                             password: password)
     }
+
+    func is2FAEnabled(for walletMetadata: MPCWalletMetadata) throws -> Bool {
+        let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+        return connectedWalletDetails.is2FAEnabled
+    }   
     
     @discardableResult
     private func requestRecoveryFor(connectedWallet: FB_UD_MPC.ConnectedWalletDetails,

@@ -342,7 +342,7 @@ extension Analytics {
         case securitySettingsPasscode, securitySettingsBiometric, securitySettingsRequireSAWhenOpen
         
         // Wallet details
-        case walletBackup, walletRecoveryPhrase, walletRename, walletDomainsList, walletRemove, showConnectedWalletInfo, walletReverseResolution, walletReconnect
+        case walletBackup, walletRecoveryPhrase, walletRename, walletDomainsList, walletRemove, showConnectedWalletInfo, walletReverseResolution, walletReconnect, mpc2FA
         
         // Wallets list
         case manageICloudBackups, walletInList, walletsMenu, mpcRecoveryKit

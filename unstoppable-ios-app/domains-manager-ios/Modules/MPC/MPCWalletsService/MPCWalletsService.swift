@@ -146,6 +146,12 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
         
         return try await subService.requestRecovery(for: walletMetadata, password: password)
     }
+
+    func is2FAEnabled(for walletMetadata: MPCWalletMetadata) throws -> Bool {
+        let subService = try getSubServiceFor(provider: walletMetadata.provider)
+        
+        return try subService.is2FAEnabled(for: walletMetadata)
+    }
 }
 
 // MARK: - Private methods

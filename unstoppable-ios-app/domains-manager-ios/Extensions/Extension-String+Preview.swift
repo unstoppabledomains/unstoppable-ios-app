@@ -510,6 +510,8 @@ extension String {
         static let addToBackupNewWalletSubtitle = "ADD_TO_BACKUP_NEW_WALLET_SUBTITLE"
         static let addToCurrentBackupNewWalletTitle = "ADD_TO_CURRENT_BACKUP_NEW_WALLET_TITLE"
         static let createVault = "CREATE_VAULT"
+        static let mpc2FAEnabled = "MPC_2FA_ENABLED"
+        static let mpc2FAEnable = "MPC_2FA_ENABLE"
         
         // Toast messages
         static let toastWalletAddressCopied = "TOAST_WALLET_ADDRESS_COPIED"

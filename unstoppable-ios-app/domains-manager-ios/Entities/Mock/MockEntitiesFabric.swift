@@ -121,6 +121,26 @@ extension MockEntitiesFabric {
                 
             }
         }
+        
+        static func mockMPC() -> WalletEntity {
+            let address = "0xmpcwallet"
+            let udWallet = UDWallet(aliasName: "Lite Wallet",
+                                    address: address,
+                                    type: .mpc,
+                                    hasBeenBackedUp: false,
+                                    mpcMetadata: .init(provider: .fireblocksUD,
+                                                       metadata: Data()))
+            let displayInfo = WalletDisplayInfo(wallet: udWallet,
+                                                domainsCount: 0,
+                                                udDomainsCount: 0)!
+            return WalletEntity(udWallet: udWallet,
+                                displayInfo: displayInfo,
+                                domains: [],
+                                nfts: [],
+                                balance: [],
+                                rrDomain: nil,
+                                portfolioRecords: [])
+        }
    
         static func createFrom(udWallet: UDWallet,
                                hasRRDomain: Bool = true) -> WalletEntity {
@@ -343,9 +363,12 @@ fileprivate extension UDWallet {
     init(aliasName: String,
          address: String,
          type: WalletType,
-         hasBeenBackedUp: Bool = false) {
+         hasBeenBackedUp: Bool = false,
+         mpcMetadata: MPCWalletMetadata? = nil) {
         self.aliasName = aliasName
+        self.address = address
         self.type = type
         self.hasBeenBackedUp = hasBeenBackedUp
+        self.mpcMetadata = mpcMetadata
     }
 }

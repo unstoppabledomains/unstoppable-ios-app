@@ -400,6 +400,8 @@
 "WHAT_IS_EXTERNAL_WALLET" = "What is an external wallet?";
 "IMPORT_CONNECTED_WALLET_DESCRIPTION" = "Manage your Web3 domains using an external wallet without importing a recovery phrase or private key. Your linked wallet will be used for message & transaction signing.";
 "WALLET_WAS_DISCONNECTED_MESSAGE" = "Your wallet: %@ was disconnected from %@";
+"MPC_2FA_ENABLED" = "2FA Enabled";
+"MPC_2FA_ENABLE" = "Enable 2FA";
 
 // Toast messages
 "TOAST_WALLET_ADDRESS_COPIED" = "%@ address copied";

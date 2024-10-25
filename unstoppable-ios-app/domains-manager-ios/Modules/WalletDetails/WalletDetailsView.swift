@@ -10,6 +10,7 @@ import SwiftUI
 struct WalletDetailsView: View, ViewAnalyticsLogger {
     
     @Environment(\.walletsDataService) private var walletsDataService
+    @Environment(\.mpcWalletsService) private var mpcWalletsService
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var tabRouter: HomeTabRouter
 
@@ -188,7 +189,10 @@ private extension WalletDetailsView {
                 }
             }
         }
-        if wallet.udWallet.type == .mpc {
+        if wallet.udWallet.type == .mpc,
+        let mpcMetadata = wallet.udWallet.mpcMetadata {
+            let is2FAEnabled = (try? mpcWalletsService.is2FAEnabled(for: mpcMetadata)) ?? false
+            actions.append(.mpc2FA(is2FAEnabled))
             subActions.append(.mpcRecoveryKit)
         }
         
@@ -217,6 +221,8 @@ private extension WalletDetailsView {
             case .importedNotBackedUp, .locallyGeneratedNotBackedUp:
                 showBackupWalletScreenIfAvailable()
             }
+        case .mpc2FA(let isEnabled):
+            mpc2FAActionPressed(isEnabled)
         case .more:
             return
         }
@@ -248,6 +254,14 @@ private extension WalletDetailsView {
                     AppReviewService.shared.appReviewEventDidOccurs(event: .didRevealPK)
                 })
             }
+        }
+    }
+    
+    func mpc2FAActionPressed(_ isEnabled: Bool) {
+        if isEnabled {
+            // TODO: Implement disable 2FA
+        } else {
+            // TODO: Implement enable 2FA
         }
     }
     
@@ -395,8 +409,8 @@ private extension WalletDetailsView {
 }
 
 #Preview {
-    let wallets = MockEntitiesFabric.Wallet.mockEntities()
+    let wallet = MockEntitiesFabric.Wallet.mockMPC()
     
-    return WalletDetailsView(wallet: wallets[0],
+    return WalletDetailsView(wallet: wallet,
                              source: .settings)
 }

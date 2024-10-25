@@ -13,7 +13,7 @@ struct UDWallet: Codable, Hashable {
     var address: String = "0xc4a748796805dfa42cafe0901ec182936584cc6e"
     var type: WalletType = .generatedLocally
     var hasBeenBackedUp: Bool? = false
-    private(set) var mpcMetadata: MPCWalletMetadata?
+    var mpcMetadata: MPCWalletMetadata?
     
     struct WalletConnectionInfo: Codable {
         var externalWallet: WCWalletsProvider.WalletRecord
