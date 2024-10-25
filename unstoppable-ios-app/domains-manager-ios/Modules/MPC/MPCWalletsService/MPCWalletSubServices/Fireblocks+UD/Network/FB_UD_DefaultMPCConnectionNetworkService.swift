@@ -364,6 +364,61 @@ extension FB_UD_MPC {
                                                statuses: [.completed])
         }
         
+        func get2FAStatus(accessToken: String) async throws -> Bool {
+            struct Response: Codable {
+                let otpEnabled: Bool
+            }
+
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.otpURL,
+                                         method: .get,
+                                         headers: headers)
+            let response: Response = try await makeDecodableAPIRequest(request)
+            return response.otpEnabled
+        }
+
+        func enable2FA(accessToken: String) async throws -> String {
+            struct Response: Codable {
+                let secret: String
+            }
+            
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.otpURL,
+                                         method: .post,
+                                         headers: headers)
+            let response: Response = try await makeDecodableAPIRequest(request)
+            return response.secret
+        }
+        
+        func verify2FAToken(accessToken: String, token: String) async throws {
+            struct RequestBody: Codable {
+                let token: String
+            }
+            
+            let body = RequestBody(token: token)
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.otpVerificationURL,
+                                         body: body,
+                                         method: .post,
+                                         headers: headers)
+            try await makeAPIRequest(request)
+        }
+
+        func disable2FA(accessToken: String,
+                         token: String) async throws {
+            struct RequestBody: Codable {
+                let token: String
+            }
+            
+            let body = RequestBody(token: token)
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.otpURL,
+                                         body: body,
+                                         method: .delete,
+                                         headers: headers)
+            try await makeAPIRequest(request)
+        }
+
         @discardableResult
         private func waitForOperationStatuses(accessToken: String,
                                               operationId: String,

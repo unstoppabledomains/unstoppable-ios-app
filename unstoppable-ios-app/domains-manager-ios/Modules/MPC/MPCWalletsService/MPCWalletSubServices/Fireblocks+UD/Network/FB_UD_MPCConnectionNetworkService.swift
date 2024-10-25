@@ -66,5 +66,12 @@ extension FB_UD_MPC {
                            recoveryToken: String,
                            newRecoveryPhrase: String,
                            requestId: String) async throws
+                           
+        func get2FAStatus(accessToken: String) async throws -> Bool
+        func enable2FA(accessToken: String) async throws -> String
+        func verify2FAToken(accessToken: String,
+                            token: String) async throws
+        func disable2FA(accessToken: String,
+                          token: String) async throws
     }
 }
