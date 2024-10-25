@@ -64,6 +64,28 @@ final class OnboardingNavigationController: CNavigationController {
             notifyViewControllerWillNavigateBack(vc)
         }
     }
+    
+    func runResetMPCWalletPasswordFlow(_ mpcResetPasswordData: MPCResetPasswordData) {
+        let vc = MPCResetPasswordRootView.instantiateViewController(resetPasswordData: mpcResetPasswordData) { [weak self] result in
+            self?.handleMPCResetPasswordResult(result)
+        }
+        topVisibleViewController().present(vc, animated: true)
+    }
+    
+    private func handleMPCResetPasswordResult(_ result: MPCResetPasswordFlow.FlowResult) {
+        let isAlreadyAddedWallet = !onboardingData.wallets.isEmpty
+        
+        switch result {
+        case .restored(let wallet):
+            if isAlreadyAddedWallet {
+                modifyOnboardingData { $0.wallets.append(wallet) }
+            } else {
+                Task {
+                    try? await handle(action: .didImportWallet(wallet))
+                }
+            }
+        }
+    }
 }
 
 // MARK: - CNavigationControllerDelegate

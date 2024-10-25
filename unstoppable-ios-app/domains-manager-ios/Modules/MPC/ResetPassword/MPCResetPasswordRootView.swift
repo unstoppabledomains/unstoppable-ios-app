@@ -9,6 +9,14 @@ import SwiftUI
 
 struct MPCResetPasswordRootView: View {
     
+    static func instantiateViewController(resetPasswordData: MPCResetPasswordData,
+                                          resetResultCallback: @escaping MPCResetPasswordFlow.FlowResultCallback) -> UIViewController {
+        let view = MPCResetPasswordRootView(resetPasswordData: resetPasswordData,
+                                            resetResultCallback: resetResultCallback)
+        let vc = UIHostingController(rootView: view)
+        return vc
+    }
+    
     @Environment(\.presentationMode) private var presentationMode
     @StateObject private var viewModel: MPCResetPasswordViewModel
     
