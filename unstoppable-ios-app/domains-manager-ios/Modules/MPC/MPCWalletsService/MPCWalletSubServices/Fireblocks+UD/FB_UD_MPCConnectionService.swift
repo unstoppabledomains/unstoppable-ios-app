@@ -139,11 +139,13 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     let walletDetails: WalletDetails = try await getWalletAccountDetailsForWalletWith(deviceId: deviceId,
                                                                                        accessToken: authTokens.accessToken.jwt)
                     logMPC("Did get wallet account details")
+                    let is2FAEnabled = (try? await networkService.get2FAStatus(accessToken: authTokens.accessToken.jwt)) ?? false   
                     let mpcWallet: FB_UD_MPC.ConnectedWalletDetails = FB_UD_MPC.ConnectedWalletDetails(email: email,
                                                                      deviceId: deviceId,
                                                                      tokens: authTokens,
                                                                      firstAccount: walletDetails.firstAccount,
-                                                                     accounts: walletDetails.accounts)
+                                                                     accounts: walletDetails.accounts,
+                                                                     is2FAEnabled: is2FAEnabled)
                     continuation.yield(.storeWallet)
                     
                     logMPC("Will create UD Wallet")
@@ -459,11 +461,13 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                                       accessToken: token)
             
             let authTokens = try walletsDataStorage.retrieveAuthTokensFor(deviceId: deviceId)
+            let is2FAEnabled = (try? await networkService.get2FAStatus(accessToken: authTokens.accessToken.jwt)) ?? false
             let mpcWallet = FB_UD_MPC.ConnectedWalletDetails(email: email,
                                                              deviceId: deviceId,
                                                              tokens: authTokens,
                                                              firstAccount: walletAccountDetails.firstAccount,
-                                                             accounts: walletAccountDetails.accounts)
+                                                             accounts: walletAccountDetails.accounts,
+                                                             is2FAEnabled: is2FAEnabled)
             try walletsDataStorage.storeAccountsDetails(mpcWallet.createWalletAccountsDetails())
             
             return mpcWallet
@@ -525,7 +529,9 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     private func getConnectedWalletDetailsFor(deviceId: String) throws -> FB_UD_MPC.ConnectedWalletDetails {
         let tokens = try walletsDataStorage.retrieveAuthTokensFor(deviceId: deviceId)
         let accountDetails = try walletsDataStorage.retrieveAccountsDetailsFor(deviceId: deviceId)
-        return FB_UD_MPC.ConnectedWalletDetails(accountDetails: accountDetails, tokens: tokens)
+        return FB_UD_MPC.ConnectedWalletDetails(accountDetails: accountDetails,
+                                                tokens: tokens,
+                                                is2FAEnabled: accountDetails.is2FAEnabled ?? false)
     }
     
     private func getConnectedWalletDetailsFor(walletMetadata: MPCWalletMetadata) throws -> FB_UD_MPC.ConnectedWalletDetails {

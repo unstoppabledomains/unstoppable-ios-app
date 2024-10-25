@@ -14,25 +14,31 @@ extension FB_UD_MPC {
         let tokens: AuthTokens
         let firstAccount: WalletAccountWithAssets
         let accounts: [WalletAccountWithAssets]
+        let is2FAEnabled: Bool
         
         init(email: String,
              deviceId: String,
              tokens: AuthTokens,
              firstAccount: WalletAccountWithAssets,
-             accounts: [WalletAccountWithAssets]) {
+             accounts: [WalletAccountWithAssets],
+             is2FAEnabled: Bool) {
             self.email = email
             self.deviceId = deviceId
             self.tokens = tokens
             self.firstAccount = firstAccount
             self.accounts = accounts
+            self.is2FAEnabled = is2FAEnabled
         }
         
-        init(accountDetails: ConnectedWalletAccountsDetails, tokens: AuthTokens) {
+        init(accountDetails: ConnectedWalletAccountsDetails,
+             tokens: AuthTokens,
+             is2FAEnabled: Bool) {
             self.email = accountDetails.email
             self.deviceId = accountDetails.deviceId
             self.tokens = tokens
             self.firstAccount = accountDetails.firstAccount
             self.accounts = accountDetails.accounts
+            self.is2FAEnabled = is2FAEnabled
         }
         
         func getETHWalletAddress() -> String? {
@@ -43,7 +49,8 @@ extension FB_UD_MPC {
             ConnectedWalletAccountsDetails(email: email,
                                            deviceId: deviceId,
                                            firstAccount: firstAccount,
-                                           accounts: accounts)
+                                           accounts: accounts,
+                                           is2FAEnabled: is2FAEnabled)
         }
     }
     
@@ -52,6 +59,7 @@ extension FB_UD_MPC {
         let deviceId: String
         let firstAccount: WalletAccountWithAssets
         let accounts: [WalletAccountWithAssets]
+        var is2FAEnabled: Bool? = nil
     }
     
     struct UDWalletMetadata: Codable {
