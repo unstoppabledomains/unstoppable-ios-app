@@ -146,6 +146,10 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                      accounts: walletDetails.accounts)
                     continuation.yield(.storeWallet)
                     
+                    logMPC("Will create UD Wallet")
+                    let udWallet: UDWallet = try prepareAndSaveMPCWallet(mpcWallet)
+                    logMPC("Did create UD Wallet")
+                    
                     if case .resetPassword = flow {
                         // Send a new recovery kit email to the user
                         Task.detached {
@@ -153,11 +157,6 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                password: recoveryPhrase)
                         }
                     }
-                    
-                    
-                    logMPC("Will create UD Wallet")
-                    let udWallet: UDWallet = try prepareAndSaveMPCWallet(mpcWallet)
-                    logMPC("Did create UD Wallet")
                     
                     continuation.yield(.finished(udWallet))
                     continuation.finish()
