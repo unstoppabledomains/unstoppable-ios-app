@@ -189,8 +189,9 @@ private extension WalletDetailsView {
                 }
             }
         }
+        
         if wallet.udWallet.type == .mpc,
-        let mpcMetadata = wallet.udWallet.mpcMetadata {
+           let mpcMetadata = wallet.udWallet.mpcMetadata {
             let is2FAEnabled = (try? mpcWalletsService.is2FAEnabled(for: mpcMetadata)) ?? false
             actions.append(.mpc2FA(is2FAEnabled))
             subActions.append(.mpcRecoveryKit)
