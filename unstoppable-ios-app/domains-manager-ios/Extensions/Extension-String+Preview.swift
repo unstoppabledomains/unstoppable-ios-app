@@ -512,6 +512,10 @@ extension String {
         static let createVault = "CREATE_VAULT"
         static let mpc2FAEnabled = "MPC_2FA_ENABLED"
         static let mpc2FAEnable = "MPC_2FA_ENABLE"
+        static let enable2FATitle = "ENABLE_2FA_TITLE"
+        static let enable2FASubtitle = "ENABLE_2FA_SUBTITLE"
+        static let enable2FACopySecretTitle = "ENABLE_2FA_COPY_SECRET_TITLE"
+        static let enable2FAOrScanQRCode = "ENABLE_2FA_OR_SCAN_QR_CODE"
         
         // Toast messages
         static let toastWalletAddressCopied = "TOAST_WALLET_ADDRESS_COPIED"

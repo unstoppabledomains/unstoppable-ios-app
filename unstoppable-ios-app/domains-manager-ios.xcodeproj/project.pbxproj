@@ -1353,6 +1353,8 @@
 		C68980832CCA39E300A4CFC0 /* MPCResetPasswordEnterCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980812CCA39E300A4CFC0 /* MPCResetPasswordEnterCodeView.swift */; };
 		C68980852CCA3AAE00A4CFC0 /* MPCResetPasswordActivateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980842CCA3AAE00A4CFC0 /* MPCResetPasswordActivateView.swift */; };
 		C68980862CCA3AAE00A4CFC0 /* MPCResetPasswordActivateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980842CCA3AAE00A4CFC0 /* MPCResetPasswordActivateView.swift */; };
+		C68980892CCBD74900A4CFC0 /* MPCSetup2FAEnableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980882CCBD74900A4CFC0 /* MPCSetup2FAEnableView.swift */; };
+		C689808A2CCBD74900A4CFC0 /* MPCSetup2FAEnableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68980882CCBD74900A4CFC0 /* MPCSetup2FAEnableView.swift */; };
 		C689C1732ADE484300AA0186 /* LaunchDarkly in Frameworks */ = {isa = PBXBuildFile; productRef = C689C1722ADE484300AA0186 /* LaunchDarkly */; };
 		C689C1752ADE56AF00AA0186 /* UDFeatureFlagsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */; };
 		C689C1772ADE693900AA0186 /* LaunchDarklyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */; };
@@ -3693,6 +3695,7 @@
 		C689807E2CCA353C00A4CFC0 /* MPCResetPasswordRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCResetPasswordRootView.swift; sourceTree = "<group>"; };
 		C68980812CCA39E300A4CFC0 /* MPCResetPasswordEnterCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCResetPasswordEnterCodeView.swift; sourceTree = "<group>"; };
 		C68980842CCA3AAE00A4CFC0 /* MPCResetPasswordActivateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCResetPasswordActivateView.swift; sourceTree = "<group>"; };
+		C68980882CCBD74900A4CFC0 /* MPCSetup2FAEnableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCSetup2FAEnableView.swift; sourceTree = "<group>"; };
 		C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsService.swift; sourceTree = "<group>"; };
 		C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchDarklyService.swift; sourceTree = "<group>"; };
 		C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsServiceProtocol.swift; sourceTree = "<group>"; };
@@ -4708,6 +4711,7 @@
 				C6A231FE2BEB52CB0037E093 /* WalletSourceImageView.swift */,
 				C6A232012BEB53310037E093 /* RenameWalletView.swift */,
 				C6918C682CB54EFD00036C63 /* MPCWalletMetadataDisplayInfo.swift */,
+				C68980872CCBD71700A4CFC0 /* 2FA */,
 			);
 			path = WalletDetails;
 			sourceTree = "<group>";
@@ -7054,6 +7058,14 @@
 				C688C19A2B84854200BD233A /* ChannelFeedEmptyView.swift */,
 			);
 			path = ChannelView;
+			sourceTree = "<group>";
+		};
+		C68980872CCBD71700A4CFC0 /* 2FA */ = {
+			isa = PBXGroup;
+			children = (
+				C68980882CCBD74900A4CFC0 /* MPCSetup2FAEnableView.swift */,
+			);
+			path = 2FA;
 			sourceTree = "<group>";
 		};
 		C689C1782ADE6D1700AA0186 /* FeatureFlags */ = {
@@ -10130,6 +10142,7 @@
 				C60CA2922832501D00AB1B36 /* QRCodeMonkeyServiceProvider.swift in Sources */,
 				C665B9AD28325282005E535C /* DomainDetailsViewPresenter.swift in Sources */,
 				C6F4333F2BB25BD4000C5E46 /* ConfirmSendTokenViewsBuilderProtocol.swift in Sources */,
+				C689808A2CCBD74900A4CFC0 /* MPCSetup2FAEnableView.swift in Sources */,
 				C6526DE829D2E06800D6F2EB /* NoParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
 				C652722B2A14B395001A084C /* MockMessagingService.swift in Sources */,
 				C6EECE9D2833A42600978ED5 /* CoinRecordsService.swift in Sources */,
@@ -11167,6 +11180,7 @@
 				C6D646812B1ED12900D724AC /* DomainProfileSectionsController.swift in Sources */,
 				C6D011C32B9967A30008BF40 /* UDPageControlView.swift in Sources */,
 				C6102FC82B6A339A0098AF75 /* HomeWebAccountView.swift in Sources */,
+				C68980892CCBD74900A4CFC0 /* MPCSetup2FAEnableView.swift in Sources */,
 				C6B761E02BB3D78F00773943 /* SerializedWalletTransaction.swift in Sources */,
 				C6BF6BDD2B8F11CC006CC2BD /* TaskWithDeadline.swift in Sources */,
 				C6534A922BBFBA10008EEBB5 /* HomeExploreFollowersSectionView.swift in Sources */,

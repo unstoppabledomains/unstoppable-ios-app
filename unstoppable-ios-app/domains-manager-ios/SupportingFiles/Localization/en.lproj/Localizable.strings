@@ -402,6 +402,10 @@
 "WALLET_WAS_DISCONNECTED_MESSAGE" = "Your wallet: %@ was disconnected from %@";
 "MPC_2FA_ENABLED" = "2FA Enabled";
 "MPC_2FA_ENABLE" = "Enable 2FA";
+"ENABLE_2FA_TITLE" = "Enable two-factor authentication (2FA)";
+"ENABLE_2FA_SUBTITLE" = "You can use any authenticator app, such as Google Authenticator, Microsoft Authenticator, and Authy.";
+"ENABLE_2FA_COPY_SECRET_TITLE" = "Enter this code to your authenticator app";
+"ENABLE_2FA_OR_SCAN_QR_CODE" = "Or scan this QR code";
 
 // Toast messages
 "TOAST_WALLET_ADDRESS_COPIED" = "%@ address copied";
