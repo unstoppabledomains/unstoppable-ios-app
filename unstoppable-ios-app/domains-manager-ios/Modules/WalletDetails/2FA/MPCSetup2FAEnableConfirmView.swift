@@ -92,6 +92,7 @@ private extension MPCSetup2FAEnableConfirmView {
     }
     
     func didVerifyCode() {
+        appContext.toastMessageService.showToast(.enabled2FA, isSticky: false)
         tabRouter.walletViewNavPath.removeLast(2)
     }
 }

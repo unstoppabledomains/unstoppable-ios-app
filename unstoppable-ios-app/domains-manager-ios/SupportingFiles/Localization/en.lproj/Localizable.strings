@@ -1015,6 +1015,7 @@
 "ENDINGS" = "Endings";
 "SUGGESTIONS" = "Suggestions";
 "DOMAINS_PURCHASED_SUMMARY_MESSAGE" = "Order total: %@\n\nMinting started, this can take up to 5 minutes.\nWill be minted to: %@";
+"ENABLED_2FA_TOAST_MESSAGE" = "2FA enabled";
 
 // Home
 "HOME_WALLET_TOKENS_COME_TITLE" = "No more tokens here yet";

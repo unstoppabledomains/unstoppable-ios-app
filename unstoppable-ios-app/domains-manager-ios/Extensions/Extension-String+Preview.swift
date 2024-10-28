@@ -1121,6 +1121,7 @@ extension String {
         static let endings = "ENDINGS"
         static let suggestions = "SUGGESTIONS"
         static let domainsPurchasedSummaryMessage = "DOMAINS_PURCHASED_SUMMARY_MESSAGE"
+        static let enabled2FAToastMessage = "ENABLED_2FA_TOAST_MESSAGE"
         
         // Home
         static let homeWalletTokensComeTitle = "HOME_WALLET_TOKENS_COME_TITLE"
