@@ -424,9 +424,17 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     func confirmOTPToEnable2FA(for walletMetadata: MPCWalletMetadata, token: String) async throws {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
 
-        return try await performAuthErrorCatchingBlock(connectedWalletDetails: connectedWalletDetails) { token in
+        try await performAuthErrorCatchingBlock(connectedWalletDetails: connectedWalletDetails) { token in
             try await networkService.verify2FAToken(accessToken: token, token: token)
+            try updateAccountDetailsFor(deviceId: connectedWalletDetails.deviceId) { $0.is2FAEnabled = true }
         }
+    }
+    
+    private func updateAccountDetailsFor(deviceId: String,
+                                         block: (inout FB_UD_MPC.ConnectedWalletAccountsDetails)->()) throws {
+        var accountDetails = try walletsDataStorage.retrieveAccountsDetailsFor(deviceId: deviceId)
+        block(&accountDetails)
+        try walletsDataStorage.storeAccountsDetails(accountDetails)
     }
     
     @discardableResult
