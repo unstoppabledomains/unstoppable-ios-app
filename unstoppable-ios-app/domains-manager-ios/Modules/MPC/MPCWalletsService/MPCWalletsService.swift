@@ -163,6 +163,11 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
         let subService = try getSubServiceFor(provider: walletMetadata.provider)
         try await subService.confirmOTPToEnable2FA(for: walletMetadata, token: token)
     }
+    
+    func disable2FA(for walletMetadata: MPCWalletMetadata, token: String) async throws {
+        let subService = try getSubServiceFor(provider: walletMetadata.provider)
+        try await subService.disable2FA(for: walletMetadata, token: token)
+    }
 }
 
 // MARK: - Private methods

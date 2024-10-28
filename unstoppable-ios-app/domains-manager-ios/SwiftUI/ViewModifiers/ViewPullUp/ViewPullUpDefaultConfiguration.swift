@@ -547,6 +547,21 @@ extension ViewPullUpDefaultConfiguration {
                                                  action: disableCallback)),
               analyticName: .mpc2FAEnabled)
     }
+    
+    static func mpc2FADisableConfirmation(disableCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .warningIcon,
+                          size: .small),
+              title: .text(String.Constants.mpc2FADisableConfirmationPullUpTitle.localized()),
+              subtitle: .label(.text(String.Constants.mpc2FADisableConfirmationPullUpSubtitle.localized())),
+              actionButton: .primaryDanger(content: .init(title: String.Constants.disable2FA.localized(),
+                                                          analyticsName: .disable2FA,
+                                                          action: disableCallback)),
+              cancelButton: .secondary(content: .init(title: String.Constants.cancel.localized(),
+                                                      analyticsName: .cancel,
+                                                      action: nil)),
+              analyticName: .mpc2FADisableConfirmation)
+    }
+    
 }
 
 // MARK: - Open methods

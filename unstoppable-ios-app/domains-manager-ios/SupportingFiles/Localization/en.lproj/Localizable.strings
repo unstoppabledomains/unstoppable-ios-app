@@ -411,6 +411,8 @@
 "DISABLE_2FA" = "Disable 2FA";
 "MPC_2FA_ENABLED_PULLUP_TITLE" = "Two-factor authentication\n(2FA) is enabled";
 "MPC_2FA_ENABLED_PULLUP_SUBTITLE" = "You will be asked for a verification code whenever you login or request recovery kit";
+"MPC_2FA_DISABLE_CONFIRMATION_PULLUP_TITLE" = "Are you sure you want to disable two-factor authentication (2FA)?";
+"MPC_2FA_DISABLE_CONFIRMATION_PULLUP_SUBTITLE" = "Disabling it will reduce the security of your Unstoppable Lite Wallet.";
 
 // Toast messages
 "TOAST_WALLET_ADDRESS_COPIED" = "%@ address copied";

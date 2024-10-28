@@ -521,6 +521,8 @@ extension String {
         static let disable2FA = "DISABLE_2FA"
         static let mpc2FAEnabledPullUpTitle = "MPC_2FA_ENABLED_PULLUP_TITLE"
         static let mpc2FAEnabledPullUpSubtitle = "MPC_2FA_ENABLED_PULLUP_SUBTITLE"
+        static let mpc2FADisableConfirmationPullUpTitle = "MPC_2FA_DISABLE_CONFIRMATION_PULLUP_TITLE"
+        static let mpc2FADisableConfirmationPullUpSubtitle = "MPC_2FA_DISABLE_CONFIRMATION_PULLUP_SUBTITLE" 
         
         // Toast messages
         static let toastWalletAddressCopied = "TOAST_WALLET_ADDRESS_COPIED"

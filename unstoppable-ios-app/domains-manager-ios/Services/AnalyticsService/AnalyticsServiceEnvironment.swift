@@ -530,7 +530,7 @@ extension Analytics {
         case removeMPCWalletConfirmation
         case transactionDetails
         case domainProfileMaintenance, signMessagesMaintenance, transferDomainsFromVaultMaintenance
-        case mpc2FAEnabled
+        case mpc2FAEnabled, mpc2FADisableConfirmation
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
