@@ -215,7 +215,7 @@ extension Analytics {
         case domainDetails
         case settings, securitySettings
         case walletDetails, renameWallet
-        case setup2FAEnable
+        case setup2FAEnable, setup2FAEnableConfirm
         case walletsList, mintingWalletsListSelection
         case setupReverseResolution, walletSetupReverseResolution, setupChangeReverseResolution
         case selectFirstDomainForReverseResolution, changeDomainForReverseResolution

@@ -516,6 +516,8 @@ extension String {
         static let enable2FASubtitle = "ENABLE_2FA_SUBTITLE"
         static let enable2FACopySecretTitle = "ENABLE_2FA_COPY_SECRET_TITLE"
         static let enable2FAOrScanQRCode = "ENABLE_2FA_OR_SCAN_QR_CODE"
+        static let enable2FAConfirmTitle = "ENABLE_2FA_CONFIRM_TITLE"
+        static let enable2FAConfirmSubtitle = "ENABLE_2FA_CONFIRM_SUBTITLE"
         
         // Toast messages
         static let toastWalletAddressCopied = "TOAST_WALLET_ADDRESS_COPIED"

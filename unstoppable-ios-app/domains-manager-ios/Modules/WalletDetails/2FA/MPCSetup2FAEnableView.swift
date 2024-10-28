@@ -11,6 +11,7 @@ struct MPCSetup2FAEnableView: View, ViewAnalyticsLogger {
 
     @Environment(\.mpcWalletsService) private var mpcWalletsService
     @Environment(\.imageLoadingService) private var imageLoadingService
+    @EnvironmentObject var tabRouter: HomeTabRouter
 
     var analyticsName: Analytics.ViewName { .setup2FAEnable }
     
@@ -171,8 +172,14 @@ private extension MPCSetup2FAEnableView {
             UDButtonView(text: String.Constants.continue.localized(),
                          style: .large(.raisedPrimary), callback: {
                 logButtonPressedAnalyticEvents(button: .continue)
+                moveToNextScreen()
             })
         }
+    }
+    
+    func moveToNextScreen() {
+        tabRouter.walletViewNavPath.append(.mpcSetup2FAEnableConfirm(wallet: wallet,
+                                                                     mpcMetadata: mpcMetadata))
     }
 }
 
