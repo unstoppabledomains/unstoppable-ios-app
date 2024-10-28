@@ -262,7 +262,10 @@ private extension WalletDetailsView {
         if isEnabled {
             // TODO: Implement disable 2FA
         } else {
-            // TODO: Implement enable 2FA
+            guard let mpcMetadata = wallet.udWallet.mpcMetadata else { return }
+            
+            tabRouter.walletViewNavPath.append(.mpcSetup2FAEnable(wallet: wallet,
+                                                                  mpcMetadata: mpcMetadata))
         }
     }
     

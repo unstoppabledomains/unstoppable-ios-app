@@ -27,6 +27,7 @@ struct MPCSetup2FAEnableView: View, ViewAnalyticsLogger {
                     headerView()
                     secretDetailsView()
                 }
+                .padding(.bottom, 60)
             }
             continueButtonView()
         }
@@ -47,8 +48,12 @@ private extension MPCSetup2FAEnableView {
         Task {
             do {
 //                let secret = try await mpcWalletsService.requestOTPToEnable2FA(for: mpcMetadata)
+                
+                #if DEBUG
                 await Task.sleep(seconds: 0.5)
                 let secret = "GYZDOMRUMEZTANJSGZTDMOSDFSDVSDC"
+                #endif
+                
                 self.secret = secret
                 
                 loadQRCodeFor(secret: secret)

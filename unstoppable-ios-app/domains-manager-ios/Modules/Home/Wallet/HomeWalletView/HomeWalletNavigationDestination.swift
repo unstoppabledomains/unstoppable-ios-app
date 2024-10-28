@@ -19,6 +19,8 @@ enum HomeWalletNavigationDestination: Hashable {
     case walletDetails(WalletEntity)
     case securitySettings
     case setupPasscode(SetupPasscodeViewController.Mode)
+    case mpcSetup2FAEnable(wallet: WalletEntity,
+                           mpcMetadata: MPCWalletMetadata)
 
     static func == (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
@@ -38,6 +40,8 @@ enum HomeWalletNavigationDestination: Hashable {
             return true
         case (.setupPasscode, .setupPasscode):
             return true
+        case (.mpcSetup2FAEnable(let lhsWallet, _), .mpcSetup2FAEnable(let rhsWallet, _)):
+            return lhsWallet.address == rhsWallet.address
         default:
             return false
         }
@@ -61,6 +65,8 @@ enum HomeWalletNavigationDestination: Hashable {
             hasher.combine("securitySettings")
         case .setupPasscode:
             hasher.combine("setupPasscode")
+        case .mpcSetup2FAEnable(let wallet, _):
+            hasher.combine("mpcSetup2FAEnable_\(wallet.address)")
         }
     }
     
@@ -95,6 +101,9 @@ struct HomeWalletLinkNavigationDestination {
                 .ignoresSafeArea()
         case .walletDetails(let wallet):
             WalletDetailsView(wallet: wallet, source: .settings)
+        case .mpcSetup2FAEnable(let wallet,
+                                let mpcMetadata):
+            MPCSetup2FAEnableView(wallet: wallet, mpcMetadata: mpcMetadata)
         case .securitySettings:
             SecuritySettingsView()
         case .setupPasscode(let mode):
