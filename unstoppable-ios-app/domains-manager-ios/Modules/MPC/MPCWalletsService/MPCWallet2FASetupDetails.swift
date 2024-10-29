@@ -19,4 +19,12 @@ struct MPCWallet2FASetupDetails {
         self.email = email
     }
     
+    func buildAuthPath() -> String {
+        let issuer = "Unstoppable"
+        return "otpauth://totp/\(email)?secret=\(secret)&issuer=\(issuer)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+    }
+    
+    func buildAuthURL() -> URL? {
+        URL(string: buildAuthPath())
+    }
 }
