@@ -47,7 +47,7 @@ protocol MPCWalletProviderSubServiceProtocol {
 
     // 2FA
     func is2FAEnabled(for walletMetadata: MPCWalletMetadata) throws -> Bool
-    func requestOTPToEnable2FA(for walletMetadata: MPCWalletMetadata) async throws -> String
-    func confirmOTPToEnable2FA(for walletMetadata: MPCWalletMetadata, token: String) async throws
+    func request2FASetupDetails(for walletMetadata: MPCWalletMetadata) async throws -> MPCWallet2FASetupDetails
+    func confirm2FAEnabled(for walletMetadata: MPCWalletMetadata, code: String) async throws
     func disable2FA(for walletMetadata: MPCWalletMetadata, token: String) async throws
 }

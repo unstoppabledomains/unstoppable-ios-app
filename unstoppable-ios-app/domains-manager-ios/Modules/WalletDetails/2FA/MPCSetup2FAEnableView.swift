@@ -17,7 +17,7 @@ struct MPCSetup2FAEnableView: View, ViewAnalyticsLogger {
     
     let wallet: WalletEntity
     let mpcMetadata: MPCWalletMetadata
-    @State private var secret: String? = nil
+    @State private var setupDetails: MPCWallet2FASetupDetails? = nil
     @State private var qrCodeImage: UIImage? = nil
     @State private var error: Error? = nil
 
@@ -48,28 +48,20 @@ private extension MPCSetup2FAEnableView {
     func loadSecret() {
         Task {
             do {
-//                let secret = try await mpcWalletsService.requestOTPToEnable2FA(for: mpcMetadata)
+                let setupDetails = try await mpcWalletsService.request2FASetupDetails(for: mpcMetadata)
+                self.setupDetails = setupDetails
                 
-                #if DEBUG
-                await Task.sleep(seconds: 0.5)
-                let secret = "GYZDOMRUMEZTANJSGZTDMOSDFSDVSDC"
-                #endif
-                
-                self.secret = secret
-                
-                loadQRCodeFor(secret: secret)
+                loadQRCodeFor(setupDetails: setupDetails)
             } catch {
                 self.error = error
             }
         }
     }
 
-    func loadQRCodeFor(secret: String) {
+    func loadQRCodeFor(setupDetails: MPCWallet2FASetupDetails) {
         Task {
-            // Create Google Authenticator URL
             let issuer = "Unstoppable"
-            let accountName = wallet.displayName
-            let urlString = "otpauth://totp/\(issuer):\(accountName)?secret=\(secret)&issuer=\(issuer)"
+            let urlString = "otpauth://totp/\(setupDetails.email)?secret=\(setupDetails.secret)&issuer=\(issuer)"
             
             if let encodedString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
            let url = URL(string: encodedString) {
@@ -96,9 +88,9 @@ private extension MPCSetup2FAEnableView {
 
     @ViewBuilder
     func secretDetailsView() -> some View {
-        if let secret = secret {
+        if let setupDetails {
             VStack(spacing: 24) {
-                copySecretView(secret)
+                copySecretView(setupDetails.secret)
                 orScanSeparatorView()
                 qrCodeView()
             }
@@ -168,7 +160,7 @@ private extension MPCSetup2FAEnableView {
 
     @ViewBuilder
     func continueButtonView() -> some View {
-        if secret != nil {
+        if setupDetails != nil {
             UDButtonView(text: String.Constants.continue.localized(),
                          style: .large(.raisedPrimary), callback: {
                 logButtonPressedAnalyticEvents(button: .continue)
