@@ -15,6 +15,7 @@ struct MPCSetup2FAConfirmCodeView: View, ViewAnalyticsLogger {
 
     let mpcMetadata: MPCWalletMetadata
     let verificationPurpose: VerificationPurpose
+    var navigationStyle: NavigationStyle = .push
     var analyticsName: Analytics.ViewName { .setup2FAEnableConfirm }
 
     @State private var code: String = ""
@@ -22,6 +23,26 @@ struct MPCSetup2FAConfirmCodeView: View, ViewAnalyticsLogger {
     @State private var error: Error? = nil
 
     var body: some View {
+        switch navigationStyle {
+        case .push:
+            contentView()
+        case .modal:
+            NavigationStack {
+                contentView()
+                    .interactiveDismissDisabled()
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            CloseButtonView(closeCallback: closeButtonPressed)
+                        }
+                    }
+            }
+        }
+    }
+}
+
+private extension MPCSetup2FAConfirmCodeView {
+    @ViewBuilder
+    func contentView() -> some View {
         ScrollView {
             VStack(spacing: 32) {
                 headerView()
@@ -33,9 +54,7 @@ struct MPCSetup2FAConfirmCodeView: View, ViewAnalyticsLogger {
         .background(Color.backgroundDefault)
         .displayError($error)
     }
-}
 
-private extension MPCSetup2FAConfirmCodeView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
@@ -76,6 +95,7 @@ private extension MPCSetup2FAConfirmCodeView {
         isLoading = true
         Task {
             do {
+                let code = self.code
                 switch verificationPurpose {
                 case .enable:
                     try await mpcWalletsService.confirm2FAEnabled(for: mpcMetadata,
@@ -83,8 +103,10 @@ private extension MPCSetup2FAConfirmCodeView {
                 case .disable:
                     try await mpcWalletsService.disable2FA(for: mpcMetadata,
                                                            code: code)
+                case .enterCode:
+                    Void()
                 }
-                didVerifyCode()
+                didVerifyCode(code)
             } catch {
                 self.error = error
             }
@@ -92,21 +114,37 @@ private extension MPCSetup2FAConfirmCodeView {
         }
     }
     
-    func didVerifyCode() {
-        switch verificationPurpose {    
+    func didVerifyCode(_ code: String) {
+        switch verificationPurpose {
         case .enable:
             appContext.toastMessageService.showToast(.enabled2FA, isSticky: false)
             tabRouter.walletViewNavPath.removeLast(2)
         case .disable:
             dismiss()
+        case .enterCode(let callback):
+            callback(code)
+            dismiss()
         }
     }
+
+    func closeButtonPressed() {
+        if case .enterCode(let callback) = verificationPurpose {
+            callback(nil)
+        }
+        dismiss()
+    }   
 }
 
 extension MPCSetup2FAConfirmCodeView {
     enum VerificationPurpose {
         case enable
         case disable
+        case enterCode(callback: (String?) -> Void)
+    }
+
+    enum NavigationStyle {
+        case push
+        case modal
     }
 }
 

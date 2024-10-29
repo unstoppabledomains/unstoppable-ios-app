@@ -67,9 +67,9 @@ struct WalletDetailsView: View, ViewAnalyticsLogger {
         })
         .sheet(item: $disabling2FAMetadata, content: { mpcMetadataWrapper in
             MPCSetup2FAConfirmCodeView(mpcMetadata: mpcMetadataWrapper.metadata,
-                                         verificationPurpose: .disable)
+                                       verificationPurpose: .disable,
+                                       navigationStyle: .modal)
         })
-        
     }
     
 }
