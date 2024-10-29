@@ -75,14 +75,8 @@ private extension MPCSetup2FAEnableConfirmView {
         isLoading = true
         Task {
             do {
-                
-//                try await mpcWalletsService.confirmOTPToEnable2FA(for: mpcMetadata,
-//                                                                  token: code)
-                
-                #if DEBUG
-                await Task.sleep(seconds: 0.5)
-                #endif
-                
+                try await mpcWalletsService.confirm2FAEnabled(for: mpcMetadata,
+                                                                  token: code)
                 didVerifyCode()
             } catch {
                 self.error = error

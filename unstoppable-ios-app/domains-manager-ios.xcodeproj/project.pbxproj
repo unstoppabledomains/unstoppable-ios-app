@@ -1795,6 +1795,8 @@
 		C6C1EC5F2A3AD483005EB37D /* UIAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC5E2A3AD483005EB37D /* UIAction.swift */; };
 		C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C4218C293A1E21005B791B /* UDConfigurableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4218B293A1E20005B791B /* UDConfigurableButton.swift */; };
+		C6C52D8F2CD0C5FA008AAB4E /* MPCWallet2FASetupDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C52D8E2CD0C5FA008AAB4E /* MPCWallet2FASetupDetails.swift */; };
+		C6C52D902CD0C5FA008AAB4E /* MPCWallet2FASetupDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C52D8E2CD0C5FA008AAB4E /* MPCWallet2FASetupDetails.swift */; };
 		C6C57C3D2869C0890093FD8C /* UDDomainSharingWatchCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C57C3C2869C0890093FD8C /* UDDomainSharingWatchCardView.swift */; };
 		C6C57C472869C0A50093FD8C /* UDDomainSharingWatchCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C57C462869C0A50093FD8C /* UDDomainSharingWatchCardView.xib */; };
 		C6C57C4D2869D8C90093FD8C /* SaveDomainImageTypePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C57C4C2869D8C90093FD8C /* SaveDomainImageTypePullUpView.swift */; };
@@ -3975,6 +3977,7 @@
 		C6C42181293741A4005B791B /* DomainProfileTutorialItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTutorialItemViewController.swift; sourceTree = "<group>"; };
 		C6C4218629379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTutorialItemPrivacyViewController.swift; sourceTree = "<group>"; };
 		C6C4218B293A1E20005B791B /* UDConfigurableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDConfigurableButton.swift; sourceTree = "<group>"; };
+		C6C52D8E2CD0C5FA008AAB4E /* MPCWallet2FASetupDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWallet2FASetupDetails.swift; sourceTree = "<group>"; };
 		C6C57C3C2869C0890093FD8C /* UDDomainSharingWatchCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDDomainSharingWatchCardView.swift; sourceTree = "<group>"; };
 		C6C57C462869C0A50093FD8C /* UDDomainSharingWatchCardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDDomainSharingWatchCardView.xib; sourceTree = "<group>"; };
 		C6C57C4C2869D8C90093FD8C /* SaveDomainImageTypePullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveDomainImageTypePullUpView.swift; sourceTree = "<group>"; };
@@ -7166,6 +7169,7 @@
 				C6952A522BC64F8400F4B475 /* MPCWalletError.swift */,
 				C6952A222BC4E33000F4B475 /* MPCWalletProvider.swift */,
 				C6952A4F2BC531E000F4B475 /* MPCWalletMetadata.swift */,
+				C6C52D8E2CD0C5FA008AAB4E /* MPCWallet2FASetupDetails.swift */,
 				C632BE4F2BA59D8400C95B2D /* SetupMPCWalletStep.swift */,
 				C68980722CCA320700A4CFC0 /* SetupMPCFlow.swift */,
 				C6952A312BC4EDFA00F4B475 /* MPCWalletSubServices */,
@@ -9320,6 +9324,7 @@
 				C6109E2B28E5AB310027D5D8 /* MockAuthentificationService.swift in Sources */,
 				C60CA29A2832501D00AB1B36 /* QRCodeServiceProtocol.swift in Sources */,
 				C60C59B52B47FC0900A2522C /* LoginProvider.swift in Sources */,
+				C6C52D902CD0C5FA008AAB4E /* MPCWallet2FASetupDetails.swift in Sources */,
 				C6E1188328F5709D00C6AD4D /* WalletConnectPushNotificationsSubscribeInfo.swift in Sources */,
 				C642A6BD28411ECE00299C6E /* MintDomainsNavigationController.swift in Sources */,
 				C6637A6A2810074D0000AE56 /* SecurityWindow.swift in Sources */,
@@ -11313,6 +11318,7 @@
 				C618086D2B19BC0C0032E543 /* HexagonShape.swift in Sources */,
 				C630C7372BD781E900AC1662 /* OnboardingAddWalletViewController.swift in Sources */,
 				C6D645C62B1DBD3900D724AC /* CNavigationBarContentView.swift in Sources */,
+				C6C52D8F2CD0C5FA008AAB4E /* MPCWallet2FASetupDetails.swift in Sources */,
 				C68F156E2BD659740049BFA2 /* MPCActivateWalletEnterView.swift in Sources */,
 				C6D647A72B1F18AE00D724AC /* HappyEndViewController.swift in Sources */,
 				C61808722B19BC150032E543 /* Color.swift in Sources */,
