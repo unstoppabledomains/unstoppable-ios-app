@@ -28,7 +28,7 @@ extension FB_UD_MPC {
         let provider: MPCWalletProvider = .fireblocksUD
         
         private let connectorBuilder: FireblocksConnectorBuilder
-        private let networkService: MPCConnectionNetworkService
+        private var networkService: MPCConnectionNetworkService
         private let walletsDataStorage: MPCWalletsDataStorage
         private let udWalletsService: UDWalletsServiceProtocol
         private let uiHandler: MPCWalletsUIHandler
@@ -45,6 +45,7 @@ extension FB_UD_MPC {
             self.udWalletsService = udWalletsService
             self.uiHandler = uiHandler
             udWalletsService.addListener(self)
+            self.networkService.otpProvider = self
         }
     }
 }
@@ -102,8 +103,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     
                     logMPC("Will init transaction with new key materials")
                     continuation.yield(.initialiseTransaction)
-                    let transactionDetails: FB_UD_MPC.SetupTokenResponse = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken,
-                                                                                                                                       otpProvider: provideOTP)
+                    let transactionDetails: FB_UD_MPC.SetupTokenResponse = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken)
                     let txId = transactionDetails.transactionId
                     logMPC("Did init transaction with new key materials with tx id: \(txId)")
                     
@@ -692,8 +692,7 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
             mpcConnector.stopJoinWallet()
             
             try await mpcConnector.waitForKeyIsReady()
-            let transactionDetails = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken,
-                                                                                                 otpProvider: provideOTP)
+            let transactionDetails = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken)
             let txId = transactionDetails.transactionId
             try await networkService.waitForTransactionWithNewKeyMaterialsReady(accessToken: accessToken)
             try await mpcConnector.signTransactionWith(txId: txId)
@@ -705,13 +704,6 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
             await didExpireTokenWith(deviceId: currentDeviceId)
             throw error
         }
-    }
-    
-    private func provideOTP() async throws -> String {
-        guard let code = await uiHandler.askForMPC2FACode() else {
-            throw MPCConnectionServiceError.otpRequestRejected
-        }
-        return code
     }
     
     private func didExpireTokenWith(deviceId: String) async {
@@ -779,6 +771,16 @@ extension FB_UD_MPC.MPCConnectionService: UDWalletsServiceListener {
                 try? clearWalletDetails(deviceId: walletDeviceId)
             }
         }
+    }
+}
+
+// MARK: - MPCOTPProvider
+extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.MPCOTPProvider {
+    func getMPCOTP() async throws -> String {
+        guard let code = await uiHandler.askForMPC2FACode() else {
+            throw MPCConnectionServiceError.otpRequestRejected
+        }
+        return code
     }
 }
 

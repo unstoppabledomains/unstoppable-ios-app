@@ -11,6 +11,7 @@ extension FB_UD_MPC {
     struct DefaultMPCConnectionNetworkService: MPCConnectionNetworkService, NetworkBearerAuthorisationHeaderBuilder {
         
         private let networkService = NetworkService()
+        var otpProvider: MPCOTPProvider? = nil
         
         func sendBootstrapCodeTo(email: String) async throws {
             
@@ -72,27 +73,8 @@ extension FB_UD_MPC {
             }
         }
         
-        func initTransactionWithNewKeyMaterials(accessToken: String,
-                                                otpProvider: MPCOTPProviderCallback) async throws -> SetupTokenResponse {
-            do {
-                return try await initTransactionWithNewKeyMaterials(accessToken: accessToken,
-                                                                    otp: nil)
-            } catch {
-                if isNetworkError(error, codeIs: .tokenRequired) {
-                    let otp = try await otpProvider()
-                    return try await initTransactionWithNewKeyMaterials(accessToken: accessToken,
-                                                                        otp: otp)
-                }
-                throw error
-            }
-        }
-
-        private func initTransactionWithNewKeyMaterials(accessToken: String,
-                                                       otp: String?) async throws -> SetupTokenResponse {
-            var headers = buildAuthBearerHeader(token: accessToken)
-            if let otp = otp {
-                headers["X-Otp-Token"] = otp
-            }
+        func initTransactionWithNewKeyMaterials(accessToken: String) async throws -> SetupTokenResponse {
+            let headers = buildAuthBearerHeader(token: accessToken)
             let request = try APIRequest(urlString: MPCNetwork.URLSList.tokensSetupURL,
                                          method: .post,
                                          headers: headers)
@@ -539,6 +521,11 @@ extension FB_UD_MPC {
                 
                 return response
             } catch {
+                if let otpFilledRequest = try await getOTPFilledRequestIfNeeded(error: error,
+                                                                                apiRequest: apiRequest) {
+                    return try await makeDecodableAPIRequest(otpFilledRequest)
+                }
+                
                 logMPC("Did fail to make request \(apiRequest) with error: \(error.localizedDescription)")
                 throw error
             }
@@ -554,9 +541,31 @@ extension FB_UD_MPC {
                 
                 return response
             } catch {
+                if let otpFilledRequest = try await getOTPFilledRequestIfNeeded(error: error,
+                                                                                apiRequest: apiRequest) {
+                    return try await makeAPIRequest(otpFilledRequest)
+                }
+                
                 logMPC("Did fail to make request \(apiRequest) with error: \(error.localizedDescription)")
                 throw error
             }
+        }
+        
+        private func getOTPFilledRequestIfNeeded(error: Error, apiRequest: APIRequest) async throws -> APIRequest? {
+            if isNetworkError(error, codeIs: .tokenRequired) {
+                guard let otpProvider else {
+                    Debugger.printFailure("OTP Provider is not set", critical: true)
+                    return nil
+                }
+                logMPC("Will ask for OTP")
+                let otp = try await otpProvider.getMPCOTP()
+                var request = apiRequest
+                request.updateHeaders { $0["X-Otp-Token"] = otp }
+                
+                logMPC("Will retry request with OTP")
+                return request
+            }
+            return nil
         }
         
         private func isNetworkError(_ error: Error, withCode code: Int) -> Bool {

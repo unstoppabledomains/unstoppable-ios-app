@@ -195,6 +195,7 @@ private final class MockNetworkService: FB_UD_MPC.MPCConnectionNetworkService, F
     var shouldFail: Bool = false
     var deviceId: String = ""
     let queue = DispatchQueue(label: "MockNetworkService")
+    var otpProvider: MPCOTPProvider? = nil
     
     func sendBootstrapCodeTo(email: String) async throws {
         try failIfNeeded()

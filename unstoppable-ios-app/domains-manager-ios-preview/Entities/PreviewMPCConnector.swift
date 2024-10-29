@@ -40,6 +40,8 @@ extension FB_UD_MPC {
     }
     
     struct DefaultMPCConnectionNetworkService: MPCConnectionNetworkService {
+        var otpProvider: FB_UD_MPC.MPCOTPProvider?
+        
         func getAssetTransferEstimations(accessToken: String, accountId: String, assetId: String, destinationAddress: String, amount: String) async throws -> FB_UD_MPC.NetworkFeeResponse {
             .init(priority: "", status: "", networkFee: nil)
         }

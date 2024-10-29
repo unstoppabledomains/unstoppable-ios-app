@@ -9,13 +9,14 @@ import Foundation
 
 extension FB_UD_MPC {
     protocol MPCConnectionNetworkService {
+        var otpProvider: MPCOTPProvider? { get set }
+
         func sendBootstrapCodeTo(email: String) async throws
         func submitBootstrapCode(_ code: String) async throws -> BootstrapCodeSubmitResponse
         func authNewDeviceWith(requestId: String,
                                recoveryPhrase: String,
                                accessToken: String) async throws
-        func initTransactionWithNewKeyMaterials(accessToken: String,
-                                                otpProvider: MPCOTPProviderCallback) async throws -> SetupTokenResponse
+        func initTransactionWithNewKeyMaterials(accessToken: String) async throws -> SetupTokenResponse
         func waitForTransactionWithNewKeyMaterialsReady(accessToken: String) async throws
         func confirmTransactionWithNewKeyMaterialsSigned(accessToken: String) async throws -> AuthTokens
         func verifyAccessToken(_ accessToken: String) async throws

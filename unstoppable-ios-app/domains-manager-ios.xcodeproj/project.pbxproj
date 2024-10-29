@@ -1797,6 +1797,8 @@
 		C6C4218C293A1E21005B791B /* UDConfigurableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4218B293A1E20005B791B /* UDConfigurableButton.swift */; };
 		C6C52D8F2CD0C5FA008AAB4E /* MPCWallet2FASetupDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C52D8E2CD0C5FA008AAB4E /* MPCWallet2FASetupDetails.swift */; };
 		C6C52D902CD0C5FA008AAB4E /* MPCWallet2FASetupDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C52D8E2CD0C5FA008AAB4E /* MPCWallet2FASetupDetails.swift */; };
+		C6C52D922CD0E7C6008AAB4E /* FB_UD_MPCOTPProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C52D912CD0E7C6008AAB4E /* FB_UD_MPCOTPProvider.swift */; };
+		C6C52D932CD0E7C6008AAB4E /* FB_UD_MPCOTPProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C52D912CD0E7C6008AAB4E /* FB_UD_MPCOTPProvider.swift */; };
 		C6C57C3D2869C0890093FD8C /* UDDomainSharingWatchCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C57C3C2869C0890093FD8C /* UDDomainSharingWatchCardView.swift */; };
 		C6C57C472869C0A50093FD8C /* UDDomainSharingWatchCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C57C462869C0A50093FD8C /* UDDomainSharingWatchCardView.xib */; };
 		C6C57C4D2869D8C90093FD8C /* SaveDomainImageTypePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C57C4C2869D8C90093FD8C /* SaveDomainImageTypePullUpView.swift */; };
@@ -3978,6 +3980,7 @@
 		C6C4218629379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTutorialItemPrivacyViewController.swift; sourceTree = "<group>"; };
 		C6C4218B293A1E20005B791B /* UDConfigurableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDConfigurableButton.swift; sourceTree = "<group>"; };
 		C6C52D8E2CD0C5FA008AAB4E /* MPCWallet2FASetupDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWallet2FASetupDetails.swift; sourceTree = "<group>"; };
+		C6C52D912CD0E7C6008AAB4E /* FB_UD_MPCOTPProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCOTPProvider.swift; sourceTree = "<group>"; };
 		C6C57C3C2869C0890093FD8C /* UDDomainSharingWatchCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDDomainSharingWatchCardView.swift; sourceTree = "<group>"; };
 		C6C57C462869C0A50093FD8C /* UDDomainSharingWatchCardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDDomainSharingWatchCardView.xib; sourceTree = "<group>"; };
 		C6C57C4C2869D8C90093FD8C /* SaveDomainImageTypePullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveDomainImageTypePullUpView.swift; sourceTree = "<group>"; };
@@ -7181,6 +7184,7 @@
 			isa = PBXGroup;
 			children = (
 				C65330512BC3AD9700A705AE /* FB_UD_MPCNetwork.swift */,
+				C6C52D912CD0E7C6008AAB4E /* FB_UD_MPCOTPProvider.swift */,
 				C632BE4C2BA599E900C95B2D /* FB_UD_MPCConnectionNetworkService.swift */,
 				C632BE5B2BA59F0700C95B2D /* FB_UD_DefaultMPCConnectionNetworkService.swift */,
 			);
@@ -9191,6 +9195,7 @@
 				C609821C2823D36100546392 /* PullUpCollectionViewCell.swift in Sources */,
 				C6C9958E289D313D00367362 /* CNavigationTransitioningContext.swift in Sources */,
 				C621A4422BB1137900CB5CB9 /* QRScannerState.swift in Sources */,
+				C6C52D922CD0E7C6008AAB4E /* FB_UD_MPCOTPProvider.swift in Sources */,
 				C6534AA32BBFBA10008EEBB5 /* HomeExploreEmptySearchResultView.swift in Sources */,
 				C62247B5283CFF1F002A0CBD /* DomainTransactionsService.swift in Sources */,
 				C6534A8D2BBFBA10008EEBB5 /* HomeExploreFollowerCellView.swift in Sources */,
@@ -10467,6 +10472,7 @@
 				C61807CF2B19A3FA0032E543 /* ExternalEvent.swift in Sources */,
 				C618080D2B19AA2F0032E543 /* DomainRecordsServiceProtocol.swift in Sources */,
 				C6D646FF2B1ED7C300D724AC /* MessagingPrivateChatBlockingStatus.swift in Sources */,
+				C6C52D932CD0E7C6008AAB4E /* FB_UD_MPCOTPProvider.swift in Sources */,
 				C6D8FF342B83180A0094A21E /* ChatListViewModel.swift in Sources */,
 				C651C6DC2C66016C0076F631 /* PurchaseDomainsOrderSummaryView.swift in Sources */,
 				C6D647122B1ED7D000D724AC /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */,
