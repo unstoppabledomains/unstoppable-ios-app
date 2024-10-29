@@ -435,10 +435,10 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         }
     }
 
-    func disable2FA(for walletMetadata: MPCWalletMetadata, token: String) async throws {
+    func disable2FA(for walletMetadata: MPCWalletMetadata, code: String) async throws {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
         try await performAuthErrorCatchingBlock(connectedWalletDetails: connectedWalletDetails) { accessToken in
-            try await networkService.disable2FA(accessToken: accessToken, token: token)
+            try await networkService.disable2FA(accessToken: accessToken, token: code)
         }
     }   
     

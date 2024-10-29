@@ -283,7 +283,7 @@ private extension WalletDetailsView {
         Task {
             let code = ""
             do {
-                try await mpcWalletsService.disable2FA(for: mpcMetadata, token: code)
+                try await mpcWalletsService.disable2FA(for: mpcMetadata, code: code)
             } catch {
                 
             }
