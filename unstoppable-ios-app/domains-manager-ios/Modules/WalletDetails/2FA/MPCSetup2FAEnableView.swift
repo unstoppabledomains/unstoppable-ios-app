@@ -60,14 +60,10 @@ private extension MPCSetup2FAEnableView {
 
     func loadQRCodeFor(setupDetails: MPCWallet2FASetupDetails) {
         Task {
-            let issuer = "Unstoppable"
-            let urlString = "otpauth://totp/\(setupDetails.email)?secret=\(setupDetails.secret)&issuer=\(issuer)"
-            
-            if let encodedString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-           let url = URL(string: encodedString) {
-            qrCodeImage = await imageLoadingService.loadImage(from: .qrCode(url: url,
-                                                                          options: []),
-                                                            downsampleDescription: nil)
+            if let url = setupDetails.buildAuthURL() {
+                qrCodeImage = await imageLoadingService.loadImage(from: .qrCode(url: url,
+                                                                                options: []),
+                                                                  downsampleDescription: nil)
             }
         }
     }
