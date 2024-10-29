@@ -7,13 +7,14 @@
 
 import SwiftUI
 
-struct MPCSetup2FAEnableConfirmView: View, ViewAnalyticsLogger {
+struct MPCSetup2FAConfirmCodeView: View, ViewAnalyticsLogger {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var tabRouter: HomeTabRouter
 
-    let wallet: WalletEntity
     let mpcMetadata: MPCWalletMetadata
+    let verificationPurpose: VerificationPurpose
     var analyticsName: Analytics.ViewName { .setup2FAEnableConfirm }
 
     @State private var code: String = ""
@@ -34,7 +35,7 @@ struct MPCSetup2FAEnableConfirmView: View, ViewAnalyticsLogger {
     }
 }
 
-private extension MPCSetup2FAEnableConfirmView {
+private extension MPCSetup2FAConfirmCodeView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
@@ -75,8 +76,14 @@ private extension MPCSetup2FAEnableConfirmView {
         isLoading = true
         Task {
             do {
-                try await mpcWalletsService.confirm2FAEnabled(for: mpcMetadata,
-                                                              code: code)
+                switch verificationPurpose {
+                case .enable:
+                    try await mpcWalletsService.confirm2FAEnabled(for: mpcMetadata,
+                                                                  code: code)
+                case .disable:
+                    try await mpcWalletsService.disable2FA(for: mpcMetadata,
+                                                           code: code)
+                }
                 didVerifyCode()
             } catch {
                 self.error = error
@@ -86,8 +93,20 @@ private extension MPCSetup2FAEnableConfirmView {
     }
     
     func didVerifyCode() {
-        appContext.toastMessageService.showToast(.enabled2FA, isSticky: false)
-        tabRouter.walletViewNavPath.removeLast(2)
+        switch verificationPurpose {    
+        case .enable:
+            appContext.toastMessageService.showToast(.enabled2FA, isSticky: false)
+            tabRouter.walletViewNavPath.removeLast(2)
+        case .disable:
+            dismiss()
+        }
+    }
+}
+
+extension MPCSetup2FAConfirmCodeView {
+    enum VerificationPurpose {
+        case enable
+        case disable
     }
 }
 
@@ -96,8 +115,8 @@ private extension MPCSetup2FAEnableConfirmView {
     let mpcMetadata = wallet.udWallet.mpcMetadata!
     
     return NavigationStack {
-        MPCSetup2FAEnableConfirmView(wallet: wallet,
-                                     mpcMetadata: mpcMetadata)
+        MPCSetup2FAConfirmCodeView(mpcMetadata: mpcMetadata,
+                                     verificationPurpose: .enable)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Image(systemName: "arrow.left")

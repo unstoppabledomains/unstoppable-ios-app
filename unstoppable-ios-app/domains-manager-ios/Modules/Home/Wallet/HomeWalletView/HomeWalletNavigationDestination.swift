@@ -19,10 +19,8 @@ enum HomeWalletNavigationDestination: Hashable {
     case walletDetails(WalletEntity)
     case securitySettings
     case setupPasscode(SetupPasscodeViewController.Mode)
-    case mpcSetup2FAEnable(wallet: WalletEntity,
-                           mpcMetadata: MPCWalletMetadata)
-    case mpcSetup2FAEnableConfirm(wallet: WalletEntity,
-                                  mpcMetadata: MPCWalletMetadata)
+    case mpcSetup2FAEnable(mpcMetadata: MPCWalletMetadata)
+    case mpcSetup2FAEnableConfirm(mpcMetadata: MPCWalletMetadata)
 
     static func == (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
@@ -42,10 +40,10 @@ enum HomeWalletNavigationDestination: Hashable {
             return true
         case (.setupPasscode, .setupPasscode):
             return true
-        case (.mpcSetup2FAEnable(let lhsWallet, _), .mpcSetup2FAEnable(let rhsWallet, _)):
-            return lhsWallet.address == rhsWallet.address
-        case (.mpcSetup2FAEnableConfirm(let lhsWallet, _), .mpcSetup2FAEnableConfirm(let rhsWallet, _)):
-            return lhsWallet.address == rhsWallet.address
+        case (.mpcSetup2FAEnable, .mpcSetup2FAEnable):
+            return true
+        case (.mpcSetup2FAEnableConfirm, .mpcSetup2FAEnableConfirm):
+            return true
         default:
             return false
         }
@@ -69,10 +67,10 @@ enum HomeWalletNavigationDestination: Hashable {
             hasher.combine("securitySettings")
         case .setupPasscode:
             hasher.combine("setupPasscode")
-        case .mpcSetup2FAEnable(let wallet, _):
-            hasher.combine("mpcSetup2FAEnable_\(wallet.address)")
-        case .mpcSetup2FAEnableConfirm(let wallet, _):
-            hasher.combine("mpcSetup2FAEnable_\(wallet.address)")
+        case .mpcSetup2FAEnable:
+            hasher.combine("mpcSetup2FAEnable")
+        case .mpcSetup2FAEnableConfirm:
+            hasher.combine("mpcSetup2FAEnable")
         }
     }
     
@@ -107,12 +105,11 @@ struct HomeWalletLinkNavigationDestination {
                 .ignoresSafeArea()
         case .walletDetails(let wallet):
             WalletDetailsView(wallet: wallet, source: .settings)
-        case .mpcSetup2FAEnable(let wallet,
-                                let mpcMetadata):
-            MPCSetup2FAEnableView(wallet: wallet, mpcMetadata: mpcMetadata)
-        case .mpcSetup2FAEnableConfirm(let wallet,
-                                       let mpcMetadata):
-            MPCSetup2FAEnableConfirmView(wallet: wallet, mpcMetadata: mpcMetadata)
+        case .mpcSetup2FAEnable(let mpcMetadata):
+            MPCSetup2FAEnableView(mpcMetadata: mpcMetadata)
+        case .mpcSetup2FAEnableConfirm(let mpcMetadata):
+            MPCSetup2FAConfirmCodeView(mpcMetadata: mpcMetadata,
+                                         verificationPurpose: .enable)
         case .securitySettings:
             SecuritySettingsView()
         case .setupPasscode(let mode):

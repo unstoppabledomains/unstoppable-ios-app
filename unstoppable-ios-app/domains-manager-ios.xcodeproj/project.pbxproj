@@ -1149,8 +1149,8 @@
 		C66A26E628B4C22F005470B9 /* LoadPaginatedFetchableOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A26E428B4C22F005470B9 /* LoadPaginatedFetchableOperation.swift */; };
 		C66A26EA28B4C22F005470B9 /* BaseOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A26E528B4C22F005470B9 /* BaseOperation.swift */; };
 		C66A9DC828BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A9DC728BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift */; };
-		C66DDDF62CCF9589000B947E /* MPCSetup2FAEnableConfirmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66DDDF52CCF9589000B947E /* MPCSetup2FAEnableConfirmView.swift */; };
-		C66DDDF72CCF9589000B947E /* MPCSetup2FAEnableConfirmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66DDDF52CCF9589000B947E /* MPCSetup2FAEnableConfirmView.swift */; };
+		C66DDDF62CCF9589000B947E /* MPCSetup2FAConfirmCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66DDDF52CCF9589000B947E /* MPCSetup2FAConfirmCodeView.swift */; };
+		C66DDDF72CCF9589000B947E /* MPCSetup2FAConfirmCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66DDDF52CCF9589000B947E /* MPCSetup2FAConfirmCodeView.swift */; };
 		C66FCCF32844863E009B9525 /* UDGradientCoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66FCCF22844863E009B9525 /* UDGradientCoverView.swift */; };
 		C66FCCF82844870B009B9525 /* UserDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66FCCF72844870B009B9525 /* UserDataService.swift */; };
 		C66FCCFE2844871A009B9525 /* UserDataServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66FCCFD2844871A009B9525 /* UserDataServiceProtocol.swift */; };
@@ -3573,7 +3573,7 @@
 		C66A26E428B4C22F005470B9 /* LoadPaginatedFetchableOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadPaginatedFetchableOperation.swift; sourceTree = "<group>"; };
 		C66A26E528B4C22F005470B9 /* BaseOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseOperation.swift; sourceTree = "<group>"; };
 		C66A9DC728BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CNavigationControllerChildNavigationHandler.swift; sourceTree = "<group>"; };
-		C66DDDF52CCF9589000B947E /* MPCSetup2FAEnableConfirmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCSetup2FAEnableConfirmView.swift; sourceTree = "<group>"; };
+		C66DDDF52CCF9589000B947E /* MPCSetup2FAConfirmCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCSetup2FAConfirmCodeView.swift; sourceTree = "<group>"; };
 		C66FCCF22844863E009B9525 /* UDGradientCoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDGradientCoverView.swift; sourceTree = "<group>"; };
 		C66FCCF72844870B009B9525 /* UserDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataService.swift; sourceTree = "<group>"; };
 		C66FCCFD2844871A009B9525 /* UserDataServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataServiceProtocol.swift; sourceTree = "<group>"; };
@@ -7070,7 +7070,7 @@
 			isa = PBXGroup;
 			children = (
 				C68980882CCBD74900A4CFC0 /* MPCSetup2FAEnableView.swift */,
-				C66DDDF52CCF9589000B947E /* MPCSetup2FAEnableConfirmView.swift */,
+				C66DDDF52CCF9589000B947E /* MPCSetup2FAConfirmCodeView.swift */,
 			);
 			path = 2FA;
 			sourceTree = "<group>";
@@ -9933,7 +9933,7 @@
 				C62C3FA1283F60720094FC93 /* DeepLinksServiceProtocol.swift in Sources */,
 				C68980742CCA320700A4CFC0 /* SetupMPCFlow.swift in Sources */,
 				C664B670291542E300A76154 /* DomainProfileWeb3WebsiteCell.swift in Sources */,
-				C66DDDF62CCF9589000B947E /* MPCSetup2FAEnableConfirmView.swift in Sources */,
+				C66DDDF62CCF9589000B947E /* MPCSetup2FAConfirmCodeView.swift in Sources */,
 				C65272212A14B32F001A084C /* MessagingServiceProtocol.swift in Sources */,
 				C688C17C2B8443CA00BD233A /* ChatListEmptyStateView.swift in Sources */,
 				306665E12778AE74005F6F55 /* UnsConfigManager.swift in Sources */,
@@ -11110,7 +11110,7 @@
 				C6C8F9952B218BBB00A9834D /* Double.swift in Sources */,
 				C6D6463C2B1DC53700D724AC /* WebViewController.swift in Sources */,
 				C6D646A22B1ED15A00D724AC /* PublicProfileSocialsListView.swift in Sources */,
-				C66DDDF72CCF9589000B947E /* MPCSetup2FAEnableConfirmView.swift in Sources */,
+				C66DDDF72CCF9589000B947E /* MPCSetup2FAConfirmCodeView.swift in Sources */,
 				C6D646122B1DC0DD00D724AC /* UnifiedConnectedAppInfoHolder.swift in Sources */,
 				C6D645842B1DBA8600D724AC /* UIMenuDomainAvatarLoader.swift in Sources */,
 				C6A232002BEB52CB0037E093 /* WalletSourceImageView.swift in Sources */,

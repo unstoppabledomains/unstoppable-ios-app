@@ -19,6 +19,7 @@ struct WalletDetailsView: View, ViewAnalyticsLogger {
     
     @State private var isRenaming = false
     @State private var pullUp: ViewPullUpConfigurationType?
+    @State private var disabling2FAMetadata: MPCWalletMetadataWrapper?
     
     var analyticsName: Analytics.ViewName { .walletDetails }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.wallet : wallet.address] }
@@ -64,6 +65,11 @@ struct WalletDetailsView: View, ViewAnalyticsLogger {
         .sheet(isPresented: $isRenaming, content: {
             RenameWalletView(wallet: wallet)
         })
+        .sheet(item: $disabling2FAMetadata, content: { mpcMetadataWrapper in
+            MPCSetup2FAConfirmCodeView(mpcMetadata: mpcMetadataWrapper.metadata,
+                                         verificationPurpose: .disable)
+        })
+        
     }
     
 }
@@ -268,8 +274,7 @@ private extension WalletDetailsView {
         } else {
             guard let mpcMetadata = wallet.udWallet.mpcMetadata else { return }
             
-            tabRouter.walletViewNavPath.append(.mpcSetup2FAEnable(wallet: wallet,
-                                                                  mpcMetadata: mpcMetadata))
+            tabRouter.walletViewNavPath.append(.mpcSetup2FAEnable(mpcMetadata: mpcMetadata))
         }
     }
     
@@ -279,15 +284,8 @@ private extension WalletDetailsView {
     
     func disable2FA() {
         guard let mpcMetadata = wallet.udWallet.mpcMetadata else { return }
-
-        Task {
-            let code = ""
-            do {
-                try await mpcWalletsService.disable2FA(for: mpcMetadata, code: code)
-            } catch {
-                
-            }
-        }
+        
+        disabling2FAMetadata = .init(metadata: mpcMetadata)
     }
     
     func walletSubActionPressed(_ action: WalletDetails.WalletSubAction) {
@@ -430,6 +428,14 @@ private extension WalletDetailsView {
         case .domainDetails(let domainChangeCallback):
             domainChangeCallback(domain)
         }
+    }
+}
+
+// MARK: - Private methods
+private extension WalletDetailsView {
+    struct MPCWalletMetadataWrapper: Identifiable {
+        let id = UUID()
+        let metadata: MPCWalletMetadata
     }
 }
 

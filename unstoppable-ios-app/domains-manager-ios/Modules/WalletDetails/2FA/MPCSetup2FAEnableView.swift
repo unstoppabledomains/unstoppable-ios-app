@@ -15,7 +15,6 @@ struct MPCSetup2FAEnableView: View, ViewAnalyticsLogger {
 
     var analyticsName: Analytics.ViewName { .setup2FAEnable }
     
-    let wallet: WalletEntity
     let mpcMetadata: MPCWalletMetadata
     @State private var setupDetails: MPCWallet2FASetupDetails? = nil
     @State private var qrCodeImage: UIImage? = nil
@@ -170,8 +169,7 @@ private extension MPCSetup2FAEnableView {
     }
     
     func moveToNextScreen() {
-        tabRouter.walletViewNavPath.append(.mpcSetup2FAEnableConfirm(wallet: wallet,
-                                                                     mpcMetadata: mpcMetadata))
+        tabRouter.walletViewNavPath.append(.mpcSetup2FAEnableConfirm(mpcMetadata: mpcMetadata))
     }
 }
 
@@ -180,8 +178,7 @@ private extension MPCSetup2FAEnableView {
     let mpcMetadata = wallet.udWallet.mpcMetadata!
     
     return NavigationStack {
-        MPCSetup2FAEnableView(wallet: wallet,
-                              mpcMetadata: mpcMetadata)
+        MPCSetup2FAEnableView(mpcMetadata: mpcMetadata)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Image(systemName: "arrow.left")
