@@ -194,11 +194,7 @@ private extension WalletDetailsView {
         
         if wallet.udWallet.type == .mpc,
            let mpcMetadata = wallet.udWallet.mpcMetadata {
-            // TODO: - Restore
-//            let is2FAEnabled = (try? mpcWalletsService.is2FAEnabled(for: mpcMetadata)) ?? false
-            #if DEBUG
-            let is2FAEnabled = true
-            #endif
+            let is2FAEnabled = (try? mpcWalletsService.is2FAEnabled(for: mpcMetadata)) ?? false
             
             actions.append(.mpc2FA(is2FAEnabled))
             subActions.append(.mpcRecoveryKit)
