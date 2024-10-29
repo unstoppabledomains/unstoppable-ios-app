@@ -192,10 +192,34 @@ private final class MockFireblocksConnector: FB_UD_MPC.FireblocksConnectorProtoc
 }
 
 private final class MockNetworkService: FB_UD_MPC.MPCConnectionNetworkService, FailableService {
+    func requestRecovery(_ accessToken: String, password: String) async throws {
+        
+    }
+    
+    func resetPassword(accessToken: String, recoveryToken: String, newRecoveryPhrase: String, requestId: String) async throws {
+        
+    }
+    
+    func get2FAStatus(accessToken: String) async throws -> Bool {
+        true
+    }
+    
+    func enable2FA(accessToken: String) async throws -> String {
+        ""
+    }
+    
+    func verify2FAToken(accessToken: String, token: String) async throws {
+        
+    }
+    
+    func disable2FA(accessToken: String, token: String) async throws {
+        
+    }
+    
     var shouldFail: Bool = false
     var deviceId: String = ""
     let queue = DispatchQueue(label: "MockNetworkService")
-    var otpProvider: MPCOTPProvider? = nil
+    var otpProvider: FB_UD_MPC.MPCOTPProvider? = nil
     
     func sendBootstrapCodeTo(email: String) async throws {
         try failIfNeeded()
@@ -210,8 +234,7 @@ private final class MockNetworkService: FB_UD_MPC.MPCConnectionNetworkService, F
         try failIfNeeded()
     }
     
-    func initTransactionWithNewKeyMaterials(accessToken: String,
-                                            otpProvider: FB_UD_MPC.MPCOTPProviderCallback) async throws -> FB_UD_MPC.SetupTokenResponse {
+    func initTransactionWithNewKeyMaterials(accessToken: String) async throws -> FB_UD_MPC.SetupTokenResponse {
         try failIfNeeded()
         throw TestableGenericError.generic
     }
