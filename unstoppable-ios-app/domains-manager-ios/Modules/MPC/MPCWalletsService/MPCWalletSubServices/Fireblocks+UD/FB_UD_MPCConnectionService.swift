@@ -439,6 +439,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
         try await performAuthErrorCatchingBlock(connectedWalletDetails: connectedWalletDetails) { accessToken in
             try await networkService.disable2FA(accessToken: accessToken, token: code)
+            try updateAccountDetailsFor(deviceId: connectedWalletDetails.deviceId) { $0.is2FAEnabled = false }
         }
     }   
     
