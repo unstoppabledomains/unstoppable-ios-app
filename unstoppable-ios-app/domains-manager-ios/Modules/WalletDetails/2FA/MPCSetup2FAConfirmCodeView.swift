@@ -13,7 +13,6 @@ struct MPCSetup2FAConfirmCodeView: View, ViewAnalyticsLogger {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var tabRouter: HomeTabRouter
 
-    let mpcMetadata: MPCWalletMetadata
     let verificationPurpose: VerificationPurpose
     var navigationStyle: NavigationStyle = .push
     var analyticsName: Analytics.ViewName { .setup2FAEnableConfirm }
@@ -97,10 +96,10 @@ private extension MPCSetup2FAConfirmCodeView {
             do {
                 let code = self.code
                 switch verificationPurpose {
-                case .enable:
+                case .enable(let mpcMetadata):
                     try await mpcWalletsService.confirm2FAEnabled(for: mpcMetadata,
                                                                   code: code)
-                case .disable:
+                case .disable(let mpcMetadata):
                     try await mpcWalletsService.disable2FA(for: mpcMetadata,
                                                            code: code)
                 case .enterCode:
@@ -137,8 +136,8 @@ private extension MPCSetup2FAConfirmCodeView {
 
 extension MPCSetup2FAConfirmCodeView {
     enum VerificationPurpose {
-        case enable
-        case disable
+        case enable(MPCWalletMetadata)
+        case disable(MPCWalletMetadata)
         case enterCode(callback: (String?) -> Void)
     }
 
@@ -153,8 +152,7 @@ extension MPCSetup2FAConfirmCodeView {
     let mpcMetadata = wallet.udWallet.mpcMetadata!
     
     return NavigationStack {
-        MPCSetup2FAConfirmCodeView(mpcMetadata: mpcMetadata,
-                                     verificationPurpose: .enable)
+        MPCSetup2FAConfirmCodeView(verificationPurpose: .enable(mpcMetadata))
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Image(systemName: "arrow.left")

@@ -66,8 +66,7 @@ struct WalletDetailsView: View, ViewAnalyticsLogger {
             RenameWalletView(wallet: wallet)
         })
         .sheet(item: $disabling2FAMetadata, content: { mpcMetadataWrapper in
-            MPCSetup2FAConfirmCodeView(mpcMetadata: mpcMetadataWrapper.metadata,
-                                       verificationPurpose: .disable,
+            MPCSetup2FAConfirmCodeView(verificationPurpose: .disable(mpcMetadataWrapper.metadata),
                                        navigationStyle: .modal)
         })
     }

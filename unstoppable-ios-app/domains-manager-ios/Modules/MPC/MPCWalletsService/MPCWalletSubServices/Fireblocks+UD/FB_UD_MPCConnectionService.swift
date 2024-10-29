@@ -102,7 +102,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     
                     logMPC("Will init transaction with new key materials")
                     continuation.yield(.initialiseTransaction)
-                    let transactionDetails: FB_UD_MPC.SetupTokenResponse = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken)
+                    let transactionDetails: FB_UD_MPC.SetupTokenResponse = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken,
+                                                                                                                                       otpProvider: provideOTP)
                     let txId = transactionDetails.transactionId
                     logMPC("Did init transaction with new key materials with tx id: \(txId)")
                     
@@ -604,6 +605,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         case invalidNetworkFeeAmountFormat
         case failedToTrimAmount
         case failedToFindUDWallet
+        case otpRequestRejected
         
         public var errorDescription: String? {
             return rawValue
@@ -680,7 +682,7 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
     }
     
     private func refreshAndStoreBootstrapToken(bootstrapToken: JWToken,
-                                       currentDeviceId: String) async throws -> String {
+                                               currentDeviceId: String) async throws -> String {
         do {
             let refreshBootstrapTokenResponse = try await networkService.refreshBootstrapToken(bootstrapToken.jwt)
             
@@ -690,7 +692,8 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
             mpcConnector.stopJoinWallet()
             
             try await mpcConnector.waitForKeyIsReady()
-            let transactionDetails = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken)
+            let transactionDetails = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken,
+                                                                                                 otpProvider: provideOTP)
             let txId = transactionDetails.transactionId
             try await networkService.waitForTransactionWithNewKeyMaterialsReady(accessToken: accessToken)
             try await mpcConnector.signTransactionWith(txId: txId)
@@ -702,6 +705,13 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
             await didExpireTokenWith(deviceId: currentDeviceId)
             throw error
         }
+    }
+    
+    private func provideOTP() async throws -> String {
+        guard let code = await uiHandler.askForMPC2FACode() else {
+            throw MPCConnectionServiceError.otpRequestRejected
+        }
+        return code
     }
     
     private func didExpireTokenWith(deviceId: String) async {

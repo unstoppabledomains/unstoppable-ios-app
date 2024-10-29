@@ -72,3 +72,6 @@ extension FB_UD_MPC {
     }
 }
 
+extension FB_UD_MPC {
+    typealias MPCOTPProviderCallback = () async throws -> (String)
+}

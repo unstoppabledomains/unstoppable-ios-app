@@ -72,11 +72,31 @@ extension FB_UD_MPC {
             }
         }
         
-        func initTransactionWithNewKeyMaterials(accessToken: String) async throws -> SetupTokenResponse {
-            let headers = buildAuthBearerHeader(token: accessToken)
+        func initTransactionWithNewKeyMaterials(accessToken: String,
+                                                otpProvider: MPCOTPProviderCallback) async throws -> SetupTokenResponse {
+            do {
+                return try await initTransactionWithNewKeyMaterials(accessToken: accessToken,
+                                                                    otp: nil)
+            } catch {
+                if isNetworkError(error, codeIs: .tokenRequired) {
+                    let otp = try await otpProvider()
+                    return try await initTransactionWithNewKeyMaterials(accessToken: accessToken,
+                                                                        otp: otp)
+                }
+                throw error
+            }
+        }
+
+        private func initTransactionWithNewKeyMaterials(accessToken: String,
+                                                       otp: String?) async throws -> SetupTokenResponse {
+            var headers = buildAuthBearerHeader(token: accessToken)
+            if let otp = otp {
+                headers["X-Otp-Token"] = otp
+            }
             let request = try APIRequest(urlString: MPCNetwork.URLSList.tokensSetupURL,
                                          method: .post,
                                          headers: headers)
+            
             let response: SetupTokenResponse = try await makeDecodableAPIRequest(request)
             
             return response
@@ -541,6 +561,20 @@ extension FB_UD_MPC {
         
         private func isNetworkError(_ error: Error, withCode code: Int) -> Bool {
             error.isNetworkError(withCode: code)
+        }
+        
+        private func isNetworkError(_ error: Error, codeIs code: MPCNetworkErrorCode) -> Bool {
+            if let networkError = error as? NetworkLayerError,
+               case .badResponseOrStatusCode(_, _, let data) = networkError,
+               let response = APIBadResponse.objectFromData(data),
+               response.code == code.rawValue {
+                return true
+            }
+            return false
+        }
+        
+        private enum MPCNetworkErrorCode: String {
+            case tokenRequired = "OTP_TOKEN_REQUIRED"
         }
         
         private enum MPCNetworkServiceError: String, LocalizedError {

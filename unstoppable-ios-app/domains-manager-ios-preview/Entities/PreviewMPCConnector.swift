@@ -99,7 +99,8 @@ extension FB_UD_MPC {
 //            throw MPCWalletError.incorrectPassword
         }
         
-        func initTransactionWithNewKeyMaterials(accessToken: String) async throws -> SetupTokenResponse {
+        func initTransactionWithNewKeyMaterials(accessToken: String,
+                                                otpProvider: FB_UD_MPC.MPCOTPProviderCallback) async throws -> SetupTokenResponse {
             await Task.sleep(seconds: 0.5)
             return .init(transactionId: "1", status: "r")
         }

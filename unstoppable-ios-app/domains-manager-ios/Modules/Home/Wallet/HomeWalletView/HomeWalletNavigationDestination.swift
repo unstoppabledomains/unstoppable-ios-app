@@ -108,8 +108,7 @@ struct HomeWalletLinkNavigationDestination {
         case .mpcSetup2FAEnable(let mpcMetadata):
             MPCSetup2FAEnableView(mpcMetadata: mpcMetadata)
         case .mpcSetup2FAEnableConfirm(let mpcMetadata):
-            MPCSetup2FAConfirmCodeView(mpcMetadata: mpcMetadata,
-                                         verificationPurpose: .enable)
+            MPCSetup2FAConfirmCodeView(verificationPurpose: .enable(mpcMetadata))
         case .securitySettings:
             SecuritySettingsView()
         case .setupPasscode(let mode):

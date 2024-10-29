@@ -209,7 +209,8 @@ private final class MockNetworkService: FB_UD_MPC.MPCConnectionNetworkService, F
         try failIfNeeded()
     }
     
-    func initTransactionWithNewKeyMaterials(accessToken: String) async throws -> FB_UD_MPC.SetupTokenResponse {
+    func initTransactionWithNewKeyMaterials(accessToken: String,
+                                            otpProvider: FB_UD_MPC.MPCOTPProviderCallback) async throws -> FB_UD_MPC.SetupTokenResponse {
         try failIfNeeded()
         throw TestableGenericError.generic
     }
@@ -362,5 +363,9 @@ private final class MockMPCWalletsDataStorage: FB_UD_MPC.MPCWalletsDataStorage {
 private final class MockMPCWalletUIHandler: MPCWalletsUIHandler {
     func askToReconnectMPCWallet(_ reconnectData: MPCWalletReconnectData) async {
         
+    }
+    
+    func askForMPC2FACode() async -> String? {
+        ""
     }
 }
