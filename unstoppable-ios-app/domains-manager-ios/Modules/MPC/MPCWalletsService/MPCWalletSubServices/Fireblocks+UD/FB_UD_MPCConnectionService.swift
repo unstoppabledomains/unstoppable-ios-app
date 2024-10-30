@@ -56,16 +56,16 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     }
 
     func setupMPCWalletWith(code: String,
-                            credentials: MPCActivateCredentials) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
+                            flow: SetupMPCFlow) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
         AsyncThrowingStream { continuation in
             Task {
                 var mpcConnectorInProgress: FB_UD_MPC.FireblocksConnectorProtocol?
-                let email = credentials.email
-                let recoveryPhrase = credentials.password
+                let email: String = flow.email
+                let recoveryPhrase: String = flow.password
                 do {
                     continuation.yield(.submittingCode)
                     logMPC("Will submit code \(code). recoveryPhrase: \(recoveryPhrase)")
-                    let submitCodeResponse = try await networkService.submitBootstrapCode(code)
+                    let submitCodeResponse: FB_UD_MPC.BootstrapCodeSubmitResponse = try await networkService.submitBootstrapCode(code)
                     logMPC("Did submit code \(code)")
                     let accessToken = submitCodeResponse.accessToken
                     let deviceId = submitCodeResponse.deviceId
@@ -73,20 +73,28 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     continuation.yield(.initialiseFireblocks)
                     
                     logMPC("Will create fireblocks connector")
-                    let mpcConnector = try connectorBuilder.buildBootstrapMPCConnector(deviceId: deviceId, accessToken: accessToken)
+                    let mpcConnector: FB_UD_MPC.FireblocksConnectorProtocol = try connectorBuilder.buildBootstrapMPCConnector(deviceId: deviceId, accessToken: accessToken)
                     mpcConnectorInProgress = mpcConnector
                     mpcConnector.stopJoinWallet()
                     logMPC("Did create fireblocks connector")
                     logMPC("Will request to join existing wallet")
                     continuation.yield(.requestingToJoinExistingWallet)
-                    let requestId = try await mpcConnector.requestJoinExistingWallet()
+                    let requestId: String = try await mpcConnector.requestJoinExistingWallet()
                     logMPC("Will auth new device with request id: \(requestId)")
                     // Once we have the key material, now it’s time to get a full access token to the Wallets API. To prove that the key material is valid, you need to create a transaction to sign
                     // Initialize a transaction with the Wallets API
                     continuation.yield(.authorisingNewDevice)
-                    try await networkService.authNewDeviceWith(requestId: requestId,
-                                                               recoveryPhrase: recoveryPhrase,
-                                                               accessToken: accessToken)
+                    switch flow {
+                    case .activate(let credentials):
+                        try await networkService.authNewDeviceWith(requestId: requestId,
+                                                                   recoveryPhrase: credentials.password,
+                                                                   accessToken: accessToken)
+                    case .resetPassword(let data, let newPassword):
+                        try await networkService.resetPassword(accessToken: accessToken,
+                                                               recoveryToken: data.recoveryToken,
+                                                               newRecoveryPhrase: newPassword,
+                                                               requestId: requestId)
+                    }
                     logMPC("Did auth new device with request id: \(requestId)")
                     logMPC("Will wait for key is ready")
                     continuation.yield(.waitingForKeysIsReady)
@@ -94,7 +102,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     
                     logMPC("Will init transaction with new key materials")
                     continuation.yield(.initialiseTransaction)
-                    let transactionDetails = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken)
+                    let transactionDetails: FB_UD_MPC.SetupTokenResponse = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken)
                     let txId = transactionDetails.transactionId
                     logMPC("Did init transaction with new key materials with tx id: \(txId)")
                     
@@ -119,7 +127,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     //    Once it is pending a signature, sign with the Fireblocks NCW SDK and confirm with the Wallets API that you have signed. After confirmation is validated, you’ll be returned an access token, a refresh token and a bootstrap token.
                     logMPC("Will confirm transaction is signed")
                     continuation.yield(.confirmingTransaction)
-                    let authTokens = try await networkService.confirmTransactionWithNewKeyMaterialsSigned(accessToken: accessToken)
+                    let authTokens: FB_UD_MPC.AuthTokens = try await networkService.confirmTransactionWithNewKeyMaterialsSigned(accessToken: accessToken)
                     logMPC("Did confirm transaction is signed")
                     
                     logMPC("Will verify final response \(authTokens)")
@@ -128,18 +136,27 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     logMPC("Did verify final response \(authTokens) success")
                     
                     continuation.yield(.getWalletAccountDetails)
-                    let walletDetails = try await getWalletAccountDetailsForWalletWith(deviceId: deviceId,
+                    let walletDetails: WalletDetails = try await getWalletAccountDetailsForWalletWith(deviceId: deviceId,
                                                                                        accessToken: authTokens.accessToken.jwt)
                     logMPC("Did get wallet account details")
-                    let mpcWallet = FB_UD_MPC.ConnectedWalletDetails(email: email,
+                    let mpcWallet: FB_UD_MPC.ConnectedWalletDetails = FB_UD_MPC.ConnectedWalletDetails(email: email,
                                                                      deviceId: deviceId,
                                                                      tokens: authTokens,
                                                                      firstAccount: walletDetails.firstAccount,
                                                                      accounts: walletDetails.accounts)
                     continuation.yield(.storeWallet)
+                    
                     logMPC("Will create UD Wallet")
-                    let udWallet = try prepareAndSaveMPCWallet(mpcWallet)
+                    let udWallet: UDWallet = try prepareAndSaveMPCWallet(mpcWallet)
                     logMPC("Did create UD Wallet")
+                    
+                    if case .resetPassword = flow {
+                        // Send a new recovery kit email to the user
+                        Task.detached {
+                            try? await self.requestRecoveryFor(connectedWallet: mpcWallet,
+                                                               password: recoveryPhrase)
+                        }
+                    }
                     
                     continuation.yield(.finished(udWallet))
                     continuation.finish()
@@ -386,13 +403,19 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                          password: String) async throws -> String {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
         
-        return try await performAuthErrorCatchingBlock(connectedWalletDetails: connectedWalletDetails) { token in
+        return try await requestRecoveryFor(connectedWallet: connectedWalletDetails,
+                                            password: password)
+    }
+    
+    @discardableResult
+    private func requestRecoveryFor(connectedWallet: FB_UD_MPC.ConnectedWalletDetails,
+                                    password: String) async throws -> String {
+        try await performAuthErrorCatchingBlock(connectedWalletDetails: connectedWallet) { token in
             do {
                 try await networkService.requestRecovery(token, password: password)
-                return connectedWalletDetails.email
-                
+                return connectedWallet.email
             } catch {
-                /// Temporary solution until clarified with the BE. 
+                /// Temporary solution until clarified with the BE.
                 if case NetworkLayerError.badResponseOrStatusCode(let code, _, _) = error,
                    code == 400 {
                     throw MPCWalletError.wrongRecoveryPassword

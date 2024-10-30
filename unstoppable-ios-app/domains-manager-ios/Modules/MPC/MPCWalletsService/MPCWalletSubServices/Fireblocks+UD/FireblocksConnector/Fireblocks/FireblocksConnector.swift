@@ -86,7 +86,7 @@ extension FireblocksConnector: FB_UD_MPC.FireblocksConnectorProtocol {
     }
     
     func getLogsURLs() -> URL? {
-        fireblocks.getURLForLogFiles()
+        Fireblocks.getURLForLogFiles()
     }
     
     private func waitForKeyIsReadyInternal(attempt: Int = 0) async throws {

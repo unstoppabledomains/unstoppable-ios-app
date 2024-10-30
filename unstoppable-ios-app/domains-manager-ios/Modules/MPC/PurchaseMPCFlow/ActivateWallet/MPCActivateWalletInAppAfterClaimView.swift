@@ -16,7 +16,7 @@ struct MPCActivateWalletInAppAfterClaimView: View {
     
     var body: some View {
         MPCActivateWalletView(analyticsName: .mpcPurchaseTakeoverActivateAfterClaimInApp,
-                              credentials: credentials,
+                              flow: .activate(credentials),
                               code: code,
                               canGoBack: false,
                               mpcWalletCreatedCallback: didCreateMPCWallet,

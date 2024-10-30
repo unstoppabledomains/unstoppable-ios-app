@@ -34,7 +34,7 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
     }
     
     func setupMPCWalletWith(code: String,
-                            credentials: MPCActivateCredentials) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
+                            flow: SetupMPCFlow) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
         AsyncThrowingStream { continuation in
             Task {
                 do {
@@ -42,7 +42,7 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
                     let subService = try getSubServiceFor(provider: .fireblocksUD)
                     
                     for try await step in subService.setupMPCWalletWith(code: code,
-                                                                        credentials: credentials) {
+                                                                        flow: flow) {
                         continuation.yield(step)
                     }
                 } catch {

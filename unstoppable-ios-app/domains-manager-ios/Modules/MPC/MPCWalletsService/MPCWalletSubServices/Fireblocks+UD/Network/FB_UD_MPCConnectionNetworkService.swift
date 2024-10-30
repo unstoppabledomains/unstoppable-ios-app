@@ -62,5 +62,9 @@ extension FB_UD_MPC {
                                          amount: String) async throws -> NetworkFeeResponse
         func requestRecovery(_ accessToken: String,
                              password: String) async throws
+        func resetPassword(accessToken: String,
+                           recoveryToken: String,
+                           newRecoveryPhrase: String,
+                           requestId: String) async throws
     }
 }

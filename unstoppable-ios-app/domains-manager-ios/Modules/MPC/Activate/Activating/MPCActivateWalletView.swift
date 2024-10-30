@@ -12,7 +12,7 @@ struct MPCActivateWalletView: View, ViewAnalyticsLogger {
     @Environment(\.mpcWalletsService) private var mpcWalletsService
 
     let analyticsName: Analytics.ViewName
-    @State var credentials: MPCActivateCredentials
+    @State var flow: SetupMPCFlow
     @State var code: String
     var canGoBack: Bool = true
     let mpcWalletCreatedCallback: (UDWallet)->()
@@ -48,19 +48,29 @@ struct MPCActivateWalletView: View, ViewAnalyticsLogger {
         .onAppear(perform: onAppear)
         .sheet(item: $enterDataType) { dataType in
             MPCActivateWalletEnterView(dataType: dataType,
-                                       email: credentials.email,
+                                       email: flow.email,
                                        confirmationCallback: { value in
                 switch dataType {
                 case .passcode:
                     self.code = value
                 case .password:
-                    self.credentials.password = value
+                    didEnterNewPassword(value)
                 }
                 activateMPCWallet()
             }, changeEmailCallback: changeEmailCallback)
                 .presentationDetents([.medium])
         }
         .navigationBarBackButtonHidden(isBackButtonHidden)
+    }
+    
+    func didEnterNewPassword(_ password: String) {
+        switch self.flow {
+        case .activate(var credentials):
+            credentials.password = password
+            self.flow = .activate(credentials)
+        case .resetPassword:
+            Debugger.printFailure("Incorrect state, new password can't be incorrect", critical: true)
+        }
     }
 }
 
@@ -97,8 +107,8 @@ private extension MPCActivateWalletView {
             
             isLoading = true
             do {
-                let mpcWalletStepsStream = mpcWalletsService.setupMPCWalletWith(code: code,
-                                                                                credentials: credentials)
+                let mpcWalletStepsStream: AsyncThrowingStream<SetupMPCWalletStep, Error> = mpcWalletsService.setupMPCWalletWith(code: code,
+                                                                                                                                flow: flow)
                 
                 for try await step in mpcWalletStepsStream {
                     updateForSetupMPCWalletStep(step)
@@ -239,8 +249,8 @@ private extension MPCActivateWalletView {
 
 #Preview {
     MPCActivateWalletView(analyticsName: .mpcActivationOnboarding,
-                          credentials: .init(email: "qq@qq.qq",
-                                             password: ""),
+                          flow: .activate(.init(email: "qq@qq.qq",
+                                             password: "")),
                           code: "",
                           mpcWalletCreatedCallback: { _ in },
                           changeEmailCallback: { })

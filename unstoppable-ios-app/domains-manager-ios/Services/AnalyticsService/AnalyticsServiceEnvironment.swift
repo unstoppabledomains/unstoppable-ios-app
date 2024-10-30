@@ -246,8 +246,8 @@ extension Analytics {
         case transferDomainSuccess, sendCryptoSuccess
         
         case mpcEnterCredentialsOnboarding, mpcEnterCredentialsInApp, mpcEnterCredentialsReconnect
-        case mpcEnterCodeOnboarding, mpcEnterCodeInApp, mpcConfirmCodeInApp
-        case mpcActivationOnboarding, mpcActivationInApp
+        case mpcEnterCodeOnboarding, mpcEnterCodeInApp, mpcConfirmCodeInApp, mpcResetPasswordEnterCode
+        case mpcActivationOnboarding, mpcActivationInApp, mpcActivationRestorePassword
         
         case mpcPurchaseUDAuthOnboarding, mpcPurchaseUDAuthInApp
         case mpcPurchaseCheckoutOnboarding, mpcPurchaseCheckoutInApp
@@ -271,6 +271,7 @@ extension Analytics {
         case purchaseDomainsCart, purchaseDomainsFilters, purchaseDomainsCompleted
         
         case mpcRequestRecovery, mpcRecoveryRequested
+        case mpcResetPasswordEnterPassword
     }
 }
 
