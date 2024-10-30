@@ -192,9 +192,34 @@ private final class MockFireblocksConnector: FB_UD_MPC.FireblocksConnectorProtoc
 }
 
 private final class MockNetworkService: FB_UD_MPC.MPCConnectionNetworkService, FailableService {
+    func requestRecovery(_ accessToken: String, password: String) async throws {
+        
+    }
+    
+    func resetPassword(accessToken: String, recoveryToken: String, newRecoveryPhrase: String, requestId: String) async throws {
+        
+    }
+    
+    func get2FAStatus(accessToken: String) async throws -> Bool {
+        true
+    }
+    
+    func enable2FA(accessToken: String) async throws -> String {
+        ""
+    }
+    
+    func verify2FAToken(accessToken: String, token: String) async throws {
+        
+    }
+    
+    func disable2FA(accessToken: String, token: String) async throws {
+        
+    }
+    
     var shouldFail: Bool = false
     var deviceId: String = ""
     let queue = DispatchQueue(label: "MockNetworkService")
+    var otpProvider: FB_UD_MPC.MPCOTPProvider? = nil
     
     func sendBootstrapCodeTo(email: String) async throws {
         try failIfNeeded()
@@ -362,5 +387,9 @@ private final class MockMPCWalletsDataStorage: FB_UD_MPC.MPCWalletsDataStorage {
 private final class MockMPCWalletUIHandler: MPCWalletsUIHandler {
     func askToReconnectMPCWallet(_ reconnectData: MPCWalletReconnectData) async {
         
+    }
+    
+    func askForMPC2FACode() async -> String? {
+        ""
     }
 }

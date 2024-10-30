@@ -52,6 +52,7 @@ protocol MPCWalletsServiceProtocol {
 @MainActor
 protocol MPCWalletsUIHandler {
     func askToReconnectMPCWallet(_ reconnectData: MPCWalletReconnectData) async
+    func askForMPC2FACode() async -> String?
 }
 
 struct MPCWalletReconnectData {

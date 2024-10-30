@@ -28,7 +28,7 @@ extension FB_UD_MPC {
         let provider: MPCWalletProvider = .fireblocksUD
         
         private let connectorBuilder: FireblocksConnectorBuilder
-        private let networkService: MPCConnectionNetworkService
+        private var networkService: MPCConnectionNetworkService
         private let walletsDataStorage: MPCWalletsDataStorage
         private let udWalletsService: UDWalletsServiceProtocol
         private let uiHandler: MPCWalletsUIHandler
@@ -45,6 +45,7 @@ extension FB_UD_MPC {
             self.udWalletsService = udWalletsService
             self.uiHandler = uiHandler
             udWalletsService.addListener(self)
+            self.networkService.otpProvider = self
         }
     }
 }
@@ -605,6 +606,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         case invalidNetworkFeeAmountFormat
         case failedToTrimAmount
         case failedToFindUDWallet
+        case otpRequestRejected
         
         public var errorDescription: String? {
             return rawValue
@@ -681,7 +683,7 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
     }
     
     private func refreshAndStoreBootstrapToken(bootstrapToken: JWToken,
-                                       currentDeviceId: String) async throws -> String {
+                                               currentDeviceId: String) async throws -> String {
         do {
             let refreshBootstrapTokenResponse = try await networkService.refreshBootstrapToken(bootstrapToken.jwt)
             
@@ -770,6 +772,16 @@ extension FB_UD_MPC.MPCConnectionService: UDWalletsServiceListener {
                 try? clearWalletDetails(deviceId: walletDeviceId)
             }
         }
+    }
+}
+
+// MARK: - MPCOTPProvider
+extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.MPCOTPProvider {
+    func getMPCOTP() async throws -> String {
+        guard let code = await uiHandler.askForMPC2FACode() else {
+            throw MPCConnectionServiceError.otpRequestRejected
+        }
+        return code
     }
 }
 
