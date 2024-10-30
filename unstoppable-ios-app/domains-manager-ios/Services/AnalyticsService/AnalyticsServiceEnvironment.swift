@@ -303,6 +303,7 @@ extension Analytics {
         case createVault
         case openDomainProfile
         case copy
+        case disable2FA
         
         // Backup type
         case iCloud, manually
@@ -529,6 +530,7 @@ extension Analytics {
         case removeMPCWalletConfirmation
         case transactionDetails
         case domainProfileMaintenance, signMessagesMaintenance, transferDomainsFromVaultMaintenance
+        case mpc2FAEnabled, mpc2FADisableConfirmation
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

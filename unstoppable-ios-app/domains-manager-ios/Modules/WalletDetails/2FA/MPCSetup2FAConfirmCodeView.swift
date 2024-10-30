@@ -7,13 +7,14 @@
 
 import SwiftUI
 
-struct MPCSetup2FAEnableConfirmView: View, ViewAnalyticsLogger {
+struct MPCSetup2FAConfirmCodeView: View, ViewAnalyticsLogger {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var tabRouter: HomeTabRouter
 
-    let wallet: WalletEntity
-    let mpcMetadata: MPCWalletMetadata
+    let verificationPurpose: VerificationPurpose
+    var navigationStyle: NavigationStyle = .push
     var analyticsName: Analytics.ViewName { .setup2FAEnableConfirm }
 
     @State private var code: String = ""
@@ -21,6 +22,26 @@ struct MPCSetup2FAEnableConfirmView: View, ViewAnalyticsLogger {
     @State private var error: Error? = nil
 
     var body: some View {
+        switch navigationStyle {
+        case .push:
+            contentView()
+        case .modal:
+            NavigationStack {
+                contentView()
+                    .interactiveDismissDisabled()
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            CloseButtonView(closeCallback: closeButtonPressed)
+                        }
+                    }
+            }
+        }
+    }
+}
+
+private extension MPCSetup2FAConfirmCodeView {
+    @ViewBuilder
+    func contentView() -> some View {
         ScrollView {
             VStack(spacing: 32) {
                 headerView()
@@ -32,9 +53,7 @@ struct MPCSetup2FAEnableConfirmView: View, ViewAnalyticsLogger {
         .background(Color.backgroundDefault)
         .displayError($error)
     }
-}
 
-private extension MPCSetup2FAEnableConfirmView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
@@ -75,9 +94,18 @@ private extension MPCSetup2FAEnableConfirmView {
         isLoading = true
         Task {
             do {
-                try await mpcWalletsService.confirm2FAEnabled(for: mpcMetadata,
-                                                              code: code)
-                didVerifyCode()
+                let code = self.code
+                switch verificationPurpose {
+                case .enable(let mpcMetadata):
+                    try await mpcWalletsService.confirm2FAEnabled(for: mpcMetadata,
+                                                                  code: code)
+                case .disable(let mpcMetadata):
+                    try await mpcWalletsService.disable2FA(for: mpcMetadata,
+                                                           code: code)
+                case .enterCode:
+                    Void()
+                }
+                didVerifyCode(code)
             } catch {
                 self.error = error
             }
@@ -85,9 +113,37 @@ private extension MPCSetup2FAEnableConfirmView {
         }
     }
     
-    func didVerifyCode() {
-        appContext.toastMessageService.showToast(.enabled2FA, isSticky: false)
-        tabRouter.walletViewNavPath.removeLast(2)
+    func didVerifyCode(_ code: String) {
+        switch verificationPurpose {
+        case .enable:
+            appContext.toastMessageService.showToast(.enabled2FA, isSticky: false)
+            tabRouter.walletViewNavPath.removeLast(2)
+        case .disable:
+            dismiss()
+        case .enterCode(let callback):
+            callback(code)
+            dismiss()
+        }
+    }
+
+    func closeButtonPressed() {
+        if case .enterCode(let callback) = verificationPurpose {
+            callback(nil)
+        }
+        dismiss()
+    }   
+}
+
+extension MPCSetup2FAConfirmCodeView {
+    enum VerificationPurpose {
+        case enable(MPCWalletMetadata)
+        case disable(MPCWalletMetadata)
+        case enterCode(callback: (String?) -> Void)
+    }
+
+    enum NavigationStyle {
+        case push
+        case modal
     }
 }
 
@@ -96,8 +152,7 @@ private extension MPCSetup2FAEnableConfirmView {
     let mpcMetadata = wallet.udWallet.mpcMetadata!
     
     return NavigationStack {
-        MPCSetup2FAEnableConfirmView(wallet: wallet,
-                                     mpcMetadata: mpcMetadata)
+        MPCSetup2FAConfirmCodeView(verificationPurpose: .enable(mpcMetadata))
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Image(systemName: "arrow.left")

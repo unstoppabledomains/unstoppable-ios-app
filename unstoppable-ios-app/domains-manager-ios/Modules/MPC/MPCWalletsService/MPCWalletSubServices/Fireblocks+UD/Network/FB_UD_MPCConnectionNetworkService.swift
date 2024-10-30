@@ -9,6 +9,8 @@ import Foundation
 
 extension FB_UD_MPC {
     protocol MPCConnectionNetworkService {
+        var otpProvider: MPCOTPProvider? { get set }
+
         func sendBootstrapCodeTo(email: String) async throws
         func submitBootstrapCode(_ code: String) async throws -> BootstrapCodeSubmitResponse
         func authNewDeviceWith(requestId: String,
