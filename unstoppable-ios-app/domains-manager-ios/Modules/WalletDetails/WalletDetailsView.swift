@@ -18,6 +18,8 @@ struct WalletDetailsView: View, ViewAnalyticsLogger {
     let source: UDRouter.WalletDetailsSource
     
     @State private var isRenaming = false
+    @State private var pullUp: ViewPullUpConfigurationType?
+    @State private var disabling2FAMetadata: MPCWalletMetadataWrapper?
     
     var analyticsName: Analytics.ViewName { .walletDetails }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.wallet : wallet.address] }
@@ -48,6 +50,7 @@ struct WalletDetailsView: View, ViewAnalyticsLogger {
                 .listRowSeparator(.hidden)
         }.environment(\.defaultMinListRowHeight, 28)
         .listRowSpacing(0)
+        .viewPullUp($pullUp)
         .clearListBackground()
         .background(Color.backgroundDefault)
         .passViewAnalyticsDetails(logger: self)
@@ -61,6 +64,10 @@ struct WalletDetailsView: View, ViewAnalyticsLogger {
         }
         .sheet(isPresented: $isRenaming, content: {
             RenameWalletView(wallet: wallet)
+        })
+        .sheet(item: $disabling2FAMetadata, content: { mpcMetadataWrapper in
+            MPCSetup2FAConfirmCodeView(verificationPurpose: .disable(mpcMetadataWrapper.metadata),
+                                       navigationStyle: .modal)
         })
     }
     
@@ -189,9 +196,11 @@ private extension WalletDetailsView {
                 }
             }
         }
+        
         if wallet.udWallet.type == .mpc,
-        let mpcMetadata = wallet.udWallet.mpcMetadata {
+           let mpcMetadata = wallet.udWallet.mpcMetadata {
             let is2FAEnabled = (try? mpcWalletsService.is2FAEnabled(for: mpcMetadata)) ?? false
+            
             actions.append(.mpc2FA(is2FAEnabled))
             subActions.append(.mpcRecoveryKit)
         }
@@ -259,10 +268,23 @@ private extension WalletDetailsView {
     
     func mpc2FAActionPressed(_ isEnabled: Bool) {
         if isEnabled {
-            // TODO: Implement disable 2FA
+            // TODO: - Use tabRouter.pullUp
+            pullUp = .default(.mpc2FAEnabled(disableCallback: askToDisable2FA))
         } else {
-            // TODO: Implement enable 2FA
+            guard let mpcMetadata = wallet.udWallet.mpcMetadata else { return }
+            
+            tabRouter.walletViewNavPath.append(.mpcSetup2FAEnable(mpcMetadata: mpcMetadata))
         }
+    }
+    
+    func askToDisable2FA() {
+        pullUp = .default(.mpc2FADisableConfirmation(disableCallback: disable2FA))
+    }
+    
+    func disable2FA() {
+        guard let mpcMetadata = wallet.udWallet.mpcMetadata else { return }
+        
+        disabling2FAMetadata = .init(metadata: mpcMetadata)
     }
     
     func walletSubActionPressed(_ action: WalletDetails.WalletSubAction) {
@@ -405,6 +427,14 @@ private extension WalletDetailsView {
         case .domainDetails(let domainChangeCallback):
             domainChangeCallback(domain)
         }
+    }
+}
+
+// MARK: - Private methods
+private extension WalletDetailsView {
+    struct MPCWalletMetadataWrapper: Identifiable {
+        let id = UUID()
+        let metadata: MPCWalletMetadata
     }
 }
 

@@ -64,6 +64,9 @@ final class ImageLoadingService: ImageLoadingServiceProtocol {
             }
         case .wcApp:
             return UIImage.Preview.previewSquare
+        case .qrCode(_ , _):
+            await Task.sleep(seconds: 1)
+            return UIImage.Preview.previewSquare
         default:
             return nil
         }

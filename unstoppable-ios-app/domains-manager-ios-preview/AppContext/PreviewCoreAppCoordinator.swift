@@ -9,6 +9,10 @@ import UIKit
 
 
 final class CoreAppCoordinator: CoreAppCoordinatorProtocol {
+    func askForMPC2FACode() async -> String? {
+        ""
+    }
+    
     private var window: UIWindow?
 
     func askToReconnectMPCWallet(_ reconnectData: MPCWalletReconnectData) async {

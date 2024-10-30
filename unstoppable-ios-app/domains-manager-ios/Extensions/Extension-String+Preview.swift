@@ -512,6 +512,17 @@ extension String {
         static let createVault = "CREATE_VAULT"
         static let mpc2FAEnabled = "MPC_2FA_ENABLED"
         static let mpc2FAEnable = "MPC_2FA_ENABLE"
+        static let enable2FATitle = "ENABLE_2FA_TITLE"
+        static let enable2FASubtitle = "ENABLE_2FA_SUBTITLE"
+        static let enable2FACopySecretTitle = "ENABLE_2FA_COPY_SECRET_TITLE"
+        static let enable2FAOrScanQRCode = "ENABLE_2FA_OR_SCAN_QR_CODE"
+        static let enable2FAConfirmTitle = "ENABLE_2FA_CONFIRM_TITLE"
+        static let enable2FAConfirmSubtitle = "ENABLE_2FA_CONFIRM_SUBTITLE"
+        static let disable2FA = "DISABLE_2FA"
+        static let mpc2FAEnabledPullUpTitle = "MPC_2FA_ENABLED_PULLUP_TITLE"
+        static let mpc2FAEnabledPullUpSubtitle = "MPC_2FA_ENABLED_PULLUP_SUBTITLE"
+        static let mpc2FADisableConfirmationPullUpTitle = "MPC_2FA_DISABLE_CONFIRMATION_PULLUP_TITLE"
+        static let mpc2FADisableConfirmationPullUpSubtitle = "MPC_2FA_DISABLE_CONFIRMATION_PULLUP_SUBTITLE" 
         
         // Toast messages
         static let toastWalletAddressCopied = "TOAST_WALLET_ADDRESS_COPIED"
@@ -1115,6 +1126,7 @@ extension String {
         static let endings = "ENDINGS"
         static let suggestions = "SUGGESTIONS"
         static let domainsPurchasedSummaryMessage = "DOMAINS_PURCHASED_SUMMARY_MESSAGE"
+        static let enabled2FAToastMessage = "ENABLED_2FA_TOAST_MESSAGE"
         
         // Home
         static let homeWalletTokensComeTitle = "HOME_WALLET_TOKENS_COME_TITLE"
