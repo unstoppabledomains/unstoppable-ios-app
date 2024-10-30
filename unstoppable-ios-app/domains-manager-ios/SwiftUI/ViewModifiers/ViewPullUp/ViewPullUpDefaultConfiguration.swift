@@ -140,10 +140,11 @@ struct ViewPullUpDefaultConfiguration {
         case textTertiary(content: ButtonContent)
         case applePay(content: ButtonContent)
         case raisedTertiary(content: ButtonContent)
+        case largeRaisedTertiary(content: ButtonContent)
         
         var height: CGFloat {
             switch self {
-            case .main, .secondary, .primaryDanger, .secondaryDanger, .applePay, .raisedTertiary, .primaryGhost:
+            case .main, .secondary, .primaryDanger, .secondaryDanger, .applePay, .raisedTertiary, .primaryGhost, .largeRaisedTertiary:
                 return 48
             case .textTertiary:
                 return 24
@@ -153,14 +154,14 @@ struct ViewPullUpDefaultConfiguration {
         @MainActor
         func callAction() {
             switch self {
-            case .main(let content), .secondary(let content), .textTertiary(let content), .primaryDanger(let content), .secondaryDanger(let content), .applePay(let content), .raisedTertiary(let content), .primaryGhost(let content):
+            case .main(let content), .secondary(let content), .textTertiary(let content), .primaryDanger(let content), .secondaryDanger(let content), .applePay(let content), .raisedTertiary(let content), .primaryGhost(let content), .largeRaisedTertiary(let content):
                 content.action?()
             }
         }
         
         var content: ButtonContent {
             switch self {
-            case .main(let content), .secondary(let content), .textTertiary(let content), .primaryDanger(let content), .secondaryDanger(let content), .applePay(let content), .raisedTertiary(let content), .primaryGhost(let content):
+            case .main(let content), .secondary(let content), .textTertiary(let content), .primaryDanger(let content), .secondaryDanger(let content), .applePay(let content), .raisedTertiary(let content), .primaryGhost(let content), .largeRaisedTertiary(let content):
                 return content
             }
         }
@@ -534,6 +535,33 @@ extension ViewPullUpDefaultConfiguration {
               cancelButton: .gotItButton(),
               analyticName: .transferDomainsFromVaultMaintenance)
     }
+    
+    static func mpc2FAEnabled(disableCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .shieldCheckmarkFilled,
+                          size: .small,
+                          tintColor: .foregroundSuccess),
+              title: .text(String.Constants.mpc2FAEnabledPullUpTitle.localized()),
+              subtitle: .label(.text(String.Constants.mpc2FAEnabledPullUpSubtitle.localized())),
+              actionButton: .largeRaisedTertiary(content: .init(title: String.Constants.disable2FA.localized(),
+                                                 analyticsName: .disable2FA,
+                                                 action: disableCallback)),
+              analyticName: .mpc2FAEnabled)
+    }
+    
+    static func mpc2FADisableConfirmation(disableCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .warningIcon,
+                          size: .small),
+              title: .text(String.Constants.mpc2FADisableConfirmationPullUpTitle.localized()),
+              subtitle: .label(.text(String.Constants.mpc2FADisableConfirmationPullUpSubtitle.localized())),
+              actionButton: .primaryDanger(content: .init(title: String.Constants.disable2FA.localized(),
+                                                          analyticsName: .disable2FA,
+                                                          action: disableCallback)),
+              cancelButton: .secondary(content: .init(title: String.Constants.cancel.localized(),
+                                                      analyticsName: .cancel,
+                                                      action: nil)),
+              analyticName: .mpc2FADisableConfirmation)
+    }
+    
 }
 
 // MARK: - Open methods

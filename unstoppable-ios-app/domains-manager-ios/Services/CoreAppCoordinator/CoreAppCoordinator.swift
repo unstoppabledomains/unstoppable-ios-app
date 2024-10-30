@@ -316,6 +316,19 @@ extension CoreAppCoordinator: MPCWalletsUIHandler {
         }
         await waitForAppAuthorised()
     }
+    
+    func askForMPC2FACode() async -> String? {
+        guard let topVC else { return nil }
+        
+        return await withSafeCheckedMainActorContinuation { completion in
+            let view = MPCSetup2FAConfirmCodeView(verificationPurpose: .enterCode(callback: { code in
+                completion(code)
+            }), navigationStyle: .modal)
+            
+            let vc = UIHostingController(rootView: view)
+            topVC.present(vc, animated: true)
+        }
+    }
 }
 
 // MARK: - Passing events

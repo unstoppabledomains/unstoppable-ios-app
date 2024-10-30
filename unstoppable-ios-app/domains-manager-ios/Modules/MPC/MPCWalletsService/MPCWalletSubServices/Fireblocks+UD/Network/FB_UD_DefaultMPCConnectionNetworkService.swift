@@ -11,6 +11,7 @@ extension FB_UD_MPC {
     struct DefaultMPCConnectionNetworkService: MPCConnectionNetworkService, NetworkBearerAuthorisationHeaderBuilder {
         
         private let networkService = NetworkService()
+        var otpProvider: MPCOTPProvider? = nil
         
         func sendBootstrapCodeTo(email: String) async throws {
             
@@ -77,6 +78,7 @@ extension FB_UD_MPC {
             let request = try APIRequest(urlString: MPCNetwork.URLSList.tokensSetupURL,
                                          method: .post,
                                          headers: headers)
+            
             let response: SetupTokenResponse = try await makeDecodableAPIRequest(request)
             
             return response
@@ -364,6 +366,61 @@ extension FB_UD_MPC {
                                                statuses: [.completed])
         }
         
+        func get2FAStatus(accessToken: String) async throws -> Bool {
+            struct Response: Codable {
+                let otpEnabled: Bool
+            }
+
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.otpURL,
+                                         method: .get,
+                                         headers: headers)
+            let response: Response = try await makeDecodableAPIRequest(request)
+            return response.otpEnabled
+        }
+
+        func enable2FA(accessToken: String) async throws -> String {
+            struct Response: Codable {
+                let secret: String
+            }
+            
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.otpURL,
+                                         method: .post,
+                                         headers: headers)
+            let response: Response = try await makeDecodableAPIRequest(request)
+            return response.secret
+        }
+        
+        func verify2FAToken(accessToken: String, token: String) async throws {
+            struct RequestBody: Codable {
+                let token: String
+            }
+            
+            let body = RequestBody(token: token)
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.otpVerificationURL,
+                                         body: body,
+                                         method: .post,
+                                         headers: headers)
+            try await makeAPIRequest(request)
+        }
+
+        func disable2FA(accessToken: String,
+                         token: String) async throws {
+            struct RequestBody: Codable {
+                let token: String
+            }
+            
+            let body = RequestBody(token: token)
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.otpURL,
+                                         body: body,
+                                         method: .delete,
+                                         headers: headers)
+            try await makeAPIRequest(request)
+        }
+
         @discardableResult
         private func waitForOperationStatuses(accessToken: String,
                                               operationId: String,
@@ -464,6 +521,11 @@ extension FB_UD_MPC {
                 
                 return response
             } catch {
+                if let otpFilledRequest = try await getOTPFilledRequestIfNeeded(error: error,
+                                                                                apiRequest: apiRequest) {
+                    return try await makeDecodableAPIRequest(otpFilledRequest)
+                }
+                
                 logMPC("Did fail to make request \(apiRequest) with error: \(error.localizedDescription)")
                 throw error
             }
@@ -479,13 +541,49 @@ extension FB_UD_MPC {
                 
                 return response
             } catch {
+                if let otpFilledRequest = try await getOTPFilledRequestIfNeeded(error: error,
+                                                                                apiRequest: apiRequest) {
+                    return try await makeAPIRequest(otpFilledRequest)
+                }
+                
                 logMPC("Did fail to make request \(apiRequest) with error: \(error.localizedDescription)")
                 throw error
             }
         }
         
+        private func getOTPFilledRequestIfNeeded(error: Error, apiRequest: APIRequest) async throws -> APIRequest? {
+            if isNetworkError(error, codeIs: .tokenRequired) {
+                guard let otpProvider else {
+                    Debugger.printFailure("OTP Provider is not set", critical: true)
+                    return nil
+                }
+                logMPC("Will ask for OTP")
+                let otp = try await otpProvider.getMPCOTP()
+                var request = apiRequest
+                request.updateHeaders { $0["X-Otp-Token"] = otp }
+                
+                logMPC("Will retry request with OTP")
+                return request
+            }
+            return nil
+        }
+        
         private func isNetworkError(_ error: Error, withCode code: Int) -> Bool {
             error.isNetworkError(withCode: code)
+        }
+        
+        private func isNetworkError(_ error: Error, codeIs code: MPCNetworkErrorCode) -> Bool {
+            if let networkError = error as? NetworkLayerError,
+               case .badResponseOrStatusCode(_, _, let data) = networkError,
+               let response = APIBadResponse.objectFromData(data),
+               response.code == code.rawValue {
+                return true
+            }
+            return false
+        }
+        
+        private enum MPCNetworkErrorCode: String {
+            case tokenRequired = "OTP_TOKEN_REQUIRED"
         }
         
         private enum MPCNetworkServiceError: String, LocalizedError {

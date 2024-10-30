@@ -20,12 +20,15 @@ extension WalletDetails {
                 return "backUp"
             case .more:
                 return "more"
+            case .mpc2FA:
+                return "mpc2FA"
             }
         }
         
         case rename
         case backUp(WalletDisplayInfo.BackupState)
         case more([WalletSubAction])
+        case mpc2FA(Bool)
         
         var title: String {
             switch self {
@@ -38,6 +41,8 @@ extension WalletDetails {
                 return String.Constants.backUp.localized()
             case .more:
                 return String.Constants.more.localized()
+            case .mpc2FA(let isEnabled):
+                return isEnabled ? String.Constants.mpc2FAEnabled.localized() : String.Constants.mpc2FAEnable.localized()
             }
         }
         
@@ -52,6 +57,8 @@ extension WalletDetails {
                 return .cloudIcon
             case .more:
                 return .dotsIcon
+            case .mpc2FA(let isEnabled):
+                return isEnabled ? .shieldCheckmark : .shieldEmpty
             }
         }
         
@@ -62,6 +69,8 @@ extension WalletDetails {
                     return .foregroundSuccess
                 }
                 return .foregroundAccent
+            case .mpc2FA(let isEnabled):
+                return isEnabled ? .foregroundSuccess : .foregroundAccent
             default:
                 return .foregroundAccent
             }
@@ -69,7 +78,7 @@ extension WalletDetails {
         
         var subActions: [WalletSubAction] {
             switch self {
-            case .backUp, .rename:
+            case .backUp, .rename, .mpc2FA:
                 return []
             case .more(let subActions):
                 return subActions
@@ -84,12 +93,14 @@ extension WalletDetails {
                 return .walletBackup
             case .more:
                 return .more
+            case .mpc2FA:
+                return .mpc2FA
             }
         }
         
         var isDimmed: Bool {
             switch self {
-            case .rename, .backUp, .more:
+            case .rename, .backUp, .more, .mpc2FA:
                 return false
             }
         }

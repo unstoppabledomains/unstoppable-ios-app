@@ -215,6 +215,7 @@ extension Analytics {
         case domainDetails
         case settings, securitySettings
         case walletDetails, renameWallet
+        case setup2FAEnable, setup2FAEnableConfirm
         case walletsList, mintingWalletsListSelection
         case setupReverseResolution, walletSetupReverseResolution, setupChangeReverseResolution
         case selectFirstDomainForReverseResolution, changeDomainForReverseResolution
@@ -301,6 +302,8 @@ extension Analytics {
         case dontAlreadyHaveDomain
         case createVault
         case openDomainProfile
+        case copy
+        case disable2FA
         
         // Backup type
         case iCloud, manually
@@ -342,7 +345,7 @@ extension Analytics {
         case securitySettingsPasscode, securitySettingsBiometric, securitySettingsRequireSAWhenOpen
         
         // Wallet details
-        case walletBackup, walletRecoveryPhrase, walletRename, walletDomainsList, walletRemove, showConnectedWalletInfo, walletReverseResolution, walletReconnect
+        case walletBackup, walletRecoveryPhrase, walletRename, walletDomainsList, walletRemove, showConnectedWalletInfo, walletReverseResolution, walletReconnect, mpc2FA
         
         // Wallets list
         case manageICloudBackups, walletInList, walletsMenu, mpcRecoveryKit
@@ -527,6 +530,7 @@ extension Analytics {
         case removeMPCWalletConfirmation
         case transactionDetails
         case domainProfileMaintenance, signMessagesMaintenance, transferDomainsFromVaultMaintenance
+        case mpc2FAEnabled, mpc2FADisableConfirmation
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
