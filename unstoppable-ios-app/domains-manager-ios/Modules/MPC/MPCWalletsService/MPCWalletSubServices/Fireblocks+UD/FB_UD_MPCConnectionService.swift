@@ -140,7 +140,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     let walletDetails: WalletDetails = try await getWalletAccountDetailsForWalletWith(deviceId: deviceId,
                                                                                        accessToken: authTokens.accessToken.jwt)
                     logMPC("Did get wallet account details")
-                    let is2FAEnabled = (try? await networkService.get2FAStatus(accessToken: authTokens.accessToken.jwt)) ?? false   
+                    let is2FAEnabled = (try? await networkService.get2FAStatus(accessToken: authTokens.accessToken.jwt)) ?? false
                     let mpcWallet: FB_UD_MPC.ConnectedWalletDetails = FB_UD_MPC.ConnectedWalletDetails(email: email,
                                                                      deviceId: deviceId,
                                                                      tokens: authTokens,
