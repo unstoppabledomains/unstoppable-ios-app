@@ -21,9 +21,7 @@ protocol AppDelegateProtocol {
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    private(set) lazy var appContext: AppContextProtocol = {
-        GeneralAppContext()
-    }()
+    private(set) var appContext: AppContextProtocol = GeneralAppContext()
     static let shared: AppDelegateProtocol = UIApplication.shared.delegate as! AppDelegateProtocol
 
     var syncWalletsPopupShownCount = 0
