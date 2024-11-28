@@ -254,7 +254,8 @@ private extension ViewPullUp {
             buttonWithContent(content, style: .medium(.raisedTertiary), configuration: configuration)
         case .primaryGhost(let content):
             buttonWithContent(content, style: .large(.ghostPrimary), configuration: configuration)
-            
+        case .largeRaisedTertiary(let content):
+            buttonWithContent(content, style: .large(.raisedTertiary), configuration: configuration)
         }
     }
     

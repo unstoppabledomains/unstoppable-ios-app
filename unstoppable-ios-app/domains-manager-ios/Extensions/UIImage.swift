@@ -142,6 +142,7 @@ extension UIImage {
     static let unsTLDLogo = UIImage(named: "unsTLDLogo")!
     static let ensTLDLogo = UIImage(named: "ensTLDLogo")!
     static let dnsTLDLogo = UIImage(named: "dnsTLDLogo")!
+    static let shieldCheckmarkFilled = UIImage(named: "shieldCheckmarkFilled")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!

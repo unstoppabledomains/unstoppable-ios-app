@@ -9,6 +9,32 @@ import Foundation
 @testable import domains_manager_ios
 
 final class TestableMPCWalletsService: MPCWalletsServiceProtocol {
+    func setupMPCWalletWith(code: String, flow: domains_manager_ios.SetupMPCFlow) -> AsyncThrowingStream<domains_manager_ios.SetupMPCWalletStep, any Error> {
+        AsyncThrowingStream { continuation in
+            continuation.finish()
+        }
+    }
+    
+    func requestRecovery(password: String, by walletMetadata: domains_manager_ios.MPCWalletMetadata) async throws -> String {
+        throw NSError()
+    }
+    
+    func is2FAEnabled(for walletMetadata: domains_manager_ios.MPCWalletMetadata) throws -> Bool {
+        throw NSError()
+    }
+    
+    func request2FASetupDetails(for walletMetadata: domains_manager_ios.MPCWalletMetadata) async throws -> domains_manager_ios.MPCWallet2FASetupDetails {
+        throw NSError()
+    }
+    
+    func confirm2FAEnabled(for walletMetadata: domains_manager_ios.MPCWalletMetadata, code: String) async throws {
+        
+    }
+    
+    func disable2FA(for walletMetadata: domains_manager_ios.MPCWalletMetadata, code: String) async throws {
+        
+    }
+    
  
     func getBalancesFor(walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {
         []

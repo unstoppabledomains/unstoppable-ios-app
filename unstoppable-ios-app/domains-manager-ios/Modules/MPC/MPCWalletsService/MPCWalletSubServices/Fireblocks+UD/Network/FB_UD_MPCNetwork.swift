@@ -63,6 +63,11 @@ extension FB_UD_MPC {
             }
             
             static var recoveryURL: String { v1URL.appendingURLPathComponents("recovery", "email") }
+            
+            // 2FA
+            static var otpURL: String { v1URL.appendingURLPathComponents("otp") }
+            static var otpVerificationURL: String { otpURL.appendingURLPathComponents("verification") }
+
         }
     }
 }

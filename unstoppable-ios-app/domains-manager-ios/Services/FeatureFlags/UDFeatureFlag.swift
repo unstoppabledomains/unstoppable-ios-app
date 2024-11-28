@@ -19,6 +19,7 @@ enum UDFeatureFlag: String, CaseIterable {
     case isMPCWCNativeEnabled = "mobile-mpc-wc-native-enabled"
     case isMPCSignatureEnabled = "mobile-mpc-signature-enabled"
     case isMPCPurchaseEnabled = "mobile-mpc-purchase-enabled"
+    case isMPCMFAEnabled = "mobile-mpc-mfa-enabled"
     
     case isMaintenanceFullEnabled = "mobile-maintenance-full"
     case isMaintenanceOKLinkEnabled = "mobile-maintenance-oklink"
@@ -29,7 +30,7 @@ enum UDFeatureFlag: String, CaseIterable {
     
     var defaultValue: Bool {
         switch self {
-        case .communityMediaEnabled, .isBuyCryptoEnabled, .isMPCMessagingEnabled, .isMPCWCNativeEnabled, .isMaintenanceFullEnabled, .isMaintenanceOKLinkEnabled, .isMaintenanceProfilesAPIEnabled, .isMaintenanceEcommEnabled, .isMaintenanceInfuraEnabled, .isMaintenanceMPCEnabled:
+        case .communityMediaEnabled, .isBuyCryptoEnabled, .isMPCMessagingEnabled, .isMPCWCNativeEnabled, .isMaintenanceFullEnabled, .isMaintenanceOKLinkEnabled, .isMaintenanceProfilesAPIEnabled, .isMaintenanceEcommEnabled, .isMaintenanceInfuraEnabled, .isMaintenanceMPCEnabled, .isMPCMFAEnabled:
             return false
         case .isSendCryptoEnabled, .isMPCWalletEnabled, .isMPCSendCryptoEnabled, .isMPCSignatureEnabled, .isMPCPurchaseEnabled, .isBuyDomainEnabled:
             return true
@@ -41,7 +42,7 @@ enum UDFeatureFlag: String, CaseIterable {
         switch self {
         case .isMaintenanceFullEnabled, .isMaintenanceOKLinkEnabled, .isMaintenanceProfilesAPIEnabled, .isMaintenanceEcommEnabled, .isMaintenanceInfuraEnabled, .isMaintenanceMPCEnabled:
             return true
-        case .isSendCryptoEnabled, .isMPCWalletEnabled, .isMPCSendCryptoEnabled, .isMPCSignatureEnabled, .isMPCPurchaseEnabled, .communityMediaEnabled, .isBuyCryptoEnabled, .isMPCMessagingEnabled, .isMPCWCNativeEnabled, .isBuyDomainEnabled:
+        case .isSendCryptoEnabled, .isMPCWalletEnabled, .isMPCSendCryptoEnabled, .isMPCSignatureEnabled, .isMPCPurchaseEnabled, .communityMediaEnabled, .isBuyCryptoEnabled, .isMPCMessagingEnabled, .isMPCWCNativeEnabled, .isBuyDomainEnabled, .isMPCMFAEnabled:
             return false
         }
     }
