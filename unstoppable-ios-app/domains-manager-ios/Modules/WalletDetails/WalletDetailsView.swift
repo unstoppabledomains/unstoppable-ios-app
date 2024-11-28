@@ -11,6 +11,7 @@ struct WalletDetailsView: View, ViewAnalyticsLogger {
     
     @Environment(\.walletsDataService) private var walletsDataService
     @Environment(\.mpcWalletsService) private var mpcWalletsService
+    @Environment(\.udFeatureFlagsService) private var udFeatureFlagsService
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var tabRouter: HomeTabRouter
 
@@ -197,11 +198,13 @@ private extension WalletDetailsView {
             }
         }
         
+        
         if wallet.udWallet.type == .mpc,
            let mpcMetadata = wallet.udWallet.mpcMetadata {
-            let is2FAEnabled = (try? mpcWalletsService.is2FAEnabled(for: mpcMetadata)) ?? false
-            
-            actions.append(.mpc2FA(is2FAEnabled))
+            if udFeatureFlagsService.valueFor(flag: .isMPCMFAEnabled) {
+                let is2FAEnabled = (try? mpcWalletsService.is2FAEnabled(for: mpcMetadata)) ?? false
+                actions.append(.mpc2FA(is2FAEnabled))
+            }
             subActions.append(.mpcRecoveryKit)
         }
         
