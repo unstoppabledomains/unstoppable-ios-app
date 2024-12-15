@@ -50,8 +50,8 @@ private extension MPCOnboardingPurchaseActivateAfterClaimViewController {
         }
         
         let mpcView = MPCActivateWalletView(analyticsName: .mpcActivationOnboarding,
-                                            credentials: credentials,
-                                            code: code, 
+                                            flow: .activate(credentials),
+                                            code: code,
                                             mpcWalletCreatedCallback: { [weak self] wallet in
             DispatchQueue.main.async {
                 self?.didActivateWallet(wallet)

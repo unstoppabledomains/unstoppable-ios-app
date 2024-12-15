@@ -40,6 +40,8 @@ extension FB_UD_MPC {
     }
     
     struct DefaultMPCConnectionNetworkService: MPCConnectionNetworkService {
+        var otpProvider: FB_UD_MPC.MPCOTPProvider?
+        
         func getAssetTransferEstimations(accessToken: String, accountId: String, assetId: String, destinationAddress: String, amount: String) async throws -> FB_UD_MPC.NetworkFeeResponse {
             .init(priority: "", status: "", networkFee: nil)
         }
@@ -142,6 +144,31 @@ extension FB_UD_MPC {
         func requestRecovery(_ accessToken: String, password: String) async throws {
             await Task.sleep(seconds: 0.5)
         }
+        
+        func resetPassword(accessToken: String,
+                           recoveryToken: String,
+                           newRecoveryPhrase: String,
+                           requestId: String) async throws {
+            await Task.sleep(seconds: 0.5)
+        }
+
+        func get2FAStatus(accessToken: String) async throws -> Bool {
+            await Task.sleep(seconds: 0.5)
+            return false
+        }
+        
+        func enable2FA(accessToken: String) async throws -> String {
+            await Task.sleep(seconds: 0.5)
+            return ""
+        }
+        
+        func verify2FAToken(accessToken: String, token: String) async throws {
+            await Task.sleep(seconds: 0.5)
+        }
+        
+        func disable2FA(accessToken: String, token: String) async throws {
+            await Task.sleep(seconds: 0.5)
+        }   
     }
     
     struct MPCWalletsDefaultDataStorage: MPCWalletsDataStorage {

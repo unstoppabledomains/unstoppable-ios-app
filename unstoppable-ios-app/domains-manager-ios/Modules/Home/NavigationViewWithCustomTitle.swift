@@ -140,6 +140,10 @@ struct NavigationPathWrapper<Data> where Data : Hashable {
         navigationPath.removeLast()
     }
     
+    mutating func removeLast(_ num: Int) {
+        navigationPath.removeLast(num)
+    }
+    
     func first(where isIncluded: (Data) -> Bool) -> Data? {
         navigationTypedPath.first(where: isIncluded)
     }

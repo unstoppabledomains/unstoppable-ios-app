@@ -165,6 +165,10 @@ private final class PrivateMockExternalEventsService: ExternalEventsServiceProto
 }
 
 private final class MockCoreAppCoordinator: CoreAppCoordinatorProtocol {
+    func askForMPC2FACode() async -> String? {
+        ""
+    }
+    
     func askToReconnectMPCWallet(_ reconnectData: MPCWalletReconnectData) async {
         
     }

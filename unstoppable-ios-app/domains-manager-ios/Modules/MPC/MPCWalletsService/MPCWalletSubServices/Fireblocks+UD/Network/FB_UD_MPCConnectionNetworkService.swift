@@ -9,6 +9,8 @@ import Foundation
 
 extension FB_UD_MPC {
     protocol MPCConnectionNetworkService {
+        var otpProvider: MPCOTPProvider? { get set }
+
         func sendBootstrapCodeTo(email: String) async throws
         func submitBootstrapCode(_ code: String) async throws -> BootstrapCodeSubmitResponse
         func authNewDeviceWith(requestId: String,
@@ -62,5 +64,15 @@ extension FB_UD_MPC {
                                          amount: String) async throws -> NetworkFeeResponse
         func requestRecovery(_ accessToken: String,
                              password: String) async throws
+        func resetPassword(accessToken: String,
+                           recoveryToken: String,
+                           newRecoveryPhrase: String,
+                           requestId: String) async throws
+        func get2FAStatus(accessToken: String) async throws -> Bool
+        func enable2FA(accessToken: String) async throws -> String
+        func verify2FAToken(accessToken: String,
+                            token: String) async throws
+        func disable2FA(accessToken: String,
+                          token: String) async throws
     }
 }

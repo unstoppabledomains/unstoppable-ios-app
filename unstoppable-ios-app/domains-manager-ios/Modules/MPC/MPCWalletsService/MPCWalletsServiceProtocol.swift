@@ -10,7 +10,7 @@ import Foundation
 protocol MPCWalletsServiceProtocol {
     func sendBootstrapCodeTo(email: String) async throws
     func setupMPCWalletWith(code: String,
-                            credentials: MPCActivateCredentials) -> AsyncThrowingStream<SetupMPCWalletStep, Error>
+                            flow: SetupMPCFlow) -> AsyncThrowingStream<SetupMPCWalletStep, Error>
     func signPersonalMessage(_ messageString: String,
                              by walletMetadata: MPCWalletMetadata) async throws -> String
     func signTypedDataMessage(_ message: String,
@@ -41,11 +41,18 @@ protocol MPCWalletsServiceProtocol {
     /// - Returns: Email from attached to wallet account
     func requestRecovery(password: String,
                          by walletMetadata: MPCWalletMetadata) async throws -> String
+                         
+    // 2FA
+    func is2FAEnabled(for walletMetadata: MPCWalletMetadata) throws -> Bool
+    func request2FASetupDetails(for walletMetadata: MPCWalletMetadata) async throws -> MPCWallet2FASetupDetails
+    func confirm2FAEnabled(for walletMetadata: MPCWalletMetadata, code: String) async throws
+    func disable2FA(for walletMetadata: MPCWalletMetadata, code: String) async throws
 }
 
 @MainActor
 protocol MPCWalletsUIHandler {
     func askToReconnectMPCWallet(_ reconnectData: MPCWalletReconnectData) async
+    func askForMPC2FACode() async -> String?
 }
 
 struct MPCWalletReconnectData {

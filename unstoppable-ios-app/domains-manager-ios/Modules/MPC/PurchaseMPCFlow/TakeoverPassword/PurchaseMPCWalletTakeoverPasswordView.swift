@@ -129,18 +129,18 @@ private extension PurchaseMPCWalletTakeoverPasswordView {
     @ViewBuilder
     func passwordRequirementsView() -> some View {
         VStack(spacing: 3) {
-            ForEach(PasswordRequirements.allCases, id: \.self) { requirement in
+            ForEach(MPCWalletPasswordRequirements.allCases, id: \.self) { requirement in
                 passwordRequirementView(requirement)
             }
         }
     }
     
     @ViewBuilder
-    func passwordRequirementView(_ requirement: PasswordRequirements) -> some View {
+    func passwordRequirementView(_ requirement: MPCWalletPasswordRequirements) -> some View {
         HStack(spacing: 8) {
             Circle()
                 .squareFrame(4)
-            Text(titleFor(requirement: requirement))
+            Text(titleForRequirement(requirement, passwordErrors: passwordErrors))
                 .font(.currentFont(size: 13))
             Spacer()
         }
@@ -150,45 +150,13 @@ private extension PurchaseMPCWalletTakeoverPasswordView {
         .padding(.horizontal, 4)
     }
     
-    func foregroundStyleFor(requirement: PasswordRequirements) -> Color {
-        if isPasswordRequirementMet(requirement) {
+    func foregroundStyleFor(requirement: MPCWalletPasswordRequirements) -> Color {
+        if isPasswordRequirementMet(requirement, passwordErrors: passwordErrors) {
             .foregroundSuccess
         } else if isPasswordInErrorState && requirement == .length {
             .foregroundDanger
         } else {
             .foregroundSecondary
-        }
-    }
-    
-    func isPasswordRequirementMet(_ requirement: PasswordRequirements) -> Bool {
-        switch requirement {
-        case .length:
-            !passwordErrors.contains(.tooShort) && !passwordErrors.contains(.tooLong)
-        case .oneNumber:
-            !passwordErrors.contains(.missingNumber)
-        case .specialChar:
-            !passwordErrors.contains(.missingSpecialCharacter)
-        }
-    }
-    
-    enum PasswordRequirements: CaseIterable {
-        case length
-        case oneNumber
-        case specialChar
-    }
-    
-    func titleFor(requirement: PasswordRequirements) -> String {
-        switch requirement {
-        case .length:
-            if passwordErrors.contains(.tooLong) {
-                String.Constants.mpcPasswordValidationTooLongTitle.localized(minMPCWalletPasswordLength, maxMPCWalletPasswordLength)
-            } else {
-                String.Constants.mpcPasswordValidationLengthTitle.localized(minMPCWalletPasswordLength)
-            }
-        case .oneNumber:
-            String.Constants.mpcPasswordValidationNumberTitle.localized()
-        case .specialChar:
-            String.Constants.mpcPasswordValidationSpecialCharTitle.localized()
         }
     }
     

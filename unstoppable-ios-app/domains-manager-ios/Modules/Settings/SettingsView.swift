@@ -574,19 +574,7 @@ private extension SettingsView {
     }
     
     func addWalletAfterAdded(_ wallet: UDWallet) {
-        var walletName = String.Constants.wallet.localized()
-        if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0, udDomainsCount: 0) {
-            walletName = displayInfo.walletSourceName
-        }
-        appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
-        for profile in profiles {
-            if case .wallet(let walletEntity) = profile,
-               walletEntity.address == wallet.address {
-                tabRouter.walletViewNavPath.append(.walletDetails(walletEntity))
-                break
-            }
-        }
-        AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
+        tabRouter.didAddNewWallet(wallet)
     }
     
     func showWalletsNumberLimitReachedPullUp() {

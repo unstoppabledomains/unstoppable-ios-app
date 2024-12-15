@@ -32,6 +32,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var resolvingPrimaryDomainWallet: SelectRRPresentationDetails?
     @Published var showingWalletInfo: WalletEntity?
     @Published var sendCryptoInitialData: SendCryptoAsset.InitialData?
+    @Published var mpcResetPasswordData: MPCResetPasswordData? = nil
     weak var mintingNav: MintDomainsNavigationController?
     weak var chatsListCoordinator: ChatsListCoordinator?
     weak var homeWalletViewCoordinator: HomeWalletViewCoordinator?
@@ -306,6 +307,7 @@ extension HomeTabRouter {
         showingWalletInfo = nil
         sendCryptoInitialData = nil
         requestingRecoveryMPC = nil
+        mpcResetPasswordData = nil
         walletViewNavPath.removeAll()
         chatTabNavPath.removeAll()
         exploreTabNavPath.removeAll()
@@ -347,6 +349,27 @@ extension HomeTabRouter {
         guard let topVC else { return }
         
         appContext.pullUpViewService.showMessageSigningInMaintenancePullUp(in: topVC)
+    }
+    
+    func runResetMPCWalletPasswordFlow(_ mpcResetPasswordData: MPCResetPasswordData) {
+        self.mpcResetPasswordData = mpcResetPasswordData
+    }
+    
+    func didAddNewWallet(_ wallet: UDWallet) {
+        let profiles = appContext.userProfilesService.profiles
+        for profile in profiles {
+            if case .wallet(let walletEntity) = profile,
+               walletEntity.address == wallet.address {
+                let walletName = walletEntity.displayInfo.walletSourceName
+                appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
+                Task {
+                    await popToRootAndWait()
+                    walletViewNavPath.append(.walletDetails(walletEntity))
+                }
+                break
+            }
+        }
+        AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
     }
 }
 

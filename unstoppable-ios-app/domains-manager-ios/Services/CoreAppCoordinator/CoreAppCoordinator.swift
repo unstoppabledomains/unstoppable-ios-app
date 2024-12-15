@@ -316,6 +316,19 @@ extension CoreAppCoordinator: MPCWalletsUIHandler {
         }
         await waitForAppAuthorised()
     }
+    
+    func askForMPC2FACode() async -> String? {
+        guard let topVC else { return nil }
+        
+        return await withSafeCheckedMainActorContinuation { completion in
+            let view = MPCSetup2FAConfirmCodeView(verificationPurpose: .enterCode(callback: { code in
+                completion(code)
+            }), navigationStyle: .modal)
+            
+            let vc = UIHostingController(rootView: view)
+            topVC.present(vc, animated: true)
+        }
+    }
 }
 
 // MARK: - Passing events
@@ -332,6 +345,12 @@ private extension CoreAppCoordinator {
                 Task { await router.showPublicDomainProfileFromDeepLink(of: publicDomainDisplayInfo, by: wallet, preRequestedAction: action) }
             case .activateMPCWallet(let email):
                 router.runAddWalletFlow(initialAction: .activateMPC(preFilledEmail: email))
+            case .resetMPCWalletPassword(let data):
+                router.runResetMPCWalletPasswordFlow(data)
+            }
+        case .onboarding(let nav):
+            if case .resetMPCWalletPassword(let data) = event {
+                nav.runResetMPCWalletPasswordFlow(data)
             }
         default: return
         }
@@ -356,7 +375,7 @@ private extension CoreAppCoordinator {
     func setOnboardingAsRoot(_ flow: OnboardingNavigationController.OnboardingFlow) {
         let onboardingVC = OnboardingNavigationController.instantiate(flow: flow)
         setRootViewController(onboardingVC)
-        currentRoot = .onboarding
+        currentRoot = .onboarding(nav: onboardingVC)
     }
     
     func setRootViewController(_ rootViewController: UIViewController) {
@@ -401,7 +420,8 @@ extension CoreAppCoordinator {
 // MARK: - CurrentRoot
 private extension CoreAppCoordinator {
     enum CurrentRoot {
-        case none, onboarding, appUpdate, fullMaintenance
+        case none, appUpdate, fullMaintenance
+        case onboarding(nav: OnboardingNavigationController)
         case home(router: HomeTabRouter)
     }
 }

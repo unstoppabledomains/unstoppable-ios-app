@@ -27,7 +27,7 @@ enum UDApiType: String {
 
 struct APIRequest {
     let url: URL
-    let headers: [String: String]
+    private(set) var headers: [String: String]
     let body: String
     let method: NetworkService.HttpRequestMethod
     
@@ -57,6 +57,10 @@ struct APIRequest {
         self.headers = headers
         self.body = bodyString
         self.method = method
+    }
+    
+    mutating func updateHeaders(block: (inout [String : String])->()) {
+        block(&headers)
     }
 }
 

@@ -12,6 +12,7 @@ extension FB_UD_MPC {
     enum OperationReadyResponse {
         case txReady(txId: String)
         case signed(signature: String)
+        case finished(txHash: String)
     }
     
 }

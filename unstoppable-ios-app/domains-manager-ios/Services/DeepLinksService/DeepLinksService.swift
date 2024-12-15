@@ -39,7 +39,7 @@ extension DeepLinksService: DeepLinksServiceProtocol {
             }
         } else if let domainName = DomainProfileLinkValidator.getUDmeDomainName(in: components) {
             tryHandleUDDomainProfileDeepLink(domainName: domainName, params: components.queryItems, receivedState: receivedState)
-        } else if tryHandleActivateMPCWalletDeepLink(components: components,
+        } else if tryHandleMPCWalletDeepLink(components: components,
                                                      receivedState: receivedState) {
             return
         } else  {
@@ -194,8 +194,8 @@ private extension DeepLinksService {
                           receivedState: receivedState)
     }
     
-    func tryHandleActivateMPCWalletDeepLink(components: NSURLComponents,
-                                            receivedState: ExternalEventReceivedState) -> Bool {
+    func tryHandleMPCWalletDeepLink(components: NSURLComponents,
+                                    receivedState: ExternalEventReceivedState) -> Bool {
         guard let path = components.path,
               let host = components.host else { return false }
         
@@ -203,12 +203,26 @@ private extension DeepLinksService {
         
         if Constants.udMeHosts.contains(host),
            pathComponents.last == ud_me_MPC_path {
-            let email = components.queryItems?.first(where: { $0.name == "email" })?.value
-            notifyWaitersWith(event: .activateMPCWallet(email: email),
-                              receivedState: receivedState)
+            let email = getValueIn(components: components, withName: "email")
+            
+            if let recoveryToken = getValueIn(components: components, withName: "recoveryToken"),
+               let email {
+                let data = MPCResetPasswordData(email: email, recoveryToken: recoveryToken)
+                notifyWaitersWith(event: .resetMPCWalletPassword(data: data),
+                                  receivedState: receivedState)
+            } else {
+                notifyWaitersWith(event: .activateMPCWallet(email: email),
+                                  receivedState: receivedState)
+            }
+            
             return true
         }
         return false
+    }
+    
+    func getValueIn(components: NSURLComponents,
+                    withName valueName: String) -> String? {
+        components.queryItems?.first(where: { $0.name == valueName })?.value
     }
     
     func notifyWaitersWith(event: DeepLinkEvent, receivedState: ExternalEventReceivedState) {
