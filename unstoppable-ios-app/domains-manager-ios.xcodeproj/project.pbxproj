@@ -11776,7 +11776,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.5.1;
+				MARKETING_VERSION = 5.5.3;
 				MERGED_BINARY_TYPE = automatic;
 				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=50 -Xfrontend -warn-long-function-bodies=50";
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
@@ -11812,7 +11812,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.5.1;
+				MARKETING_VERSION = 5.5.3;
 				MERGED_BINARY_TYPE = automatic;
 				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=50 -Xfrontend -warn-long-function-bodies=50";
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
@@ -11990,7 +11990,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.5.1;
+				MARKETING_VERSION = 5.5.3;
 				MERGED_BINARY_TYPE = automatic;
 				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=50 -Xfrontend -warn-long-function-bodies=50";
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
