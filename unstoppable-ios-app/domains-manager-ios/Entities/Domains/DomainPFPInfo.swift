@@ -69,9 +69,9 @@ extension DomainPFPInfo {
         switch imageType {
         case .onChain:
             return .nft(imageValue: pfpURL)
-        case .offChain:
+        case .offChain, .default:
             return .nonNFT(imagePath: pfpURL)
-        case .default, .none:
+        case .none:
             return .none
         }
     }
