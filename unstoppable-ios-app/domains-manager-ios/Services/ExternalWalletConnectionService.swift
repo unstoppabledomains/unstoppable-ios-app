@@ -113,7 +113,7 @@ extension ExternalWalletConnectionService: WalletConnectExternalWalletConnection
 // MARK: - Private methods
 private extension ExternalWalletConnectionService {
     func evokeConnectExternalWallet(wcWallet: WCWalletsProvider.WalletRecord) async {
-        let connectionUrlString: String?
+        let connectionUrlString: WalletConnectURI?
         guard wcWallet.isV2Compatible else {
             Debugger.printFailure("Attempt to connect to WC1 wallet", critical: true)
             finishWith(result: .failure(.failedToConnect))
@@ -127,13 +127,13 @@ private extension ExternalWalletConnectionService {
         }
         switch uri {
         case .oldPairing: connectionUrlString = nil
-        case .newPairing: connectionUrlString = nil
+        case .newPairing(let urrri): connectionUrlString = urrri
         }
 
         startExternalWallet(wcWallet: wcWallet, connectionUrlString: connectionUrlString)
     }
     
-    func startExternalWallet(wcWallet: WCWalletsProvider.WalletRecord, connectionUrlString: String?) {
+    func startExternalWallet(wcWallet: WCWalletsProvider.WalletRecord, connectionUrlString: WalletConnectURI?) {
         let appPrefix: String
         if let universalPrefix = wcWallet.getOperationalAppLink(),
            !universalPrefix.isEmpty {
@@ -143,26 +143,8 @@ private extension ExternalWalletConnectionService {
             finishWith(result: .failure(.failedToConnect))
             return
         }
-        
-        guard let coreUrl = URL(string: appPrefix),
-              let comps = URLComponents(url: coreUrl, resolvingAgainstBaseURL: false) else {
-            Debugger.printFailure("Cannot break into components \(appPrefix)", critical: true)
-            finishWith(result: .failure(.failedToConnect))
-            return
-        }
-        let universalUrl: URL
-        if let uriString = connectionUrlString,
-           let escapedString = uriString.addingPercentEncoding(withAllowedCharacters: .alphanumerics) {
-            var components = comps
-            components.path = "/wc"
-            
-            let uriPayload = wcWallet.isV2Compatible ? escapedString : uriString
-            
-            let universalDeepLinkUrl = components.url!.absoluteString + "?uri=\(uriPayload)"
-            universalUrl = URL(string: universalDeepLinkUrl)!
-        } else {
-            universalUrl = coreUrl
-        }
+                
+        var universalUrl: URL = createWalletConnectDeepLink(from: connectionUrlString!, host: appPrefix)!
         
         DispatchQueue.main.async {
             if UIApplication.shared.canOpenURL(universalUrl) {
@@ -172,6 +154,52 @@ private extension ExternalWalletConnectionService {
                 self.finishWith(result: .failure(.failedToConnect))
             }
         }
+    }
+    
+    func createWalletConnectDeepLink(from pair: WalletConnectURI, host: String) -> URL? {
+        // First create the inner WalletConnect URI
+        var innerComponents = URLComponents()
+        innerComponents.scheme = "wc"
+        innerComponents.path = "\(pair.topic)@\(pair.version)"
+        
+        var queryItems = [
+            URLQueryItem(name: "relay-protocol", value: pair.relay.protocol),
+            URLQueryItem(name: "symKey", value: pair.symKey),
+            URLQueryItem(name: "expiryTimestamp", value: "\(pair.expiryTimestamp)")  // Just directly convert to String
+        ]
+        
+        if let methods = pair.methods {
+            queryItems.append(URLQueryItem(name: "methods", value: methods.joined(separator: ",")))
+        } else {
+            queryItems.append(URLQueryItem(name: "methods", value: ["wc_sessionPropose", "wc_sessionRequest"].joined(separator: ",")))
+        }
+        
+        if let relayData = pair.relay.data {
+            queryItems.append(URLQueryItem(name: "relay-data", value: relayData))
+        }
+        
+        innerComponents.queryItems = queryItems
+        
+        // Get the inner URI and encode it - we need the full URL string encoded
+        guard let innerURI = innerComponents.url?.absoluteString,
+              let encodedOnce = innerURI.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let doubleEncodedURI = encodedOnce.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            return nil
+        }
+        
+        // Create the outer URL with the encoded inner URI
+        var outerComponents = URLComponents()
+        if let hostComponents = URLComponents(string: host),
+           let scheme = hostComponents.scheme {
+            outerComponents.scheme = scheme
+        }
+
+        outerComponents.host = "wc"
+        outerComponents.queryItems = [
+            URLQueryItem(name: "uri", value: doubleEncodedURI)
+        ]
+        
+        return outerComponents.url
     }
     
     func finishWith(result: ConnectionResult) {
