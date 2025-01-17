@@ -1179,9 +1179,9 @@ extension WalletConnectServiceV2 {
     ] }
     
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> Wc2ConnectionType {
-        try await Sign.instance.connect(requiredNamespaces: requiredNamespaces,
+        let uri: WalletConnectURI = try await Sign.instance.connect(requiredNamespaces: requiredNamespaces,
                                         optionalNamespaces: optionalNamespaces)
-        return .newPairing
+        return .newPairing(uri)
     }
     
     func disconnect(from wcWallet: HexAddress) async {

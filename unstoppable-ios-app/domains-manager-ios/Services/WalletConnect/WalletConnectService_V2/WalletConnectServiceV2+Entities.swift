@@ -20,7 +20,7 @@ extension WalletConnectServiceV2 {
     
     enum Wc2ConnectionType {
         case oldPairing
-        case newPairing
+        case newPairing(WalletConnectURI)
     }
     
     struct ConnectWalletRequest: Equatable {
