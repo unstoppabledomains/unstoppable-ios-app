@@ -220,8 +220,8 @@ private extension ChatListView {
     
     @ViewBuilder
     func shutDownBeforeV3StateContentView() -> some View {
-        ChatListEmptyStateView(title: String.Constants.mpcWalletMessagingUnavailableMessage.localizedMPCProduct(),
-                               subtitle: "",
+        ChatListEmptyStateView(title: "Chat Disabled",
+                               subtitle: "The Chat feature is temporarily unavailable until we upgrade to the next version of the XMTP messaging network. You won't be able to send, receive, or view messages during this time. Meanwhile you can continue chatting at https://legacy.xmtp.chat.",
                                icon: .messageCircleFilledIcon,
                                actionButtonConfiguration: nil)
     }
@@ -271,7 +271,7 @@ private extension ChatListView {
     func chatDataTypePickerView() -> some View {
         if !viewModel.isSearchActive {
             switch viewModel.chatState {
-            case .noWallet, .createProfile, .loading, .mpcUnavailable, .creatingProfileInProgress:
+            case .noWallet, .createProfile, .loading, .mpcUnavailable, .creatingProfileInProgress, .shutDownBeforeV3:
                 EmptyView()
             case .chatsList:
                 ChatListDataTypeSelectorView()
