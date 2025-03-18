@@ -187,7 +187,7 @@ extension BlockchainType {
         switch self {
         case .Ethereum, .Matic, .Base: "^0x[a-fA-F0-9]{40}$"
         case .Bitcoin: "^bc1[ac-hj-np-z02-9]{6,87}$|^[13][a-km-zA-HJ-NP-Z1-9]{25,39}$"
-        case .Solana: "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
+        case .Solana: "^[1-9A-HJ-NP-Za-km-z]{44}$"
         }
     }
     
