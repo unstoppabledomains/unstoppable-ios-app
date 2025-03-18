@@ -100,15 +100,23 @@ private extension ChatListView {
     }
     
     func setupTitle() {
-        navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(profile: viewModel.selectedProfile) },
-                                        id: UUID().uuidString)
-        navigationState?.isTitleVisible = true
+        if Chat.isChatShutDown {
+            navigationState?.isTitleVisible = false
+        } else {
+            navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(profile: viewModel.selectedProfile) },
+                                            id: UUID().uuidString)
+            navigationState?.isTitleVisible = true
+        }
     }
     
     func setTitleVisibility() {
         if !isOtherScreenPushed {
             withAnimation {
-                navigationState?.isTitleVisible = !viewModel.isSearchActive && viewModel.searchText.isEmpty
+                if Chat.isChatShutDown {
+                    navigationState?.isTitleVisible = false
+                } else {
+                    navigationState?.isTitleVisible = !viewModel.isSearchActive && viewModel.searchText.isEmpty
+                }
             }
         }
     }
@@ -162,7 +170,7 @@ private extension ChatListView {
         } label: {
             Image.newMessageIcon
                 .resizable()
-                .foregroundStyle(Color.foregroundDefault)
+                .foregroundStyle(Chat.isChatShutDown ? Color.foregroundDefault.opacity(0.4) : Color.foregroundDefault)
         }
         .disabled(Chat.isChatShutDown)
     }
