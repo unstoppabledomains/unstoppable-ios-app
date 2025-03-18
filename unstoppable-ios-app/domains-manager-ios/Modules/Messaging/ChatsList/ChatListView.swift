@@ -182,19 +182,25 @@ private extension ChatListView {
  
     @ViewBuilder
     func chatStateContentView() -> some View {
-        switch viewModel.chatState {
-        case .noWallet:
-            noWalletStateContentView()
-        case .createProfile:
-            createProfileStateContentView()
-        case .chatsList:
-            chatsListStateContentView()
-        case .loading:
-            loadingStateContentView()
-        case .creatingProfileInProgress:
-            creatingProfileInProgressStateContentView()
-        case .mpcUnavailable:
-            mpcUnavailableStateContentView()
+        if Chat.isChatShutDown {
+            shutDownBeforeV3StateContentView()
+        } else {
+            switch viewModel.chatState {
+            case .noWallet:
+                noWalletStateContentView()
+            case .createProfile:
+                createProfileStateContentView()
+            case .chatsList:
+                chatsListStateContentView()
+            case .loading:
+                loadingStateContentView()
+            case .creatingProfileInProgress:
+                creatingProfileInProgressStateContentView()
+            case .mpcUnavailable:
+                mpcUnavailableStateContentView()
+            case .shutDownBeforeV3:
+                shutDownBeforeV3StateContentView()
+            }
         }
     }
     
@@ -210,6 +216,14 @@ private extension ChatListView {
             logButtonPressedAnalyticEvents(button: .addWallet)
             viewModel.addWalletButtonPressed()
         }))
+    }
+    
+    @ViewBuilder
+    func shutDownBeforeV3StateContentView() -> some View {
+        ChatListEmptyStateView(title: String.Constants.mpcWalletMessagingUnavailableMessage.localizedMPCProduct(),
+                               subtitle: "",
+                               icon: .messageCircleFilledIcon,
+                               actionButtonConfiguration: nil)
     }
     
     @ViewBuilder
@@ -570,6 +584,7 @@ extension ChatListView {
         case chatsList
         case loading
         case mpcUnavailable
+        case shutDownBeforeV3
     }
     
     enum CommunitiesListState {
