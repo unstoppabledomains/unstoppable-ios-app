@@ -220,8 +220,8 @@ private extension ChatListView {
     
     @ViewBuilder
     func shutDownBeforeV3StateContentView() -> some View {
-        ChatListEmptyStateView(title: "Chat Disabled",
-                               subtitle: "The Chat feature is temporarily unavailable until we upgrade to the next version of the XMTP messaging network. You won't be able to send, receive, or view messages during this time. Meanwhile you can continue chatting at https://legacy.xmtp.chat.",
+        ChatListEmptyStateView(title: String.Constants.messagingChatDisabledTitle.localized(),
+                               subtitle: String.Constants.messagingChatDisabledSubtitle.localized(),
                                icon: .messageCircleFilledIcon,
                                actionButtonConfiguration: nil)
     }

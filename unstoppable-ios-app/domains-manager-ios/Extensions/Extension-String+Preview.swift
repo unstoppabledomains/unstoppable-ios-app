@@ -1006,6 +1006,8 @@ extension String {
         static let messagingNoWalletsTitle = "MESSAGING_NO_WALLETS_TITLE"
         static let messagingNoWalletsSubtitle = "MESSAGING_NO_WALLETS_SUBTITLE"
         static let messagingCreateProfileInProgressTitle = "MESSAGING_CREATE_PROFILE_IN_PROGRESS_TITLE"
+        static let messagingChatDisabledTitle = "MESSAGING_CHAT_DISABLED_TITLE"
+        static let messagingChatDisabledSubtitle = "MESSAGING_CHAT_DISABLED_SUBTITLE"
         
         // Public profile
         static let followers = "FOLLOWERS"
