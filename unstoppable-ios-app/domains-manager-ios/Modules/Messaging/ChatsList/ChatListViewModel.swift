@@ -106,6 +106,8 @@ extension ChatListViewModel {
     }
     
     func didSelectUserToChat(_ user: MessagingChatUserDisplayInfo) {
+        if Chat.isChatShutDown { return }
+        
         if let existingChat = chatsList.first(where: { $0.type.otherUserDisplayInfo?.wallet.normalized == user.wallet.normalized }) {
             openChatWith(conversationState: .existingChat(existingChat))
         } else {
@@ -114,6 +116,8 @@ extension ChatListViewModel {
     }
     
     func joinCommunity(_ community: MessagingChatDisplayInfo) {
+        if Chat.isChatShutDown { return }
+        
         Task {
             isLoading = true
             do {
@@ -127,6 +131,8 @@ extension ChatListViewModel {
     }
     
     func showChatRequests() {
+        if Chat.isChatShutDown { return }
+        
         guard let profile = selectedProfileWalletPair?.profile else { return }
 
         stopSearching()
@@ -135,6 +141,8 @@ extension ChatListViewModel {
     }
     
     func showChannelRequests() {
+        if Chat.isChatShutDown { return }
+        
         guard let profile = selectedProfileWalletPair?.profile else { return }
 
         stopSearching()
@@ -143,6 +151,8 @@ extension ChatListViewModel {
     }
 
     func openChatWith(conversationState: MessagingChatConversationState) {
+        if Chat.isChatShutDown { return }
+        
         guard let profile = selectedProfileWalletPair?.profile else { return }
         if case .existingChat(let messagingChatDisplayInfo) = conversationState,
            messagingChatDisplayInfo.isCommunityChat,
@@ -156,7 +166,9 @@ extension ChatListViewModel {
     }
     
     func openChannel(_ channel: MessagingNewsChannel) {
-                guard let profile = selectedProfileWalletPair?.profile else { return }
+        if Chat.isChatShutDown { return }
+        
+        guard let profile = selectedProfileWalletPair?.profile else { return }
         
         stopSearching()
         router.chatTabNavPath.append(HomeChatNavigationDestination.channel(profile: profile, channel: channel))

@@ -30,6 +30,7 @@ struct ChatListView: View, ViewAnalyticsLogger {
                     .searchable(text: $viewModel.searchText,
                                 placement: .navigationBarDrawer(displayMode: .automatic),
                                 prompt: Text(String.Constants.search.localized()))
+                    .disabled(Chat.isChatShutDown)
                 } else {
                     ScrollView {
                         chatListContentView()
@@ -163,6 +164,7 @@ private extension ChatListView {
                 .resizable()
                 .foregroundStyle(Color.foregroundDefault)
         }
+        .disabled(Chat.isChatShutDown)
     }
     
     @ViewBuilder
@@ -302,6 +304,7 @@ private extension ChatListView {
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(0))
+                    .disabled(Chat.isChatShutDown)
             }
         }
     }
