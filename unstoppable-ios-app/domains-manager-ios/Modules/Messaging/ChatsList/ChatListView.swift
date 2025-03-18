@@ -220,10 +220,34 @@ private extension ChatListView {
     
     @ViewBuilder
     func shutDownBeforeV3StateContentView() -> some View {
-        ChatListEmptyStateView(title: String.Constants.messagingChatDisabledTitle.localized(),
-                               subtitle: String.Constants.messagingChatDisabledSubtitle.localized(),
-                               icon: .messageCircleFilledIcon,
-                               actionButtonConfiguration: nil)
+        let title = String.Constants.messagingChatDisabledTitle.localized()
+        let subtitle = String.Constants.messagingChatDisabledSubtitle.localized()
+        
+        VStack(spacing: 24) {
+            VStack(spacing: 16) {
+                Image.messageCircleFilledIcon
+                    .resizable()
+                    .squareFrame(32)
+                VStack(spacing: 8) {
+                    Text(title)
+                        .font(.currentFont(size: 20, weight: .bold))
+                    
+                    // Using a text with tappable link instead of the standard subtitle
+                    Text(.init(subtitle))
+                        .font(.currentFont(size: 16))
+                        .tint(Color.foregroundAccent)
+                        .onOpenURL { url in
+                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                        }
+                }
+            }
+            .foregroundStyle(Color.foregroundSecondary)
+            .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 400)
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
     }
     
     @ViewBuilder
