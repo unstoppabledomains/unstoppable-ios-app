@@ -21,24 +21,33 @@ struct ChatListView: View, ViewAnalyticsLogger {
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             ZStack {
-                if viewModel.chatState == .chatsList {
-                    List {
-                        chatListContentView()
-                    }
-                    .environmentObject(viewModel)
-                    .sectionSpacing(16)
-                    .searchable(text: $viewModel.searchText,
-                                placement: .navigationBarDrawer(displayMode: .automatic),
-                                prompt: Text(String.Constants.search.localized()))
-                    .disabled(Chat.isChatShutDown)
-                } else {
+                if Chat.isChatShutDown {
+                    // Place the shutdown message outside of any disabled views
                     ScrollView {
-                        chatListContentView()
+                        VStack {
+                            shutDownBeforeV3StateContentView()
+                        }
+                        .padding()
                     }
-                }
-            
-                if viewModel.isLoading {
-                    ProgressView()
+                } else {
+                    if viewModel.chatState == .chatsList {
+                        List {
+                            chatListContentView()
+                        }
+                        .environmentObject(viewModel)
+                        .sectionSpacing(16)
+                        .searchable(text: $viewModel.searchText,
+                                    placement: .navigationBarDrawer(displayMode: .automatic),
+                                    prompt: Text(String.Constants.search.localized()))
+                    } else {
+                        ScrollView {
+                            chatListContentView()
+                        }
+                    }
+                
+                    if viewModel.isLoading {
+                        ProgressView()
+                    }
                 }
             }
             .trackAppearanceAnalytics(analyticsLogger: self)
@@ -67,12 +76,14 @@ struct ChatListView: View, ViewAnalyticsLogger {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    newMessageNavButton()
-                        .opacity(viewModel.chatState == .chatsList ? 1 : 0)
+                    if !Chat.isChatShutDown {
+                        newMessageNavButton()
+                            .opacity(viewModel.chatState == .chatsList ? 1 : 0)
+                    }
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                if hasBottomView {
+                if hasBottomView && !Chat.isChatShutDown {
                     bottomView()
                         .frame(maxWidth: .infinity)
                         .background(.regularMaterial)
@@ -242,22 +253,34 @@ private extension ChatListView {
                     Text(title)
                         .font(.currentFont(size: 20, weight: .bold))
                     
-                    // Using a text with tappable link instead of the standard subtitle
-                    Text(.init(subtitle))
+                    Text(subtitle)
                         .font(.currentFont(size: 16))
-                        .tint(Color.foregroundAccent)
-                        .onOpenURL { url in
-                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                        }
                 }
             }
             .foregroundStyle(Color.foregroundSecondary)
             .multilineTextAlignment(.center)
+            
+            // Create a simple button that will use a direct URL opening mechanism
+            Button {
+                logButtonPressedAnalyticEvents(button: .learnMore)
+                if let url = URL(string: "https://legacy.xmtp.chat") {
+                    UIApplication.shared.open(url)
+                }
+            } label: {
+                Text(String.Constants.learnMore.localized())
+                    .font(.currentFont(size: 16, weight: .medium))
+                    .foregroundStyle(Color.foregroundAccent)
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 16)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.foregroundAccent, lineWidth: 1)
+                    )
+            }
+            .buttonStyle(PlainButtonStyle())
         }
         .frame(maxWidth: .infinity)
         .frame(height: 400)
-        .listRowSeparator(.hidden)
-        .listRowBackground(Color.clear)
     }
     
     @ViewBuilder
