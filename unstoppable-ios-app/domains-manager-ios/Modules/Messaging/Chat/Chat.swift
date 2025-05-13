@@ -10,6 +10,11 @@ import UIKit
 // Namespace
 enum Chat { }
 
+// Top-level flag to control whether messaging is shut down
+extension Chat {
+    static let isChatShutDown = true
+}
+
 extension Chat {
     enum ChatLinkHandleAction: CaseIterable, PullUpCollectionViewCellItem {
        

@@ -900,6 +900,8 @@
 "MESSAGING_NO_WALLETS_TITLE" = "Get access to Messaging\nwith a wallet";
 "MESSAGING_NO_WALLETS_SUBTITLE" = "To send and receive messages, a crypto wallet is required to ensure secure and encrypted communication.";
 "MESSAGING_CREATE_PROFILE_IN_PROGRESS_TITLE" = "Enabling chat...";
+"MESSAGING_CHAT_DISABLED_TITLE" = "Chat Disabled";
+"MESSAGING_CHAT_DISABLED_SUBTITLE" = "The Chat feature is temporarily unavailable until we upgrade to the next version of the XMTP messaging network. You won't be able to send, receive, or view messages during this time.\n\nMeanwhile you can continue chatting at\nhttps://legacy.xmtp.chat.";
 
 // Public profile
 "FOLLOWERS" = "Followers";

@@ -21,23 +21,33 @@ struct ChatListView: View, ViewAnalyticsLogger {
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             ZStack {
-                if viewModel.chatState == .chatsList {
-                    List {
-                        chatListContentView()
-                    }
-                    .environmentObject(viewModel)
-                    .sectionSpacing(16)
-                    .searchable(text: $viewModel.searchText,
-                                placement: .navigationBarDrawer(displayMode: .automatic),
-                                prompt: Text(String.Constants.search.localized()))
-                } else {
+                if Chat.isChatShutDown {
+                    // Place the shutdown message outside of any disabled views
                     ScrollView {
-                        chatListContentView()
+                        VStack {
+                            shutDownBeforeV3StateContentView()
+                        }
+                        .padding()
                     }
-                }
-            
-                if viewModel.isLoading {
-                    ProgressView()
+                } else {
+                    if viewModel.chatState == .chatsList {
+                        List {
+                            chatListContentView()
+                        }
+                        .environmentObject(viewModel)
+                        .sectionSpacing(16)
+                        .searchable(text: $viewModel.searchText,
+                                    placement: .navigationBarDrawer(displayMode: .automatic),
+                                    prompt: Text(String.Constants.search.localized()))
+                    } else {
+                        ScrollView {
+                            chatListContentView()
+                        }
+                    }
+                
+                    if viewModel.isLoading {
+                        ProgressView()
+                    }
                 }
             }
             .trackAppearanceAnalytics(analyticsLogger: self)
@@ -66,12 +76,14 @@ struct ChatListView: View, ViewAnalyticsLogger {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    newMessageNavButton()
-                        .opacity(viewModel.chatState == .chatsList ? 1 : 0)
+                    if !Chat.isChatShutDown {
+                        newMessageNavButton()
+                            .opacity(viewModel.chatState == .chatsList ? 1 : 0)
+                    }
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                if hasBottomView {
+                if hasBottomView && !Chat.isChatShutDown {
                     bottomView()
                         .frame(maxWidth: .infinity)
                         .background(.regularMaterial)
@@ -99,15 +111,23 @@ private extension ChatListView {
     }
     
     func setupTitle() {
-        navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(profile: viewModel.selectedProfile) },
-                                        id: UUID().uuidString)
-        navigationState?.isTitleVisible = true
+        if Chat.isChatShutDown {
+            navigationState?.isTitleVisible = false
+        } else {
+            navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(profile: viewModel.selectedProfile) },
+                                            id: UUID().uuidString)
+            navigationState?.isTitleVisible = true
+        }
     }
     
     func setTitleVisibility() {
         if !isOtherScreenPushed {
             withAnimation {
-                navigationState?.isTitleVisible = !viewModel.isSearchActive && viewModel.searchText.isEmpty
+                if Chat.isChatShutDown {
+                    navigationState?.isTitleVisible = false
+                } else {
+                    navigationState?.isTitleVisible = !viewModel.isSearchActive && viewModel.searchText.isEmpty
+                }
             }
         }
     }
@@ -161,8 +181,9 @@ private extension ChatListView {
         } label: {
             Image.newMessageIcon
                 .resizable()
-                .foregroundStyle(Color.foregroundDefault)
+                .foregroundStyle(Chat.isChatShutDown ? Color.foregroundDefault.opacity(0.4) : Color.foregroundDefault)
         }
+        .disabled(Chat.isChatShutDown)
     }
     
     @ViewBuilder
@@ -182,19 +203,25 @@ private extension ChatListView {
  
     @ViewBuilder
     func chatStateContentView() -> some View {
-        switch viewModel.chatState {
-        case .noWallet:
-            noWalletStateContentView()
-        case .createProfile:
-            createProfileStateContentView()
-        case .chatsList:
-            chatsListStateContentView()
-        case .loading:
-            loadingStateContentView()
-        case .creatingProfileInProgress:
-            creatingProfileInProgressStateContentView()
-        case .mpcUnavailable:
-            mpcUnavailableStateContentView()
+        if Chat.isChatShutDown {
+            shutDownBeforeV3StateContentView()
+        } else {
+            switch viewModel.chatState {
+            case .noWallet:
+                noWalletStateContentView()
+            case .createProfile:
+                createProfileStateContentView()
+            case .chatsList:
+                chatsListStateContentView()
+            case .loading:
+                loadingStateContentView()
+            case .creatingProfileInProgress:
+                creatingProfileInProgressStateContentView()
+            case .mpcUnavailable:
+                mpcUnavailableStateContentView()
+            case .shutDownBeforeV3:
+                shutDownBeforeV3StateContentView()
+            }
         }
     }
     
@@ -210,6 +237,50 @@ private extension ChatListView {
             logButtonPressedAnalyticEvents(button: .addWallet)
             viewModel.addWalletButtonPressed()
         }))
+    }
+    
+    @ViewBuilder
+    func shutDownBeforeV3StateContentView() -> some View {
+        let title = String.Constants.messagingChatDisabledTitle.localized()
+        let subtitle = String.Constants.messagingChatDisabledSubtitle.localized()
+        
+        VStack(spacing: 24) {
+            VStack(spacing: 16) {
+                Image.messageCircleFilledIcon
+                    .resizable()
+                    .squareFrame(32)
+                VStack(spacing: 8) {
+                    Text(title)
+                        .font(.currentFont(size: 20, weight: .bold))
+                    
+                    Text(subtitle)
+                        .font(.currentFont(size: 16))
+                }
+            }
+            .foregroundStyle(Color.foregroundSecondary)
+            .multilineTextAlignment(.center)
+            
+            // Create a simple button that will use a direct URL opening mechanism
+            Button {
+                logButtonPressedAnalyticEvents(button: .learnMore)
+                if let url = URL(string: "https://legacy.xmtp.chat") {
+                    UIApplication.shared.open(url)
+                }
+            } label: {
+                Text(String.Constants.learnMore.localized())
+                    .font(.currentFont(size: 16, weight: .medium))
+                    .foregroundStyle(Color.foregroundAccent)
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 16)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.foregroundAccent, lineWidth: 1)
+                    )
+            }
+            .buttonStyle(PlainButtonStyle())
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 400)
     }
     
     @ViewBuilder
@@ -257,13 +328,14 @@ private extension ChatListView {
     func chatDataTypePickerView() -> some View {
         if !viewModel.isSearchActive {
             switch viewModel.chatState {
-            case .noWallet, .createProfile, .loading, .mpcUnavailable, .creatingProfileInProgress:
+            case .noWallet, .createProfile, .loading, .mpcUnavailable, .creatingProfileInProgress, .shutDownBeforeV3:
                 EmptyView()
             case .chatsList:
                 ChatListDataTypeSelectorView()
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(0))
+                    .disabled(Chat.isChatShutDown)
             }
         }
     }
@@ -570,6 +642,7 @@ extension ChatListView {
         case chatsList
         case loading
         case mpcUnavailable
+        case shutDownBeforeV3
     }
     
     enum CommunitiesListState {
