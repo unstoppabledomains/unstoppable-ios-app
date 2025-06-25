@@ -7,6 +7,8 @@
 
 import UIKit
 import Push
+import DatadogCore
+import DatadogRUM
 
 var appContext: AppContextProtocol {
     return AppDelegate.shared.appContext
@@ -92,6 +94,7 @@ private extension AppDelegate {
     func setup() {
         setVersionAndBuildNumber()
         setupAppearance()
+        setupDataDog()
         setupFeatureFlags()
         configureNavBar()
     }
@@ -153,5 +156,32 @@ private extension AppDelegate {
     
     func setupFeatureFlags() {
         _ = appContext.udFeatureFlagsService
+    }
+    
+    func setupDataDog() {
+        var environment = "prod"
+#if DEBUG
+        environment = "debug"
+#endif
+        
+        let appID = "8042119b-9e30-4f74-946a-ebb84f5053c1"
+        let clientToken = "pub08e97cef2cf6fc1952fb8519183ccd69"
+        
+        Datadog.initialize(
+            with: Datadog.Configuration(
+                clientToken: clientToken,
+                env: environment,
+                site: .us1
+            ),
+            trackingConsent: .granted
+        )
+
+        RUM.enable(
+            with: RUM.Configuration(
+                applicationID: appID,
+                uiKitViewsPredicate: DefaultUIKitRUMViewsPredicate(),
+                uiKitActionsPredicate: DefaultUIKitRUMActionsPredicate()
+            )
+        )
     }
 }
