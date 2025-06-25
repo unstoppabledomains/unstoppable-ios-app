@@ -30,7 +30,7 @@ class SpecificStorage<T: Codable> {
             case .FileNotFound: return nil
                 
             case .DecodeFailed(let err):
-                Debugger.printFailure("Decoding class \(String(describing: T.self)) from local storage file: \(err)", critical: false, suppressBugSnag: true)
+                Debugger.printFailure("Decoding class \(String(describing: T.self)) from local storage file: \(err)", critical: false, suppressOnlineLogging: true)
             default: Debugger.printFailure("Reading file into class \(String(describing: T.self)) from local storage file: \(error)", critical: false)
             }
             return nil
