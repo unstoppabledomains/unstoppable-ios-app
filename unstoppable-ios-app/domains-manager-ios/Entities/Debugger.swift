@@ -96,7 +96,7 @@ public struct Debugger {
         let message = "\(String.itTook(from: startDate)) \(s)"
         let timeAfterStart = Date().timeIntervalSince(startDate)
         if timeAfterStart > timeout {
-            printWarning(message, suppressBugSnag: true)
+            printWarning(message, suppressOnlineLogging: true)
         } else {
             printInfo(topic: topic, message)
         }
@@ -110,27 +110,21 @@ public struct Debugger {
             logger.critical("🟥 \(s)")
         }
         #else
-        guard !suppressBugSnag else {
+        guard !suppressOnlineLogging else {
             return
         }
-//        let exception = NSException(name:NSExceptionName(rawValue: "\(critical ? "CRITICAL" : "NON-CRITICAL"): \(s)"),
-//                                    reason: "",
-//                                    userInfo: nil)
-//        Bugsnag.notify(exception)
+        // TODO: log to DataDog
         #endif
     }
     
-    static func printWarning(_ s: String, suppressBugSnag: Bool = false) {
+    static func printWarning(_ s: String, suppressOnlineLogging: Bool = false) {
         #if DEBUG
         logger.warning("🟨🔸 WARNING: \(s)")
         #else
-        guard !suppressBugSnag else {
+        guard !suppressOnlineLogging else {
             return
         }
-//        let exception = NSException(name:NSExceptionName(rawValue: "WARNING: \(s)"),
-//                                    reason: "",
-//                                    userInfo: nil)
-//        Bugsnag.notify(exception)
+        // TODO: log to DataDog
         #endif
     }
 }
