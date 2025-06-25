@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Bugsnag
 import Push
 
 var appContext: AppContextProtocol {
@@ -93,7 +92,6 @@ private extension AppDelegate {
     func setup() {
         setVersionAndBuildNumber()
         setupAppearance()
-        setupBugsnag()
         setupFeatureFlags()
         configureNavBar()
     }
@@ -151,10 +149,6 @@ private extension AppDelegate {
         Task {
             await appContext.imageLoadingService.clearStoredImages()
         }
-    }
-
-    func setupBugsnag() {
-        Bugsnag.start()
     }
     
     func setupFeatureFlags() {
