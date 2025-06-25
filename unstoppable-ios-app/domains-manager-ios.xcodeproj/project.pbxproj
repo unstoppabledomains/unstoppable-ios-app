@@ -105,7 +105,6 @@
 		30BFA4E427E24A4700644CD5 /* RecoveryPhraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BFA4E327E24A4600644CD5 /* RecoveryPhraseViewController.swift */; };
 		30CB2D2225C2E98C00203052 /* ApiRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CB2D2125C2E98C00203052 /* ApiRequestBuilder.swift */; };
 		30CE604C26A9DED000E0D29B /* web3swift in Frameworks */ = {isa = PBXBuildFile; productRef = 30CE604B26A9DED000E0D29B /* web3swift */; };
-		30D89F5B26A9EB5500251C2D /* Bugsnag in Frameworks */ = {isa = PBXBuildFile; productRef = 30D89F5A26A9EB5500251C2D /* Bugsnag */; };
 		30E549C32886DA27009833FB /* DefaultsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E549C22886DA27009833FB /* DefaultsStorage.swift */; };
 		30EFBBDC27F4754E00B8D667 /* MainButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFBBDB27F4754E00B8D667 /* MainButton.swift */; };
 		C6008B2B2C60F77700F218B9 /* NavigationPopGestureDisabler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6008B2A2C60F77700F218B9 /* NavigationPopGestureDisabler.swift */; };
@@ -2580,7 +2579,6 @@
 		C6E69F8D288A93D3000A8346 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E69F8C288A93D3000A8346 /* NotificationService.swift */; };
 		C6E69F91288A93D3000A8346 /* NotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C6E69F8A288A93D2000A8346 /* NotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C6E69F97288AB6BE000A8346 /* Debugger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30472D8B2672435200B0D7A7 /* Debugger.swift */; };
-		C6E69F99288AB6DC000A8346 /* Bugsnag in Frameworks */ = {isa = PBXBuildFile; productRef = C6E69F98288AB6DC000A8346 /* Bugsnag */; };
 		C6E69FA1288AB813000A8346 /* UIImage+SVG.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D2F15228757C25005F4F2E /* UIImage+SVG.swift */; };
 		C6E69FA3288AB821000A8346 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = C6E69FA2288AB821000A8346 /* SVGKit */; };
 		C6E69FE1288AD264000A8346 /* String+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E69FE0288AD264000A8346 /* String+Localization.swift */; };
@@ -4282,7 +4280,6 @@
 				30CE604C26A9DED000E0D29B /* web3swift in Frameworks */,
 				C63402882886547C00AB5D38 /* SVGKit in Frameworks */,
 				290A60482950AA1600882109 /* WalletConnect in Frameworks */,
-				30D89F5B26A9EB5500251C2D /* Bugsnag in Frameworks */,
 				290A60522950AA1600882109 /* WalletConnectRouter in Frameworks */,
 				30B6583926A9E75E004F707F /* Stripe in Frameworks */,
 				C61B6C742BA0052C007408FD /* Push in Frameworks */,
@@ -4323,7 +4320,6 @@
 				C60CB2E02A7CB62E00663989 /* web3swift in Frameworks */,
 				C65DD4C62A7CABC700CAB10C /* Valet in Frameworks */,
 				C6E69FA3288AB821000A8346 /* SVGKit in Frameworks */,
-				C6E69F99288AB6DC000A8346 /* Bugsnag in Frameworks */,
 				C60BC04D2BC7808400A79CDB /* XMTPiOS in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8632,7 +8628,6 @@
 				307B1D592603C8E0007B14C3 /* BigInt */,
 				30CE604B26A9DED000E0D29B /* web3swift */,
 				30B6583826A9E75E004F707F /* Stripe */,
-				30D89F5A26A9EB5500251C2D /* Bugsnag */,
 				C63402872886547C00AB5D38 /* SVGKit */,
 				290A60472950AA1600882109 /* WalletConnect */,
 				290A604B2950AA1600882109 /* WalletConnectNetworking */,
@@ -8724,7 +8719,6 @@
 			);
 			name = NotificationServiceExtension;
 			packageProductDependencies = (
-				C6E69F98288AB6DC000A8346 /* Bugsnag */,
 				C6E69FA2288AB821000A8346 /* SVGKit */,
 				C65DD4C52A7CABC700CAB10C /* Valet */,
 				C60CB2DF2A7CB62E00663989 /* web3swift */,
@@ -8779,7 +8773,6 @@
 				307B1D582603C8E0007B14C3 /* XCRemoteSwiftPackageReference "BigInt" */,
 				30CE604A26A9DED000E0D29B /* XCRemoteSwiftPackageReference "web3swift" */,
 				30B6583726A9E75E004F707F /* XCRemoteSwiftPackageReference "stripe-ios" */,
-				30D89F5926A9EB5500251C2D /* XCRemoteSwiftPackageReference "bugsnag-cocoa" */,
 				C63402862886547C00AB5D38 /* XCRemoteSwiftPackageReference "SVGKit-Light" */,
 				290A60462950AA1500882109 /* XCRemoteSwiftPackageReference "WalletConnectSwiftV2" */,
 				C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */,
@@ -12372,14 +12365,6 @@
 				kind = branch;
 			};
 		};
-		30D89F5926A9EB5500251C2D /* XCRemoteSwiftPackageReference "bugsnag-cocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/bugsnag/bugsnag-cocoa";
-			requirement = {
-				kind = exactVersion;
-				version = 6.28.1;
-			};
-		};
 		C607A5CB2B3288800088ECF3 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/amplitude/Amplitude-iOS";
@@ -12515,11 +12500,6 @@
 			package = 30CE604A26A9DED000E0D29B /* XCRemoteSwiftPackageReference "web3swift" */;
 			productName = web3swift;
 		};
-		30D89F5A26A9EB5500251C2D /* Bugsnag */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 30D89F5926A9EB5500251C2D /* XCRemoteSwiftPackageReference "bugsnag-cocoa" */;
-			productName = Bugsnag;
-		};
 		C607A5CC2B3288900088ECF3 /* Amplitude */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C607A5CB2B3288800088ECF3 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */;
@@ -12584,11 +12564,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C689C1712ADE47AF00AA0186 /* XCRemoteSwiftPackageReference "ios-client-sdk" */;
 			productName = LaunchDarkly;
-		};
-		C6E69F98288AB6DC000A8346 /* Bugsnag */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 30D89F5926A9EB5500251C2D /* XCRemoteSwiftPackageReference "bugsnag-cocoa" */;
-			productName = Bugsnag;
 		};
 		C6E69FA2288AB821000A8346 /* SVGKit */ = {
 			isa = XCSwiftPackageProductDependency;
