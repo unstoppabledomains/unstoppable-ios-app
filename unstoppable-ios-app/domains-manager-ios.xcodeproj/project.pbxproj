@@ -8784,6 +8784,7 @@
 				C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */,
 				C61B6C722BA004F2007408FD /* XCRemoteSwiftPackageReference "push-swift-sdk" */,
 				C650F8B92BA414DC00BDA099 /* XCRemoteSwiftPackageReference "ncw-ios-sdk" */,
+				29EBDB8E2E0C32D200973E45 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */,
 			);
 			productRefGroup = 3064867E2527253700388026 /* Products */;
 			projectDirPath = "";
@@ -12339,6 +12340,14 @@
 			requirement = {
 				branch = "0-5-3-Version";
 				kind = branch;
+			};
+		};
+		29EBDB8E2E0C32D200973E45 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Datadog/dd-sdk-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.29.0;
 			};
 		};
 		307B1D582603C8E0007B14C3 /* XCRemoteSwiftPackageReference "BigInt" */ = {
