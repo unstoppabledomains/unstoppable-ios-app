@@ -165,8 +165,8 @@ private extension AppDelegate {
         environment = "debug"
 #endif
         
-        let appID = "8042119b-9e30-4f74-946a-ebb84f5053c1"
-        let clientToken = "pub08e97cef2cf6fc1952fb8519183ccd69"
+        let appID = DataDog.appID
+        let clientToken = DataDog.clientToken
         
         Datadog.initialize(
             with: Datadog.Configuration(
