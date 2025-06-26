@@ -10,8 +10,10 @@ import os.log
 
 // Light debugger
 public struct Debugger {
+        
     private static let logger = Logger(subsystem: "com.unstoppabledomains",
                                        category: "debug")
+    
     
     enum DebugTopic: String, CaseIterable {
         case None = ""
@@ -113,7 +115,7 @@ public struct Debugger {
         guard !suppressOnlineLogging else {
             return
         }
-        // TODO: log to DataDog
+        Self.logErrorToDataDog("\(critical ? "CRITICAL" : "NON-CRITICAL"): \(s)")
         #endif
     }
     
@@ -124,7 +126,7 @@ public struct Debugger {
         guard !suppressOnlineLogging else {
             return
         }
-        // TODO: log to DataDog
+        Self.logWarningToDataDog(s)
         #endif
     }
 }

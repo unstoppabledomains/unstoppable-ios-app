@@ -46,6 +46,15 @@
 		29BECD1D2979BE8800662FC1 /* SecureHashStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BECD1C2979BE8800662FC1 /* SecureHashStorage.swift */; };
 		29BECD22297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BECD21297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift */; };
 		29DE3B1328913DF500655675 /* Env.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DE3B1228913DF500655675 /* Env.swift */; };
+		29E2C8C52E0D7A230032AE77 /* Debugger-DataDog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E2C8C42E0D7A1A0032AE77 /* Debugger-DataDog.swift */; };
+		29E2C8C62E0D7A230032AE77 /* Debugger-DataDog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E2C8C42E0D7A1A0032AE77 /* Debugger-DataDog.swift */; };
+		29E2C8C82E0D7ACE0032AE77 /* DatadogCore in Frameworks */ = {isa = PBXBuildFile; productRef = 29E2C8C72E0D7ACE0032AE77 /* DatadogCore */; };
+		29E2C8CA2E0D7ACF0032AE77 /* DatadogLogs in Frameworks */ = {isa = PBXBuildFile; productRef = 29E2C8C92E0D7ACF0032AE77 /* DatadogLogs */; };
+		29E2C8CC2E0D7ACF0032AE77 /* DatadogRUM in Frameworks */ = {isa = PBXBuildFile; productRef = 29E2C8CB2E0D7ACF0032AE77 /* DatadogRUM */; };
+		29E2C8CD2E0DD0C70032AE77 /* Debugger-DataDog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E2C8C42E0D7A1A0032AE77 /* Debugger-DataDog.swift */; };
+		29E2C8CF2E0DD14B0032AE77 /* DatadogCore in Frameworks */ = {isa = PBXBuildFile; productRef = 29E2C8CE2E0DD14B0032AE77 /* DatadogCore */; };
+		29E2C8D12E0DD14B0032AE77 /* DatadogLogs in Frameworks */ = {isa = PBXBuildFile; productRef = 29E2C8D02E0DD14B0032AE77 /* DatadogLogs */; };
+		29E2C8D32E0DD14B0032AE77 /* DatadogRUM in Frameworks */ = {isa = PBXBuildFile; productRef = 29E2C8D22E0DD14B0032AE77 /* DatadogRUM */; };
 		29EDB61E28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */; };
 		29EDB623290A94E700A0BD08 /* ProfilesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EDB622290A94E700A0BD08 /* ProfilesTests.swift */; };
 		3004E32C26D53F1D00B9CB6A /* UDWalletStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3004E32B26D53F1D00B9CB6A /* UDWalletStorage.swift */; };
@@ -2760,6 +2769,7 @@
 		29BECD1C2979BE8800662FC1 /* SecureHashStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureHashStorage.swift; sourceTree = "<group>"; };
 		29BECD21297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletWithPrivateSeed.swift; sourceTree = "<group>"; };
 		29DE3B1228913DF500655675 /* Env.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Env.swift; sourceTree = "<group>"; };
+		29E2C8C42E0D7A1A0032AE77 /* Debugger-DataDog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Debugger-DataDog.swift"; sourceTree = "<group>"; };
 		29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+ProfilesApi.swift"; sourceTree = "<group>"; };
 		29EDB622290A94E700A0BD08 /* ProfilesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilesTests.swift; sourceTree = "<group>"; };
 		3004E32B26D53F1D00B9CB6A /* UDWalletStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletStorage.swift; sourceTree = "<group>"; };
@@ -4271,8 +4281,11 @@
 				C61ECD862A25AB4200E97D70 /* SocketIO in Frameworks */,
 				290A604C2950AA1600882109 /* WalletConnectNetworking in Frameworks */,
 				307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */,
+				29E2C8CA2E0D7ACF0032AE77 /* DatadogLogs in Frameworks */,
 				C60BC04B2BC7806F00A79CDB /* XMTPiOS in Frameworks */,
+				29E2C8CC2E0D7ACF0032AE77 /* DatadogRUM in Frameworks */,
 				290A60502950AA1600882109 /* WalletConnectPush in Frameworks */,
+				29E2C8C82E0D7ACE0032AE77 /* DatadogCore in Frameworks */,
 				C671CD2D2BC7758B005DA2FB /* StripePaymentSheet in Frameworks */,
 				2917EDDD2A6F25AB004EAB31 /* Web3ContractABI in Frameworks */,
 				C689C1732ADE484300AA0186 /* LaunchDarkly in Frameworks */,
@@ -4319,7 +4332,10 @@
 			files = (
 				C60CB2E02A7CB62E00663989 /* web3swift in Frameworks */,
 				C65DD4C62A7CABC700CAB10C /* Valet in Frameworks */,
+				29E2C8D32E0DD14B0032AE77 /* DatadogRUM in Frameworks */,
+				29E2C8CF2E0DD14B0032AE77 /* DatadogCore in Frameworks */,
 				C6E69FA3288AB821000A8346 /* SVGKit in Frameworks */,
+				29E2C8D12E0DD14B0032AE77 /* DatadogLogs in Frameworks */,
 				C60BC04D2BC7808400A79CDB /* XMTPiOS in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7686,6 +7702,7 @@
 				C68017852886730300524712 /* CurrencyImageLoader.swift */,
 				C60D2716295AC4AB0060635D /* ConnectedAppsBackgroundColorCache.swift */,
 				30472D8B2672435200B0D7A7 /* Debugger.swift */,
+				29E2C8C42E0D7A1A0032AE77 /* Debugger-DataDog.swift */,
 				307852632771FB020039FF40 /* DeepLinks.swift */,
 				C67097AB2BABD47E00BB8AB1 /* DebounceObject.swift */,
 				C69F99402A9F1478004B1958 /* DomainProfileBadgeDisplayInfo.swift */,
@@ -8647,6 +8664,9 @@
 				C650F8BA2BA4150300BDA099 /* FireblocksSDK */,
 				C671CD2C2BC7758B005DA2FB /* StripePaymentSheet */,
 				C60BC04A2BC7806F00A79CDB /* XMTPiOS */,
+				29E2C8C72E0D7ACE0032AE77 /* DatadogCore */,
+				29E2C8C92E0D7ACF0032AE77 /* DatadogLogs */,
+				29E2C8CB2E0D7ACF0032AE77 /* DatadogRUM */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 3064867D2527253700388026 /* domains-manager-ios.app */;
@@ -8723,6 +8743,9 @@
 				C65DD4C52A7CABC700CAB10C /* Valet */,
 				C60CB2DF2A7CB62E00663989 /* web3swift */,
 				C60BC04C2BC7808400A79CDB /* XMTPiOS */,
+				29E2C8CE2E0DD14B0032AE77 /* DatadogCore */,
+				29E2C8D02E0DD14B0032AE77 /* DatadogLogs */,
+				29E2C8D22E0DD14B0032AE77 /* DatadogRUM */,
 			);
 			productName = NotificationServiceExtension;
 			productReference = C6E69F8A288A93D2000A8346 /* NotificationServiceExtension.appex */;
@@ -9667,6 +9690,7 @@
 				C61807D52B19A4450032E543 /* ExternalEventsServiceProtocol.swift in Sources */,
 				C640F3552C06FC66009EB0F9 /* MPCWalletPasswordValidator.swift in Sources */,
 				C671E3AA28FEA2D400A2B3A0 /* ManageDomainTopInfoCell.swift in Sources */,
+				29E2C8C62E0D7A230032AE77 /* Debugger-DataDog.swift in Sources */,
 				C685D81A2AA978DE00212879 /* UDBTSearchView.swift in Sources */,
 				C610BA1B2BE234A600179919 /* MPCCryptoSender.swift in Sources */,
 				C61002EA2940936F00462983 /* UIGestureRecognizer.swift in Sources */,
@@ -11444,6 +11468,7 @@
 				C6D6478C2B1EE5B600D724AC /* PreviewDomainProfile.swift in Sources */,
 				C630E4B42B7F5835008F3269 /* ExpandableTextEditor.swift in Sources */,
 				C6D647072B1ED7CA00D724AC /* MessagingNewsChannelFeed.swift in Sources */,
+				29E2C8C52E0D7A230032AE77 /* Debugger-DataDog.swift in Sources */,
 				C6C8F8442B217E9600A9834D /* CreateBackupPasswordToBackupWalletPresenter.swift in Sources */,
 				C630E4A72B7F4918008F3269 /* ChatView.swift in Sources */,
 				C6D645D92B1DBD4900D724AC /* CNavigationControllerDefaultNavigationBarPopAnimation.swift in Sources */,
@@ -11550,6 +11575,7 @@
 				C65DD4C82A7CAC8500CAB10C /* KeychainXMTPKeysStorage.swift in Sources */,
 				C65DD4CE2A7CACEC00CAB10C /* Extension-String+Notification.swift in Sources */,
 				C60CB2E12A7CD18500663989 /* Constants.swift in Sources */,
+				29E2C8CD2E0DD0C70032AE77 /* Debugger-DataDog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12493,6 +12519,36 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */;
 			productName = Web3PromiseKit;
+		};
+		29E2C8C72E0D7ACE0032AE77 /* DatadogCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 29EBDB8E2E0C32D200973E45 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
+			productName = DatadogCore;
+		};
+		29E2C8C92E0D7ACF0032AE77 /* DatadogLogs */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 29EBDB8E2E0C32D200973E45 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
+			productName = DatadogLogs;
+		};
+		29E2C8CB2E0D7ACF0032AE77 /* DatadogRUM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 29EBDB8E2E0C32D200973E45 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
+			productName = DatadogRUM;
+		};
+		29E2C8CE2E0DD14B0032AE77 /* DatadogCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 29EBDB8E2E0C32D200973E45 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
+			productName = DatadogCore;
+		};
+		29E2C8D02E0DD14B0032AE77 /* DatadogLogs */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 29EBDB8E2E0C32D200973E45 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
+			productName = DatadogLogs;
+		};
+		29E2C8D22E0DD14B0032AE77 /* DatadogRUM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 29EBDB8E2E0C32D200973E45 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
+			productName = DatadogRUM;
 		};
 		307B1D592603C8E0007B14C3 /* BigInt */ = {
 			isa = XCSwiftPackageProductDependency;

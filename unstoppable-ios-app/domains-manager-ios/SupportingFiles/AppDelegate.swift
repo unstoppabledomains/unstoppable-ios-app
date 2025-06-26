@@ -9,6 +9,7 @@ import UIKit
 import Push
 import DatadogCore
 import DatadogRUM
+import DatadogLogs
 
 var appContext: AppContextProtocol {
     return AppDelegate.shared.appContext
@@ -183,5 +184,7 @@ private extension AppDelegate {
                 uiKitActionsPredicate: DefaultUIKitRUMActionsPredicate()
             )
         )
+        
+        Datadog.verbosityLevel = .debug
     }
 }
