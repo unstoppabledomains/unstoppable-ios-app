@@ -6,8 +6,10 @@
 //
 
 import UIKit
-import Bugsnag
 import Push
+import DatadogCore
+import DatadogRUM
+import DatadogLogs
 
 var appContext: AppContextProtocol {
     return AppDelegate.shared.appContext
@@ -93,7 +95,7 @@ private extension AppDelegate {
     func setup() {
         setVersionAndBuildNumber()
         setupAppearance()
-        setupBugsnag()
+        setupDataDog()
         setupFeatureFlags()
         configureNavBar()
     }
@@ -152,12 +154,37 @@ private extension AppDelegate {
             await appContext.imageLoadingService.clearStoredImages()
         }
     }
-
-    func setupBugsnag() {
-        Bugsnag.start()
-    }
     
     func setupFeatureFlags() {
         _ = appContext.udFeatureFlagsService
+    }
+    
+    func setupDataDog() {
+        var environment = "prod"
+#if DEBUG
+        environment = "debug"
+#endif
+        
+        let appID = DataDog.appID
+        let clientToken = DataDog.clientToken
+        
+        Datadog.initialize(
+            with: Datadog.Configuration(
+                clientToken: clientToken,
+                env: environment,
+                site: .us1
+            ),
+            trackingConsent: .granted
+        )
+
+        RUM.enable(
+            with: RUM.Configuration(
+                applicationID: appID,
+                uiKitViewsPredicate: DefaultUIKitRUMViewsPredicate(),
+                uiKitActionsPredicate: DefaultUIKitRUMActionsPredicate()
+            )
+        )
+        
+        Datadog.verbosityLevel = .debug
     }
 }

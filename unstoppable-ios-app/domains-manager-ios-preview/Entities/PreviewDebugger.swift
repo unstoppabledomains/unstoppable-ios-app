@@ -102,7 +102,7 @@ public struct Debugger {
         }
     }
     
-    public static func printFailure(_ s: String, critical: Bool = false, suppressBugSnag: Bool = false) {
+    public static func printFailure(_ s: String, critical: Bool = false, suppressOnlineLogging: Bool = false) {
 #if DEBUG
         if critical {
             fatalError("⛔️ CRITICAL ERROR: \(s)")
@@ -110,21 +110,15 @@ public struct Debugger {
             logger.critical("🟥 \(s)")
         }
 #else
-        let exception = NSException(name:NSExceptionName(rawValue: "\(critical ? "CRITICAL" : "NON-CRITICAL"): \(s)"),
-                                    reason: "",
-                                    userInfo: nil)
-        Bugsnag.notify(exception)
+        // TODO: log to DataDog
 #endif
     }
     
-    static func printWarning(_ s: String, suppressBugSnag: Bool = false) {
+    static func printWarning(_ s: String, suppressOnlineLogging: Bool = false) {
 #if DEBUG
         logger.warning("🟨🔸 WARNING: \(s)")
 #else
-        let exception = NSException(name:NSExceptionName(rawValue: "WARNING: \(s)"),
-                                    reason: "",
-                                    userInfo: nil)
-        Bugsnag.notify(exception)
+        // TODO: log to DataDog
 #endif
     }
 }

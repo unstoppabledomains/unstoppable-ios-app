@@ -6,13 +6,14 @@
 //
 
 import Foundation
-import Bugsnag
 import os.log
 
 // Light debugger
 public struct Debugger {
+        
     private static let logger = Logger(subsystem: "com.unstoppabledomains",
                                        category: "debug")
+    
     
     enum DebugTopic: String, CaseIterable {
         case None = ""
@@ -97,13 +98,13 @@ public struct Debugger {
         let message = "\(String.itTook(from: startDate)) \(s)"
         let timeAfterStart = Date().timeIntervalSince(startDate)
         if timeAfterStart > timeout {
-            printWarning(message, suppressBugSnag: true)
+            printWarning(message, suppressOnlineLogging: true)
         } else {
             printInfo(topic: topic, message)
         }
     }
     
-    public static func printFailure(_ s: String, critical: Bool = false, suppressBugSnag: Bool = false) {
+    public static func printFailure(_ s: String, critical: Bool = false, suppressOnlineLogging: Bool = false) {
         #if DEBUG
         if critical {
             fatalError("⛔️ CRITICAL ERROR: \(s)")
@@ -111,27 +112,21 @@ public struct Debugger {
             logger.critical("🟥 \(s)")
         }
         #else
-        guard !suppressBugSnag else {
+        guard !suppressOnlineLogging else {
             return
         }
-        let exception = NSException(name:NSExceptionName(rawValue: "\(critical ? "CRITICAL" : "NON-CRITICAL"): \(s)"),
-                                    reason: "",
-                                    userInfo: nil)
-        Bugsnag.notify(exception)
+        Self.logErrorToDataDog("\(critical ? "CRITICAL" : "NON-CRITICAL"): \(s)")
         #endif
     }
     
-    static func printWarning(_ s: String, suppressBugSnag: Bool = false) {
+    static func printWarning(_ s: String, suppressOnlineLogging: Bool = false) {
         #if DEBUG
         logger.warning("🟨🔸 WARNING: \(s)")
         #else
-        guard !suppressBugSnag else {
+        guard !suppressOnlineLogging else {
             return
         }
-        let exception = NSException(name:NSExceptionName(rawValue: "WARNING: \(s)"),
-                                    reason: "",
-                                    userInfo: nil)
-        Bugsnag.notify(exception)
+        Self.logWarningToDataDog(s)
         #endif
     }
 }
