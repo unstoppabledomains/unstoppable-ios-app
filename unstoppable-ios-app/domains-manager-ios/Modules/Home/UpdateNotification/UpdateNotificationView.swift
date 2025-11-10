@@ -49,10 +49,7 @@ struct UpdateNotificationView: View {
                 
                 // MPC Wallets section
                 if viewModel.hasMPCWallets {
-                    Text(String.Constants.updateNotificationMPCWallets.localized())
-                        .font(.currentFont(size: 16))
-                        .foregroundColor(.foregroundDefault)
-                        .multilineTextAlignment(.leading)
+                    mpcWalletsTextView()
                 }
                 
                 // Private Keys section
@@ -64,10 +61,7 @@ struct UpdateNotificationView: View {
                 }
                 
                 // Test App section
-                Text(String.Constants.updateNotificationTestApp.localized())
-                    .font(.currentFont(size: 16))
-                    .foregroundColor(.foregroundDefault)
-                    .multilineTextAlignment(.leading)
+                testAppTextView()
                 
                 // Contact section
                 Button(action: {
@@ -120,6 +114,58 @@ struct UpdateNotificationView: View {
         let email = "mobile-team@unstoppabledomains.com"
         if let url = URL(string: "mailto:\(email)") {
             UIApplication.shared.open(url)
+        }
+    }
+    
+    @ViewBuilder
+    private func mpcWalletsTextView() -> some View {
+        let mpcText = String.Constants.updateNotificationMPCWallets.localized()
+        let parts = mpcText.components(separatedBy: "{extension_link}")
+        
+        if parts.count > 1 {
+            (Text(parts[0])
+                .font(.currentFont(size: 16))
+                .foregroundColor(.foregroundDefault) +
+             Text("extension")
+                .font(.currentFont(size: 16))
+                .foregroundColor(.foregroundAccent)
+                .underline() +
+             Text(parts[1])
+                .font(.currentFont(size: 16))
+                .foregroundColor(.foregroundDefault))
+            .onTapGesture {
+                openURL(URL(string: "https://chromewebstore.google.com/detail/cigfdaeondbdnogeplpdlmcnoeagdoih")!)
+            }
+        } else {
+            Text(mpcText)
+                .font(.currentFont(size: 16))
+                .foregroundColor(.foregroundDefault)
+        }
+    }
+    
+    @ViewBuilder
+    private func testAppTextView() -> some View {
+        let testAppText = String.Constants.updateNotificationTestApp.localized()
+        let appParts = testAppText.components(separatedBy: "{app_link}")
+        
+        if appParts.count > 1 {
+            (Text(appParts[0])
+                .font(.currentFont(size: 16))
+                .foregroundColor(.foregroundDefault) +
+             Text("app")
+                .font(.currentFont(size: 16))
+                .foregroundColor(.foregroundAccent)
+                .underline() +
+             Text(appParts[1])
+                .font(.currentFont(size: 16))
+                .foregroundColor(.foregroundDefault))
+            .onTapGesture {
+                openURL(URL(string: "https://apps.apple.com/ua/app/unstoppable-domains-market/id6752661811")!)
+            }
+        } else {
+            Text(testAppText)
+                .font(.currentFont(size: 16))
+                .foregroundColor(.foregroundDefault)
         }
     }
 }
