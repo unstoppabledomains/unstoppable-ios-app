@@ -49,6 +49,10 @@ struct HomeTabView: View {
         .sheet(isPresented: $router.showingUpdatedToWalletGreetings, content: {
             UpdateToWalletGreetingsView()
         })
+        .sheet(isPresented: $router.isShowingV2UpdateNotification, content: {
+            UpdateNotificationView(viewModel: UpdateNotificationViewModel())
+                .presentationDetents([.large])
+        })
         .sheet(item: $router.showingWalletInfo, content: {
             ShareWalletInfoView(wallet: $0)
                 .presentationDetents([.large])

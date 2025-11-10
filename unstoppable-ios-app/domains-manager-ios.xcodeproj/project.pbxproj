@@ -10,6 +10,14 @@
 		290136B42BFBFA3F00AB126D /* EIP712View.xib in Resources */ = {isa = PBXBuildFile; fileRef = 290136B32BFBFA3F00AB126D /* EIP712View.xib */; };
 		290136B72BFBFAAE00AB126D /* EIP712View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290136B62BFBFAAE00AB126D /* EIP712View.swift */; };
 		29018C8D2BACB7BC0004545D /* JRPC_Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29018C8C2BACB7BC0004545D /* JRPC_Client.swift */; };
+		29028F2B2EC2121700B43B18 /* UpdateNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29028F282EC2121700B43B18 /* UpdateNotificationView.swift */; };
+		29028F2C2EC2121700B43B18 /* UpdateNotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29028F292EC2121700B43B18 /* UpdateNotificationViewModel.swift */; };
+		29028F2D2EC2121700B43B18 /* UpdateNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29028F282EC2121700B43B18 /* UpdateNotificationView.swift */; };
+		29028F2E2EC2121700B43B18 /* UpdateNotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29028F292EC2121700B43B18 /* UpdateNotificationViewModel.swift */; };
+		29028F2F2EC2121700B43B18 /* UpdateNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29028F282EC2121700B43B18 /* UpdateNotificationView.swift */; };
+		29028F302EC2121700B43B18 /* UpdateNotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29028F292EC2121700B43B18 /* UpdateNotificationViewModel.swift */; };
+		29028F332EC2121700B43B18 /* UpdateNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29028F282EC2121700B43B18 /* UpdateNotificationView.swift */; };
+		29028F342EC2121700B43B18 /* UpdateNotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29028F292EC2121700B43B18 /* UpdateNotificationViewModel.swift */; };
 		290A60422950A89900882109 /* WalletConnectServiceV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A60412950A89900882109 /* WalletConnectServiceV2.swift */; };
 		290A60482950AA1600882109 /* WalletConnect in Frameworks */ = {isa = PBXBuildFile; productRef = 290A60472950AA1600882109 /* WalletConnect */; };
 		290A604C2950AA1600882109 /* WalletConnectNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = 290A604B2950AA1600882109 /* WalletConnectNetworking */; };
@@ -2744,6 +2752,8 @@
 		290136B32BFBFA3F00AB126D /* EIP712View.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EIP712View.xib; sourceTree = "<group>"; };
 		290136B62BFBFAAE00AB126D /* EIP712View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EIP712View.swift; sourceTree = "<group>"; };
 		29018C8C2BACB7BC0004545D /* JRPC_Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JRPC_Client.swift; sourceTree = "<group>"; };
+		29028F282EC2121700B43B18 /* UpdateNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNotificationView.swift; sourceTree = "<group>"; };
+		29028F292EC2121700B43B18 /* UpdateNotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNotificationViewModel.swift; sourceTree = "<group>"; };
 		290A60412950A89900882109 /* WalletConnectServiceV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectServiceV2.swift; sourceTree = "<group>"; };
 		29150FBA2975DA4D00169A1A /* PushSubscriberInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushSubscriberInfo.swift; sourceTree = "<group>"; };
 		291A9C6929E444CF00527FF1 /* WC_v1+v2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WC_v1+v2.swift"; sourceTree = "<group>"; };
@@ -4343,6 +4353,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		29028F2A2EC2121700B43B18 /* UpdateNotification */ = {
+			isa = PBXGroup;
+			children = (
+				29028F282EC2121700B43B18 /* UpdateNotificationView.swift */,
+				29028F292EC2121700B43B18 /* UpdateNotificationViewModel.swift */,
+			);
+			path = UpdateNotification;
+			sourceTree = "<group>";
+		};
 		295506F42954D22800EDA42D /* WalletConnectService_V2 */ = {
 			isa = PBXGroup;
 			children = (
@@ -7760,6 +7779,7 @@
 		C6B65F4D2B54DA6D006D1812 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				29028F2A2EC2121700B43B18 /* UpdateNotification */,
 				C6534A8C2BBFBA10008EEBB5 /* Explore */,
 				C6B761C72BB3BE9300773943 /* Activity */,
 				C67213CC2BAA803C0075B9C7 /* SendCryptoAsset */,
@@ -10236,6 +10256,8 @@
 				C652721B2A149E41001A084C /* MessageDateFormatter.swift in Sources */,
 				C63902C228E307A900E16B42 /* CryptoEditingGroupedRecord.swift in Sources */,
 				C664B66929153FE300A76154 /* DomainProfileWeb3WebsiteSection.swift in Sources */,
+				29028F2F2EC2121700B43B18 /* UpdateNotificationView.swift in Sources */,
+				29028F302EC2121700B43B18 /* UpdateNotificationViewModel.swift in Sources */,
 				301EFCBB25E6CD1500DEB2C1 /* Version.swift in Sources */,
 				30B3DC9728763294006FAA64 /* WCConnectionIntentStorage.swift in Sources */,
 				C665B9B128325282005E535C /* DomainDetailsViewController.swift in Sources */,
@@ -10400,6 +10422,8 @@
 				C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */,
 				C67B6D572AE79E8400F74B0B /* ImagesCacheStorageTests.swift in Sources */,
 				C67DE1432B983FD0002374CE /* HomeExploreViewModelTests.swift in Sources */,
+				29028F2D2EC2121700B43B18 /* UpdateNotificationView.swift in Sources */,
+				29028F2E2EC2121700B43B18 /* UpdateNotificationViewModel.swift in Sources */,
 				C6B6B8732B91A4F900565ED2 /* TaskWithDeadlineTests.swift in Sources */,
 				C6BA69BD2BFAE6E500DAE886 /* FB_UD_MPCConnectionServiceTests.swift in Sources */,
 				C6B2E2142B9714B100CEA1F9 /* DomainProfilesServiceTests.swift in Sources */,
@@ -10426,6 +10450,8 @@
 				C6109E7A28E5AC510027D5D8 /* HappyEndRobot.swift in Sources */,
 				C6109E7E28E5AC510027D5D8 /* RecoveryPhraseRobot.swift in Sources */,
 				C6109E7728E5AC510027D5D8 /* ConfirmRecoveryWordsRobot.swift in Sources */,
+				29028F2B2EC2121700B43B18 /* UpdateNotificationView.swift in Sources */,
+				29028F2C2EC2121700B43B18 /* UpdateNotificationViewModel.swift in Sources */,
 				C6109E7828E5AC510027D5D8 /* WalletDetailsRobot.swift in Sources */,
 				C6109E7628E5AC510027D5D8 /* DomainsCollectionScreenRobot.swift in Sources */,
 				C6109E8328E5AC510027D5D8 /* DashesProgressRobot.swift in Sources */,
@@ -10464,6 +10490,8 @@
 				C64939F92B6373EC00457363 /* DeviceShakeViewModifier.swift in Sources */,
 				C618087D2B19BC290032E543 /* AvatarStyleClipped.swift in Sources */,
 				C6952A672BC6662A00F4B475 /* PurchaseMPCWalletRootView.swift in Sources */,
+				29028F332EC2121700B43B18 /* UpdateNotificationView.swift in Sources */,
+				29028F342EC2121700B43B18 /* UpdateNotificationViewModel.swift in Sources */,
 				C640F3862C0868C3009EB0F9 /* PurchaseMPCWalletTakeoverProgressInAppView.swift in Sources */,
 				C6D646E92B1ED51100D724AC /* PreviewNFCService.swift in Sources */,
 				C6C8F95B2B21866700A9834D /* PasscodeButton.swift in Sources */,

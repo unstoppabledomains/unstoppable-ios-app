@@ -32,6 +32,7 @@ public enum UserDefaultsKey: String {
     case firebaseUser
     case didUpdateToWalletVersion
     case isSendingCryptoForTheFirstTime
+    case isV2UpdateNotificationDismissed
     
     // Purchase domains
     case purchasedDomains
@@ -46,6 +47,7 @@ extension UserDefaults {
     @UserDefaultsValue(key: UserDefaultsKey.didMigrateXMTPConsentsListFromUD, defaultValue: false) static var didMigrateXMTPConsentsListFromUD: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didUpdateToWalletVersion, defaultValue: false) static var didUpdateToWalletVersion: Bool
     @UserDefaultsValue(key: UserDefaultsKey.isSendingCryptoForTheFirstTime, defaultValue: true) static var isSendingCryptoForTheFirstTime: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.isV2UpdateNotificationDismissed, defaultValue: false) static var isV2UpdateNotificationDismissed: Bool
     @UserDefaultsValue(key: UserDefaultsKey.buildVersion, defaultValue: "") static var buildVersion: String
     @UserDefaultsRawRepresentableValue(key: .appearanceStyle, defaultValue: .unspecified) static var appearanceStyle: UIUserInterfaceStyle
     @UserDefaultsBlockchainTypeValue(key: .selectedBlockchainType, defaultValue: .Ethereum) static var selectedBlockchainType: BlockchainType
