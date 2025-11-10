@@ -183,10 +183,7 @@ extension HomeWalletView {
             }
         }
         
-        var isBuyButtonEnabled: Bool {
-            let featureFlagsService = appContext.udFeatureFlagsService
-            return featureFlagsService.valueFor(flag: .isBuyCryptoEnabled) || featureFlagsService.valueFor(flag: .isBuyDomainEnabled)
-        }
+        let isBuyButtonEnabled: Bool = false
     }
 }
 
