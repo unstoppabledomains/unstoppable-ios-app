@@ -111,7 +111,7 @@ struct UpdateNotificationView: View {
     }
     
     private func openEmailClient() {
-        let email = "mobile-team@unstoppabledomains.com"
+        let email = "mobile-update2025@unstoppabledomains.com"
         if let url = URL(string: "mailto:\(email)") {
             UIApplication.shared.open(url)
         }
