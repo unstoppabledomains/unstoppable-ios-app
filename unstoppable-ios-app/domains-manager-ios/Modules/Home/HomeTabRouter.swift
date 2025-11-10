@@ -16,6 +16,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var isConnectedAppsListPresented: Bool = false
     @Published var showingUpdatedToWalletGreetings: Bool = false
     @Published var isShowingMintingWalletsList: Bool = false
+    @Published var isShowingV2UpdateNotification: Bool = false
 
     @Published var tabViewSelection: HomeTab = .wallets
     @Published var pullUp: ViewPullUpConfigurationType?
@@ -53,6 +54,14 @@ final class HomeTabRouter: ObservableObject {
                 self?.profile = selectedProfile
             }
         }.store(in: &cancellables)
+        checkIfShouldShowV2UpdateNotification()
+    }
+    
+    private func checkIfShouldShowV2UpdateNotification() {
+        // Show notification on app launch if not dismissed
+        if !UserDefaults.isV2UpdateNotificationDismissed {
+            isShowingV2UpdateNotification = true
+        }
     }
   
 }
@@ -300,6 +309,7 @@ extension HomeTabRouter {
         isConnectedAppsListPresented = false
         showingUpdatedToWalletGreetings = false
         isShowingMintingWalletsList = false
+        isShowingV2UpdateNotification = false
         presentedNFT = nil
         presentedDomain = nil
         presentedPublicDomain = nil

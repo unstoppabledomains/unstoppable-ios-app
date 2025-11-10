@@ -114,3 +114,13 @@
 "TUTORIAL_SCREEN_3_DESCRIPTION" = "(TO TRANSLATE) Connect your favorite wallet to seamlessly manage your Web3 identity.";
 
 "CREATING_WALLET" = "Creating Wallet...";
+
+// V2 Update Notification
+"UPDATE_NOTIFICATION_TITLE" = "Actualización importante próximamente";
+"UPDATE_NOTIFICATION_INTRO" = "Estamos emocionados de presentar Domains V2 con una experiencia optimizada centrada en dominios y mercado.";
+"UPDATE_NOTIFICATION_WHATS_CHANGING" = "¿Qué está cambiando?\nTodas las funciones de billetera cripto serán eliminadas en esta actualización.";
+"UPDATE_NOTIFICATION_MPC_WALLETS" = "Billeteras Unstoppable Lite:\nContinúa administrando tus dominios en la web en unstoppabledomains.com. Puedes iniciar sesión con nuestra extensión del navegador.";
+"UPDATE_NOTIFICATION_PRIVATE_KEYS" = "Claves privadas:\nSi tienes tus claves privadas respaldadas de forma segura fuera de esta aplicación, proporcionaremos acceso de solo lectura a tus claves privadas después de la actualización.";
+"UPDATE_NOTIFICATION_TEST_APP" = "Pruébalo ahora:\n¿Quieres ver la nueva versión? Instala nuestra aplicación de prueba desde TestFlight.";
+"UPDATE_NOTIFICATION_CONTACT" = "¿Preguntas? Contáctanos en mobile-team@unstoppabledomains.com";
+"DONT_SHOW_AGAIN" = "No mostrar de nuevo";

@@ -1327,6 +1327,16 @@ extension String {
         static let mpcWalletDefaultName = "MPC_WALLET_DEFAULT_NAME"
         static let sendCrypto = "SEND_CRYPTO"
         static let mpcForgotPasswordTitle = "MPC_FORGOT_PASSWORD_TITLE"
+        
+        // V2 Update Notification
+        static let updateNotificationTitle = "UPDATE_NOTIFICATION_TITLE"
+        static let updateNotificationIntro = "UPDATE_NOTIFICATION_INTRO"
+        static let updateNotificationWhatsChanging = "UPDATE_NOTIFICATION_WHATS_CHANGING"
+        static let updateNotificationMPCWallets = "UPDATE_NOTIFICATION_MPC_WALLETS"
+        static let updateNotificationPrivateKeys = "UPDATE_NOTIFICATION_PRIVATE_KEYS"
+        static let updateNotificationTestApp = "UPDATE_NOTIFICATION_TEST_APP"
+        static let updateNotificationContact = "UPDATE_NOTIFICATION_CONTACT"
+        static let dontShowAgain = "DONT_SHOW_AGAIN"
         static let mpcForgotPasswordSubtitle = "MPC_FORGOT_PASSWORD_SUBTITLE"
         static let mpcForgotPasswordSubtitleHighlights = "MPC_FORGOT_PASSWORD_SUBTITLE_HIGHLIGHTS"
         static let forgotPasswordTitle = "FORGOT_PASSWORD_TITLE"
