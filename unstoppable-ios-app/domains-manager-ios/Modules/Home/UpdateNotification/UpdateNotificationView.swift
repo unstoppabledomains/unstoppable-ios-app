@@ -123,19 +123,16 @@ struct UpdateNotificationView: View {
         let parts = mpcText.components(separatedBy: "{extension_link}")
         
         if parts.count > 1 {
-            (Text(parts[0])
+            Text(parts[0])
                 .font(.currentFont(size: 16))
                 .foregroundColor(.foregroundDefault) +
-             Text("extension")
+            Text(" ") +
+            Text("[extension](https://chromewebstore.google.com/detail/cigfdaeondbdnogeplpdlmcnoeagdoih)")
                 .font(.currentFont(size: 16))
-                .foregroundColor(.foregroundAccent)
-                .underline() +
-             Text(parts[1])
+                .foregroundColor(.foregroundAccent) +
+            Text(parts[1])
                 .font(.currentFont(size: 16))
-                .foregroundColor(.foregroundDefault))
-            .onTapGesture {
-                openURL(URL(string: "https://chromewebstore.google.com/detail/cigfdaeondbdnogeplpdlmcnoeagdoih")!)
-            }
+                .foregroundColor(.foregroundDefault)
         } else {
             Text(mpcText)
                 .font(.currentFont(size: 16))
@@ -149,19 +146,16 @@ struct UpdateNotificationView: View {
         let appParts = testAppText.components(separatedBy: "{app_link}")
         
         if appParts.count > 1 {
-            (Text(appParts[0])
+            Text(appParts[0])
                 .font(.currentFont(size: 16))
                 .foregroundColor(.foregroundDefault) +
-             Text("app")
+            Text(" ") +
+            Text("[app](https://apps.apple.com/ua/app/unstoppable-domains-market/id6752661811)")
                 .font(.currentFont(size: 16))
-                .foregroundColor(.foregroundAccent)
-                .underline() +
-             Text(appParts[1])
+                .foregroundColor(.foregroundAccent) +
+            Text(appParts[1])
                 .font(.currentFont(size: 16))
-                .foregroundColor(.foregroundDefault))
-            .onTapGesture {
-                openURL(URL(string: "https://apps.apple.com/ua/app/unstoppable-domains-market/id6752661811")!)
-            }
+                .foregroundColor(.foregroundDefault)
         } else {
             Text(testAppText)
                 .font(.currentFont(size: 16))
