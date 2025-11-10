@@ -1273,12 +1273,13 @@ More tabs are coming in the next updates.";
 "CONNECT_LEDGER_WITH_MM_PULL_UP_TITLE" = "Use MetaMask rather than Ledger Live";
 "CONNECT_LEDGER_WITH_MM_PULL_UP_SUBTITLE" = "1. Connect your Ledger device to the MetaMask mobile wallet\n2. Connect MetaMask to this app";
 
+
 // V2 Update Notification
 "UPDATE_NOTIFICATION_TITLE" = "Important Update Coming Soon";
-"UPDATE_NOTIFICATION_INTRO" = "We're excited to introduce Domains V2 with a streamlined experience focused on domains and marketplace.";
-"UPDATE_NOTIFICATION_WHATS_CHANGING" = "What's changing?\nAll crypto wallet features will be removed in this update.";
-"UPDATE_NOTIFICATION_MPC_WALLETS" = "Unstoppable Lite wallets:\nContinue managing your domains on the web at unstoppabledomains.com. You can log in with our browser extension.";
-"UPDATE_NOTIFICATION_PRIVATE_KEYS" = "Private keys:\nIf you have your private keys securely backed up outside of this app, we will provide a read-only access to your private keys after update.";
-"UPDATE_NOTIFICATION_TEST_APP" = "Try it now:\nWant to preview the new version? Install our test app from TestFlight.";
+"UPDATE_NOTIFICATION_INTRO" = "We're upgrading to Unstoppable Domains V2 with a streamlined experience focused on domains and marketplace.";
+"UPDATE_NOTIFICATION_WHATS_CHANGING" = "What's changing:\nAll crypto wallet features will be removed in this update.";
+"UPDATE_NOTIFICATION_MPC_WALLETS" = "Unstoppable Lite wallets:\nContinue managing your domains on the web at unstoppabledomains.com. You can log in with our browser {extension_link}.";
+"UPDATE_NOTIFICATION_PRIVATE_KEYS" = "Private keys:\nPlease ensure you have your private keys securely backed up outside of this app. We will provide a read only access to your private keys after update.";
+"UPDATE_NOTIFICATION_TEST_APP" = "Try it now:\nWant to preview the new version? Install our test {app_link}.";
 "UPDATE_NOTIFICATION_CONTACT" = "Questions? Contact us at mobile-team@unstoppabledomains.com";
 "DONT_SHOW_AGAIN" = "Don't show again";

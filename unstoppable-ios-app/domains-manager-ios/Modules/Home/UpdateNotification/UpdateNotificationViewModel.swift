@@ -2,7 +2,7 @@
 //  UpdateNotificationViewModel.swift
 //  domains-manager-ios
 //
-//  Created by Oleg Kuplin on 10.11.2025.
+//  Created by Roman Medvid on 10.11.2025.
 //
 
 import SwiftUI
